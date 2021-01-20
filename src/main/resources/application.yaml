@@ -1,0 +1,8 @@
+server:
+  servlet:
+    context-path: /bidrag-vedtak
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
