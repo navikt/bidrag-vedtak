@@ -33,11 +33,6 @@ spec:
   {{/each}}
   vault:
     enabled: false
-  env:
-  {{#each env}}
-    - name: {{this.name}}
-      value: "{{this.value}}"
-  {{/each}}
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-dev
