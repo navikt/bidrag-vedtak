@@ -44,7 +44,7 @@ spec:
     sqlInstances:
       - name: bidrag-vedtak-dev
         tier: db-custom-1-3840
-        type: POSTGRES_13
+        type: POSTGRES_12
         databases:
           - name: bidrag-vedtak-dev
             envVarPrefix: DB
