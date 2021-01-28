@@ -35,8 +35,8 @@ spec:
     enabled: false
   env:
   {{#each env}}
-     - name: {{this.name}}
-  value: "{{this.value}}"
+    - name: {{this.name}}
+      value: "{{this.value}}"
   {{/each}}
   gcp:
     sqlInstances:
