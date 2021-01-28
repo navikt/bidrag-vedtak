@@ -34,12 +34,10 @@ spec:
   vault:
     enabled: false
   env:
-    - name: APIGW_URL
-      value: {{ api_gateway_url }}
-    - name: DISCOVERY_URL
-      value: {{ discovery_url }}
-    - name: AUD_FP
-      value: {{ aud }}
+  {{#each env}}
+     - name: {{this.name}}
+  value: "{{this.value}}"
+  {{/each}}
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-dev
