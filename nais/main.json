@@ -1,8 +1,6 @@
 {
   "name": "bidrag-vedtak",
   "ingresses": [
-    "https://bidrag-vedtak.nais.preprod.local/",
-    "https://bidrag-vedtak.dev-fss.nais.io/",
-    "https://bidrag-vedtak.dev.adeo.no/"
+    "https://bidrag-vedtak.dev.intern.nav.no/"
   ]
 }
