@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: bidrag-vedtak
+  name: {{ name }}
   namespace: bidrag
   labels:
     team: bidrag
@@ -29,30 +29,7 @@ spec:
       memory: 512Mi
   ingresses:
   {{#each ingresses as |url|}}
-    - {{url}}
+     - {{url}}
   {{/each}}
   vault:
     enabled: false
-  env:
-    - name: APIGW_URL
-      value: {{ api_gateway_url }}
-    - name: DISCOVERY_URL
-      value: {{ discovery_url }}
-    - name: AUD_FP
-      value: {{ aud }}
-  gcp:
-    sqlInstances:
-      - name: bidrag-vedtak-dev
-        tier: db-custom-1-3840
-        type: POSTGRES_12
-        databases:
-          - name: bidrag-vedtak-dev
-            envVarPrefix: DB
-  accesspolicy:
-    inbound:
-      rules:
-        - application: {{ allow_inbound_apps }}
-    outbound:
-      external:
-        - host: api-gw-q1.oera.no
-        - host: login.microsoftonline.com
