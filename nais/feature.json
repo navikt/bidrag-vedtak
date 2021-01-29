@@ -2,7 +2,5 @@
   "name": "bidrag-vedtak-feature",
   "ingresses": [
     "https://bidrag-vedtak-feature.dev.intern.nav.no"
-  ],
-  "env": {
-  }
+  ]
 }
