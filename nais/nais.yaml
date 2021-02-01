@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: bidrag-vedtak
+  name: {{ name }}
   namespace: bidrag
   labels:
     team: bidrag
@@ -29,7 +29,7 @@ spec:
       memory: 512Mi
   ingresses:
   {{#each ingresses as |url|}}
-    - {{url}}
+     - {{url}}
   {{/each}}
   env:
   {{#each env}}

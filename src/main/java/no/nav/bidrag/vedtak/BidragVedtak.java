@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BidragVedtak {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BidragVedtak.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(BidragVedtak.class, args);
+  }
 }
