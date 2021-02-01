@@ -1,4 +1,5 @@
 {
+  "namespace": "bidrag",
   "name": "bidrag-vedtak",
   "ingresses": [
     "https://bidrag-vedtak.dev.intern.nav.no/"
