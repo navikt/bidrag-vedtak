@@ -11,18 +11,18 @@ spec:
     application:
       enabled: true
   liveness:
-    path: /internal/actuator/health
+    path: /bidrag-vedtak/actuator/health
     initialDelay: 70
     timeout: 1
     periodSeconds: 5
     failureThreshold: 15
   readiness:
-    path: /internal/actuator/health
+    path: /bidrag-vedtak/actuator/health
     initialDelay: 70
     timeout: 1
   prometheus:
     enabled: true
-    path: /internal/actuator/prometheus
+    path: /bidrag-vedtak/actuator/prometheus
   resources:
     limits:
       cpu: 1000m
@@ -31,21 +31,23 @@ spec:
       cpu: 500m
       memory: 512Mi
   ingresses:
-    - {{ ingresses }}
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
   env:
-    - name: APIGW_URL
-      value: {{ api_gateway_url }}
-    - name: DISCOVERY_URL
-      value: {{ discovery_url }}
-    - name: AUD_FP
-      value: {{ aud }}
+  {{#each env}}
+     - name: {{@key}}
+  value: "{{this}}"
+  {{/each}}
+  vault:
+    enabled: false
   gcp:
     sqlInstances:
-      - name: bidrag-vedtak-feature
+      - name: bidrag-vedtak-dev
         tier: db-custom-1-3840
         type: POSTGRES_12
         databases:
-          - name: bidrag-vedtak-feature
+          - name: bidrag-vedtak-dev
             envVarPrefix: DB
   accesspolicy:
     inbound:
