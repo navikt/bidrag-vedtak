@@ -2,8 +2,8 @@
   "external-hosts": [
     "login.microsoftonline.com"
   ],
-  "ingress": [
-    "https://bidrag-vedtak.dev.adeo.no/"
+  "ingresses": [
+    "https://bidrag-vedtak.dev.intern.adeo.no/"
   ],
   "envs": [
     {

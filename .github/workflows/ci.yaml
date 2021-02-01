@@ -25,8 +25,6 @@ jobs:
 
       - run: env
 
-      - run: sudo rm -rf *
-
       - uses: actions/checkout@v2
         if: env.NOT_FOUND == 'true'
 
