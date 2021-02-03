@@ -6,6 +6,9 @@ metadata:
   labels:
     team: bidrag
 spec:
+  azure:
+    application:
+      enabled: true
   image: {{ image }}
   port: 8080
   liveness:
@@ -31,5 +34,3 @@ spec:
   ingresses:
     - https://bidrag-vedtak.nais.adeo.no/
     - https://bidrag-vedtak.prod-fss.nais.io
-  vault:
-    enabled: false
