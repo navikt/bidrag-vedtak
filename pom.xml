@@ -28,6 +28,7 @@
     <springfox-swagger.version>2.9.2</springfox-swagger.version>
     <token-support.version>1.3.2</token-support.version>
     <springframework-cloud.version>3.0.0</springframework-cloud.version>
+    <nimbus-jose-jwt.version>8.20.1</nimbus-jose-jwt.version>
 
     <!-- language -->
     <java.version>15</java.version>
@@ -158,6 +159,13 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- Downgrade nimbus version because of nav token support -->
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>${nimbus-jose-jwt.version}</version>
     </dependency>
   </dependencies>
 
