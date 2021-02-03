@@ -34,3 +34,4 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
+  webproxy: true
