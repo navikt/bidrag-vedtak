@@ -6,6 +6,9 @@ metadata:
   labels:
     team: bidrag
 spec:
+  azure:
+    application:
+      enabled: true
   image: {{ image }}
   liveness:
     path: /bidrag-vedtak/actuator/health
@@ -31,5 +34,3 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-  vault:
-    enabled: false
