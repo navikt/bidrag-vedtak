@@ -31,17 +31,7 @@ spec:
       cpu: 500m
       memory: 512Mi
   ingresses:
-    - {{ ingresses }}
-  envFrom:
-    - secret: bidrag-vedtak-secret
-    - configmap: loginservice-idporten
-  env:
-    - name: APIGW_URL
-      value: {{ api_gateway_url }}
-    - name: DISCOVERY_URL
-      value: {{ discovery_url }}
-    - name: AUD_FP
-      value: {{ aud }}
+    - {{ ingress }}
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-main

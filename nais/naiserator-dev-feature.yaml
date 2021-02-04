@@ -32,13 +32,6 @@ spec:
       memory: 512Mi
   ingresses:
     - {{ ingress }}
-  env:
-  {{#each env}}
-    - name: {{@key}}
-      value: "{{this}}"
-  {{/each}}
-  vault:
-    enabled: false
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-dev
