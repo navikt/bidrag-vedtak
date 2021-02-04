@@ -1,3 +1,9 @@
+####################################################################
+#
+# Profiles: All
+#
+####################################################################
+
 server:
   servlet:
     context-path: /bidrag-vedtak
@@ -6,3 +12,71 @@ management:
     web:
       exposure:
         include: "*"
+
+---
+
+####################################################################
+# Profile: live
+#----------------------------
+#
+# Live token-support properties.
+#
+####################################################################
+
+spring:
+  config.activate.on-profile: live
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USERNAME}&password=${DB_PASSWORD}
+    hikari:
+      idle-timeout: 10001
+      max-lifetime: 30001
+      connectionTimeout: 1000
+      maximum-pool-size: 10
+      minimum-idle: 1
+  flyway:
+    enabled: false
+    locations: classpath:/db/migration
+  jpa:
+    hibernate.connection.provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+    database: postgresql
+
+# OIDC
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+      proxy-url: http://webproxy.nais:8088
+
+---
+
+####################################################################
+# Profile: test
+#----------------------------
+#
+# Properties for unit testing and local runs.
+# Mocks OIDC.
+#
+####################################################################
+
+#spring.config.activate.on-profile: test
+#
+---
+spring:
+  config.activate.on-profile: test, local
+  flyway.enabled: false
+  datasource.type: com.zaxxer.hikari.HikariDataSource
+  datasource.url: jdbc:h2:mem:default
+  h2.console.enabled: true
+  jpa.hibernate.hbmddl-auto: create-drop
+
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discovery_url: http://metadata
+      accepted_audience: aud-localhost
+      cookie_name: localhost-idtoken
+
+
+---

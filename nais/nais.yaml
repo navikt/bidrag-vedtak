@@ -6,6 +6,9 @@ metadata:
   labels:
     team: bidrag
 spec:
+  azure:
+    application:
+      enabled: true
   image: {{ image }}
   liveness:
     path: /bidrag-vedtak/actuator/health
@@ -31,26 +34,3 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-  env:
-  {{#each env}}
-    - name: {{@key}}
-  value: "{{this}}"
-  {{/each}}
-  vault:
-    enabled: false
-  gcp:
-    sqlInstances:
-      - name: bidrag-vedtak-dev
-        tier: db-custom-1-3840
-        type: POSTGRES_12
-        databases:
-          - name: bidrag-vedtak-dev
-            envVarPrefix: DB
-  accesspolicy:
-    inbound:
-      rules:
-        - application: {{ allow_inbound_apps }}
-    outbound:
-      external:
-        - host: api-gw-q1.oera.no
-        - host: login.microsoftonline.com

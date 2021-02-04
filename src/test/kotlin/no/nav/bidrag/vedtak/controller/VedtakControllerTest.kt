@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
+import no.nav.bidrag.vedtak.BidragVedtakLocal
+import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
@@ -13,15 +15,16 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @DisplayName("VedtakControllerTest")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(TEST_PROFILE)
+@SpringBootTest(classes = [BidragVedtakLocal::class], webEnvironment = WebEnvironment.RANDOM_PORT)
 class VedtakControllerTest {
 
   @Autowired
-  private val httpHeaderTestRestTemplate: HttpHeaderTestRestTemplate? = null
+  private val securedTestRestTemplate: HttpHeaderTestRestTemplate? = null
 
   @LocalServerPort
   private val port = 0
@@ -38,7 +41,7 @@ class VedtakControllerTest {
   @Test
   @DisplayName("Skal opprette nytt vedtak")
   fun skalOppretteNyttVedtak() {
-    val response = httpHeaderTestRestTemplate?.exchange(
+    val response = securedTestRestTemplate?.exchange(
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       null,
@@ -55,7 +58,7 @@ class VedtakControllerTest {
   @Test
   @DisplayName("Skal finne data for et vedtak")
   fun skalFinneDataForVedtak() {
-    val response = httpHeaderTestRestTemplate?.exchange(
+    val response = securedTestRestTemplate?.exchange(
       fullUrlForSokVedtak() + "/1",
       HttpMethod.GET,
       null,

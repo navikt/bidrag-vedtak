@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS periode
     opprettet_av character(7),
     opprettet_timestamp timestamp,
     enhetsnummer character(4),
-    CONSTRAINT vedtak_pkey PRIMARY KEY (periode_id),
+    CONSTRAINT periode_pkey PRIMARY KEY (periode_id),
     CONSTRAINT fk_stonad_id FOREIGN KEY (stonad_id)
         REFERENCES stonad (stonad_id) MATCH SIMPLE
         ON UPDATE NO ACTION
