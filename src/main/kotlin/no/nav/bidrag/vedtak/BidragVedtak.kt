@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-open class BidragVedtak
+class BidragVedtak
 
 fun main(args: Array<String>) {
     val profile = if (args.isEmpty()) LIVE_PROFILE else args[0]
