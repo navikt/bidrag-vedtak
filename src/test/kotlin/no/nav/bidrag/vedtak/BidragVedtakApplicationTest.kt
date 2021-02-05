@@ -16,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 class BidragVedtakApplicationTest {
 
   @Test
-  @DisplayName("skal laste spring-context")
-  fun contextLoads() {
+  fun `skal laste spring-context`() {
   }
 }

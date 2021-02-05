@@ -11,10 +11,10 @@ import org.springframework.http.HttpHeaders
 
 @Configuration
 @Profile(TEST_PROFILE)
-open class HttpHeaderTestRestTemplateConfiguration {
+class HttpHeaderTestRestTemplateConfiguration {
 
   @Bean
-  open fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {
+  fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {
     val httpHeaderTestRestTemplate = HttpHeaderTestRestTemplate(testRestTemplate)
     httpHeaderTestRestTemplate.add(HttpHeaders.AUTHORIZATION) { generateTestToken() }
     return httpHeaderTestRestTemplate
