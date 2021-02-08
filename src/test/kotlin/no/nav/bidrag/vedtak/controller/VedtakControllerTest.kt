@@ -32,15 +32,13 @@ class VedtakControllerTest {
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
-  @DisplayName("Skal mappe til context path med random port")
   @Test
-  fun skalMappeTilContextPath() {
+  fun `skal mappe til context path med random port`() {
     assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port/bidrag-vedtak")
   }
 
   @Test
-  @DisplayName("Skal opprette nytt vedtak")
-  fun skalOppretteNyttVedtak() {
+  fun `skal opprette nytt vedtak`() {
     val response = securedTestRestTemplate?.exchange(
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
@@ -56,8 +54,7 @@ class VedtakControllerTest {
   }
 
   @Test
-  @DisplayName("Skal finne data for et vedtak")
-  fun skalFinneDataForVedtak() {
+  fun `skal finne data for et vedtak`() {
     val response = securedTestRestTemplate?.exchange(
       fullUrlForSokVedtak() + "/1",
       HttpMethod.GET,
