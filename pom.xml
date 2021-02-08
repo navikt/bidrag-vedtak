@@ -69,6 +69,16 @@
       <groupId>no.nav.security</groupId>
       <artifactId>token-validation-spring</artifactId>
       <version>${token-support.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.tomcat.embed</groupId>
+          <artifactId>tomcat-embed-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
