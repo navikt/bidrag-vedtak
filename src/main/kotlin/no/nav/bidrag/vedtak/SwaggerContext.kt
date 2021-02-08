@@ -1,5 +1,6 @@
+package no.nav.bidrag.vedtak
+
 import com.google.common.base.Predicates.or
-import no.nav.bidrag.vedtak.BidragVedtak
 import no.nav.bidrag.vedtak.controller.VedtakController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,10 +43,7 @@ class SwaggerContext {
   }
 
   private fun defaultAuth(): List<SecurityReference> {
-    val authorizationScope = AuthorizationScope("global", "accessEverything")
-    val authorizationScopes = arrayOfNulls<AuthorizationScope>(1)
-    authorizationScopes[0] = authorizationScope
-
+    val authorizationScopes = Array(1) { AuthorizationScope("global", "accessEverything") }
     return listOf(SecurityReference("mykey", authorizationScopes))
   }
 }
