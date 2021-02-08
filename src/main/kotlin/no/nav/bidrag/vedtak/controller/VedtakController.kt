@@ -8,7 +8,6 @@ import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,10 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Protected
-@Component
-open class VedtakController(private val vedtakService: VedtakService) {
+class VedtakController(private val vedtakService: VedtakService) {
 
-  @GetMapping(VEDTAK_SOK + "/{vedtaksnummer}")
+  @GetMapping("$VEDTAK_SOK/{vedtaksnummer}")
   @ApiOperation(value = "Finn data for et vedtak")
   @ApiResponses(value = [
       ApiResponse(code = 200, message = "Data for vedtak hentet"),

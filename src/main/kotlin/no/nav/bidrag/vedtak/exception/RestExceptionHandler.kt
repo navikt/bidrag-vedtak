@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClientException
 
 @RestControllerAdvice
 @Component
-open class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
+class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
 
   @ResponseBody
   @ExceptionHandler(RestClientException::class)
