@@ -32,6 +32,13 @@ spec:
       memory: 512Mi
   ingresses:
     - {{ ingress }}
+  filesFrom:
+    - secret: secret-for-bidrag-vedtak-dev-gcp
+      mountPath: /var/run/secrets/secret-for-bidrag-vedtak-dev-gcp
+      # secret will be available in the file /var/run/secrets/my-secret/secret
+  envFrom:
+    - secret: secret-for-bidrag-vedtak-dev-gcp
+      # secret will be made available as environment variables
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-dev
