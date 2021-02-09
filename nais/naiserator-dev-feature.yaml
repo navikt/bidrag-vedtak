@@ -8,7 +8,7 @@ metadata:
 spec:
   azure:
     application:
-    enabled: true
+      enabled: true
   image: {{ image }}
   liveness:
     path: /bidrag-vedtak/actuator/health
