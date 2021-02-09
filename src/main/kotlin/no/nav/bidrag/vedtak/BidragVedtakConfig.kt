@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@EnableJwtTokenValidation(ignore = ["springfox.documentation.swagger.web.ApiResourceController"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger.web.ApiResourceController"])
 class BidragVedtakConfig {
 
   @Bean
