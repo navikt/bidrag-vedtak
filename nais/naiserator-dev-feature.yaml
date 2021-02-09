@@ -39,14 +39,14 @@ spec:
 #  envFrom:
 #    - secret: secret-for-bidrag-vedtak-dev-gcp
 #      # secret will be made available as environment variables
-  gcp:
-    sqlInstances:
-      - name: bidrag-vedtak-dev
-        tier: db-custom-1-3840
-        type: POSTGRES_12
-        databases:
-          - name: bidrag-vedtak-dev
-            envVarPrefix: DB
+#  gcp:
+#    sqlInstances:
+#      - name: bidrag-vedtak-dev
+#        tier: db-custom-1-3840
+#        type: POSTGRES_12
+#        databases:
+#          - name: bidrag-vedtak-dev
+#            envVarPrefix: DB
   accesspolicy:
     inbound:
       rules:
