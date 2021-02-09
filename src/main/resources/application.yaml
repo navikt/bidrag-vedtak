@@ -42,12 +42,12 @@ spring:
     database: postgresql
 
 # OIDC
-no.nav.security.jwt:
-  issuer:
-    aad:
-      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
-      proxy-url: http://webproxy.nais:8088
+#no.nav.security.jwt:
+#  issuer:
+#    aad:
+#      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+#      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+#      proxy-url: http://webproxy.nais:8088
 
 ---
 
