@@ -61,22 +61,21 @@ management:
 ####################################################################
 
 #spring.config.activate.on-profile: test
-#
-#---
-#spring:
-#  config.activate.on-profile: test, local
-#  flyway.enabled: false
-#  datasource.type: com.zaxxer.hikari.HikariDataSource
-#  datasource.url: jdbc:h2:mem:default
-#  h2.console.enabled: true
-#  jpa.hibernate.hbmddl-auto: create-drop
-#
-#no.nav.security.jwt:
-#  issuer:
-#    aad:
-#      discovery_url: http://metadata
-#      accepted_audience: aud-localhost
-#      cookie_name: localhost-idtoken
+
+spring:
+  config.activate.on-profile: test, local
+  flyway.enabled: false
+  datasource.type: com.zaxxer.hikari.HikariDataSource
+  datasource.url: jdbc:h2:mem:default
+  h2.console.enabled: true
+  jpa.hibernate.hbmddl-auto: create-drop
+
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discovery_url: http://metadata
+      accepted_audience: aud-localhost
+      cookie_name: localhost-idtoken
 
 
-#---
+---
