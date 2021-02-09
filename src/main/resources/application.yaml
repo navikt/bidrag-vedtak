@@ -43,11 +43,10 @@ spring:
 
 # OIDC
 no.nav.security.jwt:
-  issuers: aad, isso
-  issuer.aad:
-    discovery_url: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/v2.0/.well-known/openid-configuration
-    accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}, ${ACCEPTED_AUDIENCE}
-#    proxy-url: http://webproxy.nais:8088
+  issuer:
+    aad:
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
 ---
 
@@ -60,15 +59,7 @@ no.nav.security.jwt:
 #
 ####################################################################
 
-#spring.config.activate.on-profile: test
-
-spring:
-  config.activate.on-profile: test, local
-  flyway.enabled: false
-  datasource.type: com.zaxxer.hikari.HikariDataSource
-  datasource.url: jdbc:h2:mem:default
-  h2.console.enabled: true
-  jpa.hibernate.hbmddl-auto: create-drop
+spring.config.activate.on-profile: test
 
 no.nav.security.jwt:
   issuer:
@@ -77,5 +68,10 @@ no.nav.security.jwt:
       accepted_audience: aud-localhost
       cookie_name: localhost-idtoken
 
-
----
+#spring:
+#  config.activate.on-profile: test, local
+#  flyway.enabled: false
+#  datasource.type: com.zaxxer.hikari.HikariDataSource
+#  datasource.url: jdbc:h2:mem:default
+#  h2.console.enabled: true
+#  jpa.hibernate.hbmddl-auto: create-drop
