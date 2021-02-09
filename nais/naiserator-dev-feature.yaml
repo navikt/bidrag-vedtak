@@ -2,23 +2,23 @@ apiVersion: "nais.io/v1alpha1"
 kind: Application
 metadata:
   name: {{ name }}
-  namespace: {{ namespace }}
+  namespace: bidrag
   labels:
     team: bidrag
 spec:
-  image: {{ image }}
   azure:
     application:
-      enabled: true
+    enabled: true
+  image: {{ image }}
   liveness:
     path: /bidrag-vedtak/actuator/health
-    initialDelay: 70
+    initialDelay: 20
     timeout: 1
     periodSeconds: 5
-    failureThreshold: 15
+    failureThreshold: 10
   readiness:
     path: /bidrag-vedtak/actuator/health
-    initialDelay: 70
+    initialDelay: 20
     timeout: 1
   prometheus:
     enabled: true
