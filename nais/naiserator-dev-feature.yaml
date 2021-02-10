@@ -30,8 +30,9 @@ spec:
     requests:
       cpu: 500m
       memory: 512Mi
-  ingresses:
-    - {{ ingress }}
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
 #  filesFrom:
 #    - secret: secret-for-bidrag-vedtak-dev-gcp
 #      mountPath: /var/run/secrets/secret-for-bidrag-vedtak-dev-gcp
