@@ -46,7 +46,7 @@ spec:
       - name: bidrag-vedtak-main
         type: POSTGRES_12
         databases:
-          - name: bidrag-vedtak-db-main
+          - name: bidrag-vedtak-main
             envVarPrefix: DB
   accesspolicy:
     inbound:

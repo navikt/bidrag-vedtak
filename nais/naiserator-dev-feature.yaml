@@ -43,11 +43,11 @@ spec:
 #      # secret will be made available as environment variables
   gcp:
     sqlInstances:
-      - name: bidrag-vedtak-dev
+      - name: bidrag-vedtak-feature
         tier: db-custom-1-3840
         type: POSTGRES_12
         databases:
-          - name: bidrag-vedtak-dev
+          - name: bidrag-vedtak-feature
             envVarPrefix: DB
   accesspolicy:
     inbound:
