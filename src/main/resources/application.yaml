@@ -23,7 +23,23 @@ management:
 #
 ####################################################################
 
-spring.config.activate.on-profile: live
+spring:
+  config.activate.on-profile: live
+#  datasource:
+#    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USERNAME}&password=${DB_PASSWORD}
+#    hikari:
+#      idle-timeout: 10001
+#      max-lifetime: 30001
+#      connectionTimeout: 1000
+#      maximum-pool-size: 10
+#      minimum-idle: 1
+#  flyway:
+#    enabled: false
+#    locations: classpath:/db/migration
+#  jpa:
+#    hibernate.connection.provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+#    database: postgresql
 
 # OIDC
 no.nav.security.jwt:
@@ -52,4 +68,10 @@ no.nav.security.jwt:
       accepted_audience: aud-localhost
       cookie_name: localhost-idtoken
 
----
+#spring:
+#  config.activate.on-profile: test, local
+#  flyway.enabled: false
+#  datasource.type: com.zaxxer.hikari.HikariDataSource
+#  datasource.url: jdbc:h2:mem:default
+#  h2.console.enabled: true
+#  jpa.hibernate.hbmddl-auto: create-drop
