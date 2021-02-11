@@ -2,23 +2,23 @@ apiVersion: "nais.io/v1alpha1"
 kind: Application
 metadata:
   name: {{ name }}
-  namespace: {{ namespace }}
+  namespace: bidrag
   labels:
     team: bidrag
 spec:
-  image: {{ image }}
   azure:
     application:
       enabled: true
+  image: {{ image }}
   liveness:
     path: /bidrag-vedtak/actuator/health
-    initialDelay: 70
+    initialDelay: 20
     timeout: 1
     periodSeconds: 5
     failureThreshold: 10
   readiness:
     path: /bidrag-vedtak/actuator/health
-    initialDelay: 70
+    initialDelay: 20
     timeout: 1
   prometheus:
     enabled: true
@@ -30,8 +30,17 @@ spec:
     requests:
       cpu: 500m
       memory: 512Mi
-  ingresses:
-    - {{ ingress }}
+    ingresses:
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
+#  filesFrom:
+#    - secret: secret-for-bidrag-vedtak-dev-gcp
+#      mountPath: /var/run/secrets/secret-for-bidrag-vedtak-dev-gcp
+#      # secret will be available in the file /var/run/secrets/my-secret/secret
+#  envFrom:
+#    - secret: secret-for-bidrag-vedtak-dev-gcp
+#      # secret will be made available as environment variables
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-main
@@ -43,7 +52,3 @@ spec:
     inbound:
       rules:
         - application: {{ allow_inbound_apps }}
-    outbound:
-      external:
-        - host: api-gw-q1.oera.no
-        - host: login.microsoftonline.com
