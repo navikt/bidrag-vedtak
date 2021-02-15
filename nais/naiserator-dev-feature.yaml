@@ -46,6 +46,7 @@ spec:
       - name: bidrag-vedtak-feature
         tier: db-custom-1-3840
         type: POSTGRES_12
+        cascadingDelete: true
         databases:
           - name: bidrag-vedtak-feature
             envVarPrefix: DB
