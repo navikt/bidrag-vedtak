@@ -45,6 +45,7 @@ spec:
     sqlInstances:
       - name: bidrag-vedtak-main
         type: POSTGRES_12
+        cascadingDelete: true
         databases:
           - name: bidrag-vedtak-main
             envVarPrefix: DB
