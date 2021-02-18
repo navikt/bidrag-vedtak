@@ -1,9 +1,8 @@
 package no.nav.bidrag.vedtak
 
-import com.google.common.base.Predicates.or
-import no.nav.bidrag.vedtak.controller.VedtakController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.PathSelectors.regex
 import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.service.ApiKey
@@ -23,11 +22,7 @@ class SwaggerContext {
     return Docket(DocumentationType.SWAGGER_2)
       .select()
       .apis(RequestHandlerSelectors.basePackage(BidragVedtak::class.java.getPackage().name))
-      .paths(or(
-          regex(VedtakController.VEDTAK_SOK_DUMMY + ".*"),
-          regex(VedtakController.VEDTAK_SOK + ".*"),
-          regex(VedtakController.VEDTAK_NY_DUMMY + ".*"),
-          regex(VedtakController.VEDTAK_NY + ".*")))
+      .paths(PathSelectors.any())
       .build()
       .securitySchemes(listOf(apiKey()))
       .securityContexts(listOf(securityContext()))

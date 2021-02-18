@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakController(private val vedtakService: VedtakService) {
 
   @GetMapping("$VEDTAK_SOK_DUMMY/{vedtaksnummer}")
-  @ApiOperation(value = "Finn data for et vedtak - dummy")
+  @ApiOperation(value = "Dummy finn data for et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Data for vedtak hentet"),
@@ -61,7 +61,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @PostMapping(VEDTAK_NY_DUMMY)
-  @ApiOperation(value = "Opprette nytt vedtak - dummy")
+  @ApiOperation(value = "Dummy opprette nytt vedtak")
   fun nyttVedtakDummy(): ResponseEntity<String> {
 //  public ResponseEntity<NyttVedtakResponseDto> post(
 //      @ApiParam(name = "X-Enhet", required = true, value = "Saksbehandlers påloggede enhet") @RequestHeader("X-Enhet") String enhet,
