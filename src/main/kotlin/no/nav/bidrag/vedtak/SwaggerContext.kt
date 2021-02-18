@@ -24,7 +24,9 @@ class SwaggerContext {
       .select()
       .apis(RequestHandlerSelectors.basePackage(BidragVedtak::class.java.getPackage().name))
       .paths(or(
+          regex(VedtakController.VEDTAK_SOK_DUMMY + ".*"),
           regex(VedtakController.VEDTAK_SOK + ".*"),
+          regex(VedtakController.VEDTAK_NY_DUMMY + ".*"),
           regex(VedtakController.VEDTAK_NY + ".*")))
       .build()
       .securitySchemes(listOf(apiKey()))
