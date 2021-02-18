@@ -11,7 +11,7 @@
 
   <groupId>no.nav.bidrag</groupId>
   <artifactId>bidrag-vedtak</artifactId>
-  <version>0.0.10-SNAPSHOT</version>
+  <version>0.0.11-SNAPSHOT</version>
 
   <name>bidrag-vedtak</name>
   <description>Behandling av vedtak i Bidrag</description>
