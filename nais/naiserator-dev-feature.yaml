@@ -30,8 +30,8 @@ spec:
     requests:
       cpu: 500m
       memory: 512Mi
-    ingresses:
-     - https://bidrag-vedtak-feature.dev.intern.nav.no/
+  ingresses:
+    - https://bidrag-vedtak-feature.dev.intern.nav.no/
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-feature
