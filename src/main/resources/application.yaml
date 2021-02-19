@@ -7,11 +7,12 @@
 server:
   servlet:
     context-path: /bidrag-vedtak
+
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+  endpoints.web:
+    exposure.include: info, health, metrics, prometheus
+    base-path: /internal/actuator
+  endpoint.health.show-details: always
 
 ---
 
