@@ -30,8 +30,8 @@ spec:
     requests:
       cpu: 500m
       memory: 512Mi
-    ingresses:
-      - {{ ingress }}
+  ingresses:
+    - {{ ingress }}
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-main
