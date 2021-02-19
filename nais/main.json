@@ -1,6 +1,4 @@
 {
   "name": "bidrag-vedtak",
-  "ingresses": [
-    "https://bidrag-vedtak.dev.intern.nav.no/"
-  ]
+  "ingress": "https://bidrag-vedtak.dev.intern.nav.no/"
 }
