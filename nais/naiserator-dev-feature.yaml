@@ -50,7 +50,3 @@ spec:
         databases:
           - name: bidrag-vedtak-feature
             envVarPrefix: DB
-  accesspolicy:
-    inbound:
-      rules:
-        - application: {{ allow_inbound_apps }}
