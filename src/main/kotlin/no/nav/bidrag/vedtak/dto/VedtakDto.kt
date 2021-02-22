@@ -9,11 +9,11 @@ data class VedtakDto(
   val vedtak_id: Int = 0,
 
   @ApiModelProperty(value = "Opprettet av")
-  val opprettet_av: String,
+  val opprettet_av: String = "",
 
   @ApiModelProperty(value = "Opprettet timestamp")
   val opprettet_timestamp: LocalDateTime = LocalDateTime.now(),
 
   @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: String
+  val enhetsnummer: String = ""
 )

@@ -9,21 +9,15 @@ import org.springframework.stereotype.Service
 @Service
 class PersistenceService (val vedtakRepository: VedtakRepository, val modelMapper: ModelMapper) {
 
-  fun lagreVedtak(dto: VedtakDto): Vedtak {
+  fun lagreVedtak(dto: VedtakDto): VedtakDto {
     val entity = modelMapper.map(dto, Vedtak::class.java)
-    return vedtakRepository.save(entity)
+    val vedtak = vedtakRepository.save(entity)
+    return VedtakDto(vedtak.vedtak_id!!, vedtak.opprettet_av, vedtak.opprettet_timestamp, vedtak.enhetsnummer)
   }
 
   fun henteVedtak(id: Int): VedtakDto {
-    val vedtak = vedtakRepository.findById(id).orElseThrow {
-      //TODO Lag egen exception
-      RuntimeException(
-        String.format(
-          "Fant ikke vedtak med id %d i databasen",
-          id
-        )
-      )
-    }
-    return modelMapper.map(vedtak, VedtakDto::class.java)
+    val vedtak = vedtakRepository.findById(id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
+    return VedtakDto(vedtak.vedtak_id!!, vedtak.opprettet_av, vedtak.opprettet_timestamp, vedtak.enhetsnummer)
   }
 }

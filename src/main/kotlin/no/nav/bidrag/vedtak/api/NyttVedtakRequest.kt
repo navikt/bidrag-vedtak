@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
 @ApiModel
-data class OppretteNyttVedtakRequest(
+data class NyttVedtakRequest(
 
   @ApiModelProperty(value = "Opprettet av")
   val opprettet_av: String = "NOT SET",
