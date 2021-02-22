@@ -11,7 +11,7 @@ import org.springframework.http.HttpHeaders
 
 @Configuration
 @Profile(TEST_PROFILE)
-class HttpHeaderTestRestTemplateConfiguration {
+class BidragVedtakTestConfig {
 
   @Bean
   fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {

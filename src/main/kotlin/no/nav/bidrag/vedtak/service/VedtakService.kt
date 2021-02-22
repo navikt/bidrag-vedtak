@@ -1,39 +1,25 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.api.OppretteNyttVedtakRequest
+import no.nav.bidrag.vedtak.dto.VedtakDto
 import org.springframework.stereotype.Service
 
 @Service
-class VedtakService {
+class VedtakService (val persistenceService: PersistenceService) {
 
-  fun finnVedtak(vedtaksnummer: String): String {
+  fun finnVedtakDummy(vedtaksnummer: String): String {
     return vedtaksnummer
   }
 
-  //  public Optional<VedtakDto> finnVedtak(String vedtaksnummer) {
-  //    var vedtak = Optional.ofNullable(vedtakReposistory.findByVedtaksnummer(vedtaksnummer));
-  //    return vedtak.map(Vedtak::tilVedtakDto);
-  //  }
-  fun nyttVedtak() {} //  public NyttVedtakResponseDto nyttVedtak(NyttVedtakCommandDto nyttVedtakCommandDto) {
-  //    var nyttVedtaksnummernummer = hentNyttVedtaksnummerFraDatabase();
-  //    nyttVedtakReposistory.save(
-  //        new NyttVedtak(nyttVedtaksnummer, nyttVedtakCommandDto.getxxx()));
-  //    tilgangRepository.save(new Tilgang(nyttVedtaksnummer, nyttVedtakCommandDto.getxxx()));
-  //
-  //    return new NyttVedtakResponseDto(nyttVedtaksnummer);
-  //  }
-  //  private String hentNyttVedtaksnummerFraDatabase() {
-  //    Integer maxLopenummer =
-  //        nyttVedtakReposistory.hentMaxLoepenummerSomIkkeOverskrider(
-  //            VedtaksnummerSerie.hentMaksimumsgrenseForAarstall());
-  //
-  //    String nyttVedtaksnummer;
-  //
-  //    if (maxLopenummer == null || maxLopenummer < VedtaksnummerSerie.hentMinimumsgrenseForAarstall()) {
-  //      nyttVedtaksnummer = String.valueOf(VedtaksnummerSerie.hentMinimumsgrenseForAarstall());
-  //    } else {
-  //      nyttVedtaksnummer = String.valueOf(maxLopenummer + 1);
-  //    }
-  //
-  //    return nyttVedtaksnummer;
-  //  }
+  fun finnVedtak(vedtakId: Int): VedtakDto {
+    return persistenceService.henteVedtak(vedtakId)
+  }
+
+  fun nyttVedtakDummy() {}
+
+  fun oprettNyttVedtak(request: OppretteNyttVedtakRequest): String {
+    val vedtakDto = VedtakDto(opprettet_av = request.opprettet_av, enhetsnummer = request.enhetsnummer)
+    val opprettetVedtak = persistenceService.lagreVedtak(vedtakDto)
+    return opprettetVedtak.toString()
+  }
 }

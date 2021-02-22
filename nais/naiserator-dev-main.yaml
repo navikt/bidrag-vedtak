@@ -30,17 +30,8 @@ spec:
     requests:
       cpu: 500m
       memory: 512Mi
-    ingresses:
-  {{#each ingresses as |url|}}
-     - {{url}}
-  {{/each}}
-#  filesFrom:
-#    - secret: secret-for-bidrag-vedtak-dev-gcp
-#      mountPath: /var/run/secrets/secret-for-bidrag-vedtak-dev-gcp
-#      # secret will be available in the file /var/run/secrets/my-secret/secret
-#  envFrom:
-#    - secret: secret-for-bidrag-vedtak-dev-gcp
-#      # secret will be made available as environment variables
+  ingresses:
+    - {{ ingress }}
   gcp:
     sqlInstances:
       - name: bidrag-vedtak-main
@@ -49,7 +40,3 @@ spec:
         databases:
           - name: bidrag-vedtak-main
             envVarPrefix: DB
-  accesspolicy:
-    inbound:
-      rules:
-        - application: {{ allow_inbound_apps }}
