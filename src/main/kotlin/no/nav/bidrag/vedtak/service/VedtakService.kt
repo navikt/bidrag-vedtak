@@ -1,25 +1,23 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.OppretteNyttVedtakRequest
+import no.nav.bidrag.vedtak.api.AlleVedtakResponse
+import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import org.springframework.stereotype.Service
 
 @Service
 class VedtakService (val persistenceService: PersistenceService) {
 
-  fun finnVedtakDummy(vedtaksnummer: String): String {
-    return vedtaksnummer
+  fun oprettNyttVedtak(request: NyttVedtakRequest): VedtakDto {
+    val vedtakDto = VedtakDto(opprettetAv = request.opprettetAv, enhetsnummer = request.enhetsnummer)
+    return persistenceService.opprettNyttVedtak(vedtakDto)
   }
 
-  fun finnVedtak(vedtakId: Int): VedtakDto {
-    return persistenceService.henteVedtak(vedtakId)
+  fun finnEttVedtak(vedtak_id: Int): VedtakDto {
+    return persistenceService.finnEttVedtak(vedtak_id)
   }
 
-  fun nyttVedtakDummy() {}
-
-  fun oprettNyttVedtak(request: OppretteNyttVedtakRequest): String {
-    val vedtakDto = VedtakDto(opprettet_av = request.opprettet_av, enhetsnummer = request.enhetsnummer)
-    val opprettetVedtak = persistenceService.lagreVedtak(vedtakDto)
-    return opprettetVedtak.toString()
+  fun finnAlleVedtak(): AlleVedtakResponse {
+    return AlleVedtakResponse(persistenceService.finnAlleVedtak())
   }
 }
