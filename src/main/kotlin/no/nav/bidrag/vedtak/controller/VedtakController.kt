@@ -3,7 +3,8 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.OppretteNyttVedtakRequest
+import no.nav.bidrag.vedtak.api.AlleVedtakResponse
+import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.Protected
@@ -20,61 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 class VedtakController(private val vedtakService: VedtakService) {
 
-  @GetMapping("$VEDTAK_SOK_DUMMY/{vedtaksnummer}")
-  @ApiOperation(value = "Dummy finn data for et vedtak")
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 200, message = "Data for vedtak hentet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
-      ApiResponse(code = 404, message = "Vedtak ikke funnet")
-    ]
-  )
-  fun finnVedtakDummy(@PathVariable vedtaksnummer: String?): ResponseEntity<String> {
-//  public ResponseEntity<VedtakDto> finnVedtak(@PathVariable String vedtaksnummer) {
-
-    // Kaster exception med HttpStatus.FORBIDDEN (403) hvis tilgangskontroll feiler.
-//    accessControlService.sjekkTilgangVedtak(vedtaksnummer);
-    val muligVedtak = vedtakService.finnVedtakDummy(vedtaksnummer!!)
-    return ResponseEntity("Vedtak med vedtaksnummer $muligVedtak funnet", HttpStatus.OK)
-
-//    return muligVedtak
-//        .map(VedtakDto -> new ResponseEntity<>(vedtakDto, HttpStatus.OK))
-//        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @GetMapping("$VEDTAK_SOK/{vedtakId}")
-  @ApiOperation("Finn data for et vedtak")
-  @ApiResponses(
-    value = [
-      ApiResponse(code = 200, message = "Data for vedtak hentet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
-      ApiResponse(code = 404, message = "Vedtak ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
-    ]
-  )
-  fun finnVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
-    val vedtakInformasjon = vedtakService.finnVedtak(vedtakId)
-    return ResponseEntity(vedtakInformasjon, HttpStatus.OK)
-  }
-
-  @PostMapping(VEDTAK_NY_DUMMY)
-  @ApiOperation(value = "Dummy opprette nytt vedtak")
-  fun nyttVedtakDummy(): ResponseEntity<String> {
-//  public ResponseEntity<NyttVedtakResponseDto> post(
-//      @ApiParam(name = "X-Enhet", required = true, value = "Saksbehandlers påloggede enhet") @RequestHeader("X-Enhet") String enhet,
-//      NyttVedtakCommandDto nyttVedtakCommandDto) {
-//    LOGGER.info("Oppretter nytt vedtak. Saksbehandlers påloggede enhet: {}", enhet);
-//    var nyttVedtakResponseDto = vedtakService.nyttVedtak();
-    vedtakService.nyttVedtakDummy()
-    return ResponseEntity("Nytt vedtak opprettet", HttpStatus.CREATED)
-    //    return new ResponseEntity<>(nyttVedtakResponseDto, HttpStatus.CREATED);
-  }
-
   @PostMapping(VEDTAK_NY)
-  @ApiOperation("Opprette nytt vedtak")
+  @ApiOperation("Opprett nytt vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Vedtak opprettet"),
@@ -84,16 +32,52 @@ class VedtakController(private val vedtakService: VedtakService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun nyttVedtak(@RequestBody request: OppretteNyttVedtakRequest): ResponseEntity<String>? {
-    vedtakService.oprettNyttVedtak(request)
-    return ResponseEntity("Nytt vedtak opprettet", HttpStatus.OK)
+
+  fun opprettNyttVedtak(@RequestBody request: NyttVedtakRequest): ResponseEntity<VedtakDto>? {
+    val vedtakOpprettet = vedtakService.oprettNyttVedtak(request)
+    LOGGER.info("Følgende vedtak er opprettet: $vedtakOpprettet")
+    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
+  }
+
+  @GetMapping("$VEDTAK_SOK/{vedtakId}")
+  @ApiOperation("Finn data for ett vedtak")
+  @ApiResponses(
+    value = [
+      ApiResponse(code = 200, message = "Vedtak funnet"),
+      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
+      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
+      ApiResponse(code = 404, message = "Vedtak ikke funnet"),
+      ApiResponse(code = 500, message = "Serverfeil"),
+      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+    ]
+  )
+
+  fun finnEttVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
+    val vedtakFunnet = vedtakService.finnEttVedtak(vedtakId)
+    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
+    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+  }
+
+  @GetMapping(VEDTAK_SOK)
+  @ApiOperation("Finn data for alle vedtak")
+  @ApiResponses(
+    value = [
+      ApiResponse(code = 200, message = "Alle vedtak funnet"),
+      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(code = 500, message = "Serverfeil"),
+      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+    ]
+  )
+
+  fun finnAlleVedtak(): ResponseEntity<AlleVedtakResponse> {
+    val alleVedtak = vedtakService.finnAlleVedtak()
+    LOGGER.info("Alle vedtak ble funnet")
+    return ResponseEntity(alleVedtak, HttpStatus.OK)
   }
 
   companion object {
 
-    const val VEDTAK_SOK_DUMMY = "/vedtak/dummy"
     const val VEDTAK_SOK = "/vedtak"
-    const val VEDTAK_NY_DUMMY = "/vedtak/ny/dummy"
     const val VEDTAK_NY = "/vedtak/ny"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }

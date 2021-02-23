@@ -28,4 +28,3 @@ fun main(args: Array<String>) {
   app.setAdditionalProfiles(profile)
   app.run(*args)
 }
-
