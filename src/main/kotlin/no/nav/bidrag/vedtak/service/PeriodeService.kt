@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.OppretteNyPeriodeRequest
+import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import org.springframework.stereotype.Service
 
@@ -17,8 +17,8 @@ class PeriodeService (val periodePersistenceService: PeriodePersistenceService) 
 
   fun nyPeriodeDummy() {}
 
-  fun opprettNyPeriode(request: OppretteNyPeriodeRequest): String {
-    val periodeDto = PeriodeDto(opprettet_av = request.opprettet_av, enhetsnummer = request.enhetsnummer)
+  fun opprettNyPeriode(request: NyPeriodeRequest): String {
+    val periodeDto = PeriodeDto(opprettetAv = request.opprettetAv, enhetsnummer = request.enhetsnummer)
     val opprettetPeriode = periodePersistenceService.lagrePeriode(periodeDto)
     return opprettetPeriode.toString()
   }

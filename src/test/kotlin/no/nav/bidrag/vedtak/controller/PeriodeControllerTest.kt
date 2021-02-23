@@ -4,7 +4,7 @@ import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.periode.controller.PeriodeController
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.OppretteNyPeriodeRequest
+import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
@@ -120,8 +120,8 @@ class PeriodeControllerTest {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(): HttpEntity<OppretteNyPeriodeRequest> {
-    return initHttpEntity(OppretteNyPeriodeRequest("TEST", "3333"))
+  private fun byggRequest(): HttpEntity<NyPeriodeRequest> {
+    return initHttpEntity(NyPeriodeRequest("TEST", "3333"))
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

@@ -1,8 +1,7 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.OppretteNyPeriodeRequest
-import no.nav.bidrag.vedtak.api.OppretteNyttVedtakRequest
+import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -19,7 +18,7 @@ class PeriodeServiceTest {
 
   @Test
   fun `skal opprette nyperiode`() {
-    periodeService.opprettNyPeriode(OppretteNyPeriodeRequest("TEST", "1111"))
+    periodeService.opprettNyPeriode(NyPeriodeRequest("TEST", "1111"))
   }
 
   @Test

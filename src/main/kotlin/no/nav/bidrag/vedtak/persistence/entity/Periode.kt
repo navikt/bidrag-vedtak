@@ -10,30 +10,31 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Periode() {
+class Periode {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var periode_id: Int? = null
+  @Column(name = "periode_id")
+  var periodeId: Int? = null
 
-  @Column(nullable = false)
-  lateinit var periode_fom: LocalDate
+  @Column(nullable = false, name = "periode_fom")
+  lateinit var periodeFom: LocalDate
 
-  @Column(nullable = false)
-  lateinit var periode_tom: LocalDate
+  @Column(nullable = false, name = "periode_tom")
+  lateinit var periodeTom: LocalDate
 
-  @Column(nullable = false)
-  var stonad_id: Int? = null
+  @Column(nullable = false, name = "stonad_id")
+  var stonadId: Int? = null
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "belop")
   lateinit var belop: BigDecimal
 
-  @Column(nullable = false)
-  lateinit var opprettet_av: String
+  @Column(nullable = false, name = "opprettet_av")
+  lateinit var opprettetAv: String
 
-  @Column(nullable = false)
-  lateinit var opprettet_timestamp: LocalDateTime
+  @Column(nullable = false, name = "opprettet_timestamp")
+  lateinit var opprettetTimestamp: LocalDateTime
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "enhetsnummer")
   lateinit var enhetsnummer: String
 }

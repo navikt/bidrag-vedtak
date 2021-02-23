@@ -3,7 +3,7 @@ package no.nav.bidrag.periode.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.OppretteNyPeriodeRequest
+import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.service.PeriodeService
 import no.nav.security.token.support.core.api.Protected
@@ -84,7 +84,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun nyPeriode(@RequestBody request: OppretteNyPeriodeRequest): ResponseEntity<String>? {
+  fun nyPeriode(@RequestBody request: NyPeriodeRequest): ResponseEntity<String>? {
     periodeService.opprettNyPeriode(request)
     return ResponseEntity("Ny periode opprettet", HttpStatus.OK)
   }
