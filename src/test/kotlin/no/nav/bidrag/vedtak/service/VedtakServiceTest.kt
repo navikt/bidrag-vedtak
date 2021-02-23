@@ -42,24 +42,48 @@ class VedtakServiceTest {
 
     assertAll(
       Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
-      Executable { assertThat(nyttVedtakOpprettet.opprettet_av).isEqualTo(nyttVedtakRequest.opprettet_av) },
+      Executable { assertThat(nyttVedtakOpprettet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
       Executable { assertThat(nyttVedtakOpprettet.enhetsnummer).isEqualTo(nyttVedtakRequest.enhetsnummer) }
     )
   }
 
   @Test
-  fun `skal finne data for vedtak`() {
+  fun `skal finne data for ett vedtak`() {
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.lagreVedtak(VedtakDto(opprettet_av = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
 
     // Finner vedtaket som akkurat ble opprettet
-    val vedtakFunnet = vedtakService.finnVedtak(nyttVedtakOpprettet.vedtak_id)
+    val vedtakFunnet = vedtakService.finnEttVedtak(nyttVedtakOpprettet.vedtakId)
 
     assertAll(
       Executable { assertThat(vedtakFunnet).isNotNull() },
-      Executable { assertThat(vedtakFunnet.vedtak_id).isEqualTo(nyttVedtakOpprettet.vedtak_id) },
-      Executable { assertThat(vedtakFunnet.opprettet_av).isEqualTo(nyttVedtakOpprettet.opprettet_av) },
+      Executable { assertThat(vedtakFunnet.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
+      Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) },
       Executable { assertThat(vedtakFunnet.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) }
+    )
+  }
+
+  @Test
+  fun `skal finne data for alle vedtak`() {
+    // Oppretter nye vedtak
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "2222"))
+
+    // Finner begge vedtakene som akkurat ble opprettet
+    val vedtakFunnet = vedtakService.finnAlleVedtak()
+
+    assertAll(
+      Executable { assertThat(vedtakFunnet).isNotNull() },
+      Executable { assertThat(vedtakFunnet.alleVedtak).isNotNull() },
+      Executable { assertThat(vedtakFunnet.alleVedtak.size).isEqualTo(2) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[0]).isNotNull() },
+      Executable { assertThat(vedtakFunnet.alleVedtak[0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[0].opprettetAv).isEqualTo(nyttVedtakOpprettet1.opprettetAv) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[0].enhetsnummer).isEqualTo(nyttVedtakOpprettet1.enhetsnummer) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[1]).isNotNull() },
+      Executable { assertThat(vedtakFunnet.alleVedtak[1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) },
+      Executable { assertThat(vedtakFunnet.alleVedtak[1].enhetsnummer).isEqualTo(nyttVedtakOpprettet2.enhetsnummer) }
     )
   }
 }

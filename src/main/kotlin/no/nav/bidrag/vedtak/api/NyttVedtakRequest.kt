@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 data class NyttVedtakRequest(
 
   @ApiModelProperty(value = "Opprettet av")
-  val opprettet_av: String = "NOT SET",
+  val opprettetAv: String = "NOT SET",
 
   @ApiModelProperty(value = "Enhetsnummer")
   val enhetsnummer: String = "1111"

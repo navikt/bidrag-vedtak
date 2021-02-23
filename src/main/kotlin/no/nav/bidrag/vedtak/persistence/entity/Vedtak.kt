@@ -8,17 +8,18 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Vedtak() {
+class Vedtak {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var vedtak_id: Int? = null
+  @Column(name = "vedtak_id")
+  var vedtakId: Int? = null
 
-  @Column(nullable = false)
-  lateinit var opprettet_av: String
+  @Column(nullable = false, name = "opprettet_av")
+  lateinit var opprettetAv: String
 
-  @Column(nullable = false)
-  lateinit var opprettet_timestamp: LocalDateTime
+  @Column(nullable = false, name = "opprettet_timestamp")
+  lateinit var opprettetTimestamp: LocalDateTime
 
   @Column(nullable = false)
   lateinit var enhetsnummer: String

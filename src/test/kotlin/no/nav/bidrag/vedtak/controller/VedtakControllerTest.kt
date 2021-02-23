@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
+import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -70,20 +71,20 @@ class VedtakControllerTest {
     assertAll(
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.opprettet_av).isEqualTo("TEST") },
+      Executable { assertThat(response?.body).isNotNull() },
+      Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") },
       Executable { assertThat(response?.body?.enhetsnummer).isEqualTo("1111") }
     )
   }
 
   @Test
-  fun `skal finne data for et vedtak`() {
+  fun `skal finne data for ett vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = persistenceService.lagreVedtak(VedtakDto(opprettet_av = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
 
     // Henter forekomst
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokVedtak()}/${nyttVedtakOpprettet.vedtak_id}",
+      "${fullUrlForSokVedtak()}/${nyttVedtakOpprettet.vedtakId}",
       HttpMethod.GET,
       null,
       VedtakDto::class.java
@@ -93,9 +94,38 @@ class VedtakControllerTest {
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.vedtak_id).isEqualTo(nyttVedtakOpprettet.vedtak_id) },
-      Executable { assertThat(response?.body?.opprettet_av).isEqualTo(nyttVedtakOpprettet.opprettet_av) },
+      Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
+      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) },
       Executable { assertThat(response?.body?.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) }
+    )
+  }
+
+  @Test
+  fun `skal finne data for alle vedtak`() {
+    // Oppretter nye forekomster
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "2222"))
+
+    // Henter forekomster
+    val response = securedTestRestTemplate.exchange(
+      fullUrlForSokVedtak(),
+      HttpMethod.GET,
+      null,
+      AlleVedtakResponse::class.java
+    )
+
+    assertAll(
+      Executable { assertThat(response).isNotNull() },
+      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(response?.body).isNotNull },
+      Executable { assertThat(response?.body?.alleVedtak).isNotNull },
+      Executable { assertThat(response?.body?.alleVedtak!!.size).isEqualTo(2) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].opprettetAv).isEqualTo(nyttVedtakOpprettet1.opprettetAv) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].enhetsnummer).isEqualTo(nyttVedtakOpprettet1.enhetsnummer) },
+      Executable { assertThat(response?.body?.alleVedtak!![1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
+      Executable { assertThat(response?.body?.alleVedtak!![1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) },
+      Executable { assertThat(response?.body?.alleVedtak!![1].enhetsnummer).isEqualTo(nyttVedtakOpprettet2.enhetsnummer) },
     )
   }
 
