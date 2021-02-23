@@ -48,7 +48,7 @@ class PeriodeControllerTest {
 
   @Test
   fun `skal opprette ny periode dummy`() {
-    val response = securedTestRestTemplate?.exchange(
+    val response = securedTestRestTemplate.exchange(
       fullUrlForNyPeriodeDummy(),
       HttpMethod.POST,
       null,
@@ -121,7 +121,7 @@ class PeriodeControllerTest {
   }
 
   private fun byggRequest(): HttpEntity<OppretteNyPeriodeRequest> {
-    return initHttpEntity(OppretteNyPeriodeRequest("TEST", "1111"))
+    return initHttpEntity(OppretteNyPeriodeRequest("TEST", "3333"))
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {
