@@ -17,7 +17,7 @@ data class PeriodeDto(
   val periodeTom: LocalDate = LocalDate.now(),
 
   @ApiModelProperty(value = "Stonad-id")
-  val stonadId: Int = 0,
+  val stonadId: Int? = 0,
 
   @ApiModelProperty(value = "Belop")
   val belop: BigDecimal = BigDecimal.ZERO,

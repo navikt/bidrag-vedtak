@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.controller
 
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
-import no.nav.bidrag.periode.controller.PeriodeController
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
@@ -90,7 +89,7 @@ class PeriodeControllerTest {
 
   @Test
   fun `skal finne data for en periode dummy`() {
-    val response = securedTestRestTemplate?.exchange(
+    val response = securedTestRestTemplate.exchange(
       fullUrlForSokPeriodeDummy() + "/1",
       HttpMethod.GET,
       null,

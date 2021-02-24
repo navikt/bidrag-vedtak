@@ -4,26 +4,33 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import org.modelmapper.ModelMapper
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class PeriodePersistenceService (val periodeRepository: PeriodeRepository, val modelMapper: ModelMapper) {
 
-  fun lagrePeriode(dto: PeriodeDto): Periode {
+  fun opprettNyPeriode(dto: PeriodeDto): PeriodeDto {
     val entity = modelMapper.map(dto, Periode::class.java)
-    return periodeRepository.save(entity)
+    val periode = periodeRepository.save(entity)
+    return PeriodeDto(periode.periodeId!!, periode.periodeFom, periode.periodeTom, periode.stonadId,
+    periode.belop, periode.opprettetAv, periode.opprettetTimestamp)
   }
 
-  fun hentePeriode(id: Int): PeriodeDto {
-    val periode = periodeRepository.findById(id).orElseThrow {
-      //TODO Lag egen exception
-      RuntimeException(
-        String.format(
-          "Fant ikke vedtak med id %d i databasen",
-          id
-        )
-      )
-    }
-    return modelMapper.map(periode, PeriodeDto::class.java)
+  fun finnPeriode(id: Int): PeriodeDto {
+    val periode = periodeRepository.findById(id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", id)) }
+    return PeriodeDto(periode.periodeId!!, periode.periodeFom, periode.periodeTom, periode.stonadId,
+      periode.belop, periode.opprettetAv, periode.opprettetTimestamp)
+  }
+
+  fun finnAllePerioderForStonad(id: Int): List<PeriodeDto> {
+    val periodeDtoListe = mutableListOf<PeriodeDto>()
+    periodeRepository.findAllById(id)
+      .forEach {periode -> periodeDtoListe.add(
+        PeriodeDto(periode.periodeId!!, periode.periodeFom,
+      periode.periodeTom, periode.stonadId, periode.belop, periode.opprettetAv, periode.opprettetTimestamp)
+      )}
+    return periodeDtoListe
   }
 }
