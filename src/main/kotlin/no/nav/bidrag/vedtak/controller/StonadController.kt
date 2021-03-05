@@ -3,10 +3,10 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AlleVedtakResponse
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
-import no.nav.bidrag.vedtak.dto.VedtakDto
-import no.nav.bidrag.vedtak.service.VedtakService
+import no.nav.bidrag.vedtak.api.AlleStonaderResponse
+import no.nav.bidrag.vedtak.api.NyStonadRequest
+import no.nav.bidrag.vedtak.dto.StonadDto
+import no.nav.bidrag.vedtak.service.StonadService
 import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Protected
-class VedtakController(private val vedtakService: VedtakService) {
+class StonadController(private val stonadService: StonadService) {
 
-  @PostMapping(VEDTAK_NY)
-  @ApiOperation("Opprett nytt vedtak")
+  @PostMapping(STONAD_NY)
+  @ApiOperation("Opprett ny stønad")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Vedtak opprettet"),
+      ApiResponse(code = 200, message = "Stønad opprettet"),
       ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
       ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
       ApiResponse(code = 500, message = "Serverfeil"),
@@ -33,17 +33,17 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettNyttVedtak(@RequestBody request: NyttVedtakRequest): ResponseEntity<VedtakDto>? {
-    val vedtakOpprettet = vedtakService.opprettNyttVedtak(request)
-    LOGGER.info("Følgende vedtak er opprettet: $vedtakOpprettet")
-    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
+  fun opprettNyStonad(@RequestBody request: NyStonadRequest): ResponseEntity<StonadDto>? {
+    val stonadOpprettet = stonadService.opprettNyStonad(request)
+    LOGGER.info("Følgende vedtak er opprettet: $stonadOpprettet")
+    return ResponseEntity(stonadOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$VEDTAK_SOK/{vedtakId}")
-  @ApiOperation("Finn data for ett vedtak")
+  @GetMapping("$STONAD_SOK/{stonadId}")
+  @ApiOperation("Finn data for en stønad")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Vedtak funnet"),
+      ApiResponse(code = 200, message = "Stønad funnet"),
       ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
       ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
       ApiResponse(code = 404, message = "Vedtak ikke funnet"),
@@ -52,33 +52,33 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun finnEttVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
-    val vedtakFunnet = vedtakService.finnEttVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
-    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+  fun finnEnStonad(@PathVariable stonadId: Int): ResponseEntity<StonadDto> {
+    val stonadFunnet = stonadService.finnEnStonad(stonadId)
+    LOGGER.info("Følgende stønad ble funnet: $stonadFunnet")
+    return ResponseEntity(stonadFunnet, HttpStatus.OK)
   }
 
-  @GetMapping(VEDTAK_SOK)
-  @ApiOperation("Finn data for alle vedtak")
+  @GetMapping(STONAD_SOK)
+  @ApiOperation("Finn data for alle stønader")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle vedtak funnet"),
+      ApiResponse(code = 200, message = "Alle stønader funnet"),
       ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
       ApiResponse(code = 500, message = "Serverfeil"),
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
 
-  fun finnAlleVedtak(): ResponseEntity<AlleVedtakResponse> {
-    val alleVedtak = vedtakService.finnAlleVedtak()
-    LOGGER.info("Alle vedtak ble funnet")
-    return ResponseEntity(alleVedtak, HttpStatus.OK)
+  fun finnAlleStonader(): ResponseEntity<AlleStonaderResponse> {
+    val alleStonader = stonadService.finnAlleStonader()
+    LOGGER.info("Alle stønader ble funnet")
+    return ResponseEntity(alleStonader, HttpStatus.OK)
   }
 
   companion object {
 
-    const val VEDTAK_SOK = "/vedtak"
-    const val VEDTAK_NY = "/vedtak/ny"
-    private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
+    const val STONAD_SOK = "/stonad"
+    const val STONAD_NY = "/stonad/ny"
+    private val LOGGER = LoggerFactory.getLogger(StonadController::class.java)
   }
 }

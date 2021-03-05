@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class VedtakService (val persistenceService: PersistenceService) {
 
-  fun oprettNyttVedtak(request: NyttVedtakRequest): VedtakDto {
+  fun opprettNyttVedtak(request: NyttVedtakRequest): VedtakDto {
     val vedtakDto = VedtakDto(opprettetAv = request.opprettetAv, enhetsnummer = request.enhetsnummer)
     return persistenceService.opprettNyttVedtak(vedtakDto)
   }
