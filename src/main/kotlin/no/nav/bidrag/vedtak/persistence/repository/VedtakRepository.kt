@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface VedtakRepository : CrudRepository<Vedtak, Int?>
+interface VedtakRepository : JpaRepository<Vedtak, Int?>
