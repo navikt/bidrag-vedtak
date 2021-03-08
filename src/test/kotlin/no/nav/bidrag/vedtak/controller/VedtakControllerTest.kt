@@ -6,6 +6,7 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.StonadRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import org.assertj.core.api.Assertions.assertThat
@@ -36,6 +37,9 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var stonadRepository: StonadRepository
+
+  @Autowired
   private lateinit var vedtakRepository: VedtakRepository
 
   @Autowired
@@ -50,6 +54,7 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    stonadRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 
