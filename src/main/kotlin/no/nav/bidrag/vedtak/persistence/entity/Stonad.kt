@@ -7,6 +7,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import kotlin.reflect.full.memberProperties
 
@@ -22,6 +23,7 @@ data class Stonad (
   val stonadType: String = "",
 
   @ManyToOne
+  @JoinColumn(name="vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
   @Column(nullable = false, name = "behandling_id")
