@@ -3,6 +3,9 @@ package no.nav.bidrag.vedtak.service
 import no.nav.bidrag.vedtak.api.AllePerioderForStonadResponse
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
+import no.nav.bidrag.vedtak.persistence.entity.Periode
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,8 +20,8 @@ class PeriodeService (val periodePersistenceService: PeriodePersistenceService) 
     return periodePersistenceService.finnPeriode(periodeId)
   }
 
-  fun finnAllePerioderForStonad(stonadId: Int): AllePerioderForStonadResponse {
-    return AllePerioderForStonadResponse(periodePersistenceService.finnAllePerioderForStonad(stonadId))
+  fun finnAllePerioderForStonad(stonadIdListe: List<Int>): AllePerioderForStonadResponse {
+    return AllePerioderForStonadResponse(periodePersistenceService.finnAllePerioderForStonad(stonadIdListe))
   }
 
 }

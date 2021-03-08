@@ -45,21 +45,6 @@ class PeriodeControllerTest {
     assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port/bidrag-vedtak")
   }
 
-  @Test
-  fun `skal opprette ny periode dummy`() {
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForNyPeriodeDummy(),
-      HttpMethod.POST,
-      null,
-      String::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.CREATED) },
-      Executable { assertThat(response?.body).isEqualTo("Ny periode opprettet") },
-    )
-  }
 
   @Test
   fun `skal ha riktig context-path`() {
@@ -87,32 +72,8 @@ class PeriodeControllerTest {
     periodeRepository.deleteAll()
   }
 
-  @Test
-  fun `skal finne data for en periode dummy`() {
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForSokPeriodeDummy() + "/1",
-      HttpMethod.GET,
-      null,
-      String::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isEqualTo("Periode med periodeid 1 funnet") },
-    )
-  }
-
-  private fun fullUrlForNyPeriodeDummy(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_NY_DUMMY).toUriString()
-  }
-
   private fun fullUrlForNyPeriode(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_NY).toUriString()
-  }
-
-  private fun fullUrlForSokPeriodeDummy(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_SOK_DUMMY).toUriString()
   }
 
   private fun makeFullContextPath(): String {

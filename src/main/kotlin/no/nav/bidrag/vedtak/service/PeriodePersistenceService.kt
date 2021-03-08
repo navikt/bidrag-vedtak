@@ -4,7 +4,6 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import org.modelmapper.ModelMapper
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,9 +23,9 @@ class PeriodePersistenceService (val periodeRepository: PeriodeRepository, val m
       periode.belop, periode.opprettetAv, periode.opprettetTimestamp)
   }
 
-  fun finnAllePerioderForStonad(id: Int): List<PeriodeDto> {
+  fun finnAllePerioderForStonad(idListe: List<Int>): List<PeriodeDto> {
     val periodeDtoListe = mutableListOf<PeriodeDto>()
-    periodeRepository.findAllById(id)
+    periodeRepository.findAllById(idListe)
       .forEach {periode -> periodeDtoListe.add(
         PeriodeDto(periode.periodeId!!, periode.periodeFom,
       periode.periodeTom, periode.stonadId, periode.belop, periode.opprettetAv, periode.opprettetTimestamp)
