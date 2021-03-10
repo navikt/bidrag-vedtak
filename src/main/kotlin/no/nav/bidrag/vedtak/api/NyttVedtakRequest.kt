@@ -10,5 +10,9 @@ data class NyttVedtakRequest(
   val opprettetAv: String = "",
 
   @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: String = ""
+  val enhetsnummer: String = "",
+
+
+
+
 )

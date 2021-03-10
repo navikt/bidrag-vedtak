@@ -29,12 +29,16 @@ class Periode {
   @Column(nullable = false, name = "belop")
   lateinit var belop: BigDecimal
 
+  @Column(nullable = false, name = "valutakode")
+  lateinit var valutakode: String
+
+  @Column(nullable = false, name = "resultatkode")
+  lateinit var resultatkode: String
+
   @Column(nullable = false, name = "opprettet_av")
   lateinit var opprettetAv: String
 
   @Column(nullable = false, name = "opprettet_timestamp")
   lateinit var opprettetTimestamp: LocalDateTime
 
-  @Column(nullable = false, name = "enhetsnummer")
-  lateinit var enhetsnummer: String
 }

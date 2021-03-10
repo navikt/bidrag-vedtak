@@ -1,9 +1,11 @@
 package no.nav.bidrag.vedtak.dto
 
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.persistence.entity.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.reflect.full.memberProperties
 
 data class PeriodeDto(
 
@@ -22,12 +24,24 @@ data class PeriodeDto(
   @ApiModelProperty(value = "Belop")
   val belop: BigDecimal = BigDecimal.ZERO,
 
+  @ApiModelProperty(value = "Valutakode")
+  val valutakode: String,
+
+  @ApiModelProperty(value = "Resultatkode")
+  val resultatkode: String,
+
   @ApiModelProperty(value = "Opprettet av")
   val opprettetAv: String,
 
   @ApiModelProperty(value = "Opprettet timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-
-  @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: String = ""
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
+
+fun PeriodeDto.toPeriodeEntity() = with(::Periode) {
+  val propertiesByName = PeriodeDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associate { parameter ->
+    parameter to when (parameter.name) {
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
+    }
+  })
+}

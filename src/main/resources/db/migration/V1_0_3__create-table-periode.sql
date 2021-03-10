@@ -9,9 +9,10 @@ CREATE TABLE IF NOT EXISTS periode
     periode_tom date,
     stonad_id integer,
     belop float,
+    valutakode character(3),
+    resultatkode varchar(255),
     opprettet_av character(7),
-    opprettet_timestamp timestamp,
-    enhetsnummer character(4),
+    opprettet_timestamp timestamp DEFAULT NOW(),
     CONSTRAINT periode_pkey PRIMARY KEY (periode_id),
     CONSTRAINT fk_stonad_id FOREIGN KEY (stonad_id)
         REFERENCES stonad (stonad_id) MATCH SIMPLE
