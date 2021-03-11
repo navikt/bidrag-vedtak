@@ -57,7 +57,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
     return ResponseEntity(periodeFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODE_SOK_STONAD/{stonadIdListe}")
+  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadIdListe}")
   @ApiOperation("Finn alle perioder for en stønad")
   @ApiResponses(
     value = [
@@ -78,7 +78,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
 
   companion object {
     const val PERIODE_SOK = "/periode"
-    const val PERIODE_SOK_STONAD = "/periode/stonad"
+    const val PERIODE_SOK_STONADSENDRING = "/periode/stonad"
     const val PERIODE_NY = "/periode/ny"
     private val LOGGER = LoggerFactory.getLogger(PeriodeController::class.java)
   }

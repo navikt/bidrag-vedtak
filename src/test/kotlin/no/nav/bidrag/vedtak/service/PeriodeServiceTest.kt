@@ -37,9 +37,6 @@ class PeriodeServiceTest {
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
-  private lateinit var periodePersistenceService: PeriodePersistenceService
-
-  @Autowired
   private lateinit var persistenceService: PersistenceService
 
   @BeforeEach
@@ -91,7 +88,7 @@ class PeriodeServiceTest {
         skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"))
 
     // Oppretter ny periode
-    val nyPeriodeOpprettet = periodePersistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
         belop = BigDecimal.valueOf(17),
         valutakode = "NOK",
@@ -129,7 +126,7 @@ class PeriodeServiceTest {
     val nyPeriodeDtoListe = mutableListOf<PeriodeDto>()
 
     nyPeriodeDtoListe.add(
-      periodePersistenceService.opprettNyPeriode(
+      persistenceService.opprettNyPeriode(
         PeriodeDto(
           belop = BigDecimal.valueOf(17),
           valutakode = "NOK",
@@ -141,7 +138,7 @@ class PeriodeServiceTest {
 
     // Oppretter ny periode
     nyPeriodeDtoListe.add(
-      periodePersistenceService.opprettNyPeriode(
+      persistenceService.opprettNyPeriode(
         PeriodeDto(
           belop = BigDecimal.valueOf(2000),
           valutakode = "NOK",
