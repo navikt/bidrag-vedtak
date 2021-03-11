@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.service
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
-import no.nav.bidrag.vedtak.persistence.repository.StonadRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
@@ -24,7 +24,7 @@ class VedtakServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
-  private lateinit var stonadRepository: StonadRepository
+  private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -35,7 +35,7 @@ class VedtakServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
-    stonadRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 

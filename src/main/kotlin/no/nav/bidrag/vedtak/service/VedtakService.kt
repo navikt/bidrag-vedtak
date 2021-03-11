@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class VedtakService (val persistenceService: PersistenceService) {
 
   fun opprettNyttVedtak(request: NyttVedtakRequest): VedtakDto {
-    val vedtakDto = VedtakDto(opprettetAv = request.opprettetAv, enhetsnummer = request.enhetsnummer)
+    val vedtakDto = VedtakDto(enhetsnummer = request.enhetsnummer, opprettetAv = request.opprettetAv)
     return persistenceService.opprettNyttVedtak(vedtakDto)
   }
 
