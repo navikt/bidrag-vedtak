@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS periode
     valutakode character(3),
     resultatkode varchar(255),
     opprettet_av character(7),
-    opprettet_timestamp timestamp DEFAULT NOW(),
+    opprettet_timestamp timestamp DEFAULT now(),
     CONSTRAINT periode_pkey PRIMARY KEY (periode_id),
-    CONSTRAINT fk_stonad_id FOREIGN KEY (stonad_id)
-        REFERENCES stonad (stonad_id) MATCH SIMPLE
+    CONSTRAINT fk_stonad_id FOREIGN KEY (stonadsendring_id)
+        REFERENCES stonadsendring (stonadsendring_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )

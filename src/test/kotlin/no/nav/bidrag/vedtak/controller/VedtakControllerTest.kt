@@ -6,7 +6,7 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
-import no.nav.bidrag.vedtak.persistence.repository.StonadRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import org.assertj.core.api.Assertions.assertThat
@@ -37,7 +37,7 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
-  private lateinit var stonadRepository: StonadRepository
+  private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -54,7 +54,7 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
-    stonadRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 
@@ -77,15 +77,15 @@ class VedtakControllerTest {
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") },
-      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo("1111") }
+      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo("1111") },
+      Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") }
     )
   }
 
   @Test
   fun `skal finne data for ett vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "1111", opprettetAv = "TEST"))
 
     // Henter forekomst
     val response = securedTestRestTemplate.exchange(
@@ -100,16 +100,16 @@ class VedtakControllerTest {
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
       Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) },
-      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) }
+      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) },
+      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) }
     )
   }
 
   @Test
   fun `skal finne data for alle vedtak`() {
     // Oppretter nye forekomster
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "2222"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "1111", opprettetAv = "TEST"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "2222", opprettetAv = "TEST"))
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
@@ -126,11 +126,11 @@ class VedtakControllerTest {
       Executable { assertThat(response?.body?.alleVedtak).isNotNull },
       Executable { assertThat(response?.body?.alleVedtak!!.size).isEqualTo(2) },
       Executable { assertThat(response?.body?.alleVedtak!![0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
-      Executable { assertThat(response?.body?.alleVedtak!![0].opprettetAv).isEqualTo(nyttVedtakOpprettet1.opprettetAv) },
       Executable { assertThat(response?.body?.alleVedtak!![0].enhetsnummer).isEqualTo(nyttVedtakOpprettet1.enhetsnummer) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].opprettetAv).isEqualTo(nyttVedtakOpprettet1.opprettetAv) },
       Executable { assertThat(response?.body?.alleVedtak!![1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
-      Executable { assertThat(response?.body?.alleVedtak!![1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) },
       Executable { assertThat(response?.body?.alleVedtak!![1].enhetsnummer).isEqualTo(nyttVedtakOpprettet2.enhetsnummer) },
+      Executable { assertThat(response?.body?.alleVedtak!![1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) }
     )
   }
 
@@ -147,7 +147,7 @@ class VedtakControllerTest {
   }
 
   private fun byggRequest(): HttpEntity<NyttVedtakRequest> {
-    return initHttpEntity(NyttVedtakRequest("TEST", "1111"))
+    return initHttpEntity(NyttVedtakRequest("1111", "TEST"))
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

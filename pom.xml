@@ -11,7 +11,7 @@
 
   <groupId>no.nav.bidrag</groupId>
   <artifactId>bidrag-vedtak</artifactId>
-  <version>0.0.14-SNAPSHOT</version>
+  <version>0.0.15-SNAPSHOT</version>
 
   <name>bidrag-vedtak</name>
   <description>Behandling av vedtak i Bidrag</description>
@@ -222,12 +222,6 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
       <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.modelmapper</groupId>
-      <artifactId>modelmapper</artifactId>
-      <version>${modelmapper.version}</version>
     </dependency>
 
     <!-- Avhengigheter for lokal kjøring -->

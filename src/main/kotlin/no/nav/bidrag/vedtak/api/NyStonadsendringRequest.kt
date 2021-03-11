@@ -2,12 +2,12 @@ package no.nav.bidrag.vedtak.api
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.nav.bidrag.vedtak.dto.StonadDto
+import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 @ApiModel
-data class NyStonadRequest(
+data class NyStonadsendringRequest(
 
   @ApiModelProperty(value = "Stønad-type")
   val stonadType: String = "",
@@ -28,19 +28,16 @@ data class NyStonadRequest(
   val mottakerId: String = "",
 
   @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String = "",
-
-  @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: Int = 0
+  val opprettetAv: String = ""
 )
 
-fun NyStonadRequest.toStonadDto() = with(::StonadDto) {
-  val propertiesByName = NyStonadRequest::class.memberProperties.associateBy { it.name }
+fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
+  val propertiesByName = NyStonadsendringRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
-      StonadDto::stonadId.name -> 0
-      StonadDto::opprettetTimestamp.name -> LocalDateTime.now()
-      else -> propertiesByName[parameter.name]?.get(this@toStonadDto)
+      StonadsendringDto::stonadsendringId.name -> 0
+      StonadsendringDto::opprettetTimestamp.name -> LocalDateTime.now()
+      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }
   })
 }

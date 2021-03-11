@@ -10,14 +10,14 @@ data class VedtakDto(
   @ApiModelProperty(value = "Vedtak-id")
   val vedtakId: Int = 0,
 
+  @ApiModelProperty(value = "Enhetsnummer")
+  val enhetsnummer: String = "",
+
   @ApiModelProperty(value = "Opprettet av")
   val opprettetAv: String = "",
 
   @ApiModelProperty(value = "Opprettet timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-
-  @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: String = ""
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
 fun VedtakDto.toVedtakEntity() = with(::Vedtak) {
