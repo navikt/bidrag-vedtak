@@ -1,19 +1,21 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.dto.StonadDto
+import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
-import no.nav.bidrag.vedtak.dto.toStonadEntity
+import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
-import no.nav.bidrag.vedtak.persistence.entity.toStonadDto
+import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringDto
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakDto
-import no.nav.bidrag.vedtak.persistence.repository.StonadRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
-import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class PersistenceService(val vedtakRepository: VedtakRepository, val stonadRepository: StonadRepository, val modelMapper: ModelMapper) {
+class PersistenceService(
+  val vedtakRepository: VedtakRepository,
+  val stonadsendringRepository: StonadsendringRepository,
+) {
 
   @Transactional
   fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
@@ -34,22 +36,23 @@ class PersistenceService(val vedtakRepository: VedtakRepository, val stonadRepos
   }
 
   @Transactional
-  fun opprettNyStonad(dto: StonadDto): StonadDto {
+  fun opprettNyStonadsendring(dto: StonadsendringDto): StonadsendringDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
-    val nyStonad = dto.toStonadEntity(eksisterendeVedtak)
-    val stonad = stonadRepository.save(nyStonad)
-    return stonad.toStonadDto()
+    val nyStonadsendring = dto.toStonadsendringEntity(eksisterendeVedtak)
+    val stonadsendring = stonadsendringRepository.save(nyStonadsendring)
+    return stonadsendring.toStonadsendringDto()
   }
 
-  fun finnEnStonad(id: Int): StonadDto {
-    val stonad = stonadRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke stønad med id %d i databasen", id)) }
-    return stonad.toStonadDto()
+  fun finnEnStonadsendring(id: Int): StonadsendringDto {
+    val stonadsendring = stonadsendringRepository.findById(id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", id)) }
+    return stonadsendring.toStonadsendringDto()
   }
 
-  fun finnAlleStonader(): List<StonadDto> {
-    val stonadDtoListe = mutableListOf<StonadDto>()
-    stonadRepository.findAll().forEach { stonadDtoListe.add(it.toStonadDto()) }
-    return stonadDtoListe
+  fun finnAlleStonadsendringer(): List<StonadsendringDto> {
+    val stonadsendringDtoListe = mutableListOf<StonadsendringDto>()
+    stonadsendringRepository.findAll().forEach { stonadsendringDtoListe.add(it.toStonadsendringDto()) }
+    return stonadsendringDtoListe
   }
 }

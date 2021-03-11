@@ -224,12 +224,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.modelmapper</groupId>
-      <artifactId>modelmapper</artifactId>
-      <version>${modelmapper.version}</version>
-    </dependency>
-
     <!-- Avhengigheter for lokal kjøring -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

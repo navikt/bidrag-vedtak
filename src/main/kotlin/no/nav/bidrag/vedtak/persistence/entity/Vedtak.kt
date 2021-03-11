@@ -17,14 +17,14 @@ data class Vedtak (
   @Column(name = "vedtak_id")
   val vedtakId: Int = 0,
 
+  @Column(nullable = false)
+  val enhetsnummer: String = "",
+
   @Column(nullable = false, name = "opprettet_av")
   val opprettetAv: String = "",
 
   @Column(nullable = false, name = "opprettet_timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-
-  @Column(nullable = false)
-  val enhetsnummer: String = ""
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
 fun Vedtak.toVedtakDto() = with(::VedtakDto) {

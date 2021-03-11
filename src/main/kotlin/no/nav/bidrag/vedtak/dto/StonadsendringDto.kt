@@ -1,15 +1,15 @@
 package no.nav.bidrag.vedtak.dto
 
 import io.swagger.annotations.ApiModelProperty
-import no.nav.bidrag.vedtak.persistence.entity.Stonad
+import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
-data class StonadDto(
+data class StonadsendringDto(
 
-  @ApiModelProperty(value = "Stønad-id")
-  val stonadId: Int = 0,
+  @ApiModelProperty(value = "Stønadsendring-id")
+  val stonadsendringId: Int = 0,
 
   @ApiModelProperty(value = "Stønad-type")
   val stonadType: String = "",
@@ -33,18 +33,15 @@ data class StonadDto(
   val opprettetAv: String = "",
 
   @ApiModelProperty(value = "Opprettet timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-
-  @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: Int = 0
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
-fun StonadDto.toStonadEntity(eksisterendeVedtak: Vedtak) = with(::Stonad) {
-  val propertiesByName = StonadDto::class.memberProperties.associateBy { it.name }
+fun StonadsendringDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
+  val propertiesByName = StonadsendringDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
-      Stonad::vedtak.name -> eksisterendeVedtak
-      else -> propertiesByName[parameter.name]?.get(this@toStonadEntity)
+      Stonadsendring::vedtak.name -> eksisterendeVedtak
+      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringEntity)
     }
   })
 }
