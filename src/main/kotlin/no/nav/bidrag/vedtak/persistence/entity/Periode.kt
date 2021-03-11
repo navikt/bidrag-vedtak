@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -8,37 +9,51 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import kotlin.reflect.full.memberProperties
 
 @Entity
-class Periode {
+data class Periode (
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "periode_id")
-  var periodeId: Int? = null
+  val periodeId: Int = 0,
 
   @Column(nullable = false, name = "periode_fom")
-  lateinit var periodeFom: LocalDate
+  val periodeFom: LocalDate = LocalDate.now(),
 
   @Column(nullable = false, name = "periode_tom")
-  lateinit var periodeTom: LocalDate
+  val periodeTom: LocalDate = LocalDate.now(),
 
-  @Column(nullable = false, name = "stonad_id")
-  var stonadId: Int? = null
+  @ManyToOne
+  @JoinColumn(name="stonadsendring_id")
+  val stonadsendring: Stonadsendring = Stonadsendring(),
 
   @Column(nullable = false, name = "belop")
-  lateinit var belop: BigDecimal
+  val belop: BigDecimal = BigDecimal.ZERO,
 
   @Column(nullable = false, name = "valutakode")
-  lateinit var valutakode: String
+  val valutakode: String = "",
 
   @Column(nullable = false, name = "resultatkode")
-  lateinit var resultatkode: String
+  val resultatkode: String = "",
 
   @Column(nullable = false, name = "opprettet_av")
-  lateinit var opprettetAv: String
+  val opprettetAv: String = "",
 
   @Column(nullable = false, name = "opprettet_timestamp")
-  lateinit var opprettetTimestamp: LocalDateTime
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+)
+
+  fun Periode.toPeriodeDto() = with(::PeriodeDto) {
+    val propertiesByName = Periode::class.memberProperties.associateBy { it.name }
+    callBy(parameters.associate { parameter ->
+      parameter to when (parameter.name) {
+        PeriodeDto::stonadsendringId.name -> stonadsendring.stonadsendringId
+        else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
+      }
+    })
 
 }

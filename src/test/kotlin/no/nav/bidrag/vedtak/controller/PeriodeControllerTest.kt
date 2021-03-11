@@ -5,8 +5,10 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
@@ -34,22 +36,27 @@ class PeriodeControllerTest {
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
+  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
+
   @LocalServerPort
   private val port = 0
 
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
+  @BeforeEach
+  fun `init`() {
+    // Sletter alle forekomster
+    stonadsendringRepository.deleteAll()
+    periodeRepository.deleteAll()
+  }
+
   @Test
   fun `skal mappe til context path med random port`() {
     assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port/bidrag-vedtak")
   }
-
-
-  @Test
-  fun `skal ha riktig context-path`() {
-    assertThat(fullUrlForNyPeriode()).isEqualTo("${makeFullContextPath()}/periode/ny")
-  }
+  
 
   @Test
   fun `skal opprette ny periode`() {

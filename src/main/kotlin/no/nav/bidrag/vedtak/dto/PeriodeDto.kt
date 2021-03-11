@@ -2,6 +2,7 @@ package no.nav.bidrag.vedtak.dto
 
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.persistence.entity.Periode
+import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -19,7 +20,7 @@ data class PeriodeDto(
   val periodeTom: LocalDate = LocalDate.now(),
 
   @ApiModelProperty(value = "Stonad-id")
-  val stonadId: Int? = 0,
+  val stonadsendringId: Int = 0,
 
   @ApiModelProperty(value = "Belop")
   val belop: BigDecimal = BigDecimal.ZERO,
@@ -37,10 +38,11 @@ data class PeriodeDto(
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
-fun PeriodeDto.toPeriodeEntity() = with(::Periode) {
+fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
   val propertiesByName = PeriodeDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
+      Periode::stonadsendring.name -> eksisterendeStonadsendring
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
     }
   })

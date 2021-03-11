@@ -7,18 +7,18 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import org.springframework.stereotype.Service
 
 @Service
-class PeriodeService (val periodePersistenceService: PeriodePersistenceService) {
+class PeriodeService (val persistenceService: PersistenceService) {
 
   fun opprettNyPeriode(request: NyPeriodeRequest): PeriodeDto {
-    return periodePersistenceService.opprettNyPeriode(request.toPeriodeDto())
+    return persistenceService.opprettNyPeriode(request.toPeriodeDto())
   }
 
   fun finnPeriode(periodeId: Int): PeriodeDto {
-    return periodePersistenceService.finnPeriode(periodeId)
+    return persistenceService.finnPeriode(periodeId)
   }
 
   fun finnAllePerioderForStonad(stonadIdListe: List<Int>): AllePerioderForStonadResponse {
-    return AllePerioderForStonadResponse(periodePersistenceService.finnAllePerioderForStonad(stonadIdListe))
+    return AllePerioderForStonadResponse(persistenceService.finnAllePerioderForStonad(stonadIdListe))
   }
 
 }
