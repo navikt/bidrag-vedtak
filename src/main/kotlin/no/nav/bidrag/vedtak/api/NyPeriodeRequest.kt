@@ -4,14 +4,21 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 @ApiModel
 data class NyPeriodeRequest(
 
-  @ApiModelProperty(value = "Stonad-id")
-  val stonadId: Int = 0,
+  @ApiModelProperty(value = "Periode-fom")
+  val periodeFom: LocalDate = LocalDate.now(),
+
+  @ApiModelProperty(value = "Periode-tom")
+  val periodeTom: LocalDate = LocalDate.now(),
+
+  @ApiModelProperty(value = "Stonadsendring-id")
+  val stonadsendringId: Int = 0,
 
   @ApiModelProperty(value = "Belop")
   val belop: BigDecimal = BigDecimal.ZERO,
@@ -37,4 +44,3 @@ fun NyPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
     }
   })
 }
-

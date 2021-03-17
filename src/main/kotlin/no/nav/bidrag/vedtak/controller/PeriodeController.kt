@@ -57,7 +57,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
     return ResponseEntity(periodeFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadIdListe}")
+  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadsendringIdListe}")
   @ApiOperation("Finn alle perioder for en stønad")
   @ApiResponses(
     value = [
@@ -69,8 +69,8 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnAllePerioderForStonad(@PathVariable stonadIdListe: List<Int>): ResponseEntity<AllePerioderForStonadResponse> {
-    val allePerioderFunnet = periodeService.finnAllePerioderForStonad(stonadIdListe)
+  fun finnAllePerioderForStonad(@PathVariable stonadsendringIdListe: List<Int>): ResponseEntity<AllePerioderForStonadResponse> {
+    val allePerioderFunnet = periodeService.finnAllePerioderForStonad(stonadsendringIdListe)
     LOGGER.info("Følgende perioder ble funnet: $allePerioderFunnet")
     return ResponseEntity(allePerioderFunnet, HttpStatus.OK)
   }

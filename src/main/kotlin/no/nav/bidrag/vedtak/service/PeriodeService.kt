@@ -17,8 +17,8 @@ class PeriodeService (val persistenceService: PersistenceService) {
     return persistenceService.finnPeriode(periodeId)
   }
 
-  fun finnAllePerioderForStonad(stonadIdListe: List<Int>): AllePerioderForStonadResponse {
-    return AllePerioderForStonadResponse(persistenceService.finnAllePerioderForStonad(stonadIdListe))
+  fun finnAllePerioderForStonad(stonadsendringIdListe: List<Int>): AllePerioderForStonadResponse {
+    return AllePerioderForStonadResponse(persistenceService.finnAllePerioderForStonad(stonadsendringIdListe))
   }
 
 }

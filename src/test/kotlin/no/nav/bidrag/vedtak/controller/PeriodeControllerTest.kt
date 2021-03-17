@@ -29,6 +29,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.util.UriComponentsBuilder
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @DisplayName("PeriodeControllerTest")
 @ActiveProfiles(TEST_PROFILE)
@@ -114,7 +115,8 @@ class PeriodeControllerTest {
   }
 
   private fun byggRequest(stonadsendringId: Int): HttpEntity<NyPeriodeRequest> {
-    return initHttpEntity(NyPeriodeRequest(stonadsendringId, BigDecimal.valueOf(17),"NOK", "RESULTATKODE_TEST",
+    return initHttpEntity(NyPeriodeRequest(
+      LocalDate.now(), LocalDate.now(), stonadsendringId, BigDecimal.valueOf(17),"NOK", "RESULTATKODE_TEST",
     "TEST"))
   }
 

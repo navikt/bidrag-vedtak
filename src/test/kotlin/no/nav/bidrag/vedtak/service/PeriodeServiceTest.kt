@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.junit.jupiter.api.function.Executable
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @DisplayName("PeriodeServiceTest")
 @ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
@@ -58,8 +59,8 @@ class PeriodeServiceTest {
     val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
 
     // Oppretter ny periode
-    val nyPeriodeRequest = NyPeriodeRequest(nyStonadsendringOpprettet.stonadsendringId, BigDecimal.valueOf(17), "NOK",
-      "RESULTATKODE_TEST", "TEST"
+    val nyPeriodeRequest = NyPeriodeRequest(LocalDate.now(), LocalDate.now(), nyStonadsendringOpprettet.stonadsendringId,
+      BigDecimal.valueOf(17), "NOK", "RESULTATKODE_TEST", "TEST"
     )
     val nyPeriodeOpprettet = periodeService.opprettNyPeriode(nyPeriodeRequest)
 
@@ -90,6 +91,9 @@ class PeriodeServiceTest {
     // Oppretter ny periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
+        periodeFom = LocalDate.now(),
+        periodeTom = LocalDate.now(),
+        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17),
         valutakode = "NOK",
         resultatkode = "RESULTATKODE_TEST",
