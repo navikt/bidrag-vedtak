@@ -55,9 +55,10 @@ class PersistenceService(
     return stonadsendring.toStonadsendringDto()
   }
 
-  fun finnAlleStonadsendringer(): List<StonadsendringDto> {
+  fun finnAlleStonadsendringerForVedtak(id: Int): List<StonadsendringDto> {
     val stonadsendringDtoListe = mutableListOf<StonadsendringDto>()
-    stonadsendringRepository.findAll().forEach { stonadsendringDtoListe.add(it.toStonadsendringDto()) }
+    stonadsendringRepository.hentAlleStonadsendringerForVedtak(id)
+      .forEach {stonadsendring -> stonadsendringDtoListe.add(stonadsendring.toStonadsendringDto()) }
     return stonadsendringDtoListe
   }
 
@@ -78,7 +79,7 @@ class PersistenceService(
 
   fun finnAllePerioderForStonadsendring(id: Int): List<PeriodeDto> {
     val periodeDtoListe = mutableListOf<PeriodeDto>()
-    periodeRepository.hentAllePerioderForStonadsendringId(id)
+    periodeRepository.hentAllePerioderForStonadsendring(id)
       .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
 
     return periodeDtoListe

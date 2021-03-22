@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerResponse
+import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.service.StonadsendringService
@@ -58,26 +58,28 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
     return ResponseEntity(stonadsendringFunnet, HttpStatus.OK)
   }
 
-  @GetMapping(STONADSENDRING_SOK)
-  @ApiOperation("Finn data for alle stønadsendringer")
+  @GetMapping("$STONADSENDRING_SOK_VEDTAK/{vedtakId}")
+  @ApiOperation("finner alle stønadsendringer for et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Alle stønadsendringer funnet"),
       ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
+      ApiResponse(code = 404, message = "Stonadsendringer ikke funnet for vedtak"),
       ApiResponse(code = 500, message = "Serverfeil"),
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-
-  fun finnAlleStonadsendringer(): ResponseEntity<AlleStonadsendringerResponse> {
-    val alleStonadsendringer = stonadsendringService.finnAlleStonadsendringer()
-    LOGGER.info("Alle stønadsendringer ble funnet")
-    return ResponseEntity(alleStonadsendringer, HttpStatus.OK)
+  fun finnAlleStonadsendringerForVedtak(@PathVariable vedtakId: Int):
+      ResponseEntity<AlleStonadsendringerForVedtakResponse> {
+    val alleStonadsendringerFunnet = stonadsendringService.finnAlleStonadsendringerForVedtak(vedtakId)
+    LOGGER.info("Følgende stønadsendringer ble funnet: $alleStonadsendringerFunnet")
+    return ResponseEntity(alleStonadsendringerFunnet, HttpStatus.OK)
   }
 
   companion object {
-
     const val STONADSENDRING_SOK = "/stonadsendring"
+    const val STONADSENDRING_SOK_VEDTAK = "/stonadsendring/vedtak"
     const val STONADSENDRING_NY = "/stonadsendring/ny"
     private val LOGGER = LoggerFactory.getLogger(StonadsendringController::class.java)
   }

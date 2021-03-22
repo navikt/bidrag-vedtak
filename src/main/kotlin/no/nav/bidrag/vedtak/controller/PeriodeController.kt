@@ -61,7 +61,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
   @ApiOperation("Finn alle perioder for en stønadsendring")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Data for periode hentet"),
+      ApiResponse(code = 200, message = "Alle perioder funnet"),
       ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
       ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
       ApiResponse(code = 404, message = "Perioder ikke funnet for stønad"),
@@ -69,7 +69,8 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnAllePerioderForStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<AllePerioderForStonadsendringResponse> {
+  fun finnAllePerioderForStonadsendring(@PathVariable stonadsendringId: Int):
+      ResponseEntity<AllePerioderForStonadsendringResponse> {
     val allePerioderFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
     LOGGER.info("Følgende perioder ble funnet: $allePerioderFunnet")
     return ResponseEntity(allePerioderFunnet, HttpStatus.OK)
@@ -78,7 +79,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
 
   companion object {
     const val PERIODE_SOK = "/periode"
-    const val PERIODE_SOK_STONADSENDRING = "/periode/stonad"
+    const val PERIODE_SOK_STONADSENDRING = "/periode/stonadsendring"
     const val PERIODE_NY = "/periode/ny"
     private val LOGGER = LoggerFactory.getLogger(PeriodeController::class.java)
   }

@@ -8,5 +8,5 @@ interface PeriodeRepository : CrudRepository<Periode, Int?>{
 
   @Query(
     "select pe from Periode pe where pe.stonadsendring.stonadsendringId = :stonadsendringsId")
-  fun hentAllePerioderForStonadsendringId(stonadsendringsId: Int): List<Periode>
+  fun hentAllePerioderForStonadsendring(stonadsendringsId: Int): List<Periode>
 }

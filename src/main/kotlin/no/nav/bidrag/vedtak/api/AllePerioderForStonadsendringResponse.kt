@@ -7,6 +7,6 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 @ApiModel
 data class AllePerioderForStonadsendringResponse(
 
-  @ApiModelProperty(value = "Alle perioder for stonadsendring")
+  @ApiModelProperty(value = "Alle perioder for en stonadsendring")
   val allePerioderForStonadsendring: List<PeriodeDto> = emptyList()
 )

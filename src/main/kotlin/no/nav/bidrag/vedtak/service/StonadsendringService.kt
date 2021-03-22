@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerResponse
+import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.toStonadsendringDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
@@ -17,7 +17,7 @@ class StonadsendringService (val persistenceService: PersistenceService) {
     return persistenceService.finnEnStonadsendring(stonadsendring_id)
   }
 
-  fun finnAlleStonadsendringer(): AlleStonadsendringerResponse {
-    return AlleStonadsendringerResponse(persistenceService.finnAlleStonadsendringer())
+  fun finnAlleStonadsendringerForVedtak(vedtakId: Int): AlleStonadsendringerForVedtakResponse {
+    return AlleStonadsendringerForVedtakResponse(persistenceService.finnAlleStonadsendringerForVedtak(vedtakId))
   }
 }

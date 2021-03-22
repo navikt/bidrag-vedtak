@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerResponse
+import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
@@ -131,15 +131,16 @@ class StonadsendringControllerTest {
   }
 
   @Test
-  fun `skal finne data for alle stonadsendringer`() {
+  fun `skal finne alle stonadsendringer for et vedtak`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
 
     // Oppretter nye forekomster av stønadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
-        vedtakId = nyttVedtakOpprettet.vedtakId,
+        vedtakId = nyttVedtakOpprettet1.vedtakId,
         behandlingId = "1111",
         skyldnerId = "1111",
         kravhaverId = "1111",
@@ -151,7 +152,7 @@ class StonadsendringControllerTest {
     val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
-        vedtakId = nyttVedtakOpprettet.vedtakId,
+        vedtakId = nyttVedtakOpprettet1.vedtakId,
         behandlingId = "2222",
         skyldnerId = "2222",
         kravhaverId = "2222",
@@ -160,30 +161,43 @@ class StonadsendringControllerTest {
       )
     )
 
+    // Stonadsendring som ikke skal legges med i resultatet
+    val nyStonadsendringOpprettet3 = persistenceService.opprettNyStonadsendring(
+      StonadsendringDto(
+        stonadType = "BIDRAG",
+        vedtakId = nyttVedtakOpprettet2.vedtakId,
+        behandlingId = "9999",
+        skyldnerId = "9999",
+        kravhaverId = "9999",
+        mottakerId = "9999",
+        opprettetAv = "TEST"
+      )
+    )
+
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
-      fullUrlForSokStonadsendring(),
+      "${fullUrlForSokStonadsendringForVedtak()}/${nyttVedtakOpprettet1.vedtakId}",
       HttpMethod.GET,
       null,
-      AlleStonadsendringerResponse::class.java
+      AlleStonadsendringerForVedtakResponse::class.java
     )
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.alleStonadsendringer).isNotNull },
-      Executable { assertThat(response?.body?.alleStonadsendringer!!.size).isEqualTo(2) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![0].stonadsendringId).isEqualTo(nyStonadsendringOpprettet1.stonadsendringId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![0].stonadType).isEqualTo(nyStonadsendringOpprettet1.stonadType) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![0].vedtakId).isEqualTo(nyStonadsendringOpprettet1.vedtakId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![0].behandlingId).isEqualTo(nyStonadsendringOpprettet1.behandlingId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![0].opprettetAv).isEqualTo(nyStonadsendringOpprettet1.opprettetAv) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![1].stonadsendringId).isEqualTo(nyStonadsendringOpprettet2.stonadsendringId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![1].stonadType).isEqualTo(nyStonadsendringOpprettet2.stonadType) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![1].vedtakId).isEqualTo(nyStonadsendringOpprettet2.vedtakId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) },
-      Executable { assertThat(response?.body?.alleStonadsendringer!![1].opprettetAv).isEqualTo(nyStonadsendringOpprettet2.opprettetAv) }
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak).isNotNull },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!!.size).isEqualTo(2) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].stonadsendringId).isEqualTo(nyStonadsendringOpprettet1.stonadsendringId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].stonadType).isEqualTo(nyStonadsendringOpprettet1.stonadType) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].vedtakId).isEqualTo(nyStonadsendringOpprettet1.vedtakId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].behandlingId).isEqualTo(nyStonadsendringOpprettet1.behandlingId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].opprettetAv).isEqualTo(nyStonadsendringOpprettet1.opprettetAv) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadsendringId).isEqualTo(nyStonadsendringOpprettet2.stonadsendringId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadType).isEqualTo(nyStonadsendringOpprettet2.stonadType) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].vedtakId).isEqualTo(nyStonadsendringOpprettet2.vedtakId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) },
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].opprettetAv).isEqualTo(nyStonadsendringOpprettet2.opprettetAv) }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -195,6 +209,10 @@ class StonadsendringControllerTest {
 
   private fun fullUrlForSokStonadsendring(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.STONADSENDRING_SOK).toUriString()
+  }
+
+  private fun fullUrlForSokStonadsendringForVedtak(): String {
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.STONADSENDRING_SOK_VEDTAK).toUriString()
   }
 
   private fun makeFullContextPath(): String {
