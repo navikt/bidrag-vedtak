@@ -92,6 +92,8 @@ class StonadsendringServiceTest {
       Executable { assertThat(stonadsendringFunnet.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) },
       Executable { assertThat(stonadsendringFunnet.opprettetAv).isEqualTo(nyStonadsendringOpprettet.opprettetAv) }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -149,5 +151,7 @@ class StonadsendringServiceTest {
         }
       }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 }

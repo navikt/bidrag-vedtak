@@ -80,6 +80,8 @@ class VedtakControllerTest {
       Executable { assertThat(response?.body?.enhetsnummer).isEqualTo("1111") },
       Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -103,6 +105,8 @@ class VedtakControllerTest {
       Executable { assertThat(response?.body?.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) },
       Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -132,6 +136,8 @@ class VedtakControllerTest {
       Executable { assertThat(response?.body?.alleVedtak!![1].enhetsnummer).isEqualTo(nyttVedtakOpprettet2.enhetsnummer) },
       Executable { assertThat(response?.body?.alleVedtak!![1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   private fun fullUrlForNyttVedtak(): String {

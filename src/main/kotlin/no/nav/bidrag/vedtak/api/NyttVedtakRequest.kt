@@ -11,4 +11,5 @@ data class NyttVedtakRequest(
 
   @ApiModelProperty(value = "Opprettet av")
   val opprettetAv: String = ""
+
 )
