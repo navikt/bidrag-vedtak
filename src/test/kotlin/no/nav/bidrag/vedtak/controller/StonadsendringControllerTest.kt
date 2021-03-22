@@ -86,6 +86,8 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body?.behandlingId).isEqualTo("1111") },
       Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -124,6 +126,8 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body?.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) },
       Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyStonadsendringOpprettet.opprettetAv) }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -181,6 +185,8 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body?.alleStonadsendringer!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) },
       Executable { assertThat(response?.body?.alleStonadsendringer!![1].opprettetAv).isEqualTo(nyStonadsendringOpprettet2.opprettetAv) }
     )
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   private fun fullUrlForNyStonadsendring(): String {

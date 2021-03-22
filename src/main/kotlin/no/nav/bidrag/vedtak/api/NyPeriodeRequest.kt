@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 @ApiModel
-data class NyPeriodeRequest(
+data class  NyPeriodeRequest(
 
   @ApiModelProperty(value = "Periode-fom")
   val periodeFom: LocalDate = LocalDate.now(),

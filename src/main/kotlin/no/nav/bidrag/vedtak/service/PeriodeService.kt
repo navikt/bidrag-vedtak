@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AllePerioderForStonadResponse
+import no.nav.bidrag.vedtak.api.AllePerioderForStonadsendringResponse
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.api.toPeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
@@ -17,8 +17,10 @@ class PeriodeService (val persistenceService: PersistenceService) {
     return persistenceService.finnPeriode(periodeId)
   }
 
-  fun finnAllePerioderForStonad(stonadsendringIdListe: List<Int>): AllePerioderForStonadResponse {
-    return AllePerioderForStonadResponse(persistenceService.finnAllePerioderForStonad(stonadsendringIdListe))
+  fun finnAllePerioderForStonadsendring(stonadsendringId: Int): AllePerioderForStonadsendringResponse {
+    return AllePerioderForStonadsendringResponse(persistenceService.finnAllePerioderForStonadsendring(
+      stonadsendringId
+    ))
   }
 
 }

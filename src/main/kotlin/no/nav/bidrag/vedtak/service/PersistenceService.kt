@@ -6,7 +6,6 @@ import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.dto.toPeriodeEntity
 import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
-import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeDto
 import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringDto
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakDto
@@ -77,9 +76,9 @@ class PersistenceService(
     return periode.toPeriodeDto()
   }
 
-  fun finnAllePerioderForStonad(idListe: List<Int>): List<PeriodeDto> {
+  fun finnAllePerioderForStonadsendring(id: Int): List<PeriodeDto> {
     val periodeDtoListe = mutableListOf<PeriodeDto>()
-    periodeRepository.findAllById(idListe)
+    periodeRepository.hentAllePerioderForStonadsendringId(id)
       .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
 
     return periodeDtoListe

@@ -8,6 +8,8 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
+import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
@@ -35,6 +37,12 @@ class PeriodeServiceTest {
   private lateinit var periodeService: PeriodeService
 
   @Autowired
+  private lateinit var vedtakRepository: VedtakRepository
+
+  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
+
+  @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
@@ -44,6 +52,8 @@ class PeriodeServiceTest {
   fun `init`() {
     // Sletter alle forekomster
     periodeRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -74,6 +84,9 @@ class PeriodeServiceTest {
       Executable { assertThat(nyttVedtakOpprettet.enhetsnummer).isEqualTo("TEST") }
 
     )
+    periodeRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   @Test
@@ -94,7 +107,7 @@ class PeriodeServiceTest {
         periodeFom = LocalDate.now(),
         periodeTom = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
-        belop = BigDecimal.valueOf(17),
+        belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
         resultatkode = "RESULTATKODE_TEST",
         opprettetAv = "TEST"
@@ -111,6 +124,9 @@ class PeriodeServiceTest {
       Executable { assertThat(periodeFunnet.resultatkode).isEqualTo(nyPeriodeOpprettet.resultatkode) }
 
     )
+    periodeRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
 
@@ -132,7 +148,10 @@ class PeriodeServiceTest {
     nyPeriodeDtoListe.add(
       persistenceService.opprettNyPeriode(
         PeriodeDto(
-          belop = BigDecimal.valueOf(17),
+          periodeFom = LocalDate.now(),
+          periodeTom = LocalDate.now(),
+          stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+          belop = BigDecimal.valueOf(17.02),
           valutakode = "NOK",
           resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
           opprettetAv = "TEST"
@@ -144,7 +163,10 @@ class PeriodeServiceTest {
     nyPeriodeDtoListe.add(
       persistenceService.opprettNyPeriode(
         PeriodeDto(
-          belop = BigDecimal.valueOf(2000),
+          periodeFom = LocalDate.now(),
+          periodeTom = LocalDate.now(),
+          stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+          belop = BigDecimal.valueOf(2000.01),
           valutakode = "NOK",
           resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
           opprettetAv = "TEST"
@@ -152,25 +174,28 @@ class PeriodeServiceTest {
       )
     )
 
-    val stonadsendringIdListe = ArrayList<Int>(nyStonadsendringOpprettet.stonadsendringId)
-    val periodeFunnet = periodeService.finnAllePerioderForStonad(stonadsendringIdListe)
-
+    val stonadsendringId = nyStonadsendringOpprettet.stonadsendringId
+    val periodeFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
 
     assertAll(
       Executable { assertThat(periodeFunnet).isNotNull() },
-      Executable { assertThat(periodeFunnet.allePerioderForStonad.size).isEqualTo(2) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonad[0].belop).isEqualTo(BigDecimal.valueOf(17)) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonad[1].belop).isEqualTo(BigDecimal.valueOf(2000)) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonad[0].resultatkode).isEqualTo(
+      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring.size).isEqualTo(2) },
+      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].belop).isEqualTo(BigDecimal.valueOf(17.02)) },
+      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[1].belop).isEqualTo(BigDecimal.valueOf(2000.01)) },
+      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].resultatkode).isEqualTo(
         "RESULTATKODE_TEST_FLERE_PERIODER") },
       Executable {
 
-      periodeFunnet.allePerioderForStonad.forEachIndexed{ index, periode ->
+      periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
         assertAll(
           Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
           Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
           Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
         )
+        periodeRepository.deleteAll()
+        stonadsendringRepository.deleteAll()
+        vedtakRepository.deleteAll()
+
       }}
 
     )

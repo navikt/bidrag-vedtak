@@ -19,7 +19,7 @@ data class PeriodeDto(
   @ApiModelProperty(value = "Periode tom")
   val periodeTom: LocalDate = LocalDate.now(),
 
-  @ApiModelProperty(value = "Stonad-id")
+  @ApiModelProperty(value = "Stonadsendring-id")
   val stonadsendringId: Int = 0,
 
   @ApiModelProperty(value = "Belop")

@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AllePerioderForStonadResponse
+import no.nav.bidrag.vedtak.api.AllePerioderForStonadsendringResponse
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.service.PeriodeService
@@ -57,8 +57,8 @@ class PeriodeController(private val periodeService: PeriodeService) {
     return ResponseEntity(periodeFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadsendringIdListe}")
-  @ApiOperation("Finn alle perioder for en stønad")
+  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadsendringId}")
+  @ApiOperation("Finn alle perioder for en stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Data for periode hentet"),
@@ -69,8 +69,8 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnAllePerioderForStonad(@PathVariable stonadsendringIdListe: List<Int>): ResponseEntity<AllePerioderForStonadResponse> {
-    val allePerioderFunnet = periodeService.finnAllePerioderForStonad(stonadsendringIdListe)
+  fun finnAllePerioderForStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<AllePerioderForStonadsendringResponse> {
+    val allePerioderFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
     LOGGER.info("Følgende perioder ble funnet: $allePerioderFunnet")
     return ResponseEntity(allePerioderFunnet, HttpStatus.OK)
   }
