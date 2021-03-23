@@ -135,12 +135,18 @@ class PeriodeServiceTest {
     // Finner alle perioder
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
 
     // Oppretter ny stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
-      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111",
+    val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
+      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111",
         skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"))
+
+    // Oppretter ny stonadsendring
+    val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(
+      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999",
+        skyldnerId = "9999", kravhaverId = "9999", mottakerId = "9999", opprettetAv = "TEST"))
 
     // Oppretter nye perioder
     val nyPeriodeDtoListe = mutableListOf<PeriodeDto>()
@@ -150,7 +156,7 @@ class PeriodeServiceTest {
         PeriodeDto(
           periodeFom = LocalDate.now(),
           periodeTom = LocalDate.now(),
-          stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+          stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(17.02),
           valutakode = "NOK",
           resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
@@ -165,7 +171,7 @@ class PeriodeServiceTest {
         PeriodeDto(
           periodeFom = LocalDate.now(),
           periodeTom = LocalDate.now(),
-          stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+          stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(2000.01),
           valutakode = "NOK",
           resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
@@ -174,7 +180,22 @@ class PeriodeServiceTest {
       )
     )
 
-    val stonadsendringId = nyStonadsendringOpprettet.stonadsendringId
+    // Oppretter ny periode som ikke skal bli funnet pga annen stonadsendringId
+    nyPeriodeDtoListe.add(
+      persistenceService.opprettNyPeriode(
+        PeriodeDto(
+          periodeFom = LocalDate.now(),
+          periodeTom = LocalDate.now(),
+          stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
+          belop = BigDecimal.valueOf(9999.99),
+          valutakode = "NOK",
+          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
+          opprettetAv = "TEST"
+        )
+      )
+    )
+
+    val stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId
     val periodeFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
 
     assertAll(
@@ -185,20 +206,18 @@ class PeriodeServiceTest {
       Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].resultatkode).isEqualTo(
         "RESULTATKODE_TEST_FLERE_PERIODER") },
       Executable {
-
       periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
         assertAll(
           Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
           Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
           Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
         )
-        periodeRepository.deleteAll()
-        stonadsendringRepository.deleteAll()
-        vedtakRepository.deleteAll()
-
-      }}
-
+      }
+    }
     )
+    periodeRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
   }

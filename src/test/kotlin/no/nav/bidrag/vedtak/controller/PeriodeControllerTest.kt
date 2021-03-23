@@ -175,12 +175,19 @@ class PeriodeControllerTest {
   @Test
   fun `skal finne alle perioder for stonadsendring`(){
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
 
     // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111", skyldnerId = "1111",
+    val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111", skyldnerId = "1111",
       kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"
+    )
+    )
+
+    val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999", skyldnerId = "9999",
+      kravhaverId = "9999", mottakerId = "9999", opprettetAv = "TEST"
     )
     )
 
@@ -189,7 +196,7 @@ class PeriodeControllerTest {
       PeriodeDto(
         periodeFom = LocalDate.now(),
         periodeTom = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+        stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
         resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
@@ -201,8 +208,21 @@ class PeriodeControllerTest {
       PeriodeDto(
         periodeFom = LocalDate.now(),
         periodeTom = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
+        stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(2000.02),
+        valutakode = "NOK",
+        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
+        opprettetAv = "TEST"
+      )
+    )
+
+    // Opprettet periode som ikke skal returneres i resultatet
+    val nyPeriodeOpprettet3 = persistenceService.opprettNyPeriode(
+      PeriodeDto(
+        periodeFom = LocalDate.now(),
+        periodeTom = LocalDate.now(),
+        stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
+        belop = BigDecimal.valueOf(9999.99),
         valutakode = "NOK",
         resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
         opprettetAv = "TEST"
@@ -211,7 +231,7 @@ class PeriodeControllerTest {
 
     // Henter forekomst
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokPerioderForStonadsendring()}/${nyStonadsendringOpprettet.stonadsendringId}",
+      "${fullUrlForSokPerioderForStonadsendring()}/${nyStonadsendringOpprettet1.stonadsendringId}",
       HttpMethod.GET,
       null,
       AllePerioderForStonadsendringResponse::class.java)
@@ -221,6 +241,7 @@ class PeriodeControllerTest {
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
+      Executable { assertThat(response?.body?.allePerioderForStonadsendring!!.size).isEqualTo(2) },
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].periodeId).isEqualTo(nyPeriodeOpprettet1.periodeId) },
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].stonadsendringId).isEqualTo(nyPeriodeOpprettet1.stonadsendringId) },
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].belop).isEqualTo(nyPeriodeOpprettet2.belop) },
