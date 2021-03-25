@@ -3,7 +3,6 @@ package no.nav.bidrag.vedtak.persistence.entity
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -14,7 +13,7 @@ import javax.persistence.ManyToOne
 import kotlin.reflect.full.memberProperties
 
 @Entity
-data class Periode (
+data class Periode(
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +27,7 @@ data class Periode (
   val periodeTom: LocalDate = LocalDate.now(),
 
   @ManyToOne
-  @JoinColumn(name="stonadsendring_id")
+  @JoinColumn(name = "stonadsendring_id")
   val stonadsendring: Stonadsendring = Stonadsendring(),
 
   @Column(nullable = false, name = "belop")
@@ -38,13 +37,7 @@ data class Periode (
   val valutakode: String = "",
 
   @Column(nullable = false, name = "resultatkode")
-  val resultatkode: String = "",
-
-  @Column(nullable = false, name = "opprettet_av")
-  val opprettetAv: String = "",
-
-  @Column(nullable = false, name = "opprettet_timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+  val resultatkode: String = ""
 )
 
   fun Periode.toPeriodeDto() = with(::PeriodeDto) {

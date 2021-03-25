@@ -83,8 +83,7 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body).isNotNull() },
       Executable { assertThat(response?.body?.stonadType).isEqualTo("BIDRAG") },
       Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.behandlingId).isEqualTo("1111") },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") }
+      Executable { assertThat(response?.body?.behandlingId).isEqualTo("1111") }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -103,8 +102,7 @@ class StonadsendringControllerTest {
         behandlingId = "1111",
         skyldnerId = "1111",
         kravhaverId = "1111",
-        mottakerId = "1111",
-        opprettetAv = "TEST"
+        mottakerId = "1111"
       )
     )
 
@@ -123,8 +121,7 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body?.stonadsendringId).isEqualTo(nyStonadsendringOpprettet.stonadsendringId) },
       Executable { assertThat(response?.body?.stonadType).isEqualTo(nyStonadsendringOpprettet.stonadType) },
       Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyStonadsendringOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyStonadsendringOpprettet.opprettetAv) }
+      Executable { assertThat(response?.body?.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -144,8 +141,7 @@ class StonadsendringControllerTest {
         behandlingId = "1111",
         skyldnerId = "1111",
         kravhaverId = "1111",
-        mottakerId = "1111",
-        opprettetAv = "TEST"
+        mottakerId = "1111"
       )
     )
 
@@ -156,8 +152,7 @@ class StonadsendringControllerTest {
         behandlingId = "2222",
         skyldnerId = "2222",
         kravhaverId = "2222",
-        mottakerId = "2222",
-        opprettetAv = "TEST"
+        mottakerId = "2222"
       )
     )
 
@@ -169,8 +164,7 @@ class StonadsendringControllerTest {
         behandlingId = "9999",
         skyldnerId = "9999",
         kravhaverId = "9999",
-        mottakerId = "9999",
-        opprettetAv = "TEST"
+        mottakerId = "9999"
       )
     )
 
@@ -192,12 +186,10 @@ class StonadsendringControllerTest {
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].stonadType).isEqualTo(nyStonadsendringOpprettet1.stonadType) },
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].vedtakId).isEqualTo(nyStonadsendringOpprettet1.vedtakId) },
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].behandlingId).isEqualTo(nyStonadsendringOpprettet1.behandlingId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].opprettetAv).isEqualTo(nyStonadsendringOpprettet1.opprettetAv) },
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadsendringId).isEqualTo(nyStonadsendringOpprettet2.stonadsendringId) },
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadType).isEqualTo(nyStonadsendringOpprettet2.stonadType) },
       Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].vedtakId).isEqualTo(nyStonadsendringOpprettet2.vedtakId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].opprettetAv).isEqualTo(nyStonadsendringOpprettet2.opprettetAv) }
+      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -220,7 +212,14 @@ class StonadsendringControllerTest {
   }
 
   private fun byggRequest(vedtakId: Int): HttpEntity<NyStonadsendringRequest> {
-    return initHttpEntity(NyStonadsendringRequest("BIDRAG", vedtakId, "1111", "1111", "1111", "1111", "TEST"))
+    return initHttpEntity(NyStonadsendringRequest(
+      "BIDRAG",
+      vedtakId,
+      "1111",
+      "1111",
+      "1111",
+      "1111"
+    ))
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

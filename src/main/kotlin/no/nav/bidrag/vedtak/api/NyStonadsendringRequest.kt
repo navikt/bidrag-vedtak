@@ -25,10 +25,7 @@ data class NyStonadsendringRequest(
   val kravhaverId: String = "",
 
   @ApiModelProperty(value = "Mottaker-id")
-  val mottakerId: String = "",
-
-  @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String = ""
+  val mottakerId: String = ""
 )
 
 fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
@@ -36,7 +33,6 @@ fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
       StonadsendringDto::stonadsendringId.name -> 0
-      StonadsendringDto::opprettetTimestamp.name -> LocalDateTime.now()
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }
   })

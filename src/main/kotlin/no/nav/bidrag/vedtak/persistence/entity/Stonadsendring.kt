@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -12,7 +11,7 @@ import javax.persistence.ManyToOne
 import kotlin.reflect.full.memberProperties
 
 @Entity
-data class Stonadsendring (
+data class Stonadsendring(
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +22,7 @@ data class Stonadsendring (
   val stonadType: String = "",
 
   @ManyToOne
-  @JoinColumn(name="vedtak_id")
+  @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
   @Column(nullable = false, name = "behandling_id")
@@ -36,13 +35,7 @@ data class Stonadsendring (
   val kravhaverId: String = "",
 
   @Column(nullable = false, name = "mottaker_id")
-  val mottakerId: String = "",
-
-  @Column(nullable = false, name = "opprettet_av")
-  val opprettetAv: String = "",
-
-  @Column(nullable = false, name = "opprettet_timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+  val mottakerId: String = ""
 )
 
 fun Stonadsendring.toStonadsendringDto() = with(::StonadsendringDto) {

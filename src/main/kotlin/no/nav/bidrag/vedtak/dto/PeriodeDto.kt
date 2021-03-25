@@ -5,7 +5,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 data class PeriodeDto(
@@ -29,13 +28,7 @@ data class PeriodeDto(
   val valutakode: String,
 
   @ApiModelProperty(value = "Resultatkode")
-  val resultatkode: String,
-
-  @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String,
-
-  @ApiModelProperty(value = "Opprettet timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+  val resultatkode: String
 )
 
 fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {

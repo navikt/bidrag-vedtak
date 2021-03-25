@@ -64,19 +64,21 @@ class PeriodeServiceTest {
     val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
 
     // Oppretter ny stonad
-    val nyStonadsendringRequest = NyStonadsendringRequest("BIDRAG", nyttVedtakOpprettet.vedtakId,
-      "1111", "1111", "1111", "1111", "TEST")
+    val nyStonadsendringRequest = NyStonadsendringRequest(
+      "BIDRAG", nyttVedtakOpprettet.vedtakId,
+      "1111", "1111", "1111", "1111"
+    )
     val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
 
     // Oppretter ny periode
-    val nyPeriodeRequest = NyPeriodeRequest(LocalDate.now(), LocalDate.now(), nyStonadsendringOpprettet.stonadsendringId,
-      BigDecimal.valueOf(17), "NOK", "RESULTATKODE_TEST", "TEST"
+    val nyPeriodeRequest = NyPeriodeRequest(
+      LocalDate.now(), LocalDate.now(), nyStonadsendringOpprettet.stonadsendringId,
+      BigDecimal.valueOf(17), "NOK", "RESULTATKODE_TEST"
     )
     val nyPeriodeOpprettet = periodeService.opprettNyPeriode(nyPeriodeRequest)
 
     assertAll(
       Executable { assertThat(nyPeriodeOpprettet).isNotNull() },
-      Executable { assertThat(nyPeriodeOpprettet.opprettetAv).isEqualTo(nyPeriodeRequest.opprettetAv) },
       Executable { assertThat(nyPeriodeOpprettet.belop).isEqualTo(BigDecimal.valueOf(17)) },
       Executable { assertThat(nyPeriodeOpprettet.valutakode).isEqualTo("NOK") },
       Executable { assertThat(nyPeriodeOpprettet.resultatkode).isEqualTo("RESULTATKODE_TEST") },
@@ -98,8 +100,10 @@ class PeriodeServiceTest {
 
     // Oppretter ny stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
-      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111",
-        skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"))
+      StonadsendringDto(
+        stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111",
+        skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111"
+      ))
 
     // Oppretter ny periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
@@ -109,8 +113,7 @@ class PeriodeServiceTest {
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST",
-        opprettetAv = "TEST"
+        resultatkode = "RESULTATKODE_TEST"
       )
     )
 
@@ -118,7 +121,6 @@ class PeriodeServiceTest {
 
     assertAll(
       Executable { assertThat(periodeFunnet).isNotNull() },
-      Executable { assertThat(periodeFunnet.opprettetAv).isEqualTo(nyPeriodeOpprettet.opprettetAv) },
       Executable { assertThat(periodeFunnet.belop).isEqualTo(nyPeriodeOpprettet.belop) },
       Executable { assertThat(periodeFunnet.valutakode).isEqualTo(nyPeriodeOpprettet.valutakode) },
       Executable { assertThat(periodeFunnet.resultatkode).isEqualTo(nyPeriodeOpprettet.resultatkode) }
@@ -140,13 +142,17 @@ class PeriodeServiceTest {
 
     // Oppretter ny stonadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
-      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111",
-        skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"))
+      StonadsendringDto(
+        stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111",
+        skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111"
+      ))
 
     // Oppretter ny stonadsendring
     val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(
-      StonadsendringDto(stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999",
-        skyldnerId = "9999", kravhaverId = "9999", mottakerId = "9999", opprettetAv = "TEST"))
+      StonadsendringDto(
+        stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999",
+        skyldnerId = "9999", kravhaverId = "9999", mottakerId = "9999"
+      ))
 
     // Oppretter nye perioder
     val nyPeriodeDtoListe = mutableListOf<PeriodeDto>()
@@ -159,8 +165,7 @@ class PeriodeServiceTest {
           stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(17.02),
           valutakode = "NOK",
-          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-          opprettetAv = "TEST"
+          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
         )
       )
     )
@@ -174,8 +179,7 @@ class PeriodeServiceTest {
           stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(2000.01),
           valutakode = "NOK",
-          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-          opprettetAv = "TEST"
+          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
         )
       )
     )
@@ -189,8 +193,7 @@ class PeriodeServiceTest {
           stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
           belop = BigDecimal.valueOf(9999.99),
           valutakode = "NOK",
-          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-          opprettetAv = "TEST"
+          resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
         )
       )
     )

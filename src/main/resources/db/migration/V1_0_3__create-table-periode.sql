@@ -1,6 +1,6 @@
 -- Table: periode
 
--- DROP TABLE periode;
+DROP TABLE periode;
 
 CREATE TABLE IF NOT EXISTS periode
 (
@@ -9,15 +9,14 @@ CREATE TABLE IF NOT EXISTS periode
     periode_tom date,
     stonadsendring_id integer,
     belop float,
-    valutakode character(3),
+    valutakode character(10),
     resultatkode varchar(255),
-    opprettet_av character(7),
-    opprettet_timestamp timestamp DEFAULT now(),
     CONSTRAINT periode_pkey PRIMARY KEY (periode_id),
     CONSTRAINT fk_stonad_id FOREIGN KEY (stonadsendring_id)
         REFERENCES stonadsendring (stonadsendring_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE NO ACTION,
+    UNIQUE (stonadsendring_id, periode_fom)
 )
 
     TABLESPACE pg_default;

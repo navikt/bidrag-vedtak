@@ -1,6 +1,6 @@
 -- Table: stonadsendring
 
--- DROP TABLE stonadsendring;
+DROP TABLE stonadsendring;
 
 CREATE TABLE IF NOT EXISTS stonadsendring
 (
@@ -11,8 +11,6 @@ CREATE TABLE IF NOT EXISTS stonadsendring
     skyldner_id varchar(20),
     kravhaver_id varchar(20),
     mottaker_id varchar(20),
-    opprettet_av character(7),
-    opprettet_timestamp timestamp DEFAULT now(),
     CONSTRAINT stonad_pkey PRIMARY KEY (stonadsendring_id),
     CONSTRAINT fk_vedtak_id FOREIGN KEY (vedtak_id)
         REFERENCES vedtak (vedtak_id) MATCH SIMPLE

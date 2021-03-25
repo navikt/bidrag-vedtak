@@ -1,6 +1,6 @@
 -- Table: vedtak
 
--- DROP TABLE vedtak;
+DROP TABLE vedtak;
 
 CREATE TABLE IF NOT EXISTS vedtak
 (

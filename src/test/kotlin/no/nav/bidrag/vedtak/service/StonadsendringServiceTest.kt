@@ -51,15 +51,21 @@ class StonadsendringServiceTest {
     val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringRequest = NyStonadsendringRequest("BIDRAG", nyttVedtakOpprettet.vedtakId, "1111", "1111", "1111", "1111", "TEST")
+    val nyStonadsendringRequest = NyStonadsendringRequest(
+      "BIDRAG",
+      nyttVedtakOpprettet.vedtakId,
+      "1111",
+      "1111",
+      "1111",
+      "1111"
+    )
     val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
 
     assertAll(
       Executable { assertThat(nyStonadsendringOpprettet).isNotNull() },
       Executable { assertThat(nyStonadsendringOpprettet.stonadType).isEqualTo(nyStonadsendringRequest.stonadType) },
       Executable { assertThat(nyStonadsendringOpprettet.vedtakId).isEqualTo(nyStonadsendringRequest.vedtakId) },
-      Executable { assertThat(nyStonadsendringOpprettet.behandlingId).isEqualTo(nyStonadsendringRequest.behandlingId) },
-      Executable { assertThat(nyStonadsendringOpprettet.opprettetAv).isEqualTo(nyStonadsendringRequest.opprettetAv) }
+      Executable { assertThat(nyStonadsendringOpprettet.behandlingId).isEqualTo(nyStonadsendringRequest.behandlingId) }
     )
   }
 
@@ -76,8 +82,7 @@ class StonadsendringServiceTest {
         behandlingId = "1111",
         skyldnerId = "1111",
         kravhaverId = "1111",
-        mottakerId = "1111",
-        opprettetAv = "TEST"
+        mottakerId = "1111"
       )
     )
 
@@ -89,8 +94,7 @@ class StonadsendringServiceTest {
       Executable { assertThat(stonadsendringFunnet.stonadsendringId).isEqualTo(nyStonadsendringOpprettet.stonadsendringId) },
       Executable { assertThat(stonadsendringFunnet.stonadType).isEqualTo(nyStonadsendringOpprettet.stonadType) },
       Executable { assertThat(stonadsendringFunnet.vedtakId).isEqualTo(nyStonadsendringOpprettet.vedtakId) },
-      Executable { assertThat(stonadsendringFunnet.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) },
-      Executable { assertThat(stonadsendringFunnet.opprettetAv).isEqualTo(nyStonadsendringOpprettet.opprettetAv) }
+      Executable { assertThat(stonadsendringFunnet.behandlingId).isEqualTo(nyStonadsendringOpprettet.behandlingId) }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -114,8 +118,7 @@ class StonadsendringServiceTest {
           behandlingId = "1111",
           skyldnerId = "1111",
           kravhaverId = "1111",
-          mottakerId = "1111",
-          opprettetAv = "TEST"
+          mottakerId = "1111"
         )
       )
     )
@@ -128,8 +131,7 @@ class StonadsendringServiceTest {
           behandlingId = "2222",
           skyldnerId = "2222",
           kravhaverId = "2222",
-          mottakerId = "2222",
-          opprettetAv = "TEST"
+          mottakerId = "2222"
         )
       )
     )
@@ -143,8 +145,7 @@ class StonadsendringServiceTest {
           behandlingId = "9999",
           skyldnerId = "9999",
           kravhaverId = "9999",
-          mottakerId = "9999",
-          opprettetAv = "TEST"
+          mottakerId = "9999"
         )
       )
     )
@@ -163,8 +164,7 @@ class StonadsendringServiceTest {
             Executable { assertThat(stonadsendring.stonadsendringId).isEqualTo(nyStonadsendringDtoListe[index].stonadsendringId) },
             Executable { assertThat(stonadsendring.stonadType).isEqualTo(nyStonadsendringDtoListe[index].stonadType) },
             Executable { assertThat(stonadsendring.vedtakId).isEqualTo(nyStonadsendringDtoListe[index].vedtakId) },
-            Executable { assertThat(stonadsendring.behandlingId).isEqualTo(nyStonadsendringDtoListe[index].behandlingId) },
-            Executable { assertThat(stonadsendring.opprettetAv).isEqualTo(nyStonadsendringDtoListe[index].opprettetAv) }
+            Executable { assertThat(stonadsendring.behandlingId).isEqualTo(nyStonadsendringDtoListe[index].behandlingId) }
           )
         }
       }
