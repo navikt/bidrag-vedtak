@@ -1,6 +1,6 @@
 -- Table: periode
 
-DROP TABLE periodegrunnlag;
+-- DROP TABLE periodegrunnlag;
 
 CREATE TABLE IF NOT EXISTS periodegrunnlag
 (

@@ -1,6 +1,6 @@
 -- Table: stonadsendring
 
-DROP TABLE stonadsendring;
+-- DROP TABLE stonadsendring;
 
 CREATE TABLE IF NOT EXISTS stonadsendring
 (
