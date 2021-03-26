@@ -81,22 +81,14 @@ class PeriodeControllerTest {
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111", skyldnerId = "1111",
-      kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST")
+      stonadType = "BIDRAG",
+      vedtakId = nyttVedtakOpprettet.vedtakId,
+      behandlingId = "1111",
+      skyldnerId = "1111",
+      kravhaverId = "1111",
+      mottakerId = "1111"
     )
-
-/*    // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
-      PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
-        belop = BigDecimal.valueOf(17.01),
-        valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-        opprettetAv = "TEST"
-      )
-    )*/
+    )
 
     // Oppretter ny forekomst av periode
     val response = securedTestRestTemplate.exchange(
@@ -129,8 +121,12 @@ class PeriodeControllerTest {
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111", skyldnerId = "1111",
-      kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"
+      stonadType = "BIDRAG",
+      vedtakId = nyttVedtakOpprettet.vedtakId,
+      behandlingId = "1111",
+      skyldnerId = "1111",
+      kravhaverId = "1111",
+      mottakerId = "1111"
     )
     )
 
@@ -142,8 +138,7 @@ class PeriodeControllerTest {
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-        opprettetAv = "TEST"
+        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
       )
     )
 
@@ -162,8 +157,7 @@ class PeriodeControllerTest {
       Executable { assertThat(response?.body?.periodeId).isEqualTo(nyPeriodeOpprettet.periodeId) },
       Executable { assertThat(response?.body?.stonadsendringId).isEqualTo(nyPeriodeOpprettet.stonadsendringId) },
       Executable { assertThat(response?.body?.belop).isEqualTo(nyPeriodeOpprettet.belop) },
-      Executable { assertThat(response?.body?.stonadsendringId).isEqualTo(nyPeriodeOpprettet.stonadsendringId) },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyPeriodeOpprettet.opprettetAv) }
+      Executable { assertThat(response?.body?.stonadsendringId).isEqualTo(nyPeriodeOpprettet.stonadsendringId) }
     )
 
     periodeRepository.deleteAll()
@@ -180,14 +174,22 @@ class PeriodeControllerTest {
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111", skyldnerId = "1111",
-      kravhaverId = "1111", mottakerId = "1111", opprettetAv = "TEST"
+      stonadType = "BIDRAG",
+      vedtakId = nyttVedtakOpprettet1.vedtakId,
+      behandlingId = "1111",
+      skyldnerId = "1111",
+      kravhaverId = "1111",
+      mottakerId = "1111"
     )
     )
 
     val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999", skyldnerId = "9999",
-      kravhaverId = "9999", mottakerId = "9999", opprettetAv = "TEST"
+      stonadType = "BIDRAG",
+      vedtakId = nyttVedtakOpprettet2.vedtakId,
+      behandlingId = "9999",
+      skyldnerId = "9999",
+      kravhaverId = "9999",
+      mottakerId = "9999"
     )
     )
 
@@ -199,8 +201,7 @@ class PeriodeControllerTest {
         stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-        opprettetAv = "TEST"
+        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
       )
     )
 
@@ -211,8 +212,7 @@ class PeriodeControllerTest {
         stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(2000.02),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-        opprettetAv = "TEST"
+        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
       )
     )
 
@@ -224,8 +224,7 @@ class PeriodeControllerTest {
         stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
         belop = BigDecimal.valueOf(9999.99),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER",
-        opprettetAv = "TEST"
+        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER"
       )
     )
 
@@ -245,8 +244,7 @@ class PeriodeControllerTest {
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].periodeId).isEqualTo(nyPeriodeOpprettet1.periodeId) },
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].stonadsendringId).isEqualTo(nyPeriodeOpprettet1.stonadsendringId) },
       Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].belop).isEqualTo(nyPeriodeOpprettet2.belop) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].stonadsendringId).isEqualTo(nyPeriodeOpprettet2.stonadsendringId) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].opprettetAv).isEqualTo(nyPeriodeOpprettet1.opprettetAv) }
+      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].stonadsendringId).isEqualTo(nyPeriodeOpprettet2.stonadsendringId) }
     )
 
     periodeRepository.deleteAll()
@@ -275,8 +273,8 @@ class PeriodeControllerTest {
 
   private fun byggRequest(stonadsendringId: Int): HttpEntity<NyPeriodeRequest> {
     return initHttpEntity(NyPeriodeRequest(
-      LocalDate.now(), LocalDate.now(), stonadsendringId, BigDecimal.valueOf(17.01),"NOK", "RESULTATKODE_TEST",
-    "TEST"))
+      LocalDate.now(), LocalDate.now(), stonadsendringId, BigDecimal.valueOf(17.01), "NOK", "RESULTATKODE_TEST"
+    ))
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

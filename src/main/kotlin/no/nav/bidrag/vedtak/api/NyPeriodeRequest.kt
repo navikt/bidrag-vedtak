@@ -27,10 +27,7 @@ data class  NyPeriodeRequest(
   val valutakode: String = "",
 
   @ApiModelProperty(value = "Resultatkode")
-  val resultatkode: String = "",
-
-  @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String = ""
+  val resultatkode: String = ""
 
 )
 
@@ -39,7 +36,6 @@ fun NyPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
       PeriodeDto::periodeId.name -> 0
-      PeriodeDto::opprettetTimestamp.name -> LocalDateTime.now()
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
     }
   })

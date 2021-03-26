@@ -3,7 +3,6 @@ package no.nav.bidrag.vedtak.dto
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
-import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 data class StonadsendringDto(
@@ -27,13 +26,7 @@ data class StonadsendringDto(
   val kravhaverId: String = "",
 
   @ApiModelProperty(value = "Mottaker-id")
-  val mottakerId: String = "",
-
-  @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String = "",
-
-  @ApiModelProperty(value = "Opprettet timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+  val mottakerId: String = ""
 )
 
 fun StonadsendringDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
