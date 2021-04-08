@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS grunnlag
     grunnlag_referanse varchar(50) NOT NULL,
     vedtak_id integer NOT NULL,
     grunnlag_type varchar(20) NOT NULL,
-    grunnlag_innhold jsonb NOT NULL,
+    grunnlag_innhold text NOT NULL,
     CONSTRAINT grunnlag_pkey PRIMARY KEY (grunnlag_id),
     CONSTRAINT fk_vedtak_id FOREIGN KEY (vedtak_id)
         REFERENCES vedtak (vedtak_id) MATCH SIMPLE

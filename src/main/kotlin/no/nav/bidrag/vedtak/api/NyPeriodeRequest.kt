@@ -14,7 +14,7 @@ data class  NyPeriodeRequest(
   @ApiModelProperty(value = "Periode-fom")
   val periodeFom: LocalDate = LocalDate.now(),
 
-  @ApiModelProperty(value = "Periode-tom")
+  @ApiModelProperty(value = "periode-til-dato")
   val periodeTom: LocalDate = LocalDate.now(),
 
   @ApiModelProperty(value = "Stonadsendring-id")
