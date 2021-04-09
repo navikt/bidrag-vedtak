@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
+import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.dto.toPeriodeEntity
@@ -13,7 +15,6 @@ import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PersistenceService(
@@ -22,7 +23,6 @@ class PersistenceService(
   val periodeRepository: PeriodeRepository,
 ) {
 
-  @Transactional
   fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
     val nyttVedtak = dto.toVedtakEntity()
     val vedtak = vedtakRepository.save(nyttVedtak)
@@ -40,7 +40,6 @@ class PersistenceService(
     return vedtakDtoListe
   }
 
-  @Transactional
   fun opprettNyStonadsendring(dto: StonadsendringDto): StonadsendringDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
@@ -62,7 +61,6 @@ class PersistenceService(
     return stonadsendringDtoListe
   }
 
-  @Transactional
   fun opprettNyPeriode(dto: PeriodeDto): PeriodeDto {
     val eksisterendeStonadsendring = stonadsendringRepository.findById(dto.stonadsendringId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke stonadsendring med id %d i databasen", dto.stonadsendringId)) }
@@ -83,5 +81,13 @@ class PersistenceService(
       .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
 
     return periodeDtoListe
+  }
+
+  fun opprettNyttGrunnlag(dto: GrunnlagDto): GrunnlagDto {
+    return GrunnlagDto((1..100).random(), dto.grunnlagReferanse, dto.vedtakId, dto.grunnlagType, dto.grunnlagInnhold)
+  }
+
+  fun opprettNyttPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
+    return dto
   }
 }

@@ -5,16 +5,13 @@ import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
-data class NyStonadsendringRequest(
+@ApiModel(value = "Egenskaper ved en stønadsendring")
+data class OpprettStonadsendringRequest(
 
   @ApiModelProperty(value = "Stønadstype")
   val stonadType: String = "",
 
-  @ApiModelProperty(value = "Vedtak-id")
-  val vedtakId: Int = 0,
-
-  @ApiModelProperty("Referanse til sak")
+  @ApiModelProperty(value = "Referanse til sak")
   val sakId: String? = null,
 
   @ApiModelProperty(value = "Søknadsid, referanse til batchkjøring, fritekst")
@@ -27,15 +24,20 @@ data class NyStonadsendringRequest(
   val kravhaverId: String = "",
 
   @ApiModelProperty(value = "Id til den som mottar bidraget")
-  val mottakerId: String = ""
+  val mottakerId: String = "",
+
+  @ApiModelProperty(value = "Liste over alle perioder som inngår i stønadsendringen")
+  val periodeListe: List<OpprettPeriodeRequest> = emptyList()
 )
 
-fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
-  val propertiesByName = NyStonadsendringRequest::class.memberProperties.associateBy { it.name }
+fun OpprettStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
+  val propertiesByName = OpprettStonadsendringRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      StonadsendringDto::vedtakId.name -> vedtakId
       StonadsendringDto::stonadsendringId.name -> 0
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }
   })
 }
+

@@ -3,9 +3,13 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
+import no.nav.bidrag.vedtak.TestUtil
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
+import no.nav.bidrag.vedtak.api.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.OpprettVedtakResponse
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
@@ -37,6 +41,9 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
   private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
@@ -54,6 +61,7 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
@@ -77,17 +85,15 @@ class VedtakControllerTest {
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo("1111") },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo("TEST") }
+      Executable { assertThat(response?.body?.enhetId).isEqualTo("1111") },
+      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo("TEST") }
     )
-    stonadsendringRepository.deleteAll()
-    vedtakRepository.deleteAll()
   }
 
   @Test
   fun `skal finne data for ett vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "1111", opprettetAv = "TEST"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
 
     // Henter forekomst
     val response = securedTestRestTemplate.exchange(
@@ -102,18 +108,16 @@ class VedtakControllerTest {
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
       Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.enhetsnummer).isEqualTo(nyttVedtakOpprettet.enhetsnummer) },
-      Executable { assertThat(response?.body?.opprettetAv).isEqualTo(nyttVedtakOpprettet.opprettetAv) }
+      Executable { assertThat(response?.body?.enhetId).isEqualTo(nyttVedtakOpprettet.enhetId) },
+      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet.saksbehandlerId) }
     )
-    stonadsendringRepository.deleteAll()
-    vedtakRepository.deleteAll()
   }
 
   @Test
   fun `skal finne data for alle vedtak`() {
     // Oppretter nye forekomster
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "1111", opprettetAv = "TEST"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(enhetsnummer = "2222", opprettetAv = "TEST"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(enhetId = "2222", saksbehandlerId = "TEST"))
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
@@ -130,18 +134,37 @@ class VedtakControllerTest {
       Executable { assertThat(response?.body?.alleVedtak).isNotNull },
       Executable { assertThat(response?.body?.alleVedtak!!.size).isEqualTo(2) },
       Executable { assertThat(response?.body?.alleVedtak!![0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
-      Executable { assertThat(response?.body?.alleVedtak!![0].enhetsnummer).isEqualTo(nyttVedtakOpprettet1.enhetsnummer) },
-      Executable { assertThat(response?.body?.alleVedtak!![0].opprettetAv).isEqualTo(nyttVedtakOpprettet1.opprettetAv) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].enhetId).isEqualTo(nyttVedtakOpprettet1.enhetId) },
+      Executable { assertThat(response?.body?.alleVedtak!![0].saksbehandlerId).isEqualTo(nyttVedtakOpprettet1.saksbehandlerId) },
       Executable { assertThat(response?.body?.alleVedtak!![1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
-      Executable { assertThat(response?.body?.alleVedtak!![1].enhetsnummer).isEqualTo(nyttVedtakOpprettet2.enhetsnummer) },
-      Executable { assertThat(response?.body?.alleVedtak!![1].opprettetAv).isEqualTo(nyttVedtakOpprettet2.opprettetAv) }
+      Executable { assertThat(response?.body?.alleVedtak!![1].enhetId).isEqualTo(nyttVedtakOpprettet2.enhetId) },
+      Executable { assertThat(response?.body?.alleVedtak!![1].saksbehandlerId).isEqualTo(nyttVedtakOpprettet2.saksbehandlerId) }
     )
-    stonadsendringRepository.deleteAll()
-    vedtakRepository.deleteAll()
+  }
+
+  @Test
+  fun `skal opprette nytt komplett vedtak`() {
+    // Oppretter ny forekomst
+    val response = securedTestRestTemplate.exchange(
+      fullUrlForNyttKomplettVedtak(),
+      HttpMethod.POST,
+      byggKomplettVedtakRequest(),
+      OpprettVedtakResponse::class.java
+    )
+
+    assertAll(
+      Executable { assertThat(response).isNotNull() },
+      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(response?.body).isNotNull() }
+    )
   }
 
   private fun fullUrlForNyttVedtak(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.VEDTAK_NY).toUriString()
+  }
+
+  private fun fullUrlForNyttKomplettVedtak(): String {
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.VEDTAK_NY_KOMPLETT).toUriString()
   }
 
   private fun fullUrlForSokVedtak(): String {
@@ -153,7 +176,11 @@ class VedtakControllerTest {
   }
 
   private fun byggRequest(): HttpEntity<NyttVedtakRequest> {
-    return initHttpEntity(NyttVedtakRequest("1111", "TEST"))
+    return initHttpEntity(NyttVedtakRequest(saksbehandlerId = "TEST", enhetId = "1111"))
+  }
+
+  private fun byggKomplettVedtakRequest(): HttpEntity<OpprettVedtakRequest> {
+    return initHttpEntity(TestUtil.byggKomplettVedtakRequest())
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

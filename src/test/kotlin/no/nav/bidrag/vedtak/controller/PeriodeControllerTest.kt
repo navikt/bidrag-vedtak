@@ -77,7 +77,7 @@ class PeriodeControllerTest {
   fun `skal opprette ny periode`() {
 
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
@@ -117,7 +117,7 @@ class PeriodeControllerTest {
   @Test
   fun `skal finne data for en periode`(){
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
@@ -133,8 +133,8 @@ class PeriodeControllerTest {
     // Oppretter ny forekomst av periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -169,8 +169,8 @@ class PeriodeControllerTest {
   @Test
   fun `skal finne alle perioder for stonadsendring`(){
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
@@ -196,8 +196,8 @@ class PeriodeControllerTest {
     // Oppretter nye forekomster av periode
     val nyPeriodeOpprettet1 = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -207,8 +207,8 @@ class PeriodeControllerTest {
 
     val nyPeriodeOpprettet2 = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
         belop = BigDecimal.valueOf(2000.02),
         valutakode = "NOK",
@@ -217,10 +217,10 @@ class PeriodeControllerTest {
     )
 
     // Opprettet periode som ikke skal returneres i resultatet
-    val nyPeriodeOpprettet3 = persistenceService.opprettNyPeriode(
+    persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
         belop = BigDecimal.valueOf(9999.99),
         valutakode = "NOK",

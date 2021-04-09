@@ -21,10 +21,10 @@ data class Periode(
   val periodeId: Int = 0,
 
   @Column(nullable = false, name = "periode_fom")
-  val periodeFom: LocalDate = LocalDate.now(),
+  val periodeFomDato: LocalDate = LocalDate.now(),
 
-  @Column(nullable = false, name = "periode_tom")
-  val periodeTom: LocalDate = LocalDate.now(),
+  @Column(nullable = true, name = "periode_til_dato")
+  val periodeTilDato: LocalDate? = null,
 
   @ManyToOne
   @JoinColumn(name = "stonadsendring_id")
@@ -42,8 +42,8 @@ data class Periode(
 
   fun Periode.toPeriodeDto() = with(::PeriodeDto) {
     val propertiesByName = Periode::class.memberProperties.associateBy { it.name }
-    callBy(parameters.associate { parameter ->
-      parameter to when (parameter.name) {
+    callBy(parameters.associateWith { parameter ->
+      when (parameter.name) {
         PeriodeDto::stonadsendringId.name -> stonadsendring.stonadsendringId
         else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
       }
