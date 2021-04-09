@@ -25,7 +25,10 @@ data class Stonadsendring(
   @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
-  @Column(nullable = false, name = "behandling_id")
+  @Column(nullable = true, name = "sak_id")
+  val sakId: String = "",
+
+  @Column(nullable = true, name = "behandling_id")
   val behandlingId: String = "",
 
   @Column(nullable = false, name = "skyldner_id")

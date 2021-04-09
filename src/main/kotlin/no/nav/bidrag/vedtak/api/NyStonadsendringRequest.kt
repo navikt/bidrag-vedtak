@@ -15,6 +15,9 @@ data class NyStonadsendringRequest(
   @ApiModelProperty(value = "Vedtak-id")
   val vedtakId: Int = 0,
 
+  @ApiModelProperty(value = "Sak-id")
+  val sakId: String = "",
+
   @ApiModelProperty(value = "Behandling-id")
   val behandlingId: String = "",
 

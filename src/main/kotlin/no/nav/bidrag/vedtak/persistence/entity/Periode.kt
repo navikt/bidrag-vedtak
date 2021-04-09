@@ -23,7 +23,7 @@ data class Periode(
   @Column(nullable = false, name = "periode_fom")
   val periodeFom: LocalDate = LocalDate.now(),
 
-  @Column(nullable = false, name = "periode_tom")
+  @Column(nullable = true, name = "periode_til_dato")
   val periodeTom: LocalDate = LocalDate.now(),
 
   @ManyToOne

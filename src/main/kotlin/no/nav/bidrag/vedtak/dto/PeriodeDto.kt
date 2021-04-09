@@ -25,10 +25,10 @@ data class PeriodeDto(
   val belop: BigDecimal = BigDecimal.ZERO,
 
   @ApiModelProperty(value = "Valutakode")
-  val valutakode: String,
+  val valutakode: String = "",
 
   @ApiModelProperty(value = "Resultatkode")
-  val resultatkode: String
+  val resultatkode: String = ""
 )
 
 fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
