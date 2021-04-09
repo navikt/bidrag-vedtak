@@ -8,19 +8,27 @@ import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.dto.toPeriodeEntity
 import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
+import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeDto
+import no.nav.bidrag.vedtak.persistence.entity.toPeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringDto
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class PersistenceService(
   val vedtakRepository: VedtakRepository,
   val stonadsendringRepository: StonadsendringRepository,
   val periodeRepository: PeriodeRepository,
+  val grunnlagRepository: GrunnlagRepository,
+  val periodeGrunnlagRepository: PeriodeGrunnlagRepository
 ) {
 
   fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
@@ -81,6 +89,32 @@ class PersistenceService(
       .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
 
     return periodeDtoListe
+  }
+
+  fun finnGrunnlag(id: Int): GrunnlagDto {
+    val grunnlag = grunnlagRepository.findById(id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", id)) }
+    return grunnlag.toGrunnlagDto()
+  }
+
+  fun finnAlleGrunnlagForVedtak(id: Int): List<GrunnlagDto> {
+    val grunnlagDtoListe = mutableListOf<GrunnlagDto>()
+    grunnlagRepository.hentAlleGrunnlagForVedtak(id)
+      .forEach {grunnlag -> grunnlagDtoListe.add(grunnlag.toGrunnlagDto()) }
+    return grunnlagDtoListe
+  }
+
+  fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
+    val periodeGrunnlag = periodeGrunnlagRepository.hentPeriodeGrunnlag(periodeId, grunnlagId)
+    return periodeGrunnlag.toPeriodeGrunnlagDto()
+  }
+
+  fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
+    val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
+    periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
+      .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
+
+    return periodeGrunnlagDtoListe
   }
 
   fun opprettNyttGrunnlag(dto: GrunnlagDto): GrunnlagDto {

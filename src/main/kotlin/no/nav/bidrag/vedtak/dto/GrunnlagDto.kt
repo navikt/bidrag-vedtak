@@ -1,6 +1,9 @@
 package no.nav.bidrag.vedtak.dto
 
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Vedtak
+import kotlin.reflect.full.memberProperties
 
 data class GrunnlagDto(
 
@@ -19,3 +22,13 @@ data class GrunnlagDto(
   @ApiModelProperty(value = "Innholdet i grunnlaget")
   val grunnlagInnhold: String = ""
 )
+
+fun GrunnlagDto.toGrunnlagEntity(eksisterendeVedtak: Vedtak) = with(::Grunnlag) {
+  val propertiesByName = GrunnlagDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    parameter to when (parameter.name) {
+      Grunnlag::vedtak.name -> eksisterendeVedtak
+      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
+    }
+  })
+}
