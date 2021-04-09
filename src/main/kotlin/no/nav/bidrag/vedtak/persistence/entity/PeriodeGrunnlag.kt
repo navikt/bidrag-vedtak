@@ -1,13 +1,16 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
+import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.IdClass
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import kotlin.reflect.full.memberProperties
 
+@IdClass(PeriodeGrunnlagPK::class)
 @Entity
 data class PeriodeGrunnlag(
 
@@ -24,7 +27,7 @@ data class PeriodeGrunnlag(
   @Column(nullable = false, name = "grunnlag_valgt")
   val grunnlagValgt: Boolean = true
 
-  )
+  ) //: Serializable
 
 fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }
@@ -35,3 +38,5 @@ fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
     }
   })
 }
+
+data class PeriodeGrunnlagPK(val periode: Periode = Periode(), val grunnlag: Grunnlag = Grunnlag()) : Serializable
