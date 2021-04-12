@@ -15,10 +15,10 @@ import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.junit.jupiter.api.function.Executable
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -60,7 +60,7 @@ class PeriodeServiceTest {
   fun `skal opprette ny periode`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakRequest = NyttVedtakRequest("TEST", "1111")
+    val nyttVedtakRequest = NyttVedtakRequest(saksbehandlerId = "1111", enhetId = "TEST")
     val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
 
     // Oppretter ny stonad
@@ -83,7 +83,7 @@ class PeriodeServiceTest {
       Executable { assertThat(nyPeriodeOpprettet.valutakode).isEqualTo("NOK") },
       Executable { assertThat(nyPeriodeOpprettet.resultatkode).isEqualTo("RESULTATKODE_TEST") },
       Executable { assertThat(nyStonadsendringOpprettet.stonadType).isEqualTo("BIDRAG") },
-      Executable { assertThat(nyttVedtakOpprettet.enhetsnummer).isEqualTo("TEST") }
+      Executable { assertThat(nyttVedtakOpprettet.enhetId).isEqualTo("TEST") }
 
     )
     periodeRepository.deleteAll()
@@ -96,7 +96,7 @@ class PeriodeServiceTest {
     // Finner data for én periode
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
@@ -108,8 +108,8 @@ class PeriodeServiceTest {
     // Oppretter ny periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -137,8 +137,8 @@ class PeriodeServiceTest {
     // Finner alle perioder
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter ny stonadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
@@ -160,8 +160,8 @@ class PeriodeServiceTest {
     nyPeriodeDtoListe.add(
       persistenceService.opprettNyPeriode(
         PeriodeDto(
-          periodeFom = LocalDate.now(),
-          periodeTom = LocalDate.now(),
+          periodeFomDato = LocalDate.now(),
+          periodeTilDato = LocalDate.now(),
           stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(17.02),
           valutakode = "NOK",
@@ -174,8 +174,8 @@ class PeriodeServiceTest {
     nyPeriodeDtoListe.add(
       persistenceService.opprettNyPeriode(
         PeriodeDto(
-          periodeFom = LocalDate.now(),
-          periodeTom = LocalDate.now(),
+          periodeFomDato = LocalDate.now(),
+          periodeTilDato = LocalDate.now(),
           stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId,
           belop = BigDecimal.valueOf(2000.01),
           valutakode = "NOK",
@@ -188,8 +188,8 @@ class PeriodeServiceTest {
     nyPeriodeDtoListe.add(
       persistenceService.opprettNyPeriode(
         PeriodeDto(
-          periodeFom = LocalDate.now(),
-          periodeTom = LocalDate.now(),
+          periodeFomDato = LocalDate.now(),
+          periodeTilDato = LocalDate.now(),
           stonadsendringId = nyStonadsendringOpprettet2.stonadsendringId,
           belop = BigDecimal.valueOf(9999.99),
           valutakode = "NOK",

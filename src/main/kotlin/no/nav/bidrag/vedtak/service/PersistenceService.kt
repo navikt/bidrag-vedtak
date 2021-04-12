@@ -20,11 +20,10 @@ import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
 class PersistenceService(
   val vedtakRepository: VedtakRepository,
   val stonadsendringRepository: StonadsendringRepository,
@@ -32,6 +31,8 @@ class PersistenceService(
   val grunnlagRepository: GrunnlagRepository,
   val periodeGrunnlagRepository: PeriodeGrunnlagRepository
 ) {
+
+  private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
 
   fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
     val nyttVedtak = dto.toVedtakEntity()
@@ -116,8 +117,11 @@ class PersistenceService(
 
   fun opprettNyttPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
     val eksisterendePeriode = periodeRepository.findById(dto.periodeId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke stonadsendring med id %d i databasen", dto.periodeId)) }
-    val nyttPeriodeGrunnlag = dto.toPeriodeGrunnlagEntity(eksisterendePeriode)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", dto.periodeId)) }
+    val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", dto.grunnlagId)) }
+    val nyttPeriodeGrunnlag = dto.toPeriodeGrunnlagEntity(eksisterendePeriode, eksisterendeGrunnlag)
+    LOGGER.info("nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
     val periodeGrunnlag = periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
@@ -129,7 +133,7 @@ class PersistenceService(
 
   fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
     val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
-    val periodeGrunnlag = periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
+    periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
       .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
 
     return periodeGrunnlagDtoListe

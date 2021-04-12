@@ -5,6 +5,7 @@ import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -29,6 +30,9 @@ class StonadsendringServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
   private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
@@ -40,6 +44,7 @@ class StonadsendringServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
@@ -72,7 +77,7 @@ class StonadsendringServiceTest {
   @Test
   fun `skal finne data for en stonadsendring`() {
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny stønadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
@@ -104,8 +109,8 @@ class StonadsendringServiceTest {
   fun `skal finne alle stonadsendringer for et vedtak`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter nye stønadsendringer
     val nyStonadsendringDtoListe = mutableListOf<StonadsendringDto>()

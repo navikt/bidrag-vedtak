@@ -26,10 +26,10 @@ data class Stonadsendring(
   val vedtak: Vedtak = Vedtak(),
 
   @Column(nullable = true, name = "sak_id")
-  val sakId: String = "",
+  val sakId: String? = null,
 
   @Column(nullable = true, name = "behandling_id")
-  val behandlingId: String = "",
+  val behandlingId: String? = null,
 
   @Column(nullable = false, name = "skyldner_id")
   val skyldnerId: String = "",
@@ -43,8 +43,8 @@ data class Stonadsendring(
 
 fun Stonadsendring.toStonadsendringDto() = with(::StonadsendringDto) {
   val propertiesByName = Stonadsendring::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associate { parameter ->
-    parameter to when (parameter.name) {
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
       StonadsendringDto::vedtakId.name -> vedtak.vedtakId
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }

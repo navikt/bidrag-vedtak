@@ -5,8 +5,10 @@ import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.toStonadsendringDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class StonadsendringService (val persistenceService: PersistenceService) {
 
   fun opprettNyStonadsendring(request: NyStonadsendringRequest): StonadsendringDto {
