@@ -26,7 +26,7 @@ data class GrunnlagDto(
 fun GrunnlagDto.toGrunnlagEntity(eksisterendeVedtak: Vedtak) = with(::Grunnlag) {
   val propertiesByName = GrunnlagDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
-    parameter to when (parameter.name) {
+    when (parameter.name) {
       Grunnlag::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
     }

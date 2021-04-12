@@ -3,8 +3,10 @@ package no.nav.bidrag.vedtak.service
 import no.nav.bidrag.vedtak.api.AlleGrunnlagForVedtakResponse
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class GrunnlagService (val persistenceService: PersistenceService) {
 
   fun finnGrunnlag(grunnlag_id: Int): GrunnlagDto {

@@ -31,12 +31,13 @@ data class PeriodeGrunnlag(
 
 fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associate { parameter ->
-    parameter to when (parameter.name) {
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
       PeriodeGrunnlagDto::periodeId.name -> periode.periodeId
+      PeriodeGrunnlagDto::grunnlagId.name -> grunnlag.grunnlagId
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
     }
   })
 }
 
-data class PeriodeGrunnlagPK(val periode: Periode = Periode(), val grunnlag: Grunnlag = Grunnlag()) : Serializable
+class PeriodeGrunnlagPK(val periode: Int = 0, val grunnlag: Int = 0) : Serializable

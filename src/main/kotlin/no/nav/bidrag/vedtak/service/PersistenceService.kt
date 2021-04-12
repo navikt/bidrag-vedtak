@@ -5,7 +5,9 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.dto.toGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toPeriodeEntity
+import no.nav.bidrag.vedtak.dto.toPeriodeGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
@@ -19,10 +21,8 @@ import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
 class PersistenceService(
   val vedtakRepository: VedtakRepository,
   val stonadsendringRepository: StonadsendringRepository,
@@ -91,6 +91,14 @@ class PersistenceService(
     return periodeDtoListe
   }
 
+  fun opprettNyttGrunnlag(dto: GrunnlagDto): GrunnlagDto {
+    val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
+    val nyttGrunnlag = dto.toGrunnlagEntity(eksisterendeVedtak)
+    val grunnlag = grunnlagRepository.save(nyttGrunnlag)
+    return grunnlag.toGrunnlagDto()
+  }
+
   fun finnGrunnlag(id: Int): GrunnlagDto {
     val grunnlag = grunnlagRepository.findById(id)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", id)) }
@@ -104,6 +112,16 @@ class PersistenceService(
     return grunnlagDtoListe
   }
 
+  fun opprettNyttPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
+    val eksisterendePeriode = periodeRepository.findById(dto.periodeId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", dto.periodeId)) }
+    val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", dto.grunnlagId)) }
+    val nyttPeriodeGrunnlag = dto.toPeriodeGrunnlagEntity(eksisterendePeriode, eksisterendeGrunnlag)
+    val periodeGrunnlag = periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)
+    return periodeGrunnlag.toPeriodeGrunnlagDto()
+  }
+
   fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
     val periodeGrunnlag = periodeGrunnlagRepository.hentPeriodeGrunnlag(periodeId, grunnlagId)
     return periodeGrunnlag.toPeriodeGrunnlagDto()
@@ -115,13 +133,5 @@ class PersistenceService(
       .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
 
     return periodeGrunnlagDtoListe
-  }
-
-  fun opprettNyttGrunnlag(dto: GrunnlagDto): GrunnlagDto {
-    return GrunnlagDto((1..100).random(), dto.grunnlagReferanse, dto.vedtakId, dto.grunnlagType, dto.grunnlagInnhold)
-  }
-
-  fun opprettNyttPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
-    return dto
   }
 }

@@ -4,6 +4,8 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -26,6 +28,12 @@ class VedtakServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
@@ -40,6 +48,8 @@ class VedtakServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
