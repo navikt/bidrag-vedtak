@@ -5,7 +5,7 @@ import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
-interface PeriodeGrunnlagRepository : CrudRepository<Periode, Int?>{
+interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, Int?>{
 
   @Query(
     "select pg from PeriodeGrunnlag pg " +
