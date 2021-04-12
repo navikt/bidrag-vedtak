@@ -20,6 +20,7 @@ import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -30,6 +31,8 @@ class PersistenceService(
   val grunnlagRepository: GrunnlagRepository,
   val periodeGrunnlagRepository: PeriodeGrunnlagRepository
 ) {
+
+  private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
 
   fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
     val nyttVedtak = dto.toVedtakEntity()
@@ -118,6 +121,7 @@ class PersistenceService(
     val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", dto.grunnlagId)) }
     val nyttPeriodeGrunnlag = dto.toPeriodeGrunnlagEntity(eksisterendePeriode, eksisterendeGrunnlag)
+    LOGGER.info("nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
     val periodeGrunnlag = periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
