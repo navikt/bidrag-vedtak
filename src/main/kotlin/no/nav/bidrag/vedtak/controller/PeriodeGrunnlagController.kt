@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import no.nav.bidrag.vedtak.api.AlleGrunnlagForPeriodeResponse
-import no.nav.bidrag.vedtak.api.AlleGrunnlagForVedtakResponse
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.service.PeriodeGrunnlagService
 import no.nav.security.token.support.core.api.Protected

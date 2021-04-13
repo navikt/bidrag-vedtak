@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
+import no.nav.bidrag.vedtak.api.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.OpprettVedtakResponse
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.Protected
@@ -75,10 +77,28 @@ class VedtakController(private val vedtakService: VedtakService) {
     return ResponseEntity(alleVedtak, HttpStatus.OK)
   }
 
-  companion object {
+  @PostMapping(VEDTAK_NY_KOMPLETT)
+  @ApiOperation("Opprett nytt komplett vedtak")
+  @ApiResponses(
+    value = [
+      ApiResponse(code = 200, message = "Komplett vedtak opprettet"),
+      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
+      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(code = 500, message = "Serverfeil"),
+      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+    ]
+  )
 
+  fun opprettKomplettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<OpprettVedtakResponse>? {
+    val vedtakOpprettet = vedtakService.opprettKomplettVedtak(request)
+    LOGGER.info("Vedtak med id ${vedtakOpprettet.vedtakId} er opprettet")
+    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
+  }
+
+  companion object {
     const val VEDTAK_SOK = "/vedtak"
     const val VEDTAK_NY = "/vedtak/ny"
+    const val VEDTAK_NY_KOMPLETT = "/vedtak/ny/komplett"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }
 }

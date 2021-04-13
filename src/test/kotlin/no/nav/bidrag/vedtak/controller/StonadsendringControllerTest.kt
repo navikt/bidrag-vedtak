@@ -67,7 +67,7 @@ class StonadsendringControllerTest {
   @Test
   fun `skal opprette ny stonadsendring`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stønadsendring
     val response = securedTestRestTemplate.exchange(
@@ -92,7 +92,7 @@ class StonadsendringControllerTest {
   @Test
   fun `skal finne data for en stonadsendring`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stønadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
@@ -130,8 +130,8 @@ class StonadsendringControllerTest {
   @Test
   fun `skal finne alle stonadsendringer for et vedtak`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, opprettetAv = "TEST", enhetsnummer = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter nye forekomster av stønadsendring
     val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
@@ -157,7 +157,7 @@ class StonadsendringControllerTest {
     )
 
     // Stonadsendring som ikke skal legges med i resultatet
-    val nyStonadsendringOpprettet3 = persistenceService.opprettNyStonadsendring(
+    persistenceService.opprettNyStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet2.vedtakId,

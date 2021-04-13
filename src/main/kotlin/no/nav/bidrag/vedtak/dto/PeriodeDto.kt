@@ -12,29 +12,29 @@ data class PeriodeDto(
   @ApiModelProperty(value = "Periode-id")
   val periodeId: Int = 0,
 
-  @ApiModelProperty(value = "Periode fom")
-  val periodeFom: LocalDate = LocalDate.now(),
+  @ApiModelProperty(value = "Periode fra-og-med-dato")
+  val periodeFomDato: LocalDate = LocalDate.now(),
 
-  @ApiModelProperty(value = "Periode tom")
-  val periodeTom: LocalDate = LocalDate.now(),
+  @ApiModelProperty(value = "Periode til-dato")
+  val periodeTilDato: LocalDate? = null,
 
   @ApiModelProperty(value = "Stonadsendring-id")
   val stonadsendringId: Int = 0,
 
-  @ApiModelProperty(value = "Belop")
+  @ApiModelProperty(value = "Beregnet stønadsbeløp")
   val belop: BigDecimal = BigDecimal.ZERO,
 
-  @ApiModelProperty(value = "Valutakode")
-  val valutakode: String = "",
+  @ApiModelProperty(value = "Valutakoden tilhørende stønadsbeløpet")
+  val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkode")
+  @ApiModelProperty(value = "Resultatkoden tilhørende stønadsbeløpet")
   val resultatkode: String = ""
 )
 
 fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
   val propertiesByName = PeriodeDto::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associate { parameter ->
-    parameter to when (parameter.name) {
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
       Periode::stonadsendring.name -> eksisterendeStonadsendring
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
     }

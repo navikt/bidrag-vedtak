@@ -6,10 +6,9 @@ import io.swagger.annotations.ApiModelProperty
 @ApiModel
 data class NyttVedtakRequest(
 
-  @ApiModelProperty(value = "Enhetsnummer")
-  val enhetsnummer: String = "",
+  @ApiModelProperty(value = "Id til saksbehandler som oppretter vedtaket")
+  val saksbehandlerId: String = "",
 
-  @ApiModelProperty(value = "Opprettet av")
-  val opprettetAv: String = ""
-
+  @ApiModelProperty(value = "Id til enheten som er ansvarlig for vedtaket")
+  val enhetId: String = ""
 )

@@ -17,11 +17,11 @@ data class Vedtak (
   @Column(name = "vedtak_id")
   val vedtakId: Int = 0,
 
-  @Column(nullable = false)
-  val enhetsnummer: String = "",
+  @Column(nullable = false, name = "enhet_id")
+  val enhetId: String = "",
 
   @Column(nullable = false, name = "opprettet_av")
-  val opprettetAv: String = "",
+  val saksbehandlerId: String = "",
 
   @Column(nullable = false, name = "opprettet_timestamp")
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
@@ -29,8 +29,8 @@ data class Vedtak (
 
 fun Vedtak.toVedtakDto() = with(::VedtakDto) {
   val propertiesByName = Vedtak::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associate { parameter ->
-    parameter to when (parameter.name) {
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
       else -> propertiesByName[parameter.name]?.get(this@toVedtakDto)
     }
   })
