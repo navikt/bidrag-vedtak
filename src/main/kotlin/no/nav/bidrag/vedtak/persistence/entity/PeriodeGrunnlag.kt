@@ -29,7 +29,7 @@ data class PeriodeGrunnlag(
   @Column(nullable = false, name = "grunnlag_valgt")
   val grunnlagValgt: Boolean = true
 
-  ) //: Serializable
+  )
 
 fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }

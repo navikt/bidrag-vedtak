@@ -6,7 +6,7 @@ import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import kotlin.reflect.full.memberProperties
 
 @ApiModel(value = "Egenskaper ved et grunnlag")
-data class OpprettGrunnlagRequest(
+data class NyttGrunnlagRequest(
 
   @ApiModelProperty(value = "Referanse til grunnlaget")
   val grunnlagReferanse: String = "",
@@ -18,8 +18,8 @@ data class OpprettGrunnlagRequest(
   val grunnlagInnhold: String = ""
 )
 
-fun OpprettGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
-  val propertiesByName = OpprettGrunnlagRequest::class.memberProperties.associateBy { it.name }
+fun NyttGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
+  val propertiesByName = NyttGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       GrunnlagDto::vedtakId.name -> vedtakId

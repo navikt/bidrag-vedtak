@@ -76,7 +76,7 @@ class PeriodeGrunnlagControllerTest {
   fun `skal opprette nytt periodegrunnlag`() {
 
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
@@ -91,8 +91,8 @@ class PeriodeGrunnlagControllerTest {
     // Oppretter ny forekomst av periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -131,7 +131,7 @@ class PeriodeGrunnlagControllerTest {
   fun `skal finne data for et periodegrunnlag`() {
 
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
@@ -146,8 +146,8 @@ class PeriodeGrunnlagControllerTest {
     // Oppretter ny forekomst av periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -195,7 +195,7 @@ class PeriodeGrunnlagControllerTest {
   @Test
   fun `skal finne alle grunnlag for en periode`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(opprettetAv = "TEST", enhetsnummer = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter nye forekomster av stønadsendring
     val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
@@ -212,8 +212,8 @@ class PeriodeGrunnlagControllerTest {
     // Oppretter ny forekomst av periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
-        periodeFom = LocalDate.now(),
-        periodeTom = LocalDate.now(),
+        periodeFomDato = LocalDate.now(),
+        periodeTilDato = LocalDate.now(),
         stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
@@ -299,8 +299,8 @@ class PeriodeGrunnlagControllerTest {
     return initHttpEntity(NyttPeriodeGrunnlagRequest(
       periodeId,
       grunnlagId,
-      equals(true)
-    ))
+      true)
+    )
   }
 
   private fun <T> initHttpEntity(body: T): HttpEntity<T> {

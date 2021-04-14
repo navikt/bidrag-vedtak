@@ -24,6 +24,18 @@ data class  NyttPeriodeGrunnlagRequest(
   val grunnlagValgt: Boolean = true
 )
 
+fun NyttPeriodeGrunnlagRequest.toPeriodeGrunnlagDto(
+  periodeId: Int, grunnlagId: Int) = with(::PeriodeGrunnlagDto) {
+  val propertiesByName = NyttPeriodeGrunnlagRequest::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associate { parameter ->
+    parameter to when (parameter.name) {
+      PeriodeGrunnlagDto::periodeId.name -> periodeId
+      PeriodeGrunnlagDto::grunnlagId.name -> grunnlagId
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
+    }
+  })
+}
+
 fun NyttPeriodeGrunnlagRequest.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
   val propertiesByName = NyttPeriodeGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associate { parameter ->

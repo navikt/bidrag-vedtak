@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
-import no.nav.bidrag.vedtak.api.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.api.OpprettVedtakResponse
+import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.NyttVedtakResponse
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.Protected
@@ -89,7 +89,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettKomplettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<OpprettVedtakResponse>? {
+  fun opprettKomplettVedtak(@RequestBody request: NyttKomplettVedtakRequest): ResponseEntity<NyttVedtakResponse>? {
     val vedtakOpprettet = vedtakService.opprettKomplettVedtak(request)
     LOGGER.info("Vedtak med id ${vedtakOpprettet.vedtakId} er opprettet")
     return ResponseEntity(vedtakOpprettet, HttpStatus.OK)

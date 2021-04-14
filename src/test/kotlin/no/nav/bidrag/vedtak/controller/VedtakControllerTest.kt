@@ -6,8 +6,8 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
-import no.nav.bidrag.vedtak.api.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.api.OpprettVedtakResponse
+import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.NyttVedtakResponse
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
@@ -159,7 +159,7 @@ class VedtakControllerTest {
       fullUrlForNyttKomplettVedtak(),
       HttpMethod.POST,
       byggKomplettVedtakRequest(),
-      OpprettVedtakResponse::class.java
+      NyttVedtakResponse::class.java
     )
 
     assertAll(
@@ -189,7 +189,7 @@ class VedtakControllerTest {
     return initHttpEntity(NyttVedtakRequest(saksbehandlerId = "TEST", enhetId = "1111"))
   }
 
-  private fun byggKomplettVedtakRequest(): HttpEntity<OpprettVedtakRequest> {
+  private fun byggKomplettVedtakRequest(): HttpEntity<NyttKomplettVedtakRequest> {
     return initHttpEntity(TestUtil.byggKomplettVedtakRequest())
   }
 

@@ -1,10 +1,11 @@
 package no.nav.bidrag.vedtak
 
 import no.nav.bidrag.vedtak.api.GrunnlagReferanseRequest
-import no.nav.bidrag.vedtak.api.OpprettGrunnlagRequest
-import no.nav.bidrag.vedtak.api.OpprettPeriodeRequest
-import no.nav.bidrag.vedtak.api.OpprettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
+import no.nav.bidrag.vedtak.api.NyPeriodeRequest
+import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -18,7 +19,7 @@ class TestUtil {
 
   companion object {
 
-    fun byggKomplettVedtakRequest() = OpprettVedtakRequest(
+    fun byggKomplettVedtakRequest() = NyttKomplettVedtakRequest(
       saksbehandlerId = "X123456",
       enhetId = "4812",
       grunnlagListe = byggGrunnlagListe(),
@@ -26,26 +27,26 @@ class TestUtil {
     )
 
     private fun byggGrunnlagListe() = listOf(
-      OpprettGrunnlagRequest(
+      NyttGrunnlagRequest(
         grunnlagReferanse = "BM-LIGS-19",
         grunnlagType = "INNTEKT"
       ),
-      OpprettGrunnlagRequest(
+      NyttGrunnlagRequest(
         grunnlagReferanse = "BM-LIGN-19",
         grunnlagType = "INNTEKT"
       ),
-      OpprettGrunnlagRequest(
+      NyttGrunnlagRequest(
         grunnlagReferanse = "BP-SKATTEKLASSE-19",
         grunnlagType = "SKATTEKLASSE"
       ),
-      OpprettGrunnlagRequest(
+      NyttGrunnlagRequest(
         grunnlagReferanse = "SJAB-REF001",
         grunnlagType = "SJABLON"
       )
     )
 
     private fun byggStonadsendringListe() = listOf(
-      OpprettStonadsendringRequest(
+      NyStonadsendringRequest(
         stonadType = "BIDRAG",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
@@ -53,13 +54,13 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettPeriodeRequest(
+          NyPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-01-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
-            listOf(
+            grunnlagReferanseListe = listOf(
               GrunnlagReferanseRequest(
                 grunnlagReferanse = "BM-LIGS-19",
                 grunnlagValgt = true
@@ -74,13 +75,13 @@ class TestUtil {
               )
             )
           ),
-          OpprettPeriodeRequest(
+          NyPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-07-01"),
             periodeTilDato = LocalDate.parse("2020-01-01"),
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
-            listOf(
+            grunnlagReferanseListe = listOf(
               GrunnlagReferanseRequest(
                 grunnlagReferanse = "BM-LIGS-19",
                 grunnlagValgt = false
@@ -101,7 +102,7 @@ class TestUtil {
           )
         )
       ),
-      OpprettStonadsendringRequest(
+      NyStonadsendringRequest(
         stonadType = "SAERTILSKUDD",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
@@ -109,13 +110,13 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettPeriodeRequest(
+          NyPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-06-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
-            listOf(
+            grunnlagReferanseListe = listOf(
               GrunnlagReferanseRequest(
                 grunnlagReferanse = "BM-LIGS-19",
                 grunnlagValgt = true
@@ -126,13 +127,13 @@ class TestUtil {
               )
             )
           ),
-          OpprettPeriodeRequest(
+          NyPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-08-01"),
             periodeTilDato = LocalDate.parse("2019-09-01"),
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
-            listOf(
+            grunnlagReferanseListe = listOf(
               GrunnlagReferanseRequest(
                 grunnlagReferanse = "BM-LIGS-19",
                 grunnlagValgt = false
