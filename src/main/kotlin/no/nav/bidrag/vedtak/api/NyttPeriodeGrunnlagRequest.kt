@@ -40,8 +40,8 @@ fun NyttPeriodeGrunnlagRequest.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDt
   val propertiesByName = NyttPeriodeGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associate { parameter ->
     parameter to when (parameter.name) {
-      PeriodeGrunnlagDto::periodeId.name -> 0
-      PeriodeGrunnlagDto::grunnlagId.name -> 0
+      PeriodeGrunnlagDto::periodeId.name -> periodeId
+      PeriodeGrunnlagDto::grunnlagId.name -> grunnlagId
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
     }
   })

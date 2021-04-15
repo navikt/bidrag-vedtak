@@ -15,6 +15,8 @@ import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
+import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
@@ -46,13 +48,20 @@ class PeriodeGrunnlagControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
-  private lateinit var periodeRepository: PeriodeRepository
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
-  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+  private lateinit var periodeRepository: PeriodeRepository
+
+/*  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
+
+  @Autowired
+  private lateinit var vedtakRepository: VedtakRepository*/
+
 
   @Autowired
   private lateinit var persistenceService: PersistenceService
@@ -66,9 +75,11 @@ class PeriodeGrunnlagControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()
-    periodeGrunnlagRepository.deleteAll()
+/*    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()*/
   }
 
 
@@ -88,6 +99,14 @@ class PeriodeGrunnlagControllerTest {
       mottakerId = "1111")
     )
 
+    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
+      GrunnlagDto(
+        grunnlagReferanse = "",
+        vedtakId = nyttVedtakOpprettet.vedtakId,
+        grunnlagType = "Beregnet Inntekt",
+        grunnlagInnhold = "100")
+    )
+
     // Oppretter ny forekomst av periode
     val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
       PeriodeDto(
@@ -97,14 +116,6 @@ class PeriodeGrunnlagControllerTest {
         belop = BigDecimal.valueOf(17.01),
         valutakode = "NOK",
         resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
-    )
-
-    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
-      GrunnlagDto(
-        grunnlagReferanse = "",
-        vedtakId = nyttVedtakOpprettet.vedtakId,
-        grunnlagType = "Beregnet Inntekt",
-        grunnlagInnhold = "100")
     )
 
     // Oppretter ny forekomst av periodeGrunnlag
@@ -123,6 +134,7 @@ class PeriodeGrunnlagControllerTest {
       Executable { assertThat(response?.body?.grunnlagId).isEqualTo(nyttGrunnlagOpprettet.grunnlagId) },
 
     )
+    periodeGrunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()
   }
@@ -172,8 +184,7 @@ class PeriodeGrunnlagControllerTest {
 
     // Henter forekomst
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokPeriodeGrunnlag()}/${nyPeriodeOpprettet.periodeId}" +
-          "/${nyttGrunnlagOpprettet.grunnlagId}",
+      "${fullUrlForSokPeriodeGrunnlag()}/${nyPeriodeOpprettet.periodeId}&${nyttGrunnlagOpprettet.grunnlagId}",
       HttpMethod.GET,
       null,
       PeriodeGrunnlagDto::class.java
@@ -187,9 +198,9 @@ class PeriodeGrunnlagControllerTest {
       Executable { assertThat(response?.body?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagId) },
       Executable { assertThat(response?.body?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagValgt) }
     )
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
-    grunnlagRepository.deleteAll()
-    grunnlagRepository.deleteAll()
   }
 
   @Test
@@ -220,7 +231,6 @@ class PeriodeGrunnlagControllerTest {
         resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
     )
 
-
     val nyttGrunnlagOpprettet1 = persistenceService.opprettNyttGrunnlag(
       GrunnlagDto(
         grunnlagReferanse = "",
@@ -243,7 +253,6 @@ class PeriodeGrunnlagControllerTest {
         grunnlagId = nyttGrunnlagOpprettet1.grunnlagId,
         grunnlagValgt = true)
     )
-
     // Oppretter ny forekomst av periodeGrunnlag
     val nyttPeriodeGrunnlagOpprettet2 = persistenceService.opprettNyttPeriodeGrunnlag(
       PeriodeGrunnlagDto(
@@ -251,7 +260,6 @@ class PeriodeGrunnlagControllerTest {
         grunnlagId = nyttGrunnlagOpprettet2.grunnlagId,
         grunnlagValgt = false)
     )
-
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
@@ -267,16 +275,17 @@ class PeriodeGrunnlagControllerTest {
       Executable { assertThat(response?.body).isNotNull },
       Executable { assertThat(response?.body?.alleGrunnlagForPeriode).isNotNull },
       Executable { assertThat(response?.body?.alleGrunnlagForPeriode!!.size).isEqualTo(2) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].periodeId).isEqualTo(nyPeriodeOpprettet.periodeId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].periodeId).isEqualTo(nyPeriodeOpprettet.periodeId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagId).isEqualTo(nyttGrunnlagOpprettet1.grunnlagId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagId).isEqualTo(nyttGrunnlagOpprettet2.grunnlagId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagValgt).isEqualTo(equals(true)) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagValgt).isEqualTo(equals(false)) }
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.periodeId) },
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.periodeId) },
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagId) },
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) },
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagValgt) },
+      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagValgt) },
 
     )
-    periodeRepository.deleteAll()
+    periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
   }
 
   private fun fullUrlForNyttPeriodeGrunnlag(): String {

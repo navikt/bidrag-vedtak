@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunnlagService) {
 
   @PostMapping(PERIODEGRUNNLAG_NYTT)
-  @ApiOperation("Opprette nytt periodegrunnlag")
+  @ApiOperation("Opprett nytt periodegrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Periodegrunnlag opprettet"),
@@ -39,7 +39,8 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
     return ResponseEntity(periodeGrunnlagOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODEGRUNNLAG_SOK/{periodeId + grunnlagId}")
+  @GetMapping("$PERIODEGRUNNLAG_SOK/{periodeId}/{grunnlagId}")
+//  @GetMapping("$PERIODEGRUNNLAG_SOK/{input}")
   @ApiOperation("Finn ett grunnlag for en periode")
   @ApiResponses(
     value = [
@@ -53,7 +54,9 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
   )
 
   fun hentPeriodeGrunnlag(@PathVariable periodeId: Int, grunnlagId: Int): ResponseEntity<PeriodeGrunnlagDto> {
+//  fun hentPeriodeGrunnlag(@PathVariable input: String): ResponseEntity<PeriodeGrunnlagDto> {
     val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(periodeId, grunnlagId)
+//    val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(1, 1)
     LOGGER.info("Følgende grunnlag ble funnet: $periodeGrunnlagFunnet")
     return ResponseEntity(periodeGrunnlagFunnet, HttpStatus.OK)
   }
@@ -70,7 +73,7 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun hentGrunnlagForPeriode(@PathVariable periodeId: Int):
+  fun hentAlleGrunnlagForPeriode(@PathVariable periodeId: Int):
       ResponseEntity<AlleGrunnlagForPeriodeResponse> {
     val alleGrunnlagFunnet = periodeGrunnlagService.hentAlleGrunnlagForPeriode(periodeId)
     LOGGER.info("Følgende grunnlag ble funnet: $alleGrunnlagFunnet")

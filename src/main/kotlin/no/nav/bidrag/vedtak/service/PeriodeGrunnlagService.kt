@@ -16,10 +16,10 @@ class PeriodeGrunnlagService (val persistenceService: PersistenceService) {
   }
 
   fun hentPeriodeGrunnlag(periodeId: Int, grunnlag_id: Int): PeriodeGrunnlagDto {
-    return persistenceService.hentPeriodeGrunnlag(periodeId, grunnlag_id)
+    return persistenceService.finnPeriodeGrunnlag(periodeId, grunnlag_id)
   }
 
   fun hentAlleGrunnlagForPeriode(periodeId: Int): AlleGrunnlagForPeriodeResponse {
-    return AlleGrunnlagForPeriodeResponse(persistenceService.hentAlleGrunnlagForPeriode(periodeId))
+    return AlleGrunnlagForPeriodeResponse(persistenceService.finnAlleGrunnlagForPeriode(periodeId))
   }
 }

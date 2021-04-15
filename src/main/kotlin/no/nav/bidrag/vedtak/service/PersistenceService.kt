@@ -126,12 +126,12 @@ class PersistenceService(
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
+  fun finnPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
     val periodeGrunnlag = periodeGrunnlagRepository.hentPeriodeGrunnlag(periodeId, grunnlagId)
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
+  fun finnAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
     val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
     periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
       .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
