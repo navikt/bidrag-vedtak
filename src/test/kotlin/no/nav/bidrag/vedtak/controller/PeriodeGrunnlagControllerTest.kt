@@ -56,13 +56,6 @@ class PeriodeGrunnlagControllerTest {
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
-/*  @Autowired
-  private lateinit var stonadsendringRepository: StonadsendringRepository
-
-  @Autowired
-  private lateinit var vedtakRepository: VedtakRepository*/
-
-
   @Autowired
   private lateinit var persistenceService: PersistenceService
 
@@ -139,6 +132,7 @@ class PeriodeGrunnlagControllerTest {
     grunnlagRepository.deleteAll()
   }
 
+/*
   @Test
   fun `skal finne data for et periodegrunnlag`() {
 
@@ -202,6 +196,7 @@ class PeriodeGrunnlagControllerTest {
     grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
   }
+*/
 
   @Test
   fun `skal finne alle grunnlag for en periode`() {

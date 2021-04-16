@@ -5,6 +5,7 @@ import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -30,6 +31,9 @@ class StonadsendringServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
@@ -44,6 +48,7 @@ class StonadsendringServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()

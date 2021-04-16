@@ -53,7 +53,8 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
     ]
   )
 
-  fun hentPeriodeGrunnlag(@PathVariable periodeId: Int, grunnlagId: Int): ResponseEntity<PeriodeGrunnlagDto> {
+  // @RequestParam
+  fun hentPeriodeGrunnlag(@PathVariable periodeId: Int, @PathVariable grunnlagId: Int): ResponseEntity<PeriodeGrunnlagDto> {
 //  fun hentPeriodeGrunnlag(@PathVariable input: String): ResponseEntity<PeriodeGrunnlagDto> {
     val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(periodeId, grunnlagId)
 //    val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(1, 1)

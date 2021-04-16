@@ -25,19 +25,19 @@ import org.springframework.test.context.ActiveProfiles
 class VedtakServiceTest {
 
   @Autowired
-  private lateinit var vedtakService: VedtakService
-
-  @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
-
-  @Autowired
-  private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
   private lateinit var stonadsendringRepository: StonadsendringRepository
+
+  @Autowired
+  private lateinit var vedtakService: VedtakService
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -49,8 +49,8 @@ class VedtakServiceTest {
   fun `init`() {
     // Sletter alle forekomster
     periodeGrunnlagRepository.deleteAll()
-    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }

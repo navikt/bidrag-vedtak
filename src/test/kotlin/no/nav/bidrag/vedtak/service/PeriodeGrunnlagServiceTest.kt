@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.service
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
@@ -10,6 +11,7 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
@@ -35,6 +37,9 @@ class PeriodeGrunnlagServiceTest {
   private lateinit var periodeGrunnlagService: PeriodeGrunnlagService
 
   @Autowired
+  private lateinit var grunnlagService: GrunnlagService
+
+  @Autowired
   private lateinit var periodeService: PeriodeService
 
   @Autowired
@@ -45,6 +50,9 @@ class PeriodeGrunnlagServiceTest {
 
   @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
@@ -61,6 +69,8 @@ class PeriodeGrunnlagServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -83,13 +93,14 @@ class PeriodeGrunnlagServiceTest {
     )
     val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
 
-    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
-      GrunnlagDto(
-        grunnlagReferanse = "",
-        vedtakId = nyttVedtakOpprettet.vedtakId,
-        grunnlagType = "Beregnet Inntekt",
-        grunnlagInnhold = "100")
-    )
+    // Oppretter nytt grunnlag
+    val nyttGrunnlagRequest = NyttGrunnlagRequest(
+      grunnlagReferanse = "",
+      vedtakId = nyttVedtakOpprettet.vedtakId,
+      grunnlagType = "Beregnet Inntekt",
+      grunnlagInnhold = "100")
+
+    val grunnlagOpprettet = grunnlagService.opprettNyttGrunnlag(nyttGrunnlagRequest)
 
     // Oppretter ny periode
     val nyPeriodeRequest = NyPeriodeRequest(
@@ -101,7 +112,7 @@ class PeriodeGrunnlagServiceTest {
     // Oppretter nytt periodegrunnlag
     val nyttPeriodeGrunnlagRequest = NyttPeriodeGrunnlagRequest(
       nyPeriodeOpprettet.periodeId,
-      nyttGrunnlagOpprettet.grunnlagId,
+      grunnlagOpprettet.grunnlagId,
       true
     )
     val nyttPeriodeGrunnlagOpprettet = periodeGrunnlagService.opprettNyttPeriodeGrunnlag(nyttPeriodeGrunnlagRequest)
@@ -170,6 +181,9 @@ class PeriodeGrunnlagServiceTest {
       Executable { assertThat(periodeGrunnlagFunnet.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagId) },
       Executable { assertThat(periodeGrunnlagFunnet.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagValgt) }
     )
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
@@ -226,7 +240,6 @@ class PeriodeGrunnlagServiceTest {
       )
     )
 
-
     // Oppretter nye periodegrunnlag
     val nyttPeriodegrunnlagtoListe = mutableListOf<PeriodeGrunnlagDto>()
 
@@ -266,6 +279,9 @@ class PeriodeGrunnlagServiceTest {
         }
       }
     )
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
