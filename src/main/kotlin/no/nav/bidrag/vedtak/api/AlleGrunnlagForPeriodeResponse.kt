@@ -8,5 +8,5 @@ import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 data class AlleGrunnlagForPeriodeResponse(
 
   @ApiModelProperty(value = "Alle grunnlag for en periode")
-  val alleGrunnlagForVedtak: List<PeriodeGrunnlagDto> = emptyList()
+  val alleGrunnlagForPeriode: List<PeriodeGrunnlagDto> = emptyList()
 )

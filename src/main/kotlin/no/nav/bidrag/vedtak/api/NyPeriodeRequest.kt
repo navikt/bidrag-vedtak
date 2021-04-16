@@ -7,8 +7,8 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
-data class  NyPeriodeRequest(
+@ApiModel(value = "Egenskaper ved en periode")
+data class NyPeriodeRequest(
 
   @ApiModelProperty(value = "Periode fra-og-med-dato")
   val periodeFomDato: LocalDate = LocalDate.now(),
@@ -25,10 +25,23 @@ data class  NyPeriodeRequest(
   @ApiModelProperty(value = "Valutakoden tilhørende stønadsbeløpet")
   val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkoden tilhørende stønadsbeløpet")
-  val resultatkode: String = ""
+  @ApiModelProperty(value = "Resultatkoden tilhørende  stønadsbeløpet")
+  val resultatkode: String = "",
 
+  @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
+  val grunnlagReferanseListe: List<GrunnlagReferanseRequest> = emptyList()
 )
+
+fun NyPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
+  val propertiesByName = NyPeriodeRequest::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      PeriodeDto::stonadsendringId.name -> stonadsendringId
+      PeriodeDto::periodeId.name -> 0
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
+    }
+  })
+}
 
 fun NyPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
   val propertiesByName = NyPeriodeRequest::class.memberProperties.associateBy { it.name }

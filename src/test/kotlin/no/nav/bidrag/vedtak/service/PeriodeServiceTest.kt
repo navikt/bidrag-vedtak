@@ -7,6 +7,8 @@ import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -28,19 +30,25 @@ import java.time.LocalDate
 class PeriodeServiceTest {
 
   @Autowired
+  private lateinit var periodeService: PeriodeService
+
+  @Autowired
   private lateinit var stonadsendringService: StonadsendringService
 
   @Autowired
   private lateinit var vedtakService: VedtakService
 
   @Autowired
-  private lateinit var periodeService: PeriodeService
-
-  @Autowired
   private lateinit var vedtakRepository: VedtakRepository
 
   @Autowired
   private lateinit var stonadsendringRepository: StonadsendringRepository
+
+  @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
@@ -51,6 +59,8 @@ class PeriodeServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -222,7 +232,4 @@ class PeriodeServiceTest {
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
-
   }
-
-
