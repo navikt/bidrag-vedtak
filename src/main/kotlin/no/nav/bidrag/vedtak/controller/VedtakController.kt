@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
+import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakResponse
@@ -61,7 +62,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping(VEDTAK_SOK)
-  @ApiOperation("Finn data for alle vedtak")
+  @ApiOperation("Finn data for vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Alle vedtak funnet"),
@@ -95,8 +96,27 @@ class VedtakController(private val vedtakService: VedtakService) {
     return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
   }
 
+  @GetMapping("$VEDTAK_SOK_KOMPLETT/{vedtakId}")
+  @ApiOperation("Finn komplette data for et vedtak")
+  @ApiResponses(
+    value = [
+      ApiResponse(code = 200, message = "Vedtak funnet"),
+      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
+      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
+      ApiResponse(code = 404, message = "Vedtak ikke funnet"),
+      ApiResponse(code = 500, message = "Serverfeil"),
+      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+    ]
+  )
+  fun finnKomplettVedtak(@PathVariable vedtakId: Int): ResponseEntity<KomplettVedtakResponse> {
+    val vedtakFunnet = vedtakService.finnKomplettVedtak(vedtakId)
+    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
+    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+  }
+
   companion object {
     const val VEDTAK_SOK = "/vedtak"
+    const val VEDTAK_SOK_KOMPLETT = "/vedtak/komplett"
     const val VEDTAK_NY = "/vedtak/ny"
     const val VEDTAK_NY_KOMPLETT = "/vedtak/ny/komplett"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)

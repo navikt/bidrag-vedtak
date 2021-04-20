@@ -1,12 +1,10 @@
 package no.nav.bidrag.vedtak.api
 
-import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel(value = "Egenskaper ved en stønadsendring")
-data class NyStonadsendringRequest(
+data class StonadsendringKomplettResponse(
 
   @ApiModelProperty(value = "Stønadstype")
   val stonadType: String = "",
@@ -30,11 +28,11 @@ data class NyStonadsendringRequest(
   val mottakerId: String = "",
 
   @ApiModelProperty(value = "Liste over alle perioder som inngår i stønadsendringen")
-  val periodeListe: List<NyPeriodeRequest> = emptyList()
+  val periodeListe: List<PeriodeResponse> = emptyList()
 )
 
-fun NyStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
-  val propertiesByName = NyStonadsendringRequest::class.memberProperties.associateBy { it.name }
+fun StonadsendringKomplettResponse.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
+  val propertiesByName = StonadsendringKomplettResponse::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       StonadsendringDto::vedtakId.name -> vedtakId
@@ -44,8 +42,8 @@ fun NyStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::Stonadse
   })
 }
 
-fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
-  val propertiesByName = NyStonadsendringRequest::class.memberProperties.associateBy { it.name }
+fun StonadsendringKomplettResponse.toStonadsendringDto() = with(::StonadsendringDto) {
+  val propertiesByName = StonadsendringKomplettResponse::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       StonadsendringDto::stonadsendringId.name -> 0

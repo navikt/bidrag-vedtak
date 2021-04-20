@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
+import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
@@ -36,6 +37,10 @@ class VedtakService (val persistenceService: PersistenceService) {
 
   fun finnAlleVedtak(): AlleVedtakResponse {
     return AlleVedtakResponse(persistenceService.finnAlleVedtak())
+  }
+
+  fun finnKomplettVedtak(vedtak_id: Int): KomplettVedtakResponse {
+    return persistenceService.finnKomplettVedtak(vedtak_id)
   }
 
   // Opprett komplett vedtak (alle tabeller)

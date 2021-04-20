@@ -2,7 +2,7 @@ package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.StonadsendringRespons
 import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
@@ -83,7 +83,7 @@ class PeriodeGrunnlagServiceTest {
     val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringRequest = NyStonadsendringRequest(
+    val nyStonadsendringRequest = StonadsendringRespons(
       "BIDRAG",
       nyttVedtakOpprettet.vedtakId,
       "1111",

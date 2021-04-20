@@ -5,7 +5,7 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.AlleGrunnlagForPeriodeResponse
 import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.StonadsendringRespons
 import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto

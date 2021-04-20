@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -49,6 +50,22 @@ class PersistenceService(
     val vedtakDtoListe = mutableListOf<VedtakDto>()
     vedtakRepository.findAll().forEach { vedtakDtoListe.add(it.toVedtakDto()) }
     return vedtakDtoListe
+  }
+
+  fun finnKomplettVedtak(vedtakId: Int): KomplettVedtakResponse {
+    var respons = KomplettVedtakResponse()
+    var vedtak = vedtakRepository.findById(vedtakId).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", vedtakId)) }
+    respons.vedtakId = vedtak.vedtakId
+    respons.enhetId = vedtak.enhetId
+    respons.saksbehandlerId = vedtak.saksbehandlerId
+    respons.opprettetTimestamp = vedtak.opprettetTimestamp
+/*    grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
+      .forEach {grunnlag -> respons.grunnlagListe.add(grunnlag.toGrunnlagDto()) }*/
+    respons.grunnlagListe = grunnlagRepository.hentAlleGrunnlagForVedtak(vedtak.vedtakId)
+    respons.stonadsendringListe = stonadsendringRepository.hentAlleStonadsendringerForVedtak(vedtak.vedtakId)
+      .forEach()
+    return respons
+//    return vedtak.toVedtakDto()
   }
 
   fun opprettNyStonadsendring(dto: StonadsendringDto): StonadsendringDto {
