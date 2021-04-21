@@ -2,7 +2,7 @@ package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.StonadsendringRespons
+import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
@@ -74,7 +74,7 @@ class PeriodeServiceTest {
     val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
 
     // Oppretter ny stonad
-    val nyStonadsendringRequest = StonadsendringRespons(
+    val nyStonadsendringRequest = NyStonadsendringRequest(
       "BIDRAG", nyttVedtakOpprettet.vedtakId,
       "1111", "1111", "1111", "1111"
     )
@@ -219,17 +219,17 @@ class PeriodeServiceTest {
       Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].resultatkode).isEqualTo(
         "RESULTATKODE_TEST_FLERE_PERIODER") },
       Executable {
-      periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
-        assertAll(
-          Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
-          Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
-          Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
-        )
+        periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
+          assertAll(
+            Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
+            Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
+            Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
+          )
+        }
       }
-    }
     )
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
-  }
+}

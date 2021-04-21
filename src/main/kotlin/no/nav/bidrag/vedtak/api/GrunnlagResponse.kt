@@ -23,25 +23,3 @@ data class GrunnlagResponse(
   @ApiModelProperty(value = "Innholdet i grunnlaget")
   val grunnlagInnhold: String = ""
 )
-
-fun GrunnlagResponse.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
-  val propertiesByName = GrunnlagResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      GrunnlagDto::vedtakId.name -> vedtakId
-      GrunnlagDto::grunnlagId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
-    }
-  })
-}
-
-fun GrunnlagResponse.toGrunnlagDto() = with(::GrunnlagDto) {
-  val propertiesByName = GrunnlagResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      GrunnlagDto::vedtakId.name -> vedtakId
-      GrunnlagDto::grunnlagId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
-    }
-  })
-}

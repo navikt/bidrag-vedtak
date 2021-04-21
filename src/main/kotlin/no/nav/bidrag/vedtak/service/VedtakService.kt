@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.api.AlleVedtakResponse
+import no.nav.bidrag.vedtak.api.GrunnlagReferanseResponse
+import no.nav.bidrag.vedtak.api.GrunnlagResponse
 import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
@@ -8,12 +10,16 @@ import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.NyttVedtakResponse
+import no.nav.bidrag.vedtak.api.PeriodeResponse
+import no.nav.bidrag.vedtak.api.StonadsendringKomplettResponse
 import no.nav.bidrag.vedtak.api.toGrunnlagDto
 import no.nav.bidrag.vedtak.api.toPeriodeDto
 import no.nav.bidrag.vedtak.api.toStonadsendringDto
 import no.nav.bidrag.vedtak.controller.PeriodeController
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
+import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
+import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -31,17 +37,57 @@ class VedtakService (val persistenceService: PersistenceService) {
     return persistenceService.opprettNyttVedtak(vedtakDto)
   }
 
-  fun finnEttVedtak(vedtak_id: Int): VedtakDto {
-    return persistenceService.finnEttVedtak(vedtak_id)
+  fun finnEttVedtak(vedtakId: Int): VedtakDto {
+    return persistenceService.finnEttVedtak(vedtakId)
   }
 
   fun finnAlleVedtak(): AlleVedtakResponse {
     return AlleVedtakResponse(persistenceService.finnAlleVedtak())
   }
 
-  fun finnKomplettVedtak(vedtak_id: Int): KomplettVedtakResponse {
-    return persistenceService.finnKomplettVedtak(vedtak_id)
+  fun finnKomplettVedtak(vedtakId: Int): KomplettVedtakResponse {
+    val respons = KomplettVedtakResponse()
+    val vedtakDto = persistenceService.finnEttVedtak(vedtakId)
+    val grunnlagResponseListe = ArrayList<GrunnlagResponse>()
+    val grunnlagDtoListe = persistenceService.finnAlleGrunnlagForVedtak(vedtakDto.vedtakId)
+    grunnlagDtoListe.forEach {grunnlagResponseListe.add(GrunnlagResponse(it.grunnlagId, it.grunnlagReferanse,
+    it.vedtakId, it.grunnlagType, it.grunnlagInnhold)) }
+    val stonadsendringDtoListe = persistenceService.finnAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
+    respons.stonadsendringListe = finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe)
+
+    return KomplettVedtakResponse(vedtakDto.vedtakId, vedtakDto.saksbehandlerId, vedtakDto.enhetId,
+      vedtakDto.opprettetTimestamp, grunnlagResponseListe, finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe))
   }
+
+  fun finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe: List<StonadsendringDto>): List<StonadsendringKomplettResponse> {
+    val stonadsendringKomplettResponseListe = ArrayList<StonadsendringKomplettResponse>()
+    stonadsendringDtoListe.forEach {
+      val periodeDtoListe = persistenceService.finnAllePerioderForStonadsendring(it.stonadsendringId)
+      stonadsendringKomplettResponseListe.add(
+        StonadsendringKomplettResponse(
+        it.stonadType, it.vedtakId, it.sakId, it.behandlingId, it.skyldnerId, it.kravhaverId, it.mottakerId,
+          finnPerioderTilKomplettVedtak(periodeDtoListe)))
+      }
+    return stonadsendringKomplettResponseListe
+  }
+
+  fun finnPerioderTilKomplettVedtak(periodeDtoListe: List<PeriodeDto>): List<PeriodeResponse> {
+    val periodeResponseListe = ArrayList<PeriodeResponse>()
+    val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
+    periodeDtoListe.forEach {
+      val periodeGrunnlagListe = persistenceService.finnAlleGrunnlagForPeriode(it.periodeId)
+      periodeGrunnlagListe.forEach {
+        val grunnlag = persistenceService.finnGrunnlag(it.grunnlagId)
+        grunnlagReferanseResponseListe.add(GrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
+      }
+      periodeResponseListe.add(
+        PeriodeResponse(it.periodeFomDato, it.periodeTilDato, it.stonadsendringId, it.belop, it.valutakode, it.resultatkode,
+          grunnlagReferanseResponseListe)
+      )
+    }
+    return periodeResponseListe
+  }
+
 
   // Opprett komplett vedtak (alle tabeller)
   fun opprettKomplettVedtak(vedtakRequest: NyttKomplettVedtakRequest): NyttVedtakResponse {

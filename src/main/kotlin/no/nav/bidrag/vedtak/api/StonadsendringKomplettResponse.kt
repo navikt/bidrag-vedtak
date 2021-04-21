@@ -30,24 +30,3 @@ data class StonadsendringKomplettResponse(
   @ApiModelProperty(value = "Liste over alle perioder som inngår i stønadsendringen")
   val periodeListe: List<PeriodeResponse> = emptyList()
 )
-
-fun StonadsendringKomplettResponse.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
-  val propertiesByName = StonadsendringKomplettResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      StonadsendringDto::vedtakId.name -> vedtakId
-      StonadsendringDto::stonadsendringId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
-    }
-  })
-}
-
-fun StonadsendringKomplettResponse.toStonadsendringDto() = with(::StonadsendringDto) {
-  val propertiesByName = StonadsendringKomplettResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      StonadsendringDto::stonadsendringId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
-    }
-  })
-}

@@ -3,8 +3,9 @@ package no.nav.bidrag.vedtak
 import no.nav.bidrag.vedtak.api.GrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.StonadsendringRespons
+import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -45,7 +46,7 @@ class TestUtil {
     )
 
     private fun byggStonadsendringListe() = listOf(
-      StonadsendringRespons(
+      NyStonadsendringRequest(
         stonadType = "BIDRAG",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
@@ -101,7 +102,7 @@ class TestUtil {
           )
         )
       ),
-      StonadsendringRespons(
+      NyStonadsendringRequest(
         stonadType = "SAERTILSKUDD",
         sakId = "SAK-001",
         behandlingId = "Fritekst",

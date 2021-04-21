@@ -4,7 +4,7 @@ import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
-import no.nav.bidrag.vedtak.api.StonadsendringRespons
+import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
@@ -211,8 +211,8 @@ class StonadsendringControllerTest {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(vedtakId: Int): HttpEntity<StonadsendringRespons> {
-    return initHttpEntity(StonadsendringRespons(
+  private fun byggRequest(vedtakId: Int): HttpEntity<NyStonadsendringRequest> {
+    return initHttpEntity(NyStonadsendringRequest(
       "BIDRAG",
       vedtakId,
       "1111",

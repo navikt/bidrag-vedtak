@@ -29,26 +29,5 @@ data class PeriodeResponse(
   val resultatkode: String = "",
 
   @ApiModelProperty(value = "Liste over alle grunnlag som inngår i perioden")
-  val grunnlagReferanseListe: List<GrunnlagReferanseRequest> = emptyList()
+  val grunnlagReferanseListe: List<GrunnlagReferanseResponse> = emptyList()
 )
-
-fun PeriodeResponse.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
-  val propertiesByName = PeriodeResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      PeriodeDto::stonadsendringId.name -> stonadsendringId
-      PeriodeDto::periodeId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
-    }
-  })
-}
-
-fun PeriodeResponse.toPeriodeDto() = with(::PeriodeDto) {
-  val propertiesByName = PeriodeResponse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      PeriodeDto::periodeId.name -> 0
-      else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
-    }
-  })
-}

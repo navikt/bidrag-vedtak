@@ -23,8 +23,8 @@ data class KomplettVedtakResponse(
   var opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 
   @ApiModelProperty(value = "Liste over alle grunnlag som inngår i vedtaket")
-  var grunnlagListe: List<Grunnlag> = emptyList(),
+  var grunnlagListe: List<GrunnlagResponse> = emptyList(),
 
   @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  var stonadsendringListe: List<Stonadsendring> = emptyList()
+  var stonadsendringListe: List<StonadsendringKomplettResponse> = emptyList()
 )
