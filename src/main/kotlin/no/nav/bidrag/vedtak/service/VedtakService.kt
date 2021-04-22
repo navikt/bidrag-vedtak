@@ -73,9 +73,10 @@ class VedtakService (val persistenceService: PersistenceService) {
 
   fun finnPerioderTilKomplettVedtak(periodeDtoListe: List<PeriodeDto>): List<PeriodeResponse> {
     val periodeResponseListe = ArrayList<PeriodeResponse>()
-    val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
+//    val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
     periodeDtoListe.forEach {
-      grunnlagReferanseResponseListe.clear()
+      val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
+//      grunnlagReferanseResponseListe.clear()
       val periodeGrunnlagListe = persistenceService.finnAlleGrunnlagForPeriode(it.periodeId)
       periodeGrunnlagListe.forEach {
         val grunnlag = persistenceService.finnGrunnlag(it.grunnlagId)
