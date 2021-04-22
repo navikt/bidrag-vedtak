@@ -77,6 +77,7 @@ class VedtakService (val persistenceService: PersistenceService) {
     periodeDtoListe.forEach {
       val periodeGrunnlagListe = persistenceService.finnAlleGrunnlagForPeriode(it.periodeId)
       periodeGrunnlagListe.forEach {
+        grunnlagReferanseResponseListe.clear()
         val grunnlag = persistenceService.finnGrunnlag(it.grunnlagId)
         grunnlagReferanseResponseListe.add(GrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
       }
