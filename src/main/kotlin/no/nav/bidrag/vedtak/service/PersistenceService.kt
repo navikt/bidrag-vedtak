@@ -52,27 +52,6 @@ class PersistenceService(
     return vedtakDtoListe
   }
 
-  fun finnKomplettVedtak(vedtakId: Int): KomplettVedtakResponse {
-    var respons = KomplettVedtakResponse()
-    var vedtak = vedtakRepository.findById(vedtakId).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", vedtakId)) }
-    var stonadsendringListe = stonadsendringRepository.hentAlleStonadsendringerForVedtak(vedtak.vedtakId)
-//    stonadsendringListe.forEach {periodeGrunnlagRepository.hentAlleGrunnlagForPeriode())
-//    var periodeListe = periodeRepository.hentAllePerioderForStonadsendring(stonadsendringListe.)
-
-
-/*    respons.vedtakId = vedtak.vedtakId
-    respons.enhetId = vedtak.enhetId
-    respons.saksbehandlerId = vedtak.saksbehandlerId
-    respons.opprettetTimestamp = vedtak.opprettetTimestamp
-*//*    grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
-      .forEach {grunnlag -> respons.grunnlagListe.add(grunnlag.toGrunnlagDto()) }*//*
-    respons.grunnlagListe = grunnlagRepository.hentAlleGrunnlagForVedtak(vedtak.vedtakId)
-    respons.stonadsendringListe = stonadsendringRepository.hentAlleStonadsendringerForVedtak(vedtak.vedtakId)
-      .forEach()*/
-    return respons
-//    return vedtak.toVedtakDto()
-  }
-
   fun opprettNyStonadsendring(dto: StonadsendringDto): StonadsendringDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }

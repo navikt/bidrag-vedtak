@@ -46,15 +46,14 @@ class VedtakService (val persistenceService: PersistenceService) {
   }
 
   fun finnKomplettVedtak(vedtakId: Int): KomplettVedtakResponse {
-    val respons = KomplettVedtakResponse()
     val vedtakDto = persistenceService.finnEttVedtak(vedtakId)
     val grunnlagResponseListe = ArrayList<GrunnlagResponse>()
     val grunnlagDtoListe = persistenceService.finnAlleGrunnlagForVedtak(vedtakDto.vedtakId)
-    grunnlagDtoListe.forEach {grunnlagResponseListe.add(GrunnlagResponse(it.grunnlagId, it.grunnlagReferanse,
-    it.vedtakId, it.grunnlagType, it.grunnlagInnhold)) }
+    grunnlagDtoListe.forEach {grunnlagResponseListe.add(GrunnlagResponse(
+      it.grunnlagId, it.grunnlagReferanse,
+      it.grunnlagType, it.grunnlagInnhold
+    )) }
     val stonadsendringDtoListe = persistenceService.finnAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
-    respons.stonadsendringListe = finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe)
-
     return KomplettVedtakResponse(vedtakDto.vedtakId, vedtakDto.saksbehandlerId, vedtakDto.enhetId,
       vedtakDto.opprettetTimestamp, grunnlagResponseListe, finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe))
   }
@@ -65,8 +64,14 @@ class VedtakService (val persistenceService: PersistenceService) {
       val periodeDtoListe = persistenceService.finnAllePerioderForStonadsendring(it.stonadsendringId)
       stonadsendringKomplettResponseListe.add(
         StonadsendringKomplettResponse(
-        it.stonadType, it.vedtakId, it.sakId, it.behandlingId, it.skyldnerId, it.kravhaverId, it.mottakerId,
-          finnPerioderTilKomplettVedtak(periodeDtoListe)))
+          it.stonadType,
+          it.sakId,
+          it.behandlingId,
+          it.skyldnerId,
+          it.kravhaverId,
+          it.mottakerId,
+          finnPerioderTilKomplettVedtak(periodeDtoListe)
+        ))
       }
     return stonadsendringKomplettResponseListe
   }
@@ -83,8 +88,14 @@ class VedtakService (val persistenceService: PersistenceService) {
         grunnlagReferanseResponseListe.add(GrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
       }
       periodeResponseListe.add(
-        PeriodeResponse(it.periodeFomDato, it.periodeTilDato, it.stonadsendringId, it.belop, it.valutakode, it.resultatkode,
-          grunnlagReferanseResponseListe)
+        PeriodeResponse(
+          it.periodeFomDato,
+          it.periodeTilDato,
+          it.belop,
+          it.valutakode,
+          it.resultatkode,
+          grunnlagReferanseResponseListe
+        )
       )
     }
     return periodeResponseListe

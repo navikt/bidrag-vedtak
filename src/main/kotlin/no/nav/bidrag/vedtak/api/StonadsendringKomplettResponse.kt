@@ -1,16 +1,11 @@
 package no.nav.bidrag.vedtak.api
 
 import io.swagger.annotations.ApiModelProperty
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import kotlin.reflect.full.memberProperties
 
 data class StonadsendringKomplettResponse(
 
   @ApiModelProperty(value = "Stønadstype")
   val stonadType: String = "",
-
-  @ApiModelProperty(value = "Vedtak-id")
-  val vedtakId: Int = 0,
 
   @ApiModelProperty(value = "Referanse til sak")
   val sakId: String? = null,
