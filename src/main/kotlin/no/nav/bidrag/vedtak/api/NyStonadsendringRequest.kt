@@ -53,4 +53,3 @@ fun NyStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
     }
   })
 }
-

@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto

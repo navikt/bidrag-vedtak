@@ -219,17 +219,17 @@ class PeriodeServiceTest {
       Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].resultatkode).isEqualTo(
         "RESULTATKODE_TEST_FLERE_PERIODER") },
       Executable {
-      periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
-        assertAll(
-          Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
-          Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
-          Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
-        )
+        periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
+          assertAll(
+            Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
+            Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},
+            Executable { assertThat(periode.belop).isEqualTo(nyPeriodeDtoListe[index].belop)}
+          )
+        }
       }
-    }
     )
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
-  }
+}

@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 class BidragVedtakLocal {
 
   companion object {
-    const val TEST_PROFILE = "test"
+    const val TEST_PROFILE = "local"
   }
 }
 
