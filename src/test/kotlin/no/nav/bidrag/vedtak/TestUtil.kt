@@ -1,11 +1,11 @@
 package no.nav.bidrag.vedtak
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.vedtak.api.GrunnlagReferanseRequest
-import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
 import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -29,7 +29,18 @@ class TestUtil {
     private fun byggGrunnlagListe() = listOf(
       NyttGrunnlagRequest(
         grunnlagReferanse = "BM-LIGS-19",
-        grunnlagType = "INNTEKT"
+        grunnlagType = "INNTEKT",
+        grunnlagInnhold = ObjectMapper().readTree(
+          """
+          {
+            "inntektDatoFraTil": {
+              "periodeDatoFra": "2019-01-01",
+              "periodeDatoTil": "2020-01-01"
+            },
+            "inntektBelop": 400000,
+            "inntektType": "SKATTEGRUNNLAG_SKE"
+          }"""
+        )
       ),
       NyttGrunnlagRequest(
         grunnlagReferanse = "BM-LIGN-19",

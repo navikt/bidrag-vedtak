@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.NyPeriodeRequest
 import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
@@ -94,12 +95,15 @@ class PeriodeGrunnlagServiceTest {
     val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
 
     // Oppretter nytt grunnlag
+    val mapper = ObjectMapper()
+    val jsonString = """{"Grunnlag 1":"Verdi 1","Grunnlag 2":"Verdi 2"}"""
+
     val nyttGrunnlagRequest = NyttGrunnlagRequest(
       grunnlagReferanse = "",
       vedtakId = nyttVedtakOpprettet.vedtakId,
       grunnlagType = "Beregnet Inntekt",
-      grunnlagInnhold = "100")
-
+      grunnlagInnhold = mapper.readTree(jsonString)
+    )
     val grunnlagOpprettet = grunnlagService.opprettNyttGrunnlag(nyttGrunnlagRequest)
 
     // Oppretter ny periode
@@ -160,7 +164,8 @@ class PeriodeGrunnlagServiceTest {
         grunnlagReferanse = "",
         vedtakId = nyttVedtakOpprettet.vedtakId,
         grunnlagType = "Beregnet Inntekt",
-        grunnlagInnhold = "100")
+        grunnlagInnhold = "100"
+      )
     )
 
     // Oppretter nytt periodegrunnlag
@@ -168,7 +173,8 @@ class PeriodeGrunnlagServiceTest {
       PeriodeGrunnlagDto(
         nyPeriodeOpprettet.periodeId,
         nyttGrunnlagOpprettet.grunnlagId,
-        true)
+        true
+      )
     )
 
     // Finner periodegrunnlag som akkurat ble opprettet

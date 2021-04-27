@@ -137,19 +137,19 @@ class VedtakServiceMockTest {
       Executable { assertThat(grunnlagDtoListe.size).isEqualTo(4) },
       Executable { assertThat(grunnlagDtoListe[0].grunnlagReferanse).isEqualTo("BM-LIGS-19") },
       Executable { assertThat(grunnlagDtoListe[0].grunnlagType).isEqualTo("INNTEKT") },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagInnhold).isEmpty() },
+      Executable { assertThat(grunnlagDtoListe[0].grunnlagInnhold).contains(""""periodeDatoFra":"2019-01-01",""") },
 
       Executable { assertThat(grunnlagDtoListe[1].grunnlagReferanse).isEqualTo("BM-LIGN-19") },
       Executable { assertThat(grunnlagDtoListe[1].grunnlagType).isEqualTo("INNTEKT") },
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagInnhold).isEmpty() },
+      Executable { assertThat(grunnlagDtoListe[1].grunnlagInnhold).isEqualTo("{}") },
 
       Executable { assertThat(grunnlagDtoListe[2].grunnlagReferanse).isEqualTo("BP-SKATTEKLASSE-19") },
       Executable { assertThat(grunnlagDtoListe[2].grunnlagType).isEqualTo("SKATTEKLASSE") },
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagInnhold).isEmpty() },
+      Executable { assertThat(grunnlagDtoListe[2].grunnlagInnhold).isEqualTo("{}") },
 
       Executable { assertThat(grunnlagDtoListe[3].grunnlagReferanse).isEqualTo("SJAB-REF001") },
       Executable { assertThat(grunnlagDtoListe[3].grunnlagType).isEqualTo("SJABLON") },
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagInnhold).isEmpty() },
+      Executable { assertThat(grunnlagDtoListe[3].grunnlagInnhold).isEqualTo("{}") },
 
       // Sjekk PeriodeGrunnlagDto
       Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
