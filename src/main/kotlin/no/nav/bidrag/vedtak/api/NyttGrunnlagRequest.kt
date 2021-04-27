@@ -1,5 +1,7 @@
 package no.nav.bidrag.vedtak.api
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
@@ -18,7 +20,7 @@ data class NyttGrunnlagRequest(
   val grunnlagType: String = "",
 
   @ApiModelProperty(value = "Innholdet i grunnlaget")
-  val grunnlagInnhold: String = ""
+  val grunnlagInnhold: JsonNode = ObjectMapper().createObjectNode()
 )
 
 fun NyttGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
@@ -27,6 +29,7 @@ fun NyttGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
     when (parameter.name) {
       GrunnlagDto::vedtakId.name -> vedtakId
       GrunnlagDto::grunnlagId.name -> 0
+      GrunnlagDto::grunnlagInnhold.name -> grunnlagInnhold.toString()
       else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
     }
   })
@@ -38,6 +41,7 @@ fun NyttGrunnlagRequest.toGrunnlagDto() = with(::GrunnlagDto) {
     when (parameter.name) {
       GrunnlagDto::vedtakId.name -> vedtakId
       GrunnlagDto::grunnlagId.name -> 0
+      GrunnlagDto::grunnlagInnhold.name -> grunnlagInnhold.toString()
       else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
     }
   })
