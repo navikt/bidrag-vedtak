@@ -3,8 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AlleGrunnlagForPeriodeResponse
-import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
+import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.service.PeriodeGrunnlagService
 import no.nav.security.token.support.core.api.Protected
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunnlagService) {
 
-  @PostMapping(PERIODEGRUNNLAG_NYTT)
-  @ApiOperation("Opprett nytt periodegrunnlag")
+  @PostMapping(OPPRETT_PERIODEGRUNNLAG)
+  @ApiOperation("Oppretter nytt periodegrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Periodegrunnlag opprettet"),
@@ -32,19 +31,17 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun opprettNyttPeriodeGrunnlag(@RequestBody request: NyttPeriodeGrunnlagRequest): ResponseEntity<PeriodeGrunnlagDto>? {
-    val periodeGrunnlagOpprettet = periodeGrunnlagService.opprettNyttPeriodeGrunnlag(request)
+  fun opprettPeriodeGrunnlag(@RequestBody request: OpprettPeriodeGrunnlagRequest): ResponseEntity<PeriodeGrunnlagDto>? {
+    val periodeGrunnlagOpprettet = periodeGrunnlagService.opprettPeriodeGrunnlag(request)
     LOGGER.info("Følgende periodegrunnlag er opprettet: $periodeGrunnlagOpprettet")
-    periodeGrunnlagService.opprettNyttPeriodeGrunnlag(request)
     return ResponseEntity(periodeGrunnlagOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODEGRUNNLAG_SOK/{periodeId}/{grunnlagId}")
-//  @GetMapping("$PERIODEGRUNNLAG_SOK/{input}")
-  @ApiOperation("Finn ett grunnlag for en periode")
+  @GetMapping("$HENT_PERIODEGRUNNLAG/{periodeId}/{grunnlagId}")
+  @ApiOperation("Henter et periodegrunnlag")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Grunnlag funnet"),
+      ApiResponse(code = 200, message = "Periodegrunnlag funnet"),
       ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
       ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
       ApiResponse(code = 404, message = "Grunnlag ikke funnet"),
@@ -53,20 +50,17 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
     ]
   )
 
-  // @RequestParam
   fun hentPeriodeGrunnlag(@PathVariable periodeId: Int, @PathVariable grunnlagId: Int): ResponseEntity<PeriodeGrunnlagDto> {
-//  fun hentPeriodeGrunnlag(@PathVariable input: String): ResponseEntity<PeriodeGrunnlagDto> {
     val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(periodeId, grunnlagId)
-//    val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(1, 1)
-    LOGGER.info("Følgende grunnlag ble funnet: $periodeGrunnlagFunnet")
+    LOGGER.info("Følgende periodegrunnlag ble funnet: $periodeGrunnlagFunnet")
     return ResponseEntity(periodeGrunnlagFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODEGRUNNLAG_SOK_PERIODE/{periodeId}")
-  @ApiOperation("finner alle grunnlag for en periode")
+  @GetMapping("$HENT_PERIODEGRUNNLAG_FOR_PERIODE/{periodeId}")
+  @ApiOperation("Henter alle periodegrunnlag for en periode")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle grunnlag funnet"),
+      ApiResponse(code = 200, message = "Alle periodegrunnlag funnet"),
       ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
       ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
       ApiResponse(code = 404, message = "Grunnlag ikke funnet for vedtak"),
@@ -74,17 +68,16 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun hentAlleGrunnlagForPeriode(@PathVariable periodeId: Int):
-      ResponseEntity<AlleGrunnlagForPeriodeResponse> {
-    val alleGrunnlagFunnet = periodeGrunnlagService.hentAlleGrunnlagForPeriode(periodeId)
-    LOGGER.info("Følgende grunnlag ble funnet: $alleGrunnlagFunnet")
-    return ResponseEntity(alleGrunnlagFunnet, HttpStatus.OK)
+  fun hentAllePeriodeGrunnlagForPeriode(@PathVariable periodeId: Int): ResponseEntity<List<PeriodeGrunnlagDto>> {
+    val allePeriodeGrunnlagFunnet = periodeGrunnlagService.hentAllePeriodeGrunnlagForPeriode(periodeId)
+    LOGGER.info("Følgende periodegrunnlag ble funnet: $allePeriodeGrunnlagFunnet")
+    return ResponseEntity(allePeriodeGrunnlagFunnet, HttpStatus.OK)
   }
 
   companion object {
-    const val PERIODEGRUNNLAG_NYTT = "/periodegrunnlag/nytt"
-    const val PERIODEGRUNNLAG_SOK = "/periodegrunnlag"
-    const val PERIODEGRUNNLAG_SOK_PERIODE = "/periodegrunnlag/periode"
+    const val OPPRETT_PERIODEGRUNNLAG = "/periodegrunnlag/nytt"
+    const val HENT_PERIODEGRUNNLAG = "/periodegrunnlag"
+    const val HENT_PERIODEGRUNNLAG_FOR_PERIODE = "/periodegrunnlag/periode"
     private val LOGGER = LoggerFactory.getLogger(PeriodeGrunnlagController::class.java)
   }
 }

@@ -24,7 +24,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
-import java.time.LocalDate
 
 @DisplayName("VedtakServiceMockTest")
 @ExtendWith(MockitoExtension::class)
@@ -54,18 +53,19 @@ class VedtakServiceMockTest {
   @Test
   fun `skal opprette nytt komplett vedtak`() {
 
-    Mockito.`when`(persistenceServiceMock.opprettNyttVedtak(MockitoHelper.capture(vedtakDtoCaptor)))
+    Mockito.`when`(persistenceServiceMock.opprettVedtak(MockitoHelper.capture(vedtakDtoCaptor)))
       .thenReturn(byggVedtakDto())
-    Mockito.`when`(persistenceServiceMock.opprettNyStonadsendring(MockitoHelper.capture(stonadsendringDtoCaptor)))
+    Mockito.`when`(persistenceServiceMock.opprettStonadsendring(MockitoHelper.capture(stonadsendringDtoCaptor)))
       .thenReturn(byggStonadsendringDto())
-    Mockito.`when`(persistenceServiceMock.opprettNyPeriode(MockitoHelper.capture(periodeDtoCaptor)))
+    Mockito.`when`(persistenceServiceMock.opprettPeriode(MockitoHelper.capture(periodeDtoCaptor)))
       .thenReturn(byggPeriodeDto())
-    Mockito.`when`(persistenceServiceMock.opprettNyttGrunnlag(MockitoHelper.capture(grunnlagDtoCaptor)))
+    Mockito.`when`(persistenceServiceMock.opprettGrunnlag(MockitoHelper.capture(grunnlagDtoCaptor)))
       .thenReturn(byggGrunnlagDto())
-    Mockito.`when`(persistenceServiceMock.opprettNyttPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagDtoCaptor)))
+    Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagDtoCaptor)))
       .thenReturn(byggPeriodeGrunnlagDto())
 
-    val nyttKomplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(byggKomplettVedtakRequest())
+    val komplettVedtak = byggKomplettVedtakRequest()
+    val nyttKomplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(komplettVedtak)
 
     val vedtakDto = vedtakDtoCaptor.value
     val stonadsendringDtoListe = stonadsendringDtoCaptor.allValues
@@ -73,93 +73,158 @@ class VedtakServiceMockTest {
     val grunnlagDtoListe = grunnlagDtoCaptor.allValues
     val periodeGrunnlagDtoListe = periodeGrunnlagDtoCaptor.allValues
 
-    Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettNyttVedtak(MockitoHelper.any(VedtakDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettNyStonadsendring(MockitoHelper.any(StonadsendringDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettNyPeriode(MockitoHelper.any(PeriodeDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettNyttGrunnlag(MockitoHelper.any(GrunnlagDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettNyttPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(VedtakDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(StonadsendringDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettPeriode(MockitoHelper.any(PeriodeDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettGrunnlag(MockitoHelper.any(GrunnlagDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagDto::class.java))
 
     assertAll(
       Executable { assertThat(nyttKomplettVedtakOpprettet).isNotNull() },
-      Executable { assertThat(nyttKomplettVedtakOpprettet.vedtakId).isNotNull() },
 
       // Sjekk VedtakDto
       Executable { assertThat(vedtakDto).isNotNull() },
-      Executable { assertThat(vedtakDto.enhetId).isEqualTo("4812") },
-      Executable { assertThat(vedtakDto.saksbehandlerId).isEqualTo("X123456") },
+      Executable { assertThat(vedtakDto.enhetId).isEqualTo(komplettVedtak.enhetId) },
+      Executable { assertThat(vedtakDto.saksbehandlerId).isEqualTo(komplettVedtak.saksbehandlerId) },
 
       // Sjekk StonadsendringDto
       Executable { assertThat(stonadsendringDtoListe).isNotNull() },
       Executable { assertThat(stonadsendringDtoListe.size).isEqualTo(2) },
-      Executable { assertThat(stonadsendringDtoListe[0].stonadType).isEqualTo("BIDRAG") },
-      Executable { assertThat(stonadsendringDtoListe[0].sakId).isEqualTo("SAK-001") },
-      Executable { assertThat(stonadsendringDtoListe[0].behandlingId).isEqualTo("Fritekst") },
-      Executable { assertThat(stonadsendringDtoListe[0].skyldnerId).isEqualTo("01018011111") },
-      Executable { assertThat(stonadsendringDtoListe[0].kravhaverId).isEqualTo("01010511111") },
-      Executable { assertThat(stonadsendringDtoListe[0].mottakerId).isEqualTo("01018211111") },
 
-      Executable { assertThat(stonadsendringDtoListe[1].stonadType).isEqualTo("SAERTILSKUDD") },
-      Executable { assertThat(stonadsendringDtoListe[1].sakId).isEqualTo("SAK-001") },
-      Executable { assertThat(stonadsendringDtoListe[1].behandlingId).isEqualTo("Fritekst") },
-      Executable { assertThat(stonadsendringDtoListe[1].skyldnerId).isEqualTo("01018011111") },
-      Executable { assertThat(stonadsendringDtoListe[1].kravhaverId).isEqualTo("01010511111") },
-      Executable { assertThat(stonadsendringDtoListe[1].mottakerId).isEqualTo("01018211111") },
+      Executable { assertThat(stonadsendringDtoListe[0].stonadType).isEqualTo(komplettVedtak.stonadsendringListe[0].stonadType) },
+      Executable { assertThat(stonadsendringDtoListe[0].sakId).isEqualTo(komplettVedtak.stonadsendringListe[0].sakId) },
+      Executable { assertThat(stonadsendringDtoListe[0].behandlingId).isEqualTo(komplettVedtak.stonadsendringListe[0].behandlingId) },
+      Executable { assertThat(stonadsendringDtoListe[0].skyldnerId).isEqualTo(komplettVedtak.stonadsendringListe[0].skyldnerId) },
+      Executable { assertThat(stonadsendringDtoListe[0].kravhaverId).isEqualTo(komplettVedtak.stonadsendringListe[0].kravhaverId) },
+      Executable { assertThat(stonadsendringDtoListe[0].mottakerId).isEqualTo(komplettVedtak.stonadsendringListe[0].mottakerId) },
+
+      Executable { assertThat(stonadsendringDtoListe[1].stonadType).isEqualTo(komplettVedtak.stonadsendringListe[1].stonadType) },
+      Executable { assertThat(stonadsendringDtoListe[1].sakId).isEqualTo(komplettVedtak.stonadsendringListe[1].sakId) },
+      Executable { assertThat(stonadsendringDtoListe[1].behandlingId).isEqualTo(komplettVedtak.stonadsendringListe[1].behandlingId) },
+      Executable { assertThat(stonadsendringDtoListe[1].skyldnerId).isEqualTo(komplettVedtak.stonadsendringListe[1].skyldnerId) },
+      Executable { assertThat(stonadsendringDtoListe[1].kravhaverId).isEqualTo(komplettVedtak.stonadsendringListe[1].kravhaverId) },
+      Executable { assertThat(stonadsendringDtoListe[1].mottakerId).isEqualTo(komplettVedtak.stonadsendringListe[1].mottakerId) },
 
       // Sjekk PeriodeDto
       Executable { assertThat(periodeDtoListe).isNotNull() },
       Executable { assertThat(periodeDtoListe.size).isEqualTo(4) },
-      Executable { assertThat(periodeDtoListe[0].periodeFomDato).isEqualTo(LocalDate.parse("2019-01-01")) },
-      Executable { assertThat(periodeDtoListe[0].periodeTilDato).isEqualTo(LocalDate.parse("2019-07-01")) },
-      Executable { assertThat(periodeDtoListe[0].belop).isEqualTo(BigDecimal.valueOf(3490)) },
-      Executable { assertThat(periodeDtoListe[0].valutakode).isEqualTo("NOK") },
-      Executable { assertThat(periodeDtoListe[0].resultatkode).isEqualTo("KOSTNADSBEREGNET_BIDRAG") },
 
-      Executable { assertThat(periodeDtoListe[1].periodeFomDato).isEqualTo(LocalDate.parse("2019-07-01")) },
-      Executable { assertThat(periodeDtoListe[1].periodeTilDato).isEqualTo(LocalDate.parse("2020-01-01")) },
-      Executable { assertThat(periodeDtoListe[1].belop).isEqualTo(BigDecimal.valueOf(3520)) },
-      Executable { assertThat(periodeDtoListe[1].valutakode).isEqualTo("NOK") },
-      Executable { assertThat(periodeDtoListe[1].resultatkode).isEqualTo("KOSTNADSBEREGNET_BIDRAG") },
+      Executable { assertThat(periodeDtoListe[0].periodeFomDato).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].periodeFomDato) },
+      Executable { assertThat(periodeDtoListe[0].periodeTilDato).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].periodeTilDato) },
+      Executable { assertThat(periodeDtoListe[0].belop).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].belop) },
+      Executable { assertThat(periodeDtoListe[0].valutakode).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].valutakode) },
+      Executable { assertThat(periodeDtoListe[0].resultatkode).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].resultatkode) },
 
-      Executable { assertThat(periodeDtoListe[2].periodeFomDato).isEqualTo(LocalDate.parse("2019-06-01")) },
-      Executable { assertThat(periodeDtoListe[2].periodeTilDato).isEqualTo(LocalDate.parse("2019-07-01")) },
-      Executable { assertThat(periodeDtoListe[2].belop).isEqualTo(BigDecimal.valueOf(4240)) },
-      Executable { assertThat(periodeDtoListe[2].valutakode).isEqualTo("NOK") },
-      Executable { assertThat(periodeDtoListe[2].resultatkode).isEqualTo("SAERTILSKUDD_INNVILGET") },
+      Executable { assertThat(periodeDtoListe[1].periodeFomDato).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].periodeFomDato) },
+      Executable { assertThat(periodeDtoListe[1].periodeTilDato).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].periodeTilDato) },
+      Executable { assertThat(periodeDtoListe[1].belop).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].belop) },
+      Executable { assertThat(periodeDtoListe[1].valutakode).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].valutakode) },
+      Executable { assertThat(periodeDtoListe[1].resultatkode).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].resultatkode) },
 
-      Executable { assertThat(periodeDtoListe[3].periodeFomDato).isEqualTo(LocalDate.parse("2019-08-01")) },
-      Executable { assertThat(periodeDtoListe[3].periodeTilDato).isEqualTo(LocalDate.parse("2019-09-01")) },
-      Executable { assertThat(periodeDtoListe[3].belop).isEqualTo(BigDecimal.valueOf(3410)) },
-      Executable { assertThat(periodeDtoListe[3].valutakode).isEqualTo("NOK") },
-      Executable { assertThat(periodeDtoListe[3].resultatkode).isEqualTo("SAERTILSKUDD_INNVILGET") },
+      Executable { assertThat(periodeDtoListe[2].periodeFomDato).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].periodeFomDato) },
+      Executable { assertThat(periodeDtoListe[2].periodeTilDato).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].periodeTilDato) },
+      Executable { assertThat(periodeDtoListe[2].belop).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].belop) },
+      Executable { assertThat(periodeDtoListe[2].valutakode).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].valutakode) },
+      Executable { assertThat(periodeDtoListe[2].resultatkode).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].resultatkode) },
+
+      Executable { assertThat(periodeDtoListe[3].periodeFomDato).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].periodeFomDato) },
+      Executable { assertThat(periodeDtoListe[3].periodeTilDato).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].periodeTilDato) },
+      Executable { assertThat(periodeDtoListe[3].belop).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].belop) },
+      Executable { assertThat(periodeDtoListe[3].valutakode).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].valutakode) },
+      Executable { assertThat(periodeDtoListe[3].resultatkode).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].resultatkode) },
 
       // Sjekk GrunnlagDto
       Executable { assertThat(grunnlagDtoListe).isNotNull() },
       Executable { assertThat(grunnlagDtoListe.size).isEqualTo(4) },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagReferanse).isEqualTo("BM-LIGS-19") },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagType).isEqualTo("INNTEKT") },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagInnhold).contains(""""periodeDatoFra":"2019-01-01",""") },
 
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagReferanse).isEqualTo("BM-LIGN-19") },
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagType).isEqualTo("INNTEKT") },
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagInnhold).isEqualTo("{}") },
+      Executable { assertThat(grunnlagDtoListe[0].grunnlagReferanse).isEqualTo(komplettVedtak.grunnlagListe[0].grunnlagReferanse) },
+      Executable { assertThat(grunnlagDtoListe[0].grunnlagType).isEqualTo(komplettVedtak.grunnlagListe[0].grunnlagType) },
+      Executable { assertThat(grunnlagDtoListe[0].grunnlagInnhold).isEqualTo(komplettVedtak.grunnlagListe[0].grunnlagInnhold.toString()) },
 
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagReferanse).isEqualTo("BP-SKATTEKLASSE-19") },
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagType).isEqualTo("SKATTEKLASSE") },
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagInnhold).isEqualTo("{}") },
+      Executable { assertThat(grunnlagDtoListe[1].grunnlagReferanse).isEqualTo(komplettVedtak.grunnlagListe[1].grunnlagReferanse) },
+      Executable { assertThat(grunnlagDtoListe[1].grunnlagType).isEqualTo(komplettVedtak.grunnlagListe[1].grunnlagType) },
+      Executable { assertThat(grunnlagDtoListe[1].grunnlagInnhold).isEqualTo(komplettVedtak.grunnlagListe[1].grunnlagInnhold.toString()) },
 
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagReferanse).isEqualTo("SJAB-REF001") },
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagType).isEqualTo("SJABLON") },
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagInnhold).isEqualTo("{}") },
+      Executable { assertThat(grunnlagDtoListe[2].grunnlagReferanse).isEqualTo(komplettVedtak.grunnlagListe[2].grunnlagReferanse) },
+      Executable { assertThat(grunnlagDtoListe[2].grunnlagType).isEqualTo(komplettVedtak.grunnlagListe[2].grunnlagType) },
+      Executable { assertThat(grunnlagDtoListe[2].grunnlagInnhold).isEqualTo(komplettVedtak.grunnlagListe[2].grunnlagInnhold.toString()) },
+
+      Executable { assertThat(grunnlagDtoListe[3].grunnlagReferanse).isEqualTo(komplettVedtak.grunnlagListe[3].grunnlagReferanse) },
+      Executable { assertThat(grunnlagDtoListe[3].grunnlagType).isEqualTo(komplettVedtak.grunnlagListe[3].grunnlagType) },
+      Executable { assertThat(grunnlagDtoListe[3].grunnlagInnhold).isEqualTo(komplettVedtak.grunnlagListe[3].grunnlagInnhold.toString()) },
 
       // Sjekk PeriodeGrunnlagDto
       Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
-      Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) }
+      Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) },
+
+      Executable { assertThat(periodeGrunnlagDtoListe[0].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[1].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[2].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[3].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[4].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[5].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[6].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[7].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[8].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[9].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
+      Executable { assertThat(periodeGrunnlagDtoListe[10].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) }
+    )
+  }
+
+  @Test
+  fun `skal hente komplett vedtak`() {
+
+    // Hent vedtak
+    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtakDto(vedtakId = 1))
+    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtakDto(vedtakId = 1))
+    Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForVedtak(MockitoHelper.any(Int::class.java)))
+      .thenReturn(
+        listOf(
+          byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1"),
+          byggGrunnlagDto(grunnlagId = 2, vedtakId = 1, grunnlagReferanse = "REF2")
+        )
+      )
+    Mockito.`when`(persistenceServiceMock.hentAlleStonadsendringerForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(
+        byggStonadsendringDto(stonadsendringId = 1, vedtakId = 1, behandlingId = "BEHID1"),
+        byggStonadsendringDto(stonadsendringId = 2, vedtakId = 1, behandlingId = "BEHID2")
+      )
+    )
+    Mockito.`when`(persistenceServiceMock.hentAllePerioderForStonadsendring(MockitoHelper.any(Int::class.java)))
+      .thenReturn(
+        listOf(
+          byggPeriodeDto(periodeId = 1, stonadsendringId = 1, belop = BigDecimal.valueOf(100)),
+          byggPeriodeDto(periodeId = 2, stonadsendringId = 2, belop = BigDecimal.valueOf(200))
+        )
+      )
+    Mockito.`when`(persistenceServiceMock.hentAllePeriodeGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(byggPeriodeGrunnlagDto(periodeId = 1, grunnlagId = 1), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
+    )
+    Mockito.`when`(persistenceServiceMock.hentGrunnlag(MockitoHelper.any(Int::class.java))).thenReturn(
+      byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1")
+    )
+
+    val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(1)
+
+    assertAll(
+      Executable { assertThat(komplettVedtakFunnet).isNotNull() },
+      Executable { assertThat(komplettVedtakFunnet.vedtakId).isEqualTo(1) },
+      Executable { assertThat(komplettVedtakFunnet.grunnlagListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.grunnlagListe[0].grunnlagReferanse).isEqualTo("REF1") },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].behandlingId).isEqualTo("BEHID1") },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].belop).isEqualTo(BigDecimal.valueOf(100)) },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagReferanse).isEqualTo("REF1") }
     )
   }
 
   object MockitoHelper {
+
     // use this in place of captor.capture() if you are trying to capture an argument that is not nullable
     fun <T> capture(argumentCaptor: ArgumentCaptor<T>): T = argumentCaptor.capture()
+
     fun <T> any(type: Class<T>): T = Mockito.any(type)
   }
 }

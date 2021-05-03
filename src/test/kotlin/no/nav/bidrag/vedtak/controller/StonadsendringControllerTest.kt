@@ -3,10 +3,12 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -44,6 +47,15 @@ class StonadsendringControllerTest {
   private lateinit var vedtakRepository: VedtakRepository
 
   @Autowired
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
   private lateinit var persistenceService: PersistenceService
 
   @LocalServerPort
@@ -52,9 +64,14 @@ class StonadsendringControllerTest {
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
+  private val stonadsendringDtoListe = object : ParameterizedTypeReference<List<StonadsendringDto>>() {}
+
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
@@ -67,7 +84,7 @@ class StonadsendringControllerTest {
   @Test
   fun `skal opprette ny stonadsendring`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stønadsendring
     val response = securedTestRestTemplate.exchange(
@@ -90,12 +107,12 @@ class StonadsendringControllerTest {
   }
 
   @Test
-  fun `skal finne data for en stonadsendring`() {
+  fun `skal hente data for en stonadsendring`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stønadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -128,13 +145,13 @@ class StonadsendringControllerTest {
   }
 
   @Test
-  fun `skal finne alle stonadsendringer for et vedtak`() {
+  fun `skal hente alle stonadsendringer for et vedtak`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter nye forekomster av stønadsendring
-    val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet1 = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet1.vedtakId,
@@ -145,7 +162,7 @@ class StonadsendringControllerTest {
       )
     )
 
-    val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet2 = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet1.vedtakId,
@@ -157,7 +174,7 @@ class StonadsendringControllerTest {
     )
 
     // Stonadsendring som ikke skal legges med i resultatet
-    persistenceService.opprettNyStonadsendring(
+    persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet2.vedtakId,
@@ -173,46 +190,45 @@ class StonadsendringControllerTest {
       "${fullUrlForSokStonadsendringForVedtak()}/${nyttVedtakOpprettet1.vedtakId}",
       HttpMethod.GET,
       null,
-      AlleStonadsendringerForVedtakResponse::class.java
+      stonadsendringDtoListe
     )
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak).isNotNull },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!!.size).isEqualTo(2) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].stonadsendringId).isEqualTo(nyStonadsendringOpprettet1.stonadsendringId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].stonadType).isEqualTo(nyStonadsendringOpprettet1.stonadType) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].vedtakId).isEqualTo(nyStonadsendringOpprettet1.vedtakId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![0].behandlingId).isEqualTo(nyStonadsendringOpprettet1.behandlingId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadsendringId).isEqualTo(nyStonadsendringOpprettet2.stonadsendringId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].stonadType).isEqualTo(nyStonadsendringOpprettet2.stonadType) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].vedtakId).isEqualTo(nyStonadsendringOpprettet2.vedtakId) },
-      Executable { assertThat(response?.body?.alleStonadsendringerForVedtak!![1].behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) }
+      Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(response.body).isNotNull },
+      Executable { assertThat(response.body?.size).isEqualTo(2) },
+      Executable { assertThat(response.body?.get(0)?.stonadsendringId).isEqualTo(nyStonadsendringOpprettet1.stonadsendringId) },
+      Executable { assertThat(response.body?.get(0)?.stonadType).isEqualTo(nyStonadsendringOpprettet1.stonadType) },
+      Executable { assertThat(response.body?.get(0)?.vedtakId).isEqualTo(nyStonadsendringOpprettet1.vedtakId) },
+      Executable { assertThat(response.body?.get(0)?.behandlingId).isEqualTo(nyStonadsendringOpprettet1.behandlingId) },
+      Executable { assertThat(response.body?.get(1)?.stonadsendringId).isEqualTo(nyStonadsendringOpprettet2.stonadsendringId) },
+      Executable { assertThat(response.body?.get(1)?.stonadType).isEqualTo(nyStonadsendringOpprettet2.stonadType) },
+      Executable { assertThat(response.body?.get(1)?.vedtakId).isEqualTo(nyStonadsendringOpprettet2.vedtakId) },
+      Executable { assertThat(response.body?.get(1)?.behandlingId).isEqualTo(nyStonadsendringOpprettet2.behandlingId) }
     )
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 
   private fun fullUrlForNyStonadsendring(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.STONADSENDRING_NY).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.OPPRETT_STONADSENDRING).toUriString()
   }
 
   private fun fullUrlForSokStonadsendring(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.STONADSENDRING_SOK).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.HENT_STONADSENDRING).toUriString()
   }
 
   private fun fullUrlForSokStonadsendringForVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.STONADSENDRING_SOK_VEDTAK).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + StonadsendringController.HENT_STONADSENDRINGER_FOR_VEDTAK).toUriString()
   }
 
   private fun makeFullContextPath(): String {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(vedtakId: Int): HttpEntity<NyStonadsendringRequest> {
-    return initHttpEntity(NyStonadsendringRequest(
+  private fun byggRequest(vedtakId: Int): HttpEntity<OpprettKomplettStonadsendringRequest> {
+    return initHttpEntity(OpprettKomplettStonadsendringRequest(
       "BIDRAG",
       vedtakId,
       "1111",

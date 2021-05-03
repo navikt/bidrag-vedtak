@@ -3,8 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.service.StonadsendringService
 import no.nav.security.token.support.core.api.Protected
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 class StonadsendringController(private val stonadsendringService: StonadsendringService) {
 
-  @PostMapping(STONADSENDRING_NY)
-  @ApiOperation("Opprett ny stønadsendring")
+  @PostMapping(OPPRETT_STONADSENDRING)
+  @ApiOperation("Oppretter ny stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Stønadsendring opprettet"),
@@ -33,14 +32,14 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
     ]
   )
 
-  fun opprettNyStonadsendring(@RequestBody request: NyStonadsendringRequest): ResponseEntity<StonadsendringDto>? {
-    val stonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(request)
+  fun opprettStonadsendring(@RequestBody request: OpprettStonadsendringRequest): ResponseEntity<StonadsendringDto>? {
+    val stonadsendringOpprettet = stonadsendringService.opprettStonadsendring(request)
     LOGGER.info("Følgende stønadsendring er opprettet: $stonadsendringOpprettet")
     return ResponseEntity(stonadsendringOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$STONADSENDRING_SOK/{stonadsendringId}")
-  @ApiOperation("Finn data for en stønadsendring")
+  @GetMapping("$HENT_STONADSENDRING/{stonadsendringId}")
+  @ApiOperation("Henter en stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Stønadsendring funnet"),
@@ -52,14 +51,14 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
     ]
   )
 
-  fun finnEnStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<StonadsendringDto> {
-    val stonadsendringFunnet = stonadsendringService.finnEnStonadsendring(stonadsendringId)
+  fun hentStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<StonadsendringDto> {
+    val stonadsendringFunnet = stonadsendringService.hentStonadsendring(stonadsendringId)
     LOGGER.info("Følgende stønadsendring ble funnet: $stonadsendringFunnet")
     return ResponseEntity(stonadsendringFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$STONADSENDRING_SOK_VEDTAK/{vedtakId}")
-  @ApiOperation("finner alle stønadsendringer for et vedtak")
+  @GetMapping("$HENT_STONADSENDRINGER_FOR_VEDTAK/{vedtakId}")
+  @ApiOperation("Henter alle stønadsendringer for et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Alle stønadsendringer funnet"),
@@ -70,17 +69,16 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnAlleStonadsendringerForVedtak(@PathVariable vedtakId: Int):
-      ResponseEntity<AlleStonadsendringerForVedtakResponse> {
-    val alleStonadsendringerFunnet = stonadsendringService.finnAlleStonadsendringerForVedtak(vedtakId)
+  fun hentStonadsendringerForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<StonadsendringDto>> {
+    val alleStonadsendringerFunnet = stonadsendringService.hentAlleStonadsendringerForVedtak(vedtakId)
     LOGGER.info("Følgende stønadsendringer ble funnet: $alleStonadsendringerFunnet")
     return ResponseEntity(alleStonadsendringerFunnet, HttpStatus.OK)
   }
 
   companion object {
-    const val STONADSENDRING_SOK = "/stonadsendring"
-    const val STONADSENDRING_SOK_VEDTAK = "/stonadsendring/vedtak"
-    const val STONADSENDRING_NY = "/stonadsendring/ny"
+    const val OPPRETT_STONADSENDRING = "/stonadsendring/ny"
+    const val HENT_STONADSENDRING = "/stonadsendring"
+    const val HENT_STONADSENDRINGER_FOR_VEDTAK = "/stonadsendring/vedtak"
     private val LOGGER = LoggerFactory.getLogger(StonadsendringController::class.java)
   }
 }

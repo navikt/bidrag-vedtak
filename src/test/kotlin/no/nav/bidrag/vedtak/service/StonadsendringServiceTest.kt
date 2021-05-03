@@ -1,11 +1,12 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -31,6 +32,9 @@ class StonadsendringServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
@@ -48,6 +52,7 @@ class StonadsendringServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
@@ -57,11 +62,11 @@ class StonadsendringServiceTest {
   @Test
   fun `skal opprette ny stonadsendring`() {
     // Oppretter nytt vedtak
-    val nyttVedtakRequest = NyttVedtakRequest("TEST", "1111")
-    val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
+    val nyttVedtakRequest = OpprettVedtakRequest("TEST", "1111")
+    val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest)
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringRequest = NyStonadsendringRequest(
+    val nyStonadsendringRequest = OpprettStonadsendringRequest(
       "BIDRAG",
       nyttVedtakOpprettet.vedtakId,
       "1111",
@@ -69,7 +74,7 @@ class StonadsendringServiceTest {
       "1111",
       "1111"
     )
-    val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
+    val nyStonadsendringOpprettet = stonadsendringService.opprettStonadsendring(nyStonadsendringRequest)
 
     assertAll(
       Executable { assertThat(nyStonadsendringOpprettet).isNotNull() },
@@ -80,12 +85,12 @@ class StonadsendringServiceTest {
   }
 
   @Test
-  fun `skal finne data for en stonadsendring`() {
+  fun `skal hente data for en stonadsendring`() {
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -96,8 +101,8 @@ class StonadsendringServiceTest {
       )
     )
 
-    // Finner stønadsendringen som akkurat ble opprettet
-    val stonadsendringFunnet = stonadsendringService.finnEnStonadsendring(nyStonadsendringOpprettet.stonadsendringId)
+    // Henter stønadsendringen som akkurat ble opprettet
+    val stonadsendringFunnet = stonadsendringService.hentStonadsendring(nyStonadsendringOpprettet.stonadsendringId)
 
     assertAll(
       Executable { assertThat(stonadsendringFunnet).isNotNull() },
@@ -111,17 +116,17 @@ class StonadsendringServiceTest {
   }
 
   @Test
-  fun `skal finne alle stonadsendringer for et vedtak`() {
+  fun `skal hente alle stonadsendringer for et vedtak`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter nye stønadsendringer
     val nyStonadsendringDtoListe = mutableListOf<StonadsendringDto>()
 
     nyStonadsendringDtoListe.add(
-      persistenceService.opprettNyStonadsendring(
+      persistenceService.opprettStonadsendring(
         StonadsendringDto(
           stonadType = "BIDRAG",
           vedtakId = nyttVedtakOpprettet1.vedtakId,
@@ -134,7 +139,7 @@ class StonadsendringServiceTest {
     )
 
     nyStonadsendringDtoListe.add(
-      persistenceService.opprettNyStonadsendring(
+      persistenceService.opprettStonadsendring(
         StonadsendringDto(
           stonadType = "BIDRAG",
           vedtakId = nyttVedtakOpprettet1.vedtakId,
@@ -148,7 +153,7 @@ class StonadsendringServiceTest {
 
     // Legger til en ekstra stonadsendring som ikke skal bli funnet pga annen vedtakId
     nyStonadsendringDtoListe.add(
-      persistenceService.opprettNyStonadsendring(
+      persistenceService.opprettStonadsendring(
         StonadsendringDto(
           stonadType = "BIDRAG",
           vedtakId = nyttVedtakOpprettet2.vedtakId,
@@ -160,16 +165,15 @@ class StonadsendringServiceTest {
       )
     )
 
-    // Finner begge stønadsendringene som akkurat ble opprettet
+    // Henter begge stønadsendringene som akkurat ble opprettet
     val vedtakId = nyttVedtakOpprettet1.vedtakId
-    val stonadsendringFunnet = stonadsendringService.finnAlleStonadsendringerForVedtak(vedtakId)
+    val stonadsendringFunnet = stonadsendringService.hentAlleStonadsendringerForVedtak(vedtakId)
 
     assertAll(
       Executable { assertThat(stonadsendringFunnet).isNotNull() },
-      Executable { assertThat(stonadsendringFunnet.alleStonadsendringerForVedtak).isNotNull() },
-      Executable { assertThat(stonadsendringFunnet.alleStonadsendringerForVedtak.size).isEqualTo(2) },
+      Executable { assertThat(stonadsendringFunnet.size).isEqualTo(2) },
       Executable {
-        stonadsendringFunnet.alleStonadsendringerForVedtak.forEachIndexed { index, stonadsendring ->
+        stonadsendringFunnet.forEachIndexed { index, stonadsendring ->
           assertAll(
             Executable { assertThat(stonadsendring.stonadsendringId).isEqualTo(nyStonadsendringDtoListe[index].stonadsendringId) },
             Executable { assertThat(stonadsendring.stonadType).isEqualTo(nyStonadsendringDtoListe[index].stonadType) },

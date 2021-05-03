@@ -1,14 +1,13 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
-import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
+import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
+import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse
 import java.time.LocalDateTime
 
 @ApiModel
-data class KomplettVedtakResponse(
+data class HentKomplettVedtakResponse(
 
   @ApiModelProperty(value = "Vedtak-id")
   var vedtakId: Int = 0,
@@ -23,8 +22,8 @@ data class KomplettVedtakResponse(
   var opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 
   @ApiModelProperty(value = "Liste over alle grunnlag som inngår i vedtaket")
-  var grunnlagListe: List<GrunnlagResponse> = emptyList(),
+  var grunnlagListe: List<HentGrunnlagResponse> = emptyList(),
 
   @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  var stonadsendringListe: List<StonadsendringKomplettResponse> = emptyList()
+  var stonadsendringListe: List<HentStonadsendringResponse> = emptyList()
 )

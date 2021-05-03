@@ -1,11 +1,11 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.grunnlag
 
 import com.fasterxml.jackson.annotation.JsonRawValue
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel(value = "Egenskaper ved et grunnlag")
-data class GrunnlagResponse(
+@ApiModel
+data class HentGrunnlagResponse(
 
   @ApiModelProperty(value = "Grunnlag-id")
   val grunnlagId: Int = 0,

@@ -3,11 +3,12 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.AllePerioderForStonadsendringResponse
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -51,6 +53,12 @@ class PeriodeControllerTest {
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
+  private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
   private lateinit var persistenceService: PersistenceService
 
   @LocalServerPort
@@ -59,9 +67,13 @@ class PeriodeControllerTest {
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
+  private val periodeDtoListe = object : ParameterizedTypeReference<List<PeriodeDto>>() {}
+
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    periodeGrunnlagRepository.deleteAll()
+    grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
@@ -77,10 +89,10 @@ class PeriodeControllerTest {
   fun `skal opprette ny periode`() {
 
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(StonadsendringDto(
       stonadType = "BIDRAG",
       vedtakId = nyttVedtakOpprettet.vedtakId,
       behandlingId = "1111",
@@ -115,12 +127,12 @@ class PeriodeControllerTest {
   }
 
   @Test
-  fun `skal finne data for en periode`(){
+  fun `skal hente data for en periode`(){
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(StonadsendringDto(
       stonadType = "BIDRAG",
       vedtakId = nyttVedtakOpprettet.vedtakId,
       behandlingId = "1111",
@@ -131,7 +143,7 @@ class PeriodeControllerTest {
     )
 
     // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -167,13 +179,13 @@ class PeriodeControllerTest {
   }
 
   @Test
-  fun `skal finne alle perioder for stonadsendring`(){
+  fun `skal hente alle perioder for stonadsendring`(){
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+    val nyStonadsendringOpprettet1 = persistenceService.opprettStonadsendring(StonadsendringDto(
       stonadType = "BIDRAG",
       vedtakId = nyttVedtakOpprettet1.vedtakId,
       behandlingId = "1111",
@@ -183,7 +195,7 @@ class PeriodeControllerTest {
     )
     )
 
-    val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+    val nyStonadsendringOpprettet2 = persistenceService.opprettStonadsendring(StonadsendringDto(
       stonadType = "BIDRAG",
       vedtakId = nyttVedtakOpprettet2.vedtakId,
       behandlingId = "9999",
@@ -194,7 +206,7 @@ class PeriodeControllerTest {
     )
 
     // Oppretter nye forekomster av periode
-    val nyPeriodeOpprettet1 = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet1 = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -205,7 +217,7 @@ class PeriodeControllerTest {
       )
     )
 
-    val nyPeriodeOpprettet2 = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet2 = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -217,7 +229,7 @@ class PeriodeControllerTest {
     )
 
     // Opprettet periode som ikke skal returneres i resultatet
-    persistenceService.opprettNyPeriode(
+    persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -233,18 +245,18 @@ class PeriodeControllerTest {
       "${fullUrlForSokPerioderForStonadsendring()}/${nyStonadsendringOpprettet1.stonadsendringId}",
       HttpMethod.GET,
       null,
-      AllePerioderForStonadsendringResponse::class.java)
+      periodeDtoListe)
 
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!!.size).isEqualTo(2) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].periodeId).isEqualTo(nyPeriodeOpprettet1.periodeId) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![0].stonadsendringId).isEqualTo(nyPeriodeOpprettet1.stonadsendringId) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].belop).isEqualTo(nyPeriodeOpprettet2.belop) },
-      Executable { assertThat(response?.body?.allePerioderForStonadsendring!![1].stonadsendringId).isEqualTo(nyPeriodeOpprettet2.stonadsendringId) }
+      Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(response.body).isNotNull },
+      Executable { assertThat(response.body?.size).isEqualTo(2) },
+      Executable { assertThat(response.body?.get(0)?.periodeId).isEqualTo(nyPeriodeOpprettet1.periodeId) },
+      Executable { assertThat(response.body?.get(0)?.stonadsendringId).isEqualTo(nyPeriodeOpprettet1.stonadsendringId) },
+      Executable { assertThat(response.body?.get(1)?.belop).isEqualTo(nyPeriodeOpprettet2.belop) },
+      Executable { assertThat(response.body?.get(1)?.stonadsendringId).isEqualTo(nyPeriodeOpprettet2.stonadsendringId) }
     )
 
     periodeRepository.deleteAll()
@@ -256,23 +268,23 @@ class PeriodeControllerTest {
 
 
   private fun fullUrlForNyPeriode(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_NY).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.OPPRETT_PERIODE).toUriString()
   }
 
   private fun fullUrlForSokPeriode(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_SOK).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.HENT_PERIODE).toUriString()
   }
 
   private fun fullUrlForSokPerioderForStonadsendring(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.PERIODE_SOK_STONADSENDRING).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeController.HENT_PERIODER_FOR_STONADSENDRING).toUriString()
   }
 
   private fun makeFullContextPath(): String {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(stonadsendringId: Int): HttpEntity<NyPeriodeRequest> {
-    return initHttpEntity(NyPeriodeRequest(
+  private fun byggRequest(stonadsendringId: Int): HttpEntity<OpprettKomplettPeriodeRequest> {
+    return initHttpEntity(OpprettKomplettPeriodeRequest(
       LocalDate.now(), LocalDate.now(), stonadsendringId, BigDecimal.valueOf(17.01), "NOK", "RESULTATKODE_TEST"
     ))
   }

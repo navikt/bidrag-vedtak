@@ -2,11 +2,11 @@ package no.nav.bidrag.vedtak.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
-import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
-import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -80,11 +80,11 @@ class PeriodeGrunnlagServiceTest {
   @Test
   fun `skal opprette nytt periodeGrunnlag`() {
     // Oppretter nytt vedtak
-    val nyttVedtakRequest = NyttVedtakRequest("TEST", "1111")
-    val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
+    val nyttVedtakRequest = OpprettVedtakRequest("TEST", "1111")
+    val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest)
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringRequest = NyStonadsendringRequest(
+    val nyStonadsendringRequest = OpprettStonadsendringRequest(
       "BIDRAG",
       nyttVedtakOpprettet.vedtakId,
       "1111",
@@ -92,34 +92,34 @@ class PeriodeGrunnlagServiceTest {
       "1111",
       "1111"
     )
-    val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
+    val nyStonadsendringOpprettet = stonadsendringService.opprettStonadsendring(nyStonadsendringRequest)
 
     // Oppretter nytt grunnlag
     val mapper = ObjectMapper()
     val jsonString = """{"Grunnlag 1":"Verdi 1","Grunnlag 2":"Verdi 2"}"""
 
-    val nyttGrunnlagRequest = NyttGrunnlagRequest(
+    val nyttGrunnlagRequest = OpprettGrunnlagRequest(
       grunnlagReferanse = "",
       vedtakId = nyttVedtakOpprettet.vedtakId,
       grunnlagType = "Beregnet Inntekt",
       grunnlagInnhold = mapper.readTree(jsonString)
     )
-    val grunnlagOpprettet = grunnlagService.opprettNyttGrunnlag(nyttGrunnlagRequest)
+    val grunnlagOpprettet = grunnlagService.opprettGrunnlag(nyttGrunnlagRequest)
 
     // Oppretter ny periode
-    val nyPeriodeRequest = NyPeriodeRequest(
+    val nyPeriodeRequest = OpprettPeriodeRequest(
       LocalDate.now(), LocalDate.now(), nyStonadsendringOpprettet.stonadsendringId,
       BigDecimal.valueOf(17), "NOK", "RESULTATKODE_TEST"
     )
-    val nyPeriodeOpprettet = periodeService.opprettNyPeriode(nyPeriodeRequest)
+    val nyPeriodeOpprettet = periodeService.opprettPeriode(nyPeriodeRequest)
 
     // Oppretter nytt periodegrunnlag
-    val nyttPeriodeGrunnlagRequest = NyttPeriodeGrunnlagRequest(
+    val nyttPeriodeGrunnlagRequest = OpprettPeriodeGrunnlagRequest(
       nyPeriodeOpprettet.periodeId,
       grunnlagOpprettet.grunnlagId,
       true
     )
-    val nyttPeriodeGrunnlagOpprettet = periodeGrunnlagService.opprettNyttPeriodeGrunnlag(nyttPeriodeGrunnlagRequest)
+    val nyttPeriodeGrunnlagOpprettet = periodeGrunnlagService.opprettPeriodeGrunnlag(nyttPeriodeGrunnlagRequest)
 
     assertAll(
       Executable { assertThat(nyttPeriodeGrunnlagOpprettet).isNotNull() },
@@ -130,12 +130,12 @@ class PeriodeGrunnlagServiceTest {
   }
 
   @Test
-  fun `skal finne data for et periodegrunnlag`() {
+  fun `skal hente data for et periodegrunnlag`() {
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny stønadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -147,7 +147,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     // Oppretter ny periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -159,7 +159,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     // Oppretter nytt grunnlag
-    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
+    val nyttGrunnlagOpprettet = persistenceService.opprettGrunnlag(
       GrunnlagDto(
         grunnlagReferanse = "",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -169,7 +169,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     // Oppretter nytt periodegrunnlag
-    val nyttPeriodeGrunnlagOpprettet = persistenceService.opprettNyttPeriodeGrunnlag(
+    val nyttPeriodeGrunnlagOpprettet = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         nyPeriodeOpprettet.periodeId,
         nyttGrunnlagOpprettet.grunnlagId,
@@ -177,7 +177,7 @@ class PeriodeGrunnlagServiceTest {
       )
     )
 
-    // Finner periodegrunnlag som akkurat ble opprettet
+    // Henter periodegrunnlag som akkurat ble opprettet
     val periodeGrunnlagFunnet = periodeGrunnlagService.hentPeriodeGrunnlag(
       nyttPeriodeGrunnlagOpprettet.periodeId, nyttPeriodeGrunnlagOpprettet.grunnlagId)
 
@@ -195,12 +195,12 @@ class PeriodeGrunnlagServiceTest {
   }
 
   @Test
-  fun `skal finne alle periodegrunnlag for en periode`() {
+  fun `skal hente alle periodegrunnlag for en periode`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -212,7 +212,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     // Oppretter ny periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -227,7 +227,7 @@ class PeriodeGrunnlagServiceTest {
     val nyttGrunnlagDtoListe = mutableListOf<GrunnlagDto>()
 
     nyttGrunnlagDtoListe.add(
-      persistenceService.opprettNyttGrunnlag(
+      persistenceService.opprettGrunnlag(
         GrunnlagDto(
           grunnlagReferanse = "",
           vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -237,7 +237,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     nyttGrunnlagDtoListe.add(
-      persistenceService.opprettNyttGrunnlag(
+      persistenceService.opprettGrunnlag(
         GrunnlagDto(
           grunnlagReferanse = "",
           vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -250,7 +250,7 @@ class PeriodeGrunnlagServiceTest {
     val nyttPeriodegrunnlagtoListe = mutableListOf<PeriodeGrunnlagDto>()
 
     nyttPeriodegrunnlagtoListe.add(
-      persistenceService.opprettNyttPeriodeGrunnlag(
+      persistenceService.opprettPeriodeGrunnlag(
         PeriodeGrunnlagDto(
           nyPeriodeOpprettet.periodeId,
           nyttGrunnlagDtoListe[0].grunnlagId,
@@ -259,7 +259,7 @@ class PeriodeGrunnlagServiceTest {
     )
 
     nyttPeriodegrunnlagtoListe.add(
-      persistenceService.opprettNyttPeriodeGrunnlag(
+      persistenceService.opprettPeriodeGrunnlag(
         PeriodeGrunnlagDto(
           nyPeriodeOpprettet.periodeId,
           nyttGrunnlagDtoListe[1].grunnlagId,
@@ -267,16 +267,16 @@ class PeriodeGrunnlagServiceTest {
       )
     )
 
-    // Finner begge periodegrunnlagene som akkurat ble opprettet
+    // Henter begge periodegrunnlagene som akkurat ble opprettet
     val periodeId = nyPeriodeOpprettet.periodeId
-    val periodegrunnlagFunnet = periodeGrunnlagService.hentAlleGrunnlagForPeriode(periodeId)
+    val periodegrunnlagFunnet = periodeGrunnlagService.hentAllePeriodeGrunnlagForPeriode(periodeId)
 
     assertAll(
       Executable { assertThat(periodegrunnlagFunnet).isNotNull() },
-      Executable { assertThat(periodegrunnlagFunnet.alleGrunnlagForPeriode).isNotNull() },
-      Executable { assertThat(periodegrunnlagFunnet.alleGrunnlagForPeriode.size).isEqualTo(2) },
+      Executable { assertThat(periodegrunnlagFunnet).isNotNull() },
+      Executable { assertThat(periodegrunnlagFunnet.size).isEqualTo(2) },
       Executable {
-        periodegrunnlagFunnet.alleGrunnlagForPeriode.forEachIndexed { index, periodeGrunnlag ->
+        periodegrunnlagFunnet.forEachIndexed { index, periodeGrunnlag ->
           assertAll(
             Executable { assertThat(periodeGrunnlag.periodeId).isEqualTo(nyttPeriodegrunnlagtoListe[index].periodeId) },
             Executable { assertThat(periodeGrunnlag.grunnlagId).isEqualTo(nyttPeriodegrunnlagtoListe[index].grunnlagId) },

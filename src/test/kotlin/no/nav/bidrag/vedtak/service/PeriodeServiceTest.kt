@@ -1,9 +1,9 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
@@ -70,22 +70,22 @@ class PeriodeServiceTest {
   fun `skal opprette ny periode`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakRequest = NyttVedtakRequest(saksbehandlerId = "1111", enhetId = "TEST")
-    val nyttVedtakOpprettet = vedtakService.opprettNyttVedtak(nyttVedtakRequest)
+    val nyttVedtakRequest = OpprettVedtakRequest(saksbehandlerId = "1111", enhetId = "TEST")
+    val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest)
 
     // Oppretter ny stonad
-    val nyStonadsendringRequest = NyStonadsendringRequest(
+    val nyStonadsendringRequest = OpprettStonadsendringRequest(
       "BIDRAG", nyttVedtakOpprettet.vedtakId,
       "1111", "1111", "1111", "1111"
     )
-    val nyStonadsendringOpprettet = stonadsendringService.opprettNyStonadsendring(nyStonadsendringRequest)
+    val nyStonadsendringOpprettet = stonadsendringService.opprettStonadsendring(nyStonadsendringRequest)
 
     // Oppretter ny periode
-    val nyPeriodeRequest = NyPeriodeRequest(
+    val nyPeriodeRequest = OpprettPeriodeRequest(
       LocalDate.now(), LocalDate.now(), nyStonadsendringOpprettet.stonadsendringId,
       BigDecimal.valueOf(17), "NOK", "RESULTATKODE_TEST"
     )
-    val nyPeriodeOpprettet = periodeService.opprettNyPeriode(nyPeriodeRequest)
+    val nyPeriodeOpprettet = periodeService.opprettPeriode(nyPeriodeRequest)
 
     assertAll(
       Executable { assertThat(nyPeriodeOpprettet).isNotNull() },
@@ -102,21 +102,20 @@ class PeriodeServiceTest {
   }
 
   @Test
-  fun `skal finne data for en periode`() {
-    // Finner data for én periode
+  fun `skal hente data for en periode`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet.vedtakId, behandlingId = "1111",
         skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111"
       ))
 
     // Oppretter ny periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -127,7 +126,7 @@ class PeriodeServiceTest {
       )
     )
 
-    val periodeFunnet = periodeService.finnPeriode(nyPeriodeOpprettet.periodeId)
+    val periodeFunnet = periodeService.hentPeriode(nyPeriodeOpprettet.periodeId)
 
     assertAll(
       Executable { assertThat(periodeFunnet).isNotNull() },
@@ -143,22 +142,21 @@ class PeriodeServiceTest {
 
 
   @Test
-  fun `skal finne alle perioder for en stonadsendring`() {
-    // Finner alle perioder
+  fun `skal hente alle perioder for en stonadsendring`() {
 
     // Oppretter nytt vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettNyttVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(17, saksbehandlerId = "TEST", enhetId = "9999"))
 
     // Oppretter ny stonadsendring
-    val nyStonadsendringOpprettet1 = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet1 = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet1.vedtakId, behandlingId = "1111",
         skyldnerId = "1111", kravhaverId = "1111", mottakerId = "1111"
       ))
 
     // Oppretter ny stonadsendring
-    val nyStonadsendringOpprettet2 = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet2 = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG", vedtakId = nyttVedtakOpprettet2.vedtakId, behandlingId = "9999",
         skyldnerId = "9999", kravhaverId = "9999", mottakerId = "9999"
@@ -168,7 +166,7 @@ class PeriodeServiceTest {
     val nyPeriodeDtoListe = mutableListOf<PeriodeDto>()
 
     nyPeriodeDtoListe.add(
-      persistenceService.opprettNyPeriode(
+      persistenceService.opprettPeriode(
         PeriodeDto(
           periodeFomDato = LocalDate.now(),
           periodeTilDato = LocalDate.now(),
@@ -182,7 +180,7 @@ class PeriodeServiceTest {
 
     // Oppretter ny periode
     nyPeriodeDtoListe.add(
-      persistenceService.opprettNyPeriode(
+      persistenceService.opprettPeriode(
         PeriodeDto(
           periodeFomDato = LocalDate.now(),
           periodeTilDato = LocalDate.now(),
@@ -196,7 +194,7 @@ class PeriodeServiceTest {
 
     // Oppretter ny periode som ikke skal bli funnet pga annen stonadsendringId
     nyPeriodeDtoListe.add(
-      persistenceService.opprettNyPeriode(
+      persistenceService.opprettPeriode(
         PeriodeDto(
           periodeFomDato = LocalDate.now(),
           periodeTilDato = LocalDate.now(),
@@ -209,17 +207,16 @@ class PeriodeServiceTest {
     )
 
     val stonadsendringId = nyStonadsendringOpprettet1.stonadsendringId
-    val periodeFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
+    val periodeFunnet = periodeService.hentAllePerioderForStonadsendring(stonadsendringId)
 
     assertAll(
       Executable { assertThat(periodeFunnet).isNotNull() },
-      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring.size).isEqualTo(2) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].belop).isEqualTo(BigDecimal.valueOf(17.02)) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[1].belop).isEqualTo(BigDecimal.valueOf(2000.01)) },
-      Executable { assertThat(periodeFunnet.allePerioderForStonadsendring[0].resultatkode).isEqualTo(
-        "RESULTATKODE_TEST_FLERE_PERIODER") },
+      Executable { assertThat(periodeFunnet.size).isEqualTo(2) },
+      Executable { assertThat(periodeFunnet[0].belop).isEqualTo(BigDecimal.valueOf(17.02)) },
+      Executable { assertThat(periodeFunnet[1].belop).isEqualTo(BigDecimal.valueOf(2000.01)) },
+      Executable { assertThat(periodeFunnet[0].resultatkode).isEqualTo("RESULTATKODE_TEST_FLERE_PERIODER") },
       Executable {
-        periodeFunnet.allePerioderForStonadsendring.forEachIndexed{ index, periode ->
+        periodeFunnet.forEachIndexed{ index, periode ->
           assertAll(
             Executable { assertThat(periode.stonadsendringId).isEqualTo(nyPeriodeDtoListe[index].stonadsendringId)},
             Executable { assertThat(periode.periodeId).isEqualTo(nyPeriodeDtoListe[index].periodeId)},

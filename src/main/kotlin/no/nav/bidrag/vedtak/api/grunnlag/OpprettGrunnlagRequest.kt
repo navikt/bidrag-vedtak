@@ -1,4 +1,4 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.grunnlag
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -7,8 +7,8 @@ import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel(value = "Egenskaper ved et grunnlag")
-data class NyttGrunnlagRequest(
+@ApiModel
+data class OpprettGrunnlagRequest(
 
   @ApiModelProperty(value = "Referanse til grunnlaget")
   val grunnlagReferanse: String = "",
@@ -23,8 +23,8 @@ data class NyttGrunnlagRequest(
   val grunnlagInnhold: JsonNode = ObjectMapper().createObjectNode()
 )
 
-fun NyttGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
-  val propertiesByName = NyttGrunnlagRequest::class.memberProperties.associateBy { it.name }
+fun OpprettGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
+  val propertiesByName = OpprettGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       GrunnlagDto::vedtakId.name -> vedtakId
@@ -35,11 +35,10 @@ fun NyttGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
   })
 }
 
-fun NyttGrunnlagRequest.toGrunnlagDto() = with(::GrunnlagDto) {
-  val propertiesByName = NyttGrunnlagRequest::class.memberProperties.associateBy { it.name }
+fun OpprettGrunnlagRequest.toGrunnlagDto() = with(::GrunnlagDto) {
+  val propertiesByName = OpprettGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      GrunnlagDto::vedtakId.name -> vedtakId
       GrunnlagDto::grunnlagId.name -> 0
       GrunnlagDto::grunnlagInnhold.name -> grunnlagInnhold.toString()
       else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)

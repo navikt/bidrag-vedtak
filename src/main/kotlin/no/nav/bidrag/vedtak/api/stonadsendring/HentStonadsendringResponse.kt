@@ -1,8 +1,11 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.stonadsendring
 
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
 
-data class StonadsendringKomplettResponse(
+@ApiModel
+data class HentStonadsendringResponse(
 
   @ApiModelProperty(value = "Stønadstype")
   val stonadType: String = "",
@@ -23,5 +26,5 @@ data class StonadsendringKomplettResponse(
   val mottakerId: String = "",
 
   @ApiModelProperty(value = "Liste over alle perioder som inngår i stønadsendringen")
-  val periodeListe: List<PeriodeResponse> = emptyList()
+  val periodeListe: List<HentPeriodeResponse> = emptyList()
 )
