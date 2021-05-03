@@ -12,6 +12,8 @@ import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
+import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
@@ -53,6 +55,12 @@ class PeriodeGrunnlagControllerTest {
   private lateinit var periodeRepository: PeriodeRepository
 
   @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
+
+  @Autowired
+  private lateinit var vedtakRepository: VedtakRepository
+
+  @Autowired
   private lateinit var persistenceService: PersistenceService
 
   @LocalServerPort
@@ -69,8 +77,8 @@ class PeriodeGrunnlagControllerTest {
     periodeGrunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()
-/*    stonadsendringRepository.deleteAll()
-    vedtakRepository.deleteAll()*/
+    stonadsendringRepository.deleteAll()
+    vedtakRepository.deleteAll()
   }
 
 
