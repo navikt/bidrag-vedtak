@@ -3,8 +3,8 @@ package no.nav.bidrag.vedtak
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
-import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
-import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
@@ -93,7 +93,7 @@ class TestUtil {
     )
 
     private fun byggStonadsendringListe() = listOf(
-      OpprettStonadsendringRequest(
+      OpprettKomplettStonadsendringRequest(
         stonadType = "BIDRAG",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
@@ -101,7 +101,7 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettPeriodeRequest(
+          OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-01-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(3490),
@@ -122,7 +122,7 @@ class TestUtil {
               )
             )
           ),
-          OpprettPeriodeRequest(
+          OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-07-01"),
             periodeTilDato = LocalDate.parse("2020-01-01"),
             belop = BigDecimal.valueOf(3520),
@@ -149,7 +149,7 @@ class TestUtil {
           )
         )
       ),
-      OpprettStonadsendringRequest(
+      OpprettKomplettStonadsendringRequest(
         stonadType = "SAERTILSKUDD",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
@@ -157,7 +157,7 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettPeriodeRequest(
+          OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-06-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(4240),
@@ -174,7 +174,7 @@ class TestUtil {
               )
             )
           ),
-          OpprettPeriodeRequest(
+          OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-08-01"),
             periodeTilDato = LocalDate.parse("2019-09-01"),
             belop = BigDecimal.valueOf(3410),

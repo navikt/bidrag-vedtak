@@ -2,11 +2,12 @@ package no.nav.bidrag.vedtak.api.stonadsendring
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import kotlin.reflect.full.memberProperties
 
 @ApiModel
-data class OpprettStonadsendringRequest(
+data class OpprettKomplettStonadsendringRequest(
 
   @ApiModelProperty(value = "Stønadstype")
   val stonadType: String = "",
@@ -27,13 +28,17 @@ data class OpprettStonadsendringRequest(
   val kravhaverId: String = "",
 
   @ApiModelProperty(value = "Id til den som mottar bidraget")
-  val mottakerId: String = ""
+  val mottakerId: String = "",
+
+  @ApiModelProperty(value = "Liste over alle perioder som inngår i stønadsendringen")
+  val periodeListe: List<OpprettKomplettPeriodeRequest> = emptyList()
 )
 
-fun OpprettStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {
-  val propertiesByName = OpprettStonadsendringRequest::class.memberProperties.associateBy { it.name }
+fun OpprettKomplettStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
+  val propertiesByName = OpprettKomplettStonadsendringRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      StonadsendringDto::vedtakId.name -> vedtakId
       StonadsendringDto::stonadsendringId.name -> 0
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }

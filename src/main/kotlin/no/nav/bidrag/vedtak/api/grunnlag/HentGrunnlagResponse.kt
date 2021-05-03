@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonRawValue
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel(value = "Egenskaper ved et grunnlag")
+@ApiModel
 data class HentGrunnlagResponse(
 
   @ApiModelProperty(value = "Grunnlag-id")

@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
@@ -283,8 +283,8 @@ class PeriodeControllerTest {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(stonadsendringId: Int): HttpEntity<OpprettPeriodeRequest> {
-    return initHttpEntity(OpprettPeriodeRequest(
+  private fun byggRequest(stonadsendringId: Int): HttpEntity<OpprettKomplettPeriodeRequest> {
+    return initHttpEntity(OpprettKomplettPeriodeRequest(
       LocalDate.now(), LocalDate.now(), stonadsendringId, BigDecimal.valueOf(17.01), "NOK", "RESULTATKODE_TEST"
     ))
   }

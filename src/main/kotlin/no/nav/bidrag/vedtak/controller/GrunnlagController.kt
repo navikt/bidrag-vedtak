@@ -38,7 +38,7 @@ class GrunnlagController(private val grunnlagService: GrunnlagService) {
   }
 
   @GetMapping("$HENT_GRUNNLAG/{grunnlagId}")
-  @ApiOperation("Henter ett grunnlag")
+  @ApiOperation("Henter et grunnlag")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Grunnlag funnet"),

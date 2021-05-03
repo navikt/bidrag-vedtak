@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.api.vedtak
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
-@ApiModel(value = "Egenskaper ved et vedtak")
+@ApiModel
 data class OpprettVedtakRequest(
 
   @ApiModelProperty(value = "Id til saksbehandler som oppretter vedtaket")

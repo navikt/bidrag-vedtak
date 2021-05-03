@@ -5,10 +5,10 @@ import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.grunnlag.toGrunnlagDto
 import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
-import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.api.periode.toPeriodeDto
 import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse
-import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.toStonadsendringDto
 import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
@@ -122,7 +122,7 @@ class VedtakService(val persistenceService: PersistenceService) {
     persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagDto(vedtakId))
 
   // Opprett stønadsendring
-  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequest, vedtakId: Int) {
+  private fun opprettStonadsendring(stonadsendringRequest: OpprettKomplettStonadsendringRequest, vedtakId: Int) {
     val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringDto(vedtakId))
 
     // Periode
@@ -130,7 +130,7 @@ class VedtakService(val persistenceService: PersistenceService) {
   }
 
   // Opprett periode
-  private fun opprettPeriode(periodeRequest: OpprettPeriodeRequest, stonadsendringId: Int) {
+  private fun opprettPeriode(periodeRequest: OpprettKomplettPeriodeRequest, stonadsendringId: Int) {
     val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeDto(stonadsendringId))
 
     // PeriodeGrunnlag

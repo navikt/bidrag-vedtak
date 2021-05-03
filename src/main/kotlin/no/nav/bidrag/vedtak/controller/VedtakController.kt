@@ -95,7 +95,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
-  @ApiOperation("Finn komplette data for et vedtak")
+  @ApiOperation("Henter et komplett vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Vedtak funnet"),
@@ -106,6 +106,7 @@ class VedtakController(private val vedtakService: VedtakService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
+
   fun hentKomplettVedtak(@PathVariable vedtakId: Int): ResponseEntity<HentKomplettVedtakResponse> {
     val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(vedtakId)
     LOGGER.info("Følgende vedtak ble funnet: $komplettVedtakFunnet")

@@ -6,7 +6,7 @@ import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@ApiModel(value = "Egenskaper ved en periode")
+@ApiModel
 data class HentPeriodeResponse(
 
   @ApiModelProperty(value = "Periode fra-og-med-dato")

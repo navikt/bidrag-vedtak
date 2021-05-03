@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel(value = "Egenskaper ved et grunnlag")
+@ApiModel
 data class OpprettGrunnlagRequest(
 
   @ApiModelProperty(value = "Referanse til grunnlaget")

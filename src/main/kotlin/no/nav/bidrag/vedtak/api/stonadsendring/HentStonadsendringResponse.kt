@@ -1,8 +1,10 @@
 package no.nav.bidrag.vedtak.api.stonadsendring
 
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
 
+@ApiModel
 data class HentStonadsendringResponse(
 
   @ApiModelProperty(value = "Stønadstype")
