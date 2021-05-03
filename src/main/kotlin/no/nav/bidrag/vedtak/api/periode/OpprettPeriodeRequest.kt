@@ -1,14 +1,15 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.periode
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.reflect.full.memberProperties
 
 @ApiModel(value = "Egenskaper ved en periode")
-data class NyPeriodeRequest(
+data class OpprettPeriodeRequest(
 
   @ApiModelProperty(value = "Periode fra-og-med-dato")
   val periodeFomDato: LocalDate = LocalDate.now(),
@@ -29,11 +30,11 @@ data class NyPeriodeRequest(
   val resultatkode: String = "",
 
   @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  val grunnlagReferanseListe: List<GrunnlagReferanseRequest> = emptyList()
+  val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest> = emptyList()
 )
 
-fun NyPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
-  val propertiesByName = NyPeriodeRequest::class.memberProperties.associateBy { it.name }
+fun OpprettPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
+  val propertiesByName = OpprettPeriodeRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       PeriodeDto::stonadsendringId.name -> stonadsendringId
@@ -43,8 +44,8 @@ fun NyPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
   })
 }
 
-fun NyPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
-  val propertiesByName = NyPeriodeRequest::class.memberProperties.associateBy { it.name }
+fun OpprettPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
+  val propertiesByName = OpprettPeriodeRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       PeriodeDto::periodeId.name -> 0

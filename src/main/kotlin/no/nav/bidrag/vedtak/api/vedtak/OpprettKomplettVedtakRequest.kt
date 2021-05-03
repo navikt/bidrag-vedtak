@@ -1,10 +1,12 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 
 @ApiModel(value = "Egenskaper ved et vedtak")
-data class NyttVedtakRequest(
+data class OpprettKomplettVedtakRequest(
 
   @ApiModelProperty(value = "Id til saksbehandler som oppretter vedtaket")
   val saksbehandlerId: String = "",
@@ -13,8 +15,8 @@ data class NyttVedtakRequest(
   val enhetId: String = "",
 
   @ApiModelProperty(value = "Liste over alle grunnlag som inngår i vedtaket")
-  val grunnlagListe: List<NyttGrunnlagRequest> = emptyList(),
+  val grunnlagListe: List<OpprettGrunnlagRequest> = emptyList(),
 
   @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  val stonadsendringListe: List<NyStonadsendringRequest> = emptyList()
+  val stonadsendringListe: List<OpprettStonadsendringRequest> = emptyList()
 )

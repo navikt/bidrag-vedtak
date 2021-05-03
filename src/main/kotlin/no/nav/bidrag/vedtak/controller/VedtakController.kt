@@ -3,11 +3,9 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AlleVedtakResponse
-import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
-import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakResponse
+import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
+import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.Protected
@@ -24,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 class VedtakController(private val vedtakService: VedtakService) {
 
-  @PostMapping(VEDTAK_NY)
-  @ApiOperation("Opprett nytt vedtak")
+  @PostMapping(OPPRETT_VEDTAK)
+  @ApiOperation("Oppretter nytt vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Vedtak opprettet"),
@@ -36,14 +34,14 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettNyttVedtak(@RequestBody request: NyttVedtakRequest): ResponseEntity<VedtakDto>? {
-    val vedtakOpprettet = vedtakService.opprettNyttVedtak(request)
+  fun opprettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<VedtakDto>? {
+    val vedtakOpprettet = vedtakService.opprettVedtak(request)
     LOGGER.info("Følgende vedtak er opprettet: $vedtakOpprettet")
     return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$VEDTAK_SOK/{vedtakId}")
-  @ApiOperation("Finn data for ett vedtak")
+  @GetMapping("$HENT_VEDTAK/{vedtakId}")
+  @ApiOperation("Henter et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Vedtak funnet"),
@@ -55,14 +53,14 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun finnEttVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
-    val vedtakFunnet = vedtakService.finnEttVedtak(vedtakId)
+  fun hentVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
+    val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
     LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
     return ResponseEntity(vedtakFunnet, HttpStatus.OK)
   }
 
-  @GetMapping(VEDTAK_SOK)
-  @ApiOperation("Finn data for vedtak")
+  @GetMapping(HENT_VEDTAK)
+  @ApiOperation("Henter alle vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Alle vedtak funnet"),
@@ -72,14 +70,14 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun finnAlleVedtak(): ResponseEntity<AlleVedtakResponse> {
-    val alleVedtak = vedtakService.finnAlleVedtak()
+  fun hentAlleVedtak(): ResponseEntity<List<VedtakDto>> {
+    val alleVedtakFunnet = vedtakService.hentAlleVedtak()
     LOGGER.info("Alle vedtak ble funnet")
-    return ResponseEntity(alleVedtak, HttpStatus.OK)
+    return ResponseEntity(alleVedtakFunnet, HttpStatus.OK)
   }
 
-  @PostMapping(VEDTAK_NY_KOMPLETT)
-  @ApiOperation("Opprett nytt komplett vedtak")
+  @PostMapping(OPPRETT_VEDTAK_KOMPLETT)
+  @ApiOperation("Oppretter nytt komplett vedtak")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Komplett vedtak opprettet"),
@@ -90,13 +88,13 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettKomplettVedtak(@RequestBody request: NyttKomplettVedtakRequest): ResponseEntity<NyttVedtakResponse>? {
-    val vedtakOpprettet = vedtakService.opprettKomplettVedtak(request)
-    LOGGER.info("Vedtak med id ${vedtakOpprettet.vedtakId} er opprettet")
-    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
+  fun opprettKomplettVedtak(@RequestBody request: OpprettKomplettVedtakRequest): ResponseEntity<Int>? {
+    val komplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(request)
+    LOGGER.info("Vedtak med id $komplettVedtakOpprettet er opprettet")
+    return ResponseEntity(komplettVedtakOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$VEDTAK_SOK_KOMPLETT/{vedtakId}")
+  @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
   @ApiOperation("Finn komplette data for et vedtak")
   @ApiResponses(
     value = [
@@ -108,17 +106,17 @@ class VedtakController(private val vedtakService: VedtakService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnKomplettVedtak(@PathVariable vedtakId: Int): ResponseEntity<KomplettVedtakResponse> {
-    val vedtakFunnet = vedtakService.finnKomplettVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
-    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+  fun hentKomplettVedtak(@PathVariable vedtakId: Int): ResponseEntity<HentKomplettVedtakResponse> {
+    val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(vedtakId)
+    LOGGER.info("Følgende vedtak ble funnet: $komplettVedtakFunnet")
+    return ResponseEntity(komplettVedtakFunnet, HttpStatus.OK)
   }
 
   companion object {
-    const val VEDTAK_SOK = "/vedtak"
-    const val VEDTAK_SOK_KOMPLETT = "/vedtak/komplett"
-    const val VEDTAK_NY = "/vedtak/ny"
-    const val VEDTAK_NY_KOMPLETT = "/vedtak/ny/komplett"
+    const val OPPRETT_VEDTAK = "/vedtak/ny"
+    const val OPPRETT_VEDTAK_KOMPLETT = "/vedtak/ny/komplett"
+    const val HENT_VEDTAK = "/vedtak"
+    const val HENT_VEDTAK_KOMPLETT = "/vedtak/komplett"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }
 }

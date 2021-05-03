@@ -1,25 +1,17 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AlleGrunnlagForPeriodeResponse
-import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
-import no.nav.bidrag.vedtak.api.toPeriodeGrunnlagDto
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
+import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
+import no.nav.bidrag.vedtak.api.periodegrunnlag.toPeriodeGrunnlagDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class PeriodeGrunnlagService (val persistenceService: PersistenceService) {
+class PeriodeGrunnlagService(val persistenceService: PersistenceService) {
 
-  fun opprettNyttPeriodeGrunnlag(request: NyttPeriodeGrunnlagRequest): PeriodeGrunnlagDto {
-    return persistenceService.opprettNyttPeriodeGrunnlag(request.toPeriodeGrunnlagDto())
-  }
+  fun opprettPeriodeGrunnlag(request: OpprettPeriodeGrunnlagRequest) = persistenceService.opprettPeriodeGrunnlag(request.toPeriodeGrunnlagDto())
 
-  fun hentPeriodeGrunnlag(periodeId: Int, grunnlag_id: Int): PeriodeGrunnlagDto {
-    return persistenceService.finnPeriodeGrunnlag(periodeId, grunnlag_id)
-  }
+  fun hentPeriodeGrunnlag(periodeId: Int, grunnlag_id: Int) = persistenceService.hentPeriodeGrunnlag(periodeId, grunnlag_id)
 
-  fun hentAlleGrunnlagForPeriode(periodeId: Int): AlleGrunnlagForPeriodeResponse {
-    return AlleGrunnlagForPeriodeResponse(persistenceService.finnAlleGrunnlagForPeriode(periodeId))
-  }
+  fun hentAllePeriodeGrunnlagForPeriode(periodeId: Int) = persistenceService.hentAllePeriodeGrunnlagForPeriode(periodeId)
 }

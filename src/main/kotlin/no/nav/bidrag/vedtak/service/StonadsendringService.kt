@@ -1,25 +1,17 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AlleStonadsendringerForVedtakResponse
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
-import no.nav.bidrag.vedtak.api.toStonadsendringDto
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.toStonadsendringDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class StonadsendringService (val persistenceService: PersistenceService) {
+class StonadsendringService(val persistenceService: PersistenceService) {
 
-  fun opprettNyStonadsendring(request: NyStonadsendringRequest): StonadsendringDto {
-    return persistenceService.opprettNyStonadsendring(request.toStonadsendringDto())
-  }
+  fun opprettStonadsendring(request: OpprettStonadsendringRequest) = persistenceService.opprettStonadsendring(request.toStonadsendringDto())
 
-  fun finnEnStonadsendring(stonadsendring_id: Int): StonadsendringDto {
-    return persistenceService.finnEnStonadsendring(stonadsendring_id)
-  }
+  fun hentStonadsendring(stonadsendring_id: Int) = persistenceService.hentStonadsendring(stonadsendring_id)
 
-  fun finnAlleStonadsendringerForVedtak(vedtakId: Int): AlleStonadsendringerForVedtakResponse {
-    return AlleStonadsendringerForVedtakResponse(persistenceService.finnAlleStonadsendringerForVedtak(vedtakId))
-  }
+  fun hentAlleStonadsendringerForVedtak(vedtakId: Int) = persistenceService.hentAlleStonadsendringerForVedtak(vedtakId)
 }

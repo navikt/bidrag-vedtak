@@ -3,8 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import no.nav.bidrag.vedtak.api.AllePerioderForStonadsendringResponse
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.service.PeriodeService
 import no.nav.security.token.support.core.api.Protected
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 @Protected
 class PeriodeController(private val periodeService: PeriodeService) {
 
-  @PostMapping(PERIODE_NY)
-  @ApiOperation("Opprette ny periode")
+  @PostMapping(OPPRETT_PERIODE)
+  @ApiOperation("Oppretter ny periode")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Periode opprettet"),
@@ -32,18 +31,17 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun opprettNyPeriode(@RequestBody request: NyPeriodeRequest): ResponseEntity<PeriodeDto>? {
-    val periodeOpprettet = periodeService.opprettNyPeriode(request)
+  fun opprettPeriode(@RequestBody request: OpprettPeriodeRequest): ResponseEntity<PeriodeDto>? {
+    val periodeOpprettet = periodeService.opprettPeriode(request)
     LOGGER.info("Følgende periode er opprettet: $periodeOpprettet")
-    periodeService.opprettNyPeriode(request)
     return ResponseEntity(periodeOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODE_SOK/{periodeId}")
-  @ApiOperation("Finn data for en periode")
+  @GetMapping("$HENT_PERIODE/{periodeId}")
+  @ApiOperation("Henter en periode")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Data for periode hentet"),
+      ApiResponse(code = 200, message = "Periode funnet"),
       ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
       ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
       ApiResponse(code = 404, message = "Periode ikke funnet"),
@@ -51,14 +49,14 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnPeriode(@PathVariable periodeId: Int): ResponseEntity<PeriodeDto> {
-    val periodeFunnet = periodeService.finnPeriode(periodeId)
+  fun hentPeriode(@PathVariable periodeId: Int): ResponseEntity<PeriodeDto> {
+    val periodeFunnet = periodeService.hentPeriode(periodeId)
     LOGGER.info("Følgende periode ble funnet: $periodeFunnet")
     return ResponseEntity(periodeFunnet, HttpStatus.OK)
   }
 
-  @GetMapping("$PERIODE_SOK_STONADSENDRING/{stonadsendringId}")
-  @ApiOperation("Finn alle perioder for en stønadsendring")
+  @GetMapping("$HENT_PERIODER_FOR_STONADSENDRING/{stonadsendringId}")
+  @ApiOperation("Henter alle perioder for en stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(code = 200, message = "Alle perioder funnet"),
@@ -69,18 +67,17 @@ class PeriodeController(private val periodeService: PeriodeService) {
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun finnAllePerioderForStonadsendring(@PathVariable stonadsendringId: Int):
-      ResponseEntity<AllePerioderForStonadsendringResponse> {
-    val allePerioderFunnet = periodeService.finnAllePerioderForStonadsendring(stonadsendringId)
+  fun hentPerioderForStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<List<PeriodeDto>> {
+    val allePerioderFunnet = periodeService.hentAllePerioderForStonadsendring(stonadsendringId)
     LOGGER.info("Følgende perioder ble funnet: $allePerioderFunnet")
     return ResponseEntity(allePerioderFunnet, HttpStatus.OK)
   }
 
 
   companion object {
-    const val PERIODE_SOK = "/periode"
-    const val PERIODE_SOK_STONADSENDRING = "/periode/stonadsendring"
-    const val PERIODE_NY = "/periode/ny"
+    const val OPPRETT_PERIODE = "/periode/ny"
+    const val HENT_PERIODE = "/periode"
+    const val HENT_PERIODER_FOR_STONADSENDRING = "/periode/stonadsendring"
     private val LOGGER = LoggerFactory.getLogger(PeriodeController::class.java)
   }
 }

@@ -1,22 +1,18 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AlleVedtakResponse
-import no.nav.bidrag.vedtak.api.GrunnlagReferanseResponse
-import no.nav.bidrag.vedtak.api.GrunnlagResponse
-import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
-import no.nav.bidrag.vedtak.api.NyttVedtakRequest
-import no.nav.bidrag.vedtak.api.NyttGrunnlagRequest
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.NyStonadsendringRequest
-import no.nav.bidrag.vedtak.api.NyttKomplettVedtakRequest
-import no.nav.bidrag.vedtak.api.NyttVedtakResponse
-import no.nav.bidrag.vedtak.api.PeriodeResponse
-import no.nav.bidrag.vedtak.api.StonadsendringKomplettResponse
-import no.nav.bidrag.vedtak.api.toGrunnlagDto
-import no.nav.bidrag.vedtak.api.toPeriodeDto
-import no.nav.bidrag.vedtak.api.toStonadsendringDto
-import no.nav.bidrag.vedtak.controller.PeriodeController
-import no.nav.bidrag.vedtak.dto.GrunnlagDto
+import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
+import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
+import no.nav.bidrag.vedtak.api.grunnlag.toGrunnlagDto
+import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.toPeriodeDto
+import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.toStonadsendringDto
+import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
+import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
@@ -27,43 +23,45 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class VedtakService (val persistenceService: PersistenceService) {
+class VedtakService(val persistenceService: PersistenceService) {
 
   private val grunnlagIdRefMap = mutableMapOf<String, Int>()
-  private val LOGGER = LoggerFactory.getLogger(PeriodeController::class.java)
 
-  fun opprettNyttVedtak(request: NyttVedtakRequest): VedtakDto {
+  fun opprettVedtak(request: OpprettVedtakRequest): VedtakDto {
     val vedtakDto = VedtakDto(enhetId = request.enhetId, saksbehandlerId = request.saksbehandlerId)
-    return persistenceService.opprettNyttVedtak(vedtakDto)
+    return persistenceService.opprettVedtak(vedtakDto)
   }
 
-  fun finnEttVedtak(vedtakId: Int): VedtakDto {
-    return persistenceService.finnEttVedtak(vedtakId)
+  fun hentVedtak(vedtakId: Int) = persistenceService.hentVedtak(vedtakId)
+
+  fun hentAlleVedtak() = persistenceService.hentAlleVedtak()
+
+  fun hentKomplettVedtak(vedtakId: Int): HentKomplettVedtakResponse {
+    val vedtakDto = persistenceService.hentVedtak(vedtakId)
+    val grunnlagResponseListe = ArrayList<HentGrunnlagResponse>()
+    val grunnlagDtoListe = persistenceService.hentAlleGrunnlagForVedtak(vedtakDto.vedtakId)
+    grunnlagDtoListe.forEach {
+      grunnlagResponseListe.add(
+        HentGrunnlagResponse(it.grunnlagId, it.grunnlagReferanse, it.grunnlagType, it.grunnlagInnhold)
+      )
+    }
+    val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
+    return HentKomplettVedtakResponse(
+      vedtakDto.vedtakId,
+      vedtakDto.saksbehandlerId,
+      vedtakDto.enhetId,
+      vedtakDto.opprettetTimestamp,
+      grunnlagResponseListe,
+      finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe)
+    )
   }
 
-  fun finnAlleVedtak(): AlleVedtakResponse {
-    return AlleVedtakResponse(persistenceService.finnAlleVedtak())
-  }
-
-  fun finnKomplettVedtak(vedtakId: Int): KomplettVedtakResponse {
-    val vedtakDto = persistenceService.finnEttVedtak(vedtakId)
-    val grunnlagResponseListe = ArrayList<GrunnlagResponse>()
-    val grunnlagDtoListe = persistenceService.finnAlleGrunnlagForVedtak(vedtakDto.vedtakId)
-    grunnlagDtoListe.forEach {grunnlagResponseListe.add(GrunnlagResponse(
-      it.grunnlagId, it.grunnlagReferanse,
-      it.grunnlagType, it.grunnlagInnhold
-    )) }
-    val stonadsendringDtoListe = persistenceService.finnAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
-    return KomplettVedtakResponse(vedtakDto.vedtakId, vedtakDto.saksbehandlerId, vedtakDto.enhetId,
-      vedtakDto.opprettetTimestamp, grunnlagResponseListe, finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe))
-  }
-
-  fun finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe: List<StonadsendringDto>): List<StonadsendringKomplettResponse> {
-    val stonadsendringKomplettResponseListe = ArrayList<StonadsendringKomplettResponse>()
+  private fun finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe: List<StonadsendringDto>): List<HentStonadsendringResponse> {
+    val stonadsendringKomplettResponseListe = ArrayList<HentStonadsendringResponse>()
     stonadsendringDtoListe.forEach {
-      val periodeDtoListe = persistenceService.finnAllePerioderForStonadsendring(it.stonadsendringId)
+      val periodeDtoListe = persistenceService.hentAllePerioderForStonadsendring(it.stonadsendringId)
       stonadsendringKomplettResponseListe.add(
-        StonadsendringKomplettResponse(
+        HentStonadsendringResponse(
           it.stonadType,
           it.sakId,
           it.behandlingId,
@@ -71,29 +69,28 @@ class VedtakService (val persistenceService: PersistenceService) {
           it.kravhaverId,
           it.mottakerId,
           finnPerioderTilKomplettVedtak(periodeDtoListe)
-        ))
-      }
+        )
+      )
+    }
     return stonadsendringKomplettResponseListe
   }
 
-  fun finnPerioderTilKomplettVedtak(periodeDtoListe: List<PeriodeDto>): List<PeriodeResponse> {
-    val periodeResponseListe = ArrayList<PeriodeResponse>()
-//    val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
-    periodeDtoListe.forEach {
-      val grunnlagReferanseResponseListe = ArrayList<GrunnlagReferanseResponse>()
-//      grunnlagReferanseResponseListe.clear()
-      val periodeGrunnlagListe = persistenceService.finnAlleGrunnlagForPeriode(it.periodeId)
+  private fun finnPerioderTilKomplettVedtak(periodeDtoListe: List<PeriodeDto>): List<HentPeriodeResponse> {
+    val periodeResponseListe = ArrayList<HentPeriodeResponse>()
+    periodeDtoListe.forEach { dto ->
+      val grunnlagReferanseResponseListe = ArrayList<HentGrunnlagReferanseResponse>()
+      val periodeGrunnlagListe = persistenceService.hentAllePeriodeGrunnlagForPeriode(dto.periodeId)
       periodeGrunnlagListe.forEach {
-        val grunnlag = persistenceService.finnGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(GrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
+        val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
+        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
       }
       periodeResponseListe.add(
-        PeriodeResponse(
-          it.periodeFomDato,
-          it.periodeTilDato,
-          it.belop,
-          it.valutakode,
-          it.resultatkode,
+        HentPeriodeResponse(
+          dto.periodeFomDato,
+          dto.periodeTilDato,
+          dto.belop,
+          dto.valutakode.trimEnd(),
+          dto.resultatkode,
           grunnlagReferanseResponseListe
         )
       )
@@ -101,13 +98,12 @@ class VedtakService (val persistenceService: PersistenceService) {
     return periodeResponseListe
   }
 
-
   // Opprett komplett vedtak (alle tabeller)
-  fun opprettKomplettVedtak(vedtakRequest: NyttKomplettVedtakRequest): NyttVedtakResponse {
+  fun opprettKomplettVedtak(vedtakRequest: OpprettKomplettVedtakRequest): Int {
 
     // Opprett vedtak
     val vedtakDto = VedtakDto(enhetId = vedtakRequest.enhetId, saksbehandlerId = vedtakRequest.saksbehandlerId)
-    val opprettetVedtak = persistenceService.opprettNyttVedtak(vedtakDto)
+    val opprettetVedtak = persistenceService.opprettVedtak(vedtakDto)
 
     // Grunnlag
     vedtakRequest.grunnlagListe.forEach {
@@ -118,25 +114,24 @@ class VedtakService (val persistenceService: PersistenceService) {
     // Stønadsendring
     vedtakRequest.stonadsendringListe.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
 
-    return NyttVedtakResponse(opprettetVedtak.vedtakId)
+    return opprettetVedtak.vedtakId
   }
 
   // Opprett grunnlag
-  private fun opprettGrunnlag(grunnlagRequest: NyttGrunnlagRequest, vedtakId: Int): GrunnlagDto {
-    return persistenceService.opprettNyttGrunnlag(grunnlagRequest.toGrunnlagDto(vedtakId))
-  }
+  private fun opprettGrunnlag(grunnlagRequest: OpprettGrunnlagRequest, vedtakId: Int) =
+    persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagDto(vedtakId))
 
   // Opprett stønadsendring
-  private fun opprettStonadsendring(stonadsendringRequest: NyStonadsendringRequest, vedtakId: Int) {
-    val opprettetStonadsendring = persistenceService.opprettNyStonadsendring(stonadsendringRequest.toStonadsendringDto(vedtakId))
+  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequest, vedtakId: Int) {
+    val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringDto(vedtakId))
 
     // Periode
     stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring.stonadsendringId) }
   }
 
   // Opprett periode
-  private fun opprettPeriode(periodeRequest: NyPeriodeRequest, stonadsendringId: Int) {
-    val opprettetPeriode = persistenceService.opprettNyPeriode(periodeRequest.toPeriodeDto(stonadsendringId))
+  private fun opprettPeriode(periodeRequest: OpprettPeriodeRequest, stonadsendringId: Int) {
+    val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeDto(stonadsendringId))
 
     // PeriodeGrunnlag
     periodeRequest.grunnlagReferanseListe.forEach {
@@ -147,8 +142,12 @@ class VedtakService (val persistenceService: PersistenceService) {
         throw IllegalArgumentException(feilmelding)
       } else {
         val periodeGrunnlagDto = PeriodeGrunnlagDto(periodeId = opprettetPeriode.periodeId, grunnlagId = grunnlagId, grunnlagValgt = it.grunnlagValgt)
-        persistenceService.opprettNyttPeriodeGrunnlag(periodeGrunnlagDto)
+        persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagDto)
       }
     }
+  }
+
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)
   }
 }

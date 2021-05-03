@@ -1,12 +1,13 @@
-package no.nav.bidrag.vedtak.api
+package no.nav.bidrag.vedtak.api.periode
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @ApiModel(value = "Egenskaper ved en periode")
-data class PeriodeResponse(
+data class HentPeriodeResponse(
 
   @ApiModelProperty(value = "Periode fra-og-med-dato")
   val periodeFomDato: LocalDate = LocalDate.now(),
@@ -24,5 +25,5 @@ data class PeriodeResponse(
   val resultatkode: String = "",
 
   @ApiModelProperty(value = "Liste over alle grunnlag som inngår i perioden")
-  val grunnlagReferanseListe: List<GrunnlagReferanseResponse> = emptyList()
+  val grunnlagReferanseListe: List<HentGrunnlagReferanseResponse> = emptyList()
 )

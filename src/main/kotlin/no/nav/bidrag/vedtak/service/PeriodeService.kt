@@ -1,26 +1,17 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.AllePerioderForStonadsendringResponse
-import no.nav.bidrag.vedtak.api.NyPeriodeRequest
-import no.nav.bidrag.vedtak.api.toPeriodeDto
-import no.nav.bidrag.vedtak.dto.PeriodeDto
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.periode.toPeriodeDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class PeriodeService (val persistenceService: PersistenceService) {
+class PeriodeService(val persistenceService: PersistenceService) {
 
-  fun opprettNyPeriode(request: NyPeriodeRequest): PeriodeDto {
-    return persistenceService.opprettNyPeriode(request.toPeriodeDto())
-  }
+  fun opprettPeriode(request: OpprettPeriodeRequest) = persistenceService.opprettPeriode(request.toPeriodeDto())
 
-  fun finnPeriode(periodeId: Int): PeriodeDto {
-    return persistenceService.finnPeriode(periodeId)
-  }
+  fun hentPeriode(periodeId: Int) = persistenceService.hentPeriode(periodeId)
 
-  fun finnAllePerioderForStonadsendring(stonadsendringId: Int): AllePerioderForStonadsendringResponse {
-    return AllePerioderForStonadsendringResponse(persistenceService.finnAllePerioderForStonadsendring(stonadsendringId))
-  }
-
+  fun hentAllePerioderForStonadsendring(stonadsendringId: Int) = persistenceService.hentAllePerioderForStonadsendring(stonadsendringId)
 }

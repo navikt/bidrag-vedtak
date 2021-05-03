@@ -3,8 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
-import no.nav.bidrag.vedtak.api.AlleGrunnlagForPeriodeResponse
-import no.nav.bidrag.vedtak.api.NyttPeriodeGrunnlagRequest
+import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -61,6 +61,8 @@ class PeriodeGrunnlagControllerTest {
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
+  private val periodeGrunnlagDtoListe = object : ParameterizedTypeReference<List<PeriodeGrunnlagDto>>() {}
+
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
@@ -76,10 +78,10 @@ class PeriodeGrunnlagControllerTest {
   fun `skal opprette nytt periodegrunnlag`() {
 
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(StonadsendringDto(
       stonadType = "BIDRAG",
       vedtakId = nyttVedtakOpprettet.vedtakId,
       behandlingId = "1111",
@@ -88,7 +90,7 @@ class PeriodeGrunnlagControllerTest {
       mottakerId = "1111")
     )
 
-    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
+    val nyttGrunnlagOpprettet = persistenceService.opprettGrunnlag(
       GrunnlagDto(
         grunnlagReferanse = "",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -97,7 +99,7 @@ class PeriodeGrunnlagControllerTest {
     )
 
     // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -128,72 +130,13 @@ class PeriodeGrunnlagControllerTest {
     grunnlagRepository.deleteAll()
   }
 
-/*
   @Test
-  fun `skal finne data for et periodegrunnlag`() {
+  fun `skal hente alle grunnlag for en periode`() {
     // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG",
-      vedtakId = nyttVedtakOpprettet.vedtakId,
-      behandlingId = "1111",
-      skyldnerId = "1111",
-      kravhaverId = "1111",
-      mottakerId = "1111")
-    )
-    // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
-      PeriodeDto(
-        periodeFomDato = LocalDate.now(),
-        periodeTilDato = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
-        belop = BigDecimal.valueOf(17.01),
-        valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
-    )
-    val nyttGrunnlagOpprettet = persistenceService.opprettNyttGrunnlag(
-      GrunnlagDto(
-        grunnlagReferanse = "",
-        vedtakId = nyttVedtakOpprettet.vedtakId,
-        grunnlagType = "Beregnet Inntekt",
-        grunnlagInnhold = "100")
-    )
-    // Oppretter ny forekomst av periodeGrunnlag
-    val nyttPeriodeGrunnlagOpprettet = persistenceService.opprettNyttPeriodeGrunnlag(
-      PeriodeGrunnlagDto(
-        periodeId = nyPeriodeOpprettet.periodeId,
-        grunnlagId = nyttGrunnlagOpprettet.vedtakId,
-        grunnlagValgt = true)
-    )
-    // Henter forekomst
-    val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokPeriodeGrunnlag()}/${nyPeriodeOpprettet.periodeId}&${nyttGrunnlagOpprettet.grunnlagId}",
-      HttpMethod.GET,
-      null,
-      PeriodeGrunnlagDto::class.java
-    )
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet.periodeId) },
-      Executable { assertThat(response?.body?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagId) },
-      Executable { assertThat(response?.body?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagValgt) }
-    )
-    periodeGrunnlagRepository.deleteAll()
-    grunnlagRepository.deleteAll()
-    periodeRepository.deleteAll()
-  }
-*/
-
-  @Test
-  fun `skal finne alle grunnlag for en periode`() {
-    // Oppretter ny forekomst av vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettNyttVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter nye forekomster av stønadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettNyStonadsendring(
+    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
       StonadsendringDto(
         stonadType = "BIDRAG",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -205,7 +148,7 @@ class PeriodeGrunnlagControllerTest {
     )
 
     // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettNyPeriode(
+    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
       PeriodeDto(
         periodeFomDato = LocalDate.now(),
         periodeTilDato = LocalDate.now(),
@@ -215,14 +158,14 @@ class PeriodeGrunnlagControllerTest {
         resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
     )
 
-    val nyttGrunnlagOpprettet1 = persistenceService.opprettNyttGrunnlag(
+    val nyttGrunnlagOpprettet1 = persistenceService.opprettGrunnlag(
       GrunnlagDto(
         grunnlagReferanse = "",
         vedtakId = nyttVedtakOpprettet.vedtakId,
         grunnlagType = "Beregnet Inntekt",
         grunnlagInnhold = "100")
     )
-    val nyttGrunnlagOpprettet2 = persistenceService.opprettNyttGrunnlag(
+    val nyttGrunnlagOpprettet2 = persistenceService.opprettGrunnlag(
       GrunnlagDto(
         grunnlagReferanse = "",
         vedtakId = nyttVedtakOpprettet.vedtakId,
@@ -231,14 +174,14 @@ class PeriodeGrunnlagControllerTest {
     )
 
     // Oppretter ny forekomst av periodeGrunnlag
-    val nyttPeriodeGrunnlagOpprettet1 = persistenceService.opprettNyttPeriodeGrunnlag(
+    val nyttPeriodeGrunnlagOpprettet1 = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         periodeId = nyPeriodeOpprettet.periodeId,
         grunnlagId = nyttGrunnlagOpprettet1.grunnlagId,
         grunnlagValgt = true)
     )
     // Oppretter ny forekomst av periodeGrunnlag
-    val nyttPeriodeGrunnlagOpprettet2 = persistenceService.opprettNyttPeriodeGrunnlag(
+    val nyttPeriodeGrunnlagOpprettet2 = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         periodeId = nyPeriodeOpprettet.periodeId,
         grunnlagId = nyttGrunnlagOpprettet2.grunnlagId,
@@ -250,21 +193,20 @@ class PeriodeGrunnlagControllerTest {
       "${fullUrlForSokAllePeriodeGrunnlagForPeriode()}/${nyPeriodeOpprettet.periodeId}",
       HttpMethod.GET,
       null,
-      AlleGrunnlagForPeriodeResponse::class.java
+      periodeGrunnlagDtoListe
     )
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode).isNotNull },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!!.size).isEqualTo(2) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.periodeId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.periodeId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![0].grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagValgt) },
-      Executable { assertThat(response?.body?.alleGrunnlagForPeriode!![1].grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagValgt) },
+      Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(response.body).isNotNull },
+      Executable { assertThat(response.body?.size).isEqualTo(2) },
+      Executable { assertThat(response.body?.get(0)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.periodeId) },
+      Executable { assertThat(response.body?.get(1)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.periodeId) },
+      Executable { assertThat(response.body?.get(0)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagId) },
+      Executable { assertThat(response.body?.get(1)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) },
+      Executable { assertThat(response.body?.get(0)?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagValgt) },
+      Executable { assertThat(response.body?.get(1)?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagValgt) },
 
       )
     periodeGrunnlagRepository.deleteAll()
@@ -273,23 +215,19 @@ class PeriodeGrunnlagControllerTest {
   }
 
   private fun fullUrlForNyttPeriodeGrunnlag(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.PERIODEGRUNNLAG_NYTT).toUriString()
-  }
-
-  private fun fullUrlForSokPeriodeGrunnlag(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.PERIODEGRUNNLAG_SOK).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.OPPRETT_PERIODEGRUNNLAG).toUriString()
   }
 
   private fun fullUrlForSokAllePeriodeGrunnlagForPeriode(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.PERIODEGRUNNLAG_SOK_PERIODE).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.HENT_PERIODEGRUNNLAG_FOR_PERIODE).toUriString()
   }
 
   private fun makeFullContextPath(): String {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(periodeId: Int, grunnlagId: Int): HttpEntity<NyttPeriodeGrunnlagRequest> {
-    return initHttpEntity(NyttPeriodeGrunnlagRequest(
+  private fun byggRequest(periodeId: Int, grunnlagId: Int): HttpEntity<OpprettPeriodeGrunnlagRequest> {
+    return initHttpEntity(OpprettPeriodeGrunnlagRequest(
       periodeId,
       grunnlagId,
       true)

@@ -1,6 +1,5 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.KomplettVedtakResponse
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -33,26 +32,24 @@ class PersistenceService(
   val periodeGrunnlagRepository: PeriodeGrunnlagRepository
 ) {
 
-  private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
-
-  fun opprettNyttVedtak(dto: VedtakDto): VedtakDto {
+  fun opprettVedtak(dto: VedtakDto): VedtakDto {
     val nyttVedtak = dto.toVedtakEntity()
     val vedtak = vedtakRepository.save(nyttVedtak)
     return vedtak.toVedtakDto()
   }
 
-  fun finnEttVedtak(id: Int): VedtakDto {
+  fun hentVedtak(id: Int): VedtakDto {
     val vedtak = vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
     return vedtak.toVedtakDto()
   }
 
-  fun finnAlleVedtak(): List<VedtakDto> {
+  fun hentAlleVedtak(): List<VedtakDto> {
     val vedtakDtoListe = mutableListOf<VedtakDto>()
     vedtakRepository.findAll().forEach { vedtakDtoListe.add(it.toVedtakDto()) }
     return vedtakDtoListe
   }
 
-  fun opprettNyStonadsendring(dto: StonadsendringDto): StonadsendringDto {
+  fun opprettStonadsendring(dto: StonadsendringDto): StonadsendringDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyStonadsendring = dto.toStonadsendringEntity(eksisterendeVedtak)
@@ -60,20 +57,20 @@ class PersistenceService(
     return stonadsendring.toStonadsendringDto()
   }
 
-  fun finnEnStonadsendring(id: Int): StonadsendringDto {
+  fun hentStonadsendring(id: Int): StonadsendringDto {
     val stonadsendring = stonadsendringRepository.findById(id)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", id)) }
     return stonadsendring.toStonadsendringDto()
   }
 
-  fun finnAlleStonadsendringerForVedtak(id: Int): List<StonadsendringDto> {
+  fun hentAlleStonadsendringerForVedtak(id: Int): List<StonadsendringDto> {
     val stonadsendringDtoListe = mutableListOf<StonadsendringDto>()
     stonadsendringRepository.hentAlleStonadsendringerForVedtak(id)
       .forEach {stonadsendring -> stonadsendringDtoListe.add(stonadsendring.toStonadsendringDto()) }
     return stonadsendringDtoListe
   }
 
-  fun opprettNyPeriode(dto: PeriodeDto): PeriodeDto {
+  fun opprettPeriode(dto: PeriodeDto): PeriodeDto {
     val eksisterendeStonadsendring = stonadsendringRepository.findById(dto.stonadsendringId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke stonadsendring med id %d i databasen", dto.stonadsendringId)) }
     val nyPeriode = dto.toPeriodeEntity(eksisterendeStonadsendring)
@@ -81,13 +78,13 @@ class PersistenceService(
     return periode.toPeriodeDto()
   }
 
-  fun finnPeriode(id: Int): PeriodeDto {
+  fun hentPeriode(id: Int): PeriodeDto {
     val periode = periodeRepository.findById(id)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", id)) }
     return periode.toPeriodeDto()
   }
 
-  fun finnAllePerioderForStonadsendring(id: Int): List<PeriodeDto> {
+  fun hentAllePerioderForStonadsendring(id: Int): List<PeriodeDto> {
     val periodeDtoListe = mutableListOf<PeriodeDto>()
     periodeRepository.hentAllePerioderForStonadsendring(id)
       .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
@@ -95,7 +92,7 @@ class PersistenceService(
     return periodeDtoListe
   }
 
-  fun opprettNyttGrunnlag(dto: GrunnlagDto): GrunnlagDto {
+  fun opprettGrunnlag(dto: GrunnlagDto): GrunnlagDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyttGrunnlag = dto.toGrunnlagEntity(eksisterendeVedtak)
@@ -103,20 +100,20 @@ class PersistenceService(
     return grunnlag.toGrunnlagDto()
   }
 
-  fun finnGrunnlag(id: Int): GrunnlagDto {
+  fun hentGrunnlag(id: Int): GrunnlagDto {
     val grunnlag = grunnlagRepository.findById(id)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", id)) }
     return grunnlag.toGrunnlagDto()
   }
 
-  fun finnAlleGrunnlagForVedtak(id: Int): List<GrunnlagDto> {
+  fun hentAlleGrunnlagForVedtak(id: Int): List<GrunnlagDto> {
     val grunnlagDtoListe = mutableListOf<GrunnlagDto>()
     grunnlagRepository.hentAlleGrunnlagForVedtak(id)
       .forEach {grunnlag -> grunnlagDtoListe.add(grunnlag.toGrunnlagDto()) }
     return grunnlagDtoListe
   }
 
-  fun opprettNyttPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
+  fun opprettPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
     val eksisterendePeriode = periodeRepository.findById(dto.periodeId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", dto.periodeId)) }
     val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
@@ -127,16 +124,20 @@ class PersistenceService(
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun finnPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
+  fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
     val periodeGrunnlag = periodeGrunnlagRepository.hentPeriodeGrunnlag(periodeId, grunnlagId)
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun finnAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
+  fun hentAllePeriodeGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
     val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
     periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
       .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
 
     return periodeGrunnlagDtoListe
+  }
+
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
   }
 }
