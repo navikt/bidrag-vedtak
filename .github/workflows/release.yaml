@@ -64,7 +64,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          RESOURCE: deploy/.nais/naiserator-prod.yml
+          RESOURCE: deploy/.nais/naiserator-prod.yaml
 
   tag:
     runs-on: ubuntu-latest
