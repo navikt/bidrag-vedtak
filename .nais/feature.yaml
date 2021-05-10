@@ -1,2 +1,3 @@
 name: bidrag-vedtak-feature
 ingress: https://bidrag-vedtak-feature.dev.intern.nav.no
+dbname: bidrag-vedtak-feature

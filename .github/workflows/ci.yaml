@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@v1
         if: env.NOT_FOUND == 'true'
         with:
-          java-version: '15'
+          java-version: '16'
       - run: env
       - uses: actions/cache@v1
         if: env.NOT_FOUND == 'true'
@@ -70,7 +70,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: deploy/.nais/naiserator-dev-main.yaml
+          RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/main.yaml
 
       - name: Deploy to dev-gcp for feature.yaml
@@ -79,7 +79,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: deploy/.nais/naiserator-dev-feature.yaml
+          RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/feature.yaml
 
   bump_dev_version:
