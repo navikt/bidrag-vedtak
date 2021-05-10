@@ -39,9 +39,9 @@ spec:
     - {{ ingress }}
   gcp:
     sqlInstances:
-      - name: bidrag-vedtak-main
+      - name: {{ dbname }}
         type: POSTGRES_12
         cascadingDelete: true
         databases:
-          - name: bidrag-vedtak-main
+          - name: {{ dbname }}
             envVarPrefix: DB
