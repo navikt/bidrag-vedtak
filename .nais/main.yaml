@@ -1,4 +1,2 @@
-{
-  "name": "bidrag-vedtak",
-  "ingress": "https://bidrag-vedtak.dev.intern.nav.no"
-}
+name: bidrag-vedtak
+ingress: https://bidrag-vedtak.dev.intern.nav.no
