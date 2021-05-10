@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - '**'
+      - '!release'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/bidrag-vedtak:${{ github.sha }}
@@ -54,39 +55,38 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
 
-  deploy_dev:
+  deploy:
     runs-on: ubuntu-latest
     name: Deploy docker image to dev
-    if: github.ref != 'refs/heads/release'
     needs: build
 
     steps:
       - uses: actions/checkout@v2
         with:
           path: deploy
-      - name: Deploy to dev-gcp, for main.json
+      - name: Deploy to dev-gcp, for main.yaml
         if: github.ref == 'refs/heads/main'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: deploy/nais/naiserator-dev-main.yaml
-          VARS: deploy/nais/main.json
+          RESOURCE: deploy/.nais/naiserator-dev-main.yaml
+          VARS: deploy/.nais/main.yaml
 
-      - name: Deploy to dev-gcp for feature.json
+      - name: Deploy to dev-gcp for feature.yaml
         if: github.ref != 'refs/heads/main'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: deploy/nais/naiserator-dev-feature.yaml
-          VARS: deploy/nais/feature.json
+          RESOURCE: deploy/.nais/naiserator-dev-feature.yaml
+          VARS: deploy/.nais/feature.yaml
 
   bump_dev_version:
     runs-on: ubuntu-latest
     name: Bump SNAPSHOT version
     if: github.ref == 'refs/heads/main'
-    needs: deploy_dev
+    needs: deploy
 
     steps:
       - uses: actions/checkout@v2
@@ -111,54 +111,9 @@ jobs:
           echo ::set-output name=version::${BUMPED_VERSION}
         id: snapshot
 
-      - uses: navikt/bidrag-git/commit@v3
+      - uses: navikt/bidrag-git/commit@v5
         with:
           commit_message: "Bumped to new version: ${{ steps.snapshot.outputs.version }}"
           pattern: "pom.xml"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy_prod:
-    runs-on: ubuntu-latest
-    name: Deploy docker image to prod
-    if: github.ref == 'refs/heads/release'
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          path: deploy
-
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: deploy/nais/naiserator-prod.yml
-          VAR: namespace=default
-
-  tag_prod_deploy:
-    runs-on: ubuntu-latest
-    name: Tag latest deploy to prod
-    needs: deploy_prod
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - run: |
-          TAG_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
-          echo ::set-output name=tag::${TAG_VERSION}
-        id: release
-
-      - uses: navikt/bidrag-git/tag@v3
-        with:
-          tag_message: Releasing version ${{ steps.release.outputs.tag }}
-          tag: ${{ steps.release.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
