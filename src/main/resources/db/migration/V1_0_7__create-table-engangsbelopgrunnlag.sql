@@ -1,13 +1,13 @@
--- Table: engangsgrunnlag
+-- Table: engangsbelopgrunnlag
 
--- DROP TABLE engangsgrunnlag;
+-- DROP TABLE engangsbelopgrunnlag;
 
 CREATE TABLE IF NOT EXISTS engangsbelopgrunnlag
 (
     engangsbelop_id integer NOT NULL,
     grunnlag_id integer NOT NULL,
-    CONSTRAINT periodegrunnlag_pkey PRIMARY KEY (engangsbelop_id, grunnlag_id),
-    CONSTRAINT fk_periode_id FOREIGN KEY (engangsbelop_id)
+    CONSTRAINT engangsbelop_pkey PRIMARY KEY (engangsbelop_id, grunnlag_id),
+    CONSTRAINT fk_engangsbelop_id FOREIGN KEY (engangsbelop_id)
         REFERENCES engangsbelop (engangsbelop_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
