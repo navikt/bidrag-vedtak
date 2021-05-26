@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS periodegrunnlag
 (
     periode_id integer NOT NULL,
     grunnlag_id integer NOT NULL,
-    grunnlag_valgt boolean DEFAULT TRUE,
     CONSTRAINT periodegrunnlag_pkey PRIMARY KEY (periode_id, grunnlag_id),
     CONSTRAINT fk_periode_id FOREIGN KEY (periode_id)
         REFERENCES periode (periode_id) MATCH SIMPLE

@@ -109,16 +109,13 @@ class TestUtil {
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGN-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
+                grunnlagReferanse = "SJAB-REF001"
               )
             )
           ),
@@ -130,21 +127,17 @@ class TestUtil {
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGN-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BP-SKATTEKLASSE-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BP-SKATTEKLASSE-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
-              ),
+                grunnlagReferanse = "SJAB-REF001"
+              )
             )
           )
         )
@@ -165,12 +158,10 @@ class TestUtil {
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
+                grunnlagReferanse = "SJAB-REF001"
               )
             )
           ),
@@ -182,14 +173,11 @@ class TestUtil {
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
-              ),
-            )
+                grunnlagReferanse = "SJAB-REF001"
+              ))
           )
         )
       )
@@ -262,12 +250,10 @@ class TestUtil {
 
     fun byggPeriodeGrunnlagDto(
       periodeId: Int = (1..100).random(),
-      grunnlagId: Int = (1..100).random(),
-      grunnlagValgt: Boolean = true
+      grunnlagId: Int = (1..100).random()
     ) = PeriodeGrunnlagDto(
       periodeId = periodeId,
-      grunnlagId = grunnlagId,
-      grunnlagValgt = grunnlagValgt
+      grunnlagId = grunnlagId
     )
   }
 }

@@ -116,16 +116,14 @@ class PeriodeGrunnlagServiceTest {
     // Oppretter nytt periodegrunnlag
     val nyttPeriodeGrunnlagRequest = OpprettPeriodeGrunnlagRequest(
       nyPeriodeOpprettet.periodeId,
-      grunnlagOpprettet.grunnlagId,
-      true
+      grunnlagOpprettet.grunnlagId
     )
     val nyttPeriodeGrunnlagOpprettet = periodeGrunnlagService.opprettPeriodeGrunnlag(nyttPeriodeGrunnlagRequest)
 
     assertAll(
       Executable { assertThat(nyttPeriodeGrunnlagOpprettet).isNotNull() },
       Executable { assertThat(nyttPeriodeGrunnlagOpprettet.periodeId).isEqualTo(nyttPeriodeGrunnlagRequest.periodeId) },
-      Executable { assertThat(nyttPeriodeGrunnlagOpprettet.grunnlagId).isEqualTo(nyttPeriodeGrunnlagRequest.grunnlagId) },
-      Executable { assertThat(nyttPeriodeGrunnlagOpprettet.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagRequest.grunnlagValgt) }
+      Executable { assertThat(nyttPeriodeGrunnlagOpprettet.grunnlagId).isEqualTo(nyttPeriodeGrunnlagRequest.grunnlagId) }
     )
   }
 
@@ -172,8 +170,7 @@ class PeriodeGrunnlagServiceTest {
     val nyttPeriodeGrunnlagOpprettet = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         nyPeriodeOpprettet.periodeId,
-        nyttGrunnlagOpprettet.grunnlagId,
-        true
+        nyttGrunnlagOpprettet.grunnlagId
       )
     )
 
@@ -184,8 +181,7 @@ class PeriodeGrunnlagServiceTest {
     assertAll(
       Executable { assertThat(periodeGrunnlagFunnet).isNotNull() },
       Executable { assertThat(periodeGrunnlagFunnet.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet.periodeId) },
-      Executable { assertThat(periodeGrunnlagFunnet.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagId) },
-      Executable { assertThat(periodeGrunnlagFunnet.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagValgt) }
+      Executable { assertThat(periodeGrunnlagFunnet.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet.grunnlagId) }
     )
     periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
@@ -253,8 +249,8 @@ class PeriodeGrunnlagServiceTest {
       persistenceService.opprettPeriodeGrunnlag(
         PeriodeGrunnlagDto(
           nyPeriodeOpprettet.periodeId,
-          nyttGrunnlagDtoListe[0].grunnlagId,
-          true)
+          nyttGrunnlagDtoListe[0].grunnlagId
+        )
       )
     )
 
@@ -262,8 +258,8 @@ class PeriodeGrunnlagServiceTest {
       persistenceService.opprettPeriodeGrunnlag(
         PeriodeGrunnlagDto(
           nyPeriodeOpprettet.periodeId,
-          nyttGrunnlagDtoListe[1].grunnlagId,
-          true)
+          nyttGrunnlagDtoListe[1].grunnlagId
+        )
       )
     )
 
@@ -279,8 +275,7 @@ class PeriodeGrunnlagServiceTest {
         periodegrunnlagFunnet.forEachIndexed { index, periodeGrunnlag ->
           assertAll(
             Executable { assertThat(periodeGrunnlag.periodeId).isEqualTo(nyttPeriodegrunnlagtoListe[index].periodeId) },
-            Executable { assertThat(periodeGrunnlag.grunnlagId).isEqualTo(nyttPeriodegrunnlagtoListe[index].grunnlagId) },
-            Executable { assertThat(periodeGrunnlag.grunnlagValgt).isEqualTo(nyttPeriodegrunnlagtoListe[index].grunnlagValgt) },
+            Executable { assertThat(periodeGrunnlag.grunnlagId).isEqualTo(nyttPeriodegrunnlagtoListe[index].grunnlagId) }
           )
         }
       }

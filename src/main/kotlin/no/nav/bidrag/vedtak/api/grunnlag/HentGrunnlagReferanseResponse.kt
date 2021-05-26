@@ -7,8 +7,5 @@ import io.swagger.annotations.ApiModelProperty
 data class HentGrunnlagReferanseResponse(
 
   @ApiModelProperty(value = "Referanse til grunnlaget")
-  val grunnlagReferanse: String = "",
-
-  @ApiModelProperty(value = "Er grunnlaget valgt av saksbehandler?")
-  val grunnlagValgt: Boolean = true
+  val grunnlagReferanse: String = ""
 )

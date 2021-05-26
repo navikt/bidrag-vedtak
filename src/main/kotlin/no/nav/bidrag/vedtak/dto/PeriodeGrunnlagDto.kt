@@ -12,10 +12,7 @@ data class PeriodeGrunnlagDto(
   val periodeId: Int = 0,
 
   @ApiModelProperty(value = "Grunnlag-id")
-  val grunnlagId: Int = 0,
-
-  @ApiModelProperty(value = "Er grunnlaget valgt av saksbehandler?")
-  val grunnlagValgt: Boolean = true
+  val grunnlagId: Int = 0
 
 )
 

@@ -82,7 +82,7 @@ class VedtakService(val persistenceService: PersistenceService) {
       val periodeGrunnlagListe = persistenceService.hentAllePeriodeGrunnlagForPeriode(dto.periodeId)
       periodeGrunnlagListe.forEach {
         val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.grunnlagReferanse, it.grunnlagValgt))
+        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.grunnlagReferanse))
       }
       periodeResponseListe.add(
         HentPeriodeResponse(
@@ -141,7 +141,10 @@ class VedtakService(val persistenceService: PersistenceService) {
         LOGGER.error(feilmelding)
         throw IllegalArgumentException(feilmelding)
       } else {
-        val periodeGrunnlagDto = PeriodeGrunnlagDto(periodeId = opprettetPeriode.periodeId, grunnlagId = grunnlagId, grunnlagValgt = it.grunnlagValgt)
+        val periodeGrunnlagDto = PeriodeGrunnlagDto(
+          periodeId = opprettetPeriode.periodeId,
+          grunnlagId = grunnlagId
+        )
         persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagDto)
       }
     }

@@ -155,19 +155,7 @@ class VedtakServiceMockTest {
 
       // Sjekk PeriodeGrunnlagDto
       Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
-      Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) },
-
-      Executable { assertThat(periodeGrunnlagDtoListe[0].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[1].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[2].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[3].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[4].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[5].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[6].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[7].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[8].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[9].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[10].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) }
+      Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) }
     )
   }
 
@@ -198,7 +186,10 @@ class VedtakServiceMockTest {
         )
       )
     Mockito.`when`(persistenceServiceMock.hentAllePeriodeGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggPeriodeGrunnlagDto(periodeId = 1, grunnlagId = 1), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
+      listOf(byggPeriodeGrunnlagDto(
+        periodeId = 1,
+        grunnlagId = 1
+      ), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
     )
     Mockito.`when`(persistenceServiceMock.hentGrunnlag(MockitoHelper.any(Int::class.java))).thenReturn(
       byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1")

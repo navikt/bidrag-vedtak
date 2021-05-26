@@ -185,15 +185,15 @@ class PeriodeGrunnlagControllerTest {
     val nyttPeriodeGrunnlagOpprettet1 = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         periodeId = nyPeriodeOpprettet.periodeId,
-        grunnlagId = nyttGrunnlagOpprettet1.grunnlagId,
-        grunnlagValgt = true)
+        grunnlagId = nyttGrunnlagOpprettet1.grunnlagId
+      )
     )
     // Oppretter ny forekomst av periodeGrunnlag
     val nyttPeriodeGrunnlagOpprettet2 = persistenceService.opprettPeriodeGrunnlag(
       PeriodeGrunnlagDto(
         periodeId = nyPeriodeOpprettet.periodeId,
-        grunnlagId = nyttGrunnlagOpprettet2.grunnlagId,
-        grunnlagValgt = false)
+        grunnlagId = nyttGrunnlagOpprettet2.grunnlagId
+      )
     )
 
     // Henter forekomster
@@ -212,10 +212,7 @@ class PeriodeGrunnlagControllerTest {
       Executable { assertThat(response.body?.get(0)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.periodeId) },
       Executable { assertThat(response.body?.get(1)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.periodeId) },
       Executable { assertThat(response.body?.get(0)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagId) },
-      Executable { assertThat(response.body?.get(1)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) },
-      Executable { assertThat(response.body?.get(0)?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagValgt) },
-      Executable { assertThat(response.body?.get(1)?.grunnlagValgt).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagValgt) },
-
+      Executable { assertThat(response.body?.get(1)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) }
       )
     periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
@@ -237,8 +234,8 @@ class PeriodeGrunnlagControllerTest {
   private fun byggRequest(periodeId: Int, grunnlagId: Int): HttpEntity<OpprettPeriodeGrunnlagRequest> {
     return initHttpEntity(OpprettPeriodeGrunnlagRequest(
       periodeId,
-      grunnlagId,
-      true)
+      grunnlagId
+    )
     )
   }
 
