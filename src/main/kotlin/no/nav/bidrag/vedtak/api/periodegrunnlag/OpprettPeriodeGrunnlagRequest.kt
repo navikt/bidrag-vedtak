@@ -12,10 +12,7 @@ data class OpprettPeriodeGrunnlagRequest(
   val periodeId: Int = 0,
 
   @ApiModelProperty(value = "grunnlag-id")
-  val grunnlagId: Int = 0,
-
-  @ApiModelProperty(value = "grunnlag-valgt")
-  val grunnlagValgt: Boolean = true
+  val grunnlagId: Int = 0
 )
 
 fun OpprettPeriodeGrunnlagRequest.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {

@@ -24,12 +24,9 @@ data class PeriodeGrunnlag(
   @Id
   @ManyToOne
   @JoinColumn(name = "grunnlag_id")
-  val grunnlag: Grunnlag = Grunnlag(),
+  val grunnlag: Grunnlag = Grunnlag()
 
-  @Column(nullable = false, name = "grunnlag_valgt")
-  val grunnlagValgt: Boolean = true
-
-  )
+)
 
 fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }

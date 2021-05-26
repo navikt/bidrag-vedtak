@@ -71,16 +71,13 @@
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "BM-LIGN-19",
-              "grunnlagValgt": false
+              "grunnlagReferanse": "BM-LIGN-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "SJAB-REF001"
             }
           ]
         },
@@ -92,20 +89,16 @@
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19",
-              "grunnlagValgt": false
+              "grunnlagReferanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "BM-LIGN-19",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "BM-LIGN-19"
             },
             {
-              "grunnlagReferanse": "BP-SKATTEKLASSE-19",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "BP-SKATTEKLASSE-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "SJAB-REF001"
             }
           ]
         }
@@ -127,12 +120,10 @@
           "resultatkode": "SAERTILSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "SJAB-REF001"
             }
           ]
         },
@@ -144,12 +135,10 @@
           "resultatkode": "SAERTILSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001",
-              "grunnlagValgt": true
+              "grunnlagReferanse": "SJAB-REF001"
             }
           ]
         }
