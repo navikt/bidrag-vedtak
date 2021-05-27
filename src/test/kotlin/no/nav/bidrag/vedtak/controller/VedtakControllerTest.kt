@@ -224,6 +224,28 @@ class VedtakControllerTest {
     )
   }
 
+  @Test
+  fun `skal opprette nytt komplett vedtak med engangsbelop med input fra fil`() {
+
+    // Bygger request
+    val filnavn = "src/test/resources/testfiler/opprett_nytt_komplett_vedtak_request_med_engangsbelop.json"
+    val request = lesFilOgByggRequest(filnavn)
+
+    // Oppretter ny forekomst
+    val opprettResponse = securedTestRestTemplate.exchange(
+      fullUrlForNyttKomplettVedtak(),
+      HttpMethod.POST,
+      request,
+      Int::class.java
+    )
+
+    assertAll(
+      Executable { assertThat(opprettResponse).isNotNull() },
+      Executable { assertThat(opprettResponse?.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(opprettResponse?.body).isNotNull() }
+    )
+  }
+
   private fun fullUrlForNyttVedtak(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
   }

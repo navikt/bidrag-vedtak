@@ -1,0 +1,148 @@
+{
+  "saksbehandlerId": "X123456",
+  "enhetId": "4812",
+  "grunnlagListe": [
+    {
+      "grunnlagReferanse": "BM-LIGS-19",
+      "grunnlagType": "INNTEKT",
+      "grunnlagInnhold": {
+        "inntektDatoFraTil": {
+          "periodeDatoFra": "2019-01-01",
+          "periodeDatoTil": "2020-01-01"
+        },
+        "inntektBelop": 400000,
+        "inntektType": "SKATTEGRUNNLAG_SKE"
+      }
+    },
+    {
+      "grunnlagReferanse": "BM-LIGN-19",
+      "grunnlagType": "INNTEKT",
+      "grunnlagInnhold": {
+        "inntektDatoFraTil": {
+          "periodeDatoFra": "2019-01-01",
+          "periodeDatoTil": "2020-01-01"
+        },
+        "inntektBelop": 400000,
+        "inntektType": "LIGNING_SKE"
+      }
+    },
+    {
+      "grunnlagReferanse": "BP-SKATTEKLASSE-19",
+      "grunnlagType": "SKATTEKLASSE",
+      "grunnlagInnhold": {
+        "skatteklasseDatoFraTil": {
+          "periodeDatoFra": "2019-01-01",
+          "periodeDatoTil": "2020-01-01"
+        },
+        "skatteklasseId": 1
+      }
+    },
+    {
+      "grunnlagReferanse": "SJAB-REF001",
+      "grunnlagType": "SJABLON",
+      "grunnlagInnhold": {
+        "sjablonListe": [
+          {
+            "sjablonNavn": "BoutgiftBeløp",
+            "sjablonVerdi": 5981
+          },
+          {
+            "sjablonNavn": "FordelSærfradragBeløp",
+            "sjablonVerdi": 12977
+          }
+        ]
+      }
+    }
+  ],
+  "stonadsendringListe": [
+    {
+      "stonadType": "BIDRAG",
+      "sakId": "SAK-001",
+      "behandlingId": "Fritekst",
+      "skyldnerId": "01018011111",
+      "kravhaverId": "01010511111",
+      "mottakerId": "01018211111",
+      "periodeListe": [
+        {
+          "periodeFomDato": "2019-01-01",
+          "periodeTilDato": "2019-07-01",
+          "belop": 3490,
+          "valutakode": "NOK",
+          "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
+          "grunnlagReferanseListe": [
+            {
+              "grunnlagReferanse": "BM-LIGS-19"
+            },
+            {
+              "grunnlagReferanse": "BM-LIGN-19"
+            },
+            {
+              "grunnlagReferanse": "SJAB-REF001"
+            }
+          ]
+        },
+        {
+          "periodeFomDato": "2019-07-01",
+          "periodeTilDato": "2020-01-01",
+          "belop": 3520,
+          "valutakode": "NOK",
+          "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
+          "grunnlagReferanseListe": [
+            {
+              "grunnlagReferanse": "BM-LIGS-19"
+            },
+            {
+              "grunnlagReferanse": "BM-LIGN-19"
+            },
+            {
+              "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+            },
+            {
+              "grunnlagReferanse": "SJAB-REF001"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stonadType": "SAERTILSKUDD",
+      "sakId": "SAK-001",
+      "behandlingId": "Fritekst",
+      "skyldnerId": "01018011111",
+      "kravhaverId": "01010511111",
+      "mottakerId": "01018211111",
+      "periodeListe": [
+        {
+          "periodeFomDato": "2019-06-01",
+          "periodeTilDato": "2019-07-01",
+          "belop": 4240,
+          "valutakode": "NOK",
+          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "grunnlagReferanseListe": [
+            {
+              "grunnlagReferanse": "BM-LIGS-19"
+            },
+            {
+              "grunnlagReferanse": "SJAB-REF001"
+            }
+          ]
+        },
+        {
+          "periodeFomDato": "2019-08-01",
+          "periodeTilDato": "2019-09-01",
+          "belop": 3410,
+          "valutakode": "NOK",
+          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "grunnlagReferanseListe": [
+            {
+              "grunnlagReferanse": "BM-LIGS-19"
+            },
+            {
+              "grunnlagReferanse": "SJAB-REF001"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

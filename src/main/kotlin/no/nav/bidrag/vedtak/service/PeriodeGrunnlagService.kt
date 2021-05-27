@@ -13,5 +13,5 @@ class PeriodeGrunnlagService(val persistenceService: PersistenceService) {
 
   fun hentPeriodeGrunnlag(periodeId: Int, grunnlag_id: Int) = persistenceService.hentPeriodeGrunnlag(periodeId, grunnlag_id)
 
-  fun hentAllePeriodeGrunnlagForPeriode(periodeId: Int) = persistenceService.hentAllePeriodeGrunnlagForPeriode(periodeId)
+  fun hentAllePeriodeGrunnlagForPeriode(periodeId: Int) = persistenceService.hentAlleGrunnlagForPeriode(periodeId)
 }
