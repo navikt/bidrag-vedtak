@@ -144,5 +144,57 @@
         }
       ]
     }
-  ]
-}
+  ],
+  "engangsbelopListe": [
+    {
+      "lopenr": 1,
+      "endrerEngangsbelopId": null,
+      "type": "Saertilskudd",
+      "skyldnerId": "01018011111",
+      "kravhaverId": "01010511111",
+      "mottakerId": "01018211111",
+      "belop": 3490,
+      "valutakode": "NOK",
+      "resultatkode": "SAERTISLKUDD BEREGNET",
+      "grunnlagReferanseListe": [
+        {
+          "grunnlagReferanse": "BM-LIGS-19"
+        },
+        {
+          "grunnlagReferanse": "BM-LIGN-19"
+        },
+        {
+          "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+        },
+        {
+          "grunnlagReferanse": "SJAB-REF001"
+        }
+      ]
+    },
+    {
+      "lopenr": 2,
+      "endrerEngangsbelopId": 1,
+      "type": "Saertilskudd",
+      "skyldnerId": "01018011111",
+      "kravhaverId": "01010511111",
+      "mottakerId": "01018211111",
+      "belop": 1500,
+      "valutakode": "NOK",
+      "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
+      "grunnlagReferanseListe": [
+        {
+          "grunnlagReferanse": "BM-LIGS-19"
+        },
+        {
+          "grunnlagReferanse": "BM-LIGN-19"
+        },
+        {
+          "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+        },
+        {
+          "grunnlagReferanse": "SJAB-REF001"
+        }
+       ]
+      }
+    ]
+  }

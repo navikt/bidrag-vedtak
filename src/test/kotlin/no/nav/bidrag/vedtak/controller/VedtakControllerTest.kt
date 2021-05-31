@@ -8,6 +8,8 @@ import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
@@ -48,6 +50,12 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
+
+  @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
@@ -79,6 +87,8 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()

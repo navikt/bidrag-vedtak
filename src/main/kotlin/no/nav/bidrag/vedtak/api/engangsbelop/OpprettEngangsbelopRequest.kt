@@ -13,8 +13,8 @@ data class OpprettEngangsbelopRequest(
   @ApiModelProperty(value = "Vedtak-id")
   val vedtakId: Int = 0,
 
-//  @ApiModelProperty(value = "Løpenr innenfor vedtak")
-//  val lopenr: Int = 0,
+  @ApiModelProperty(value = "Løpenr innenfor vedtak")
+  val lopenr: Int = 0,
 
   @ApiModelProperty(value = "Id for eventuelt engangsbeløp som skal endres")
   val endrerEngangsbelopId: Int? = 0,
@@ -41,7 +41,7 @@ data class OpprettEngangsbelopRequest(
   val resultatkode: String = "",
 )
 
-fun OpprettEngangsbelopRequest.toEngangsbelopDto() = with(::StonadsendringDto) {
+fun OpprettEngangsbelopRequest.toEngangsbelopDto() = with(::EngangsbelopDto) {
   val propertiesByName = OpprettEngangsbelopRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
