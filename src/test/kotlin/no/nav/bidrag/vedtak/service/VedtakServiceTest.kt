@@ -4,6 +4,8 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
@@ -25,19 +27,25 @@ import org.springframework.test.context.ActiveProfiles
 class VedtakServiceTest {
 
   @Autowired
-  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+  private lateinit var vedtakService: VedtakService
 
   @Autowired
-  private lateinit var periodeRepository: PeriodeRepository
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
-  private lateinit var stonadsendringRepository: StonadsendringRepository
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
 
   @Autowired
-  private lateinit var vedtakService: VedtakService
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -48,9 +56,11 @@ class VedtakServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    engangsbelopGrunnlagRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
-    periodeRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     grunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }

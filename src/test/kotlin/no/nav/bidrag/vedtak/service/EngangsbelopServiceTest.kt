@@ -5,8 +5,12 @@ import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
@@ -31,10 +35,22 @@ class EngangsbelopServiceTest {
   private lateinit var vedtakService: VedtakService
 
   @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
+
+  @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
 
   @Autowired
   private lateinit var engangsbelopRepository: EngangsbelopRepository
+
+  @Autowired
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -45,8 +61,12 @@ class EngangsbelopServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
-    grunnlagRepository.deleteAll()
+    engangsbelopGrunnlagRepository.deleteAll()
+    periodeGrunnlagRepository.deleteAll()
     engangsbelopRepository.deleteAll()
+    grunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 
