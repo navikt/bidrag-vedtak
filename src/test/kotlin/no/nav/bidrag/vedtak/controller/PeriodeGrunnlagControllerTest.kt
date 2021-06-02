@@ -9,6 +9,8 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
@@ -46,10 +48,16 @@ class PeriodeGrunnlagControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
 
   @Autowired
   private lateinit var periodeRepository: PeriodeRepository
@@ -74,6 +82,8 @@ class PeriodeGrunnlagControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()

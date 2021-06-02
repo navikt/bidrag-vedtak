@@ -78,12 +78,12 @@ class EngangsbelopControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()
     stonadsendringRepository.deleteAll()
-    engangsbelopRepository.deleteAll()
-    engangsbelopGrunnlagRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 

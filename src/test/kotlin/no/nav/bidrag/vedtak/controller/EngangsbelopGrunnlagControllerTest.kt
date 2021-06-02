@@ -15,6 +15,9 @@ import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import org.assertj.core.api.Assertions.assertThat
@@ -51,10 +54,19 @@ class EngangsbelopGrunnlagControllerTest {
   private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
 
   @Autowired
-  private lateinit var engangsbelopRepository: EngangsbelopRepository
+  private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
   private lateinit var grunnlagRepository: GrunnlagRepository
+
+  @Autowired
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
+
+  @Autowired
+  private lateinit var periodeRepository: PeriodeRepository
+
+  @Autowired
+  private lateinit var stonadsendringRepository: StonadsendringRepository
 
   @Autowired
   private lateinit var vedtakRepository: VedtakRepository
@@ -75,7 +87,10 @@ class EngangsbelopGrunnlagControllerTest {
     // Sletter alle forekomster
     engangsbelopGrunnlagRepository.deleteAll()
     engangsbelopRepository.deleteAll()
+    periodeGrunnlagRepository.deleteAll()
+    periodeRepository.deleteAll()
     grunnlagRepository.deleteAll()
+    stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
 
