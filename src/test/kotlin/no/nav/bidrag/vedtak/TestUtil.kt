@@ -189,7 +189,6 @@ class TestUtil {
 
     private fun byggEngangsbelopListe() = listOf(
       OpprettKomplettEngangsbelopRequest(
-        lopenr = 1,
         endrerEngangsbelopId = null,
         type = "SAERTILSKUDD",
         skyldnerId = "01018011111",
@@ -211,7 +210,6 @@ class TestUtil {
         )
       ),
       OpprettKomplettEngangsbelopRequest(
-        lopenr = 2,
         endrerEngangsbelopId = 1,
         type = "SAERTILSKUDD",
         skyldnerId = "01018011111",

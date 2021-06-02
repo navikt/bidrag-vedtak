@@ -70,7 +70,7 @@ class EngangsbelopController(private val engangsbelopService: EngangsbelopServic
       ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
     ]
   )
-  fun hentStonadsendringerForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<EngangsbelopDto>> {
+  fun hentEngangsbelopForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<EngangsbelopDto>> {
     val alleEngangsbelopFunnet = engangsbelopService.hentAlleEngangsbelopForVedtak(vedtakId)
     LOGGER.info("Følgende engangsbelop ble funnet: $alleEngangsbelopFunnet")
     return ResponseEntity(alleEngangsbelopFunnet, HttpStatus.OK)

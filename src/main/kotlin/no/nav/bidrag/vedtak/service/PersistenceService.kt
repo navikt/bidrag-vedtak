@@ -150,8 +150,8 @@ class PersistenceService(
   fun opprettEngangsbelop(dto: EngangsbelopDto): EngangsbelopDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
-    val nyEngangsbelop = dto.toEngangsbelopEntity(eksisterendeVedtak)
-    val engangsbelop = engangsbelopRepository.save(nyEngangsbelop)
+    val nyttEngangsbelop = dto.toEngangsbelopEntity(eksisterendeVedtak)
+    val engangsbelop = engangsbelopRepository.save(nyttEngangsbelop)
     return engangsbelop.toEngangsbelopDto()
   }
 

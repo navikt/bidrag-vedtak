@@ -138,6 +138,7 @@ class VedtakService(val persistenceService: PersistenceService) {
     // Opprett vedtak
     val vedtakDto = VedtakDto(enhetId = vedtakRequest.enhetId, saksbehandlerId = vedtakRequest.saksbehandlerId)
     val opprettetVedtak = persistenceService.opprettVedtak(vedtakDto)
+    var lopenr: Int = 0
 
     // Grunnlag
     vedtakRequest.grunnlagListe.forEach {
@@ -149,7 +150,9 @@ class VedtakService(val persistenceService: PersistenceService) {
     vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
 
     // Engangsbelop
-    vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak.vedtakId) }
+    vedtakRequest.engangsbelopListe?.forEach {
+      lopenr ++
+      opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
 
     return opprettetVedtak.vedtakId
   }
@@ -167,8 +170,8 @@ class VedtakService(val persistenceService: PersistenceService) {
   }
 
   // Opprett Engangsbelop
-  private fun opprettEngangsbelop(engangsbelopRequest: OpprettKomplettEngangsbelopRequest, vedtakId: Int) {
-    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopDto(vedtakId))
+  private fun opprettEngangsbelop(engangsbelopRequest: OpprettKomplettEngangsbelopRequest, vedtakId: Int, lopenr: Int) {
+    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopDto(vedtakId, lopenr))
 
     // EngangsbelopGrunnlag
     engangsbelopRequest.grunnlagReferanseListe.forEach {

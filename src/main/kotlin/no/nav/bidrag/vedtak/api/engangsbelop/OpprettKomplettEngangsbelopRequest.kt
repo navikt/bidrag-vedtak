@@ -44,12 +44,13 @@ data class OpprettKomplettEngangsbelopRequest(
   val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest> = emptyList()
 )
 
-fun OpprettKomplettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int) = with(::EngangsbelopDto) {
+fun OpprettKomplettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int, lopenr: Int) = with(::EngangsbelopDto) {
   val propertiesByName = OpprettKomplettEngangsbelopRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       EngangsbelopDto::vedtakId.name -> vedtakId
       EngangsbelopDto::engangsbelopId.name -> 0
+      EngangsbelopDto::lopenr.name -> lopenr
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopDto)
     }
   })
