@@ -8,6 +8,8 @@ import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
@@ -48,6 +50,12 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
+
+  @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
@@ -79,6 +87,8 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
@@ -221,6 +231,28 @@ class VedtakControllerTest {
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull() },
       Executable { assertThat(response?.body!!.vedtakId).isEqualTo(nyttVedtakOpprettet) }
+    )
+  }
+
+  @Test
+  fun `skal opprette nytt komplett vedtak med engangsbelop med input fra fil`() {
+
+    // Bygger request
+    val filnavn = "src/test/resources/testfiler/opprett_nytt_komplett_vedtak_request_med_engangsbelop.json"
+    val request = lesFilOgByggRequest(filnavn)
+
+    // Oppretter ny forekomst
+    val opprettResponse = securedTestRestTemplate.exchange(
+      fullUrlForNyttKomplettVedtak(),
+      HttpMethod.POST,
+      request,
+      Int::class.java
+    )
+
+    assertAll(
+      Executable { assertThat(opprettResponse).isNotNull() },
+      Executable { assertThat(opprettResponse?.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(opprettResponse?.body).isNotNull() }
     )
   }
 

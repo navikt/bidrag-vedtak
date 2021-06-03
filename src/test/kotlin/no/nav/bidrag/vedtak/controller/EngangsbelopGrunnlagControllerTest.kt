@@ -3,7 +3,10 @@ package no.nav.bidrag.vedtak.controller
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
+import no.nav.bidrag.vedtak.api.engangsbelopgrunnlag.OpprettEngangsbelopGrunnlagRequest
 import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
+import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -39,10 +42,10 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@DisplayName("PeriodeGrunnlagControllerTest")
+@DisplayName("EngangsbelopGrunnlagControllerTest")
 @ActiveProfiles(TEST_PROFILE)
 @SpringBootTest(classes = [BidragVedtakLocal::class], webEnvironment = WebEnvironment.RANDOM_PORT)
-class PeriodeGrunnlagControllerTest {
+class EngangsbelopGrunnlagControllerTest {
 
   @Autowired
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
@@ -77,7 +80,7 @@ class PeriodeGrunnlagControllerTest {
   @Value("\${server.servlet.context-path}")
   private val contextPath: String? = null
 
-  private val periodeGrunnlagDtoListe = object : ParameterizedTypeReference<List<PeriodeGrunnlagDto>>() {}
+  private val engangsbelopGrunnlagDtoListe = object : ParameterizedTypeReference<List<EngangsbelopGrunnlagDto>>() {}
 
   @BeforeEach
   fun `init`() {
@@ -93,19 +96,23 @@ class PeriodeGrunnlagControllerTest {
 
 
   @Test
-  fun `skal opprette nytt periodegrunnlag`() {
+  fun `skal opprette nytt engangsbelopgrunnlag`() {
 
     // Oppretter ny forekomst av vedtak
     val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
-    // Oppretter ny forekomst av stonadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(StonadsendringDto(
-      stonadType = "BIDRAG",
+    // Oppretter ny forekomst av engangsbelop
+    val nyttEngangsbelopOpprettet = persistenceService.opprettEngangsbelop(EngangsbelopDto(
       vedtakId = nyttVedtakOpprettet.vedtakId,
-      behandlingId = "1111",
+      lopenr = 1,
+      endrerEngangsbelopId = null,
+      type = "SAERBIDRAG",
       skyldnerId = "1111",
       kravhaverId = "1111",
-      mottakerId = "1111")
+      mottakerId = "1111",
+      belop = BigDecimal.valueOf(17.0),
+      valutakode = "NOK",
+      resultatkode = "SAERBIDRAG_BEREGNET")
     )
 
     val nyttGrunnlagOpprettet = persistenceService.opprettGrunnlag(
@@ -116,64 +123,45 @@ class PeriodeGrunnlagControllerTest {
         grunnlagInnhold = "100")
     )
 
-    // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
-      PeriodeDto(
-        periodeFomDato = LocalDate.now(),
-        periodeTilDato = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
-        belop = BigDecimal.valueOf(17.01),
-        valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
-    )
-
     // Oppretter ny forekomst av periodeGrunnlag
     val response = securedTestRestTemplate.exchange(
-      fullUrlForNyttPeriodeGrunnlag(),
+      fullUrlForNyttEngangsbelopGrunnlag(),
       HttpMethod.POST,
-      byggRequest(nyPeriodeOpprettet.periodeId, nyttGrunnlagOpprettet.grunnlagId),
-      PeriodeGrunnlagDto::class.java
+      byggRequest(nyttEngangsbelopOpprettet.engangsbelopId, nyttGrunnlagOpprettet.grunnlagId),
+      EngangsbelopGrunnlagDto::class.java
     )
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.periodeId).isEqualTo(nyPeriodeOpprettet.periodeId) },
+      Executable { assertThat(response?.body?.engangsbelopId).isEqualTo(nyttEngangsbelopOpprettet.engangsbelopId) },
       Executable { assertThat(response?.body?.grunnlagId).isEqualTo(nyttGrunnlagOpprettet.grunnlagId) },
 
       )
-    periodeGrunnlagRepository.deleteAll()
-    periodeRepository.deleteAll()
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     grunnlagRepository.deleteAll()
   }
 
   @Test
-  fun `skal hente alle grunnlag for en periode`() {
+  fun `skal hente alle grunnlag for et engangsbelop`() {
     // Oppretter ny forekomst av vedtak
     val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
 
     // Oppretter nye forekomster av stønadsendring
-    val nyStonadsendringOpprettet = persistenceService.opprettStonadsendring(
-      StonadsendringDto(
-        stonadType = "BIDRAG",
+    val nyttEngangsbelopOpprettet = persistenceService.opprettEngangsbelop(
+      EngangsbelopDto(
         vedtakId = nyttVedtakOpprettet.vedtakId,
-        behandlingId = "1111",
+        lopenr = 1,
+        endrerEngangsbelopId = null,
+        type = "SAERBIDRAG",
         skyldnerId = "1111",
         kravhaverId = "1111",
-        mottakerId = "1111"
-      )
-    )
-
-    // Oppretter ny forekomst av periode
-    val nyPeriodeOpprettet = persistenceService.opprettPeriode(
-      PeriodeDto(
-        periodeFomDato = LocalDate.now(),
-        periodeTilDato = LocalDate.now(),
-        stonadsendringId = nyStonadsendringOpprettet.stonadsendringId,
-        belop = BigDecimal.valueOf(17.01),
+        mottakerId = "1111",
+        belop = BigDecimal.valueOf(17.0),
         valutakode = "NOK",
-        resultatkode = "RESULTATKODE_TEST_FLERE_PERIODER")
+        resultatkode = "SAERBIDRAG_BEREGNET")
     )
 
     val nyttGrunnlagOpprettet1 = persistenceService.opprettGrunnlag(
@@ -191,27 +179,27 @@ class PeriodeGrunnlagControllerTest {
         grunnlagInnhold = "10")
     )
 
-    // Oppretter ny forekomst av periodeGrunnlag
-    val nyttPeriodeGrunnlagOpprettet1 = persistenceService.opprettPeriodeGrunnlag(
-      PeriodeGrunnlagDto(
-        periodeId = nyPeriodeOpprettet.periodeId,
+    // Oppretter ny forekomst av EngangsbelopGrunnlag
+    val nyttEngangsbelopGrunnlagOpprettet1 = persistenceService.opprettEngangsbelopGrunnlag(
+      EngangsbelopGrunnlagDto(
+        engangsbelopId = nyttEngangsbelopOpprettet.engangsbelopId,
         grunnlagId = nyttGrunnlagOpprettet1.grunnlagId
       )
     )
-    // Oppretter ny forekomst av periodeGrunnlag
-    val nyttPeriodeGrunnlagOpprettet2 = persistenceService.opprettPeriodeGrunnlag(
-      PeriodeGrunnlagDto(
-        periodeId = nyPeriodeOpprettet.periodeId,
+    // Oppretter ny forekomst av EngangsbelopGrunnlag
+    val nyttEngangsbelopGrunnlagOpprettet2 = persistenceService.opprettEngangsbelopGrunnlag(
+      EngangsbelopGrunnlagDto(
+        engangsbelopId = nyttEngangsbelopOpprettet.engangsbelopId,
         grunnlagId = nyttGrunnlagOpprettet2.grunnlagId
       )
     )
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokAllePeriodeGrunnlagForPeriode()}/${nyPeriodeOpprettet.periodeId}",
+      "${fullUrlForSokAlleGrunnlagForEngangsbelop()}/${nyttEngangsbelopOpprettet.engangsbelopId}",
       HttpMethod.GET,
       null,
-      periodeGrunnlagDtoListe
+      engangsbelopGrunnlagDtoListe
     )
 
     assertAll(
@@ -219,31 +207,31 @@ class PeriodeGrunnlagControllerTest {
       Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response.body).isNotNull },
       Executable { assertThat(response.body?.size).isEqualTo(2) },
-      Executable { assertThat(response.body?.get(0)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.periodeId) },
-      Executable { assertThat(response.body?.get(1)?.periodeId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.periodeId) },
-      Executable { assertThat(response.body?.get(0)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet1.grunnlagId) },
-      Executable { assertThat(response.body?.get(1)?.grunnlagId).isEqualTo(nyttPeriodeGrunnlagOpprettet2.grunnlagId) }
+      Executable { assertThat(response.body?.get(0)?.engangsbelopId).isEqualTo(nyttEngangsbelopGrunnlagOpprettet1.engangsbelopId) },
+      Executable { assertThat(response.body?.get(1)?.engangsbelopId).isEqualTo(nyttEngangsbelopGrunnlagOpprettet2.engangsbelopId) },
+      Executable { assertThat(response.body?.get(0)?.grunnlagId).isEqualTo(nyttEngangsbelopGrunnlagOpprettet1.grunnlagId) },
+      Executable { assertThat(response.body?.get(1)?.grunnlagId).isEqualTo(nyttEngangsbelopGrunnlagOpprettet2.grunnlagId) }
       )
-    periodeGrunnlagRepository.deleteAll()
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     grunnlagRepository.deleteAll()
-    periodeRepository.deleteAll()
   }
 
-  private fun fullUrlForNyttPeriodeGrunnlag(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.OPPRETT_PERIODEGRUNNLAG).toUriString()
+  private fun fullUrlForNyttEngangsbelopGrunnlag(): String {
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + EngangsbelopGrunnlagController.OPPRETT_ENGANGSBELOPGRUNNLAG).toUriString()
   }
 
-  private fun fullUrlForSokAllePeriodeGrunnlagForPeriode(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + PeriodeGrunnlagController.HENT_PERIODEGRUNNLAG_FOR_PERIODE).toUriString()
+  private fun fullUrlForSokAlleGrunnlagForEngangsbelop(): String {
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + EngangsbelopGrunnlagController.HENT_GRUNNLAG_FOR_ENGANGSBELOP).toUriString()
   }
 
   private fun makeFullContextPath(): String {
     return "http://localhost:$port$contextPath"
   }
 
-  private fun byggRequest(periodeId: Int, grunnlagId: Int): HttpEntity<OpprettPeriodeGrunnlagRequest> {
-    return initHttpEntity(OpprettPeriodeGrunnlagRequest(
-      periodeId,
+  private fun byggRequest(engangsbelopId: Int, grunnlagId: Int): HttpEntity<OpprettEngangsbelopGrunnlagRequest> {
+    return initHttpEntity(OpprettEngangsbelopGrunnlagRequest(
+      engangsbelopId,
       grunnlagId
     )
     )

@@ -29,7 +29,7 @@ data class OpprettKomplettPeriodeRequest(
   @ApiModelProperty(value = "Resultatkoden tilhørende  stønadsbeløpet")
   val resultatkode: String = "",
 
-  @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
+  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i perioden")
   val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest> = emptyList()
 )
 

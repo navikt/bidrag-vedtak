@@ -1,20 +1,28 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.dto.toEngangsbelopEntity
+import no.nav.bidrag.vedtak.dto.toEngangsbelopGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toPeriodeEntity
 import no.nav.bidrag.vedtak.dto.toPeriodeGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
+import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopDto
+import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeDto
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringDto
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
@@ -29,7 +37,9 @@ class PersistenceService(
   val stonadsendringRepository: StonadsendringRepository,
   val periodeRepository: PeriodeRepository,
   val grunnlagRepository: GrunnlagRepository,
-  val periodeGrunnlagRepository: PeriodeGrunnlagRepository
+  val periodeGrunnlagRepository: PeriodeGrunnlagRepository,
+  val engangsbelopRepository: EngangsbelopRepository,
+  val engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
 ) {
 
   fun opprettVedtak(dto: VedtakDto): VedtakDto {
@@ -129,12 +139,57 @@ class PersistenceService(
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun hentAllePeriodeGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
+  fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
     val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
     periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
       .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
 
     return periodeGrunnlagDtoListe
+  }
+
+  fun opprettEngangsbelop(dto: EngangsbelopDto): EngangsbelopDto {
+    val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
+    val nyttEngangsbelop = dto.toEngangsbelopEntity(eksisterendeVedtak)
+    val engangsbelop = engangsbelopRepository.save(nyttEngangsbelop)
+    return engangsbelop.toEngangsbelopDto()
+  }
+
+  fun hentEngangsbelop(id: Int): EngangsbelopDto {
+    val engangsbelop = engangsbelopRepository.findById(id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbelop med id %d i databasen", id)) }
+    return engangsbelop.toEngangsbelopDto()
+  }
+
+  fun hentAlleEngangsbelopForVedtak(id: Int): List<EngangsbelopDto> {
+    val engangsbelopDtoListe = mutableListOf<EngangsbelopDto>()
+    engangsbelopRepository.hentAlleEngangsbelopForVedtak(id)
+      .forEach {engangsbelop -> engangsbelopDtoListe.add(engangsbelop.toEngangsbelopDto()) }
+    return engangsbelopDtoListe
+  }
+
+  fun opprettEngangsbelopGrunnlag(dto: EngangsbelopGrunnlagDto): EngangsbelopGrunnlagDto {
+    val eksisterendeEngangsbelop = engangsbelopRepository.findById(dto.engangsbelopId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbelop med id %d i databasen", dto.engangsbelopId)) }
+    val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", dto.grunnlagId)) }
+    val nyttEngangsbelopGrunnlag = dto.toEngangsbelopGrunnlagEntity(eksisterendeEngangsbelop, eksisterendeGrunnlag)
+    LOGGER.info("nyttEngangsbelopGrunnlag: $nyttEngangsbelopGrunnlag")
+    val engangsbelopGrunnlag = engangsbelopGrunnlagRepository.save(nyttEngangsbelopGrunnlag)
+    return engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()
+  }
+
+  fun hentEngangsbelopGrunnlag(engangsbelopId: Int, grunnlagId: Int): EngangsbelopGrunnlagDto {
+    val engangsbelopGrunnlag = engangsbelopGrunnlagRepository.hentEngangsbelopGrunnlag(engangsbelopId, grunnlagId)
+    return engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()
+  }
+
+  fun hentAlleGrunnlagForEngangsbelop(engangsbelopId: Int): List<EngangsbelopGrunnlagDto> {
+    val engangsbelopGrunnlagDtoListe = mutableListOf<EngangsbelopGrunnlagDto>()
+    engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
+      .forEach {engangsbelopGrunnlag -> engangsbelopGrunnlagDtoListe.add(engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()) }
+
+    return engangsbelopGrunnlagDtoListe
   }
 
   companion object {
