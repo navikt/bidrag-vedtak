@@ -116,6 +116,7 @@ class VedtakService(val persistenceService: PersistenceService) {
       }
       engangsbelopKomplettResponseListe.add(
         HentEngangsbelopResponse(
+          dto.engangsbelopId,
           dto.lopenr,
           dto.endrerEngangsbelopId,
           dto.type,

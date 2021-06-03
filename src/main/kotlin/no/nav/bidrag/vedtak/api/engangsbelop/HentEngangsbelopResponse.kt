@@ -9,6 +9,9 @@ import java.math.BigDecimal
 @ApiModel
 data class HentEngangsbelopResponse(
 
+  @ApiModelProperty(value = "Id for engangsbeløpet, må returneres for å kunne endres senere")
+  val engangsbelopId: Int = 0,
+
   @ApiModelProperty(value = "Løpenr innenfor vedtak")
   val lopenr: Int = 0,
 
