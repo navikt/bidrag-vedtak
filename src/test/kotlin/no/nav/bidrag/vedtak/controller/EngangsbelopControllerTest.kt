@@ -50,6 +50,9 @@ class EngangsbelopControllerTest {
   private lateinit var engangsbelopRepository: EngangsbelopRepository
 
   @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
   private lateinit var vedtakRepository: VedtakRepository
 
   @Autowired
@@ -60,9 +63,6 @@ class EngangsbelopControllerTest {
 
   @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
-
-  @Autowired
-  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
 
   @Autowired
   private lateinit var persistenceService: PersistenceService
