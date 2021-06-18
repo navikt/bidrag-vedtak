@@ -45,7 +45,7 @@
     <wiremock-standalone.version>2.27.2</wiremock-standalone.version>
 
     <!-- language -->
-    <kotlin.version>1.5.0</kotlin.version>
+    <kotlin.version>1.5.10</kotlin.version>
     <java.version>16</java.version>
   </properties>
 
