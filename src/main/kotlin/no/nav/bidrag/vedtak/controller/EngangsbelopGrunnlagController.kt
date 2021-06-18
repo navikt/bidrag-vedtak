@@ -1,8 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import no.nav.bidrag.vedtak.api.engangsbelopgrunnlag.OpprettEngangsbelopGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.service.EngangsbelopGrunnlagService
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController
 class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: EngangsbelopGrunnlagService) {
 
   @PostMapping(OPPRETT_ENGANGSBELOPGRUNNLAG)
-  @ApiOperation("Oppretter nytt engangsbelopgrunnlag")
+  @Operation(description ="Oppretter nytt engangsbelopgrunnlag")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Engangsbelopgrunnlag opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Engangsbelopgrunnlag opprettet"),
+      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun opprettEngangsbelopGrunnlag(@RequestBody request: OpprettEngangsbelopGrunnlagRequest): ResponseEntity<EngangsbelopGrunnlagDto>? {
@@ -38,15 +38,15 @@ class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: En
   }
 
   @GetMapping("$HENT_ENGANGSBELOPGRUNNLAG/{engangsbelopId}/{grunnlagId}")
-  @ApiOperation("Henter et engangsbelopgrunnlag")
+  @Operation(description ="Henter et engangsbelopgrunnlag")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Engangsbelopgrunnlag funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
-      ApiResponse(code = 404, message = "Grunnlag ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Engangsbelopgrunnlag funnet"),
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
+      ApiResponse(responseCode = "404", description = "Grunnlag ikke funnet"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
 
@@ -57,15 +57,15 @@ class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: En
   }
 
   @GetMapping("$HENT_GRUNNLAG_FOR_ENGANGSBELOP/{engangsbelopId}")
-  @ApiOperation("Henter alle grunnlag for et engangsbelop")
+  @Operation(description ="Henter alle grunnlag for et engangsbelop")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle engangsbelopgrunnlag funnet"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
-      ApiResponse(code = 404, message = "Grunnlag ikke funnet for Engangsbelop"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Alle engangsbelopgrunnlag funnet"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
+      ApiResponse(responseCode = "404", description = "Grunnlag ikke funnet for Engangsbelop"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun hentAlleGrunnlagForEngangsbelop(@PathVariable engangsbelopId: Int): ResponseEntity<List<EngangsbelopGrunnlagDto>> {

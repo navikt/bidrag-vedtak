@@ -1,29 +1,28 @@
 package no.nav.bidrag.vedtak.api.periode
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
 import java.math.BigDecimal
 import java.time.LocalDate
 
-@ApiModel
+@Schema
 data class HentPeriodeResponse(
 
-  @ApiModelProperty(value = "Periode fra-og-med-dato")
+  @Schema(description = "Periode fra-og-med-dato")
   val periodeFomDato: LocalDate = LocalDate.now(),
 
-  @ApiModelProperty(value = "Periode til-dato")
+  @Schema(description = "Periode til-dato")
   val periodeTilDato: LocalDate? = null,
 
-  @ApiModelProperty(value = "Beregnet stønadsbeløp")
+  @Schema(description = "Beregnet stønadsbeløp")
   val belop: BigDecimal = BigDecimal.ZERO,
 
-  @ApiModelProperty(value = "Valutakoden tilhørende stønadsbeløpet")
+  @Schema(description = "Valutakoden tilhørende stønadsbeløpet")
   val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkoden tilhørende  stønadsbeløpet")
+  @Schema(description = "Resultatkoden tilhørende  stønadsbeløpet")
   val resultatkode: String = "",
 
-  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i perioden")
+  @Schema(description = "Liste over alle grunnlag som inngår i perioden")
   val grunnlagReferanseListe: List<HentGrunnlagReferanseResponse> = emptyList()
 )

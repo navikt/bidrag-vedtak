@@ -1,17 +1,18 @@
 package no.nav.bidrag.vedtak.dto
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import kotlin.reflect.full.memberProperties
 
+@Schema
 data class EngangsbelopGrunnlagDto(
 
-  @ApiModelProperty(value = "Engangsbeløp-id")
+  @Schema(description = "Engangsbeløp-id")
   val engangsbelopId: Int = 0,
 
-  @ApiModelProperty(value = "Grunnlag-id")
+  @Schema(description = "Grunnlag-id")
   val grunnlagId: Int = 0
 
 )

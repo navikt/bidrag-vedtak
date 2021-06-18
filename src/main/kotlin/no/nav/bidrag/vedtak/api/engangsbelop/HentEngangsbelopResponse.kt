@@ -1,44 +1,42 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
-import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
 import java.math.BigDecimal
 
-@ApiModel
+@Schema
 data class HentEngangsbelopResponse(
 
-  @ApiModelProperty(value = "Id for engangsbeløpet, må returneres for å kunne endres senere")
+  @Schema(description =  "Id for engangsbeløpet, må returneres for å kunne endres senere")
   val engangsbelopId: Int = 0,
 
-  @ApiModelProperty(value = "Løpenr innenfor vedtak")
+  @Schema(description =  "Løpenr innenfor vedtak")
   val lopenr: Int = 0,
 
-  @ApiModelProperty(value = "Id for eventuelt engangsbeløp som skal endres")
+  @Schema(description =  "Id for eventuelt engangsbeløp som skal endres")
   val endrerEngangsbelopId: Int? = 0,
 
-  @ApiModelProperty(value = "Beløpstype")
+  @Schema(description =  "Beløpstype")
   val type: String = "",
 
-  @ApiModelProperty(value = "Id til den som skal betale bidraget")
+  @Schema(description =  "Id til den som skal betale bidraget")
   val skyldnerId: String = "",
 
-  @ApiModelProperty(value = "Id til den som krever bidraget")
+  @Schema(description =  "Id til den som krever bidraget")
   val kravhaverId: String = "",
 
-  @ApiModelProperty(value = "Id til den som mottar bidraget")
+  @Schema(description =  "Id til den som mottar bidraget")
   val mottakerId: String = "",
 
-  @ApiModelProperty(value = "Beregnet engangsbeløp")
+  @Schema(description =  "Beregnet engangsbeløp")
   val belop: BigDecimal = BigDecimal.ZERO,
 
-  @ApiModelProperty(value = "Valutakoden tilhørende engangsbeløpet")
+  @Schema(description =  "Valutakoden tilhørende engangsbeløpet")
   val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkoden tilhørende engangsbeløpet")
+  @Schema(description =  "Resultatkoden tilhørende engangsbeløpet")
   val resultatkode: String = "",
 
-  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i beregningen")
+  @Schema(description =  "Liste over alle grunnlag som inngår i beregningen")
   val grunnlagReferanseListe: List<HentGrunnlagReferanseResponse> = emptyList()
 )
