@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.service.StonadsendringService
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class StonadsendringController(private val stonadsendringService: StonadsendringService) {
 
   @PostMapping(OPPRETT_STONADSENDRING)
-  @Operation(description ="Oppretter ny stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter ny stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Stønadsendring opprettet"),
@@ -39,7 +40,7 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   }
 
   @GetMapping("$HENT_STONADSENDRING/{stonadsendringId}")
-  @Operation(description ="Henter en stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter en stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Stønadsendring funnet"),
@@ -58,7 +59,7 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   }
 
   @GetMapping("$HENT_STONADSENDRINGER_FOR_VEDTAK/{vedtakId}")
-  @Operation(description ="Henter alle stønadsendringer for et vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle stønadsendringer for et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle stønadsendringer funnet"),

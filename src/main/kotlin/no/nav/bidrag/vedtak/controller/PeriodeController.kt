@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.service.PeriodeService
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeController(private val periodeService: PeriodeService) {
 
   @PostMapping(OPPRETT_PERIODE)
-  @Operation(description ="Oppretter ny periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter ny periode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Periode opprettet"),
@@ -38,7 +39,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
   }
 
   @GetMapping("$HENT_PERIODE/{periodeId}")
-  @Operation(description ="Henter en periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter en periode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Periode funnet"),
@@ -56,7 +57,7 @@ class PeriodeController(private val periodeService: PeriodeService) {
   }
 
   @GetMapping("$HENT_PERIODER_FOR_STONADSENDRING/{stonadsendringId}")
-  @Operation(description ="Henter alle perioder for en stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle perioder for en stønadsendring")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle perioder funnet"),

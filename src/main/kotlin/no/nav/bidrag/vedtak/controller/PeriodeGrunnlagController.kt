@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.service.PeriodeGrunnlagService
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunnlagService) {
 
   @PostMapping(OPPRETT_PERIODEGRUNNLAG)
-  @Operation(description ="Oppretter nytt periodegrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter nytt periodegrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Periodegrunnlag opprettet"),
@@ -38,7 +39,7 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
   }
 
   @GetMapping("$HENT_PERIODEGRUNNLAG/{periodeId}/{grunnlagId}")
-  @Operation(description ="Henter et periodegrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter et periodegrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Periodegrunnlag funnet"),
@@ -57,7 +58,7 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
   }
 
   @GetMapping("$HENT_PERIODEGRUNNLAG_FOR_PERIODE/{periodeId}")
-  @Operation(description ="Henter alle periodegrunnlag for en periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle periodegrunnlag for en periode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle periodegrunnlag funnet"),

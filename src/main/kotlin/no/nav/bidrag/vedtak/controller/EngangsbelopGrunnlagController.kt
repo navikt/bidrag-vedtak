@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.engangsbelopgrunnlag.OpprettEngangsbelopGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.service.EngangsbelopGrunnlagService
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: EngangsbelopGrunnlagService) {
 
   @PostMapping(OPPRETT_ENGANGSBELOPGRUNNLAG)
-  @Operation(description ="Oppretter nytt engangsbelopgrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter nytt engangsbelopgrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Engangsbelopgrunnlag opprettet"),
@@ -38,7 +39,7 @@ class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: En
   }
 
   @GetMapping("$HENT_ENGANGSBELOPGRUNNLAG/{engangsbelopId}/{grunnlagId}")
-  @Operation(description ="Henter et engangsbelopgrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter et engangsbelopgrunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Engangsbelopgrunnlag funnet"),
@@ -57,7 +58,7 @@ class EngangsbelopGrunnlagController(private val engangsbelopGrunnlagService: En
   }
 
   @GetMapping("$HENT_GRUNNLAG_FOR_ENGANGSBELOP/{engangsbelopId}")
-  @Operation(description ="Henter alle grunnlag for et engangsbelop")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle grunnlag for et engangsbelop")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle engangsbelopgrunnlag funnet"),

@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
-  @Operation(description = "Oppretter nytt vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Vedtak opprettet"),
@@ -41,7 +42,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping("$HENT_VEDTAK/{vedtakId}")
-  @Operation(description = "Henter et vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Vedtak funnet"),
@@ -60,7 +61,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping(HENT_VEDTAK)
-  @Operation(description = "Henter alle vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter alle vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Alle vedtak funnet"),
@@ -77,7 +78,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @PostMapping(OPPRETT_VEDTAK_KOMPLETT)
-  @Operation(description = "Oppretter nytt komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt komplett vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Komplett vedtak opprettet"),
@@ -95,7 +96,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
-  @Operation(description = "Henter et komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et komplett vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Vedtak funnet"),

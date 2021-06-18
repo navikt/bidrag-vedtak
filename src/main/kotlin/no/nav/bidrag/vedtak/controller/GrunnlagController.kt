@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.service.GrunnlagService
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 class GrunnlagController(private val grunnlagService: GrunnlagService) {
 
   @PostMapping(OPPRETT_GRUNNLAG)
-  @Operation(description ="Oppretter nytt grunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter nytt grunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Grunnlag opprettet"),
@@ -38,7 +39,7 @@ class GrunnlagController(private val grunnlagService: GrunnlagService) {
   }
 
   @GetMapping("$HENT_GRUNNLAG/{grunnlagId}")
-  @Operation(description ="Henter et grunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter et grunnlag")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Grunnlag funnet"),
@@ -57,7 +58,7 @@ class GrunnlagController(private val grunnlagService: GrunnlagService) {
   }
 
   @GetMapping("$HENT_GRUNNLAG_FOR_VEDTAK/{vedtakId}")
-  @Operation(description ="Henter alle grunnlag for et vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle grunnlag for et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle grunnlag funnet"),
