@@ -19,8 +19,8 @@ data class OpprettKomplettVedtakRequest(
   val grunnlagListe: List<OpprettGrunnlagRequest> = emptyList(),
 
   @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  val stonadsendringListe: List<OpprettKomplettStonadsendringRequest>? = emptyList(),
+  val stonadsendringListe: List<OpprettKomplettStonadsendringRequest> = emptyList(),
 
   @ApiModelProperty(value = "Liste over alle engangsbeløp som inngår i vedtaket")
-  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest>? = emptyList()
+  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest> = emptyList()
 )

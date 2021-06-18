@@ -19,12 +19,13 @@ class BidragVedtakLocal {
 
   companion object {
     const val TEST_PROFILE = "local"
-  }
-}
 
-fun main(args: Array<String>) {
-  val profile = if (args.isEmpty()) TEST_PROFILE else args[0]
-  val app = SpringApplication(BidragVedtakLocal::class.java)
-  app.setAdditionalProfiles(profile)
-  app.run(*args)
+    @JvmStatic
+    fun main(args: Array<String>) {
+      val profile = if (args.isEmpty()) TEST_PROFILE else args[0]
+      val app = SpringApplication(BidragVedtakLocal::class.java)
+      app.setAdditionalProfiles(profile)
+      app.run(*args)
+    }
+  }
 }

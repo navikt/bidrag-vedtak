@@ -5,6 +5,9 @@ metadata:
   namespace: bidrag
   labels:
     team: bidrag
+env:
+  - name: TOPIC_VEDTAK
+    value: bidrag.vedtak
 spec:
   azure:
     application:
@@ -36,6 +39,8 @@ spec:
       memory: 512Mi
   ingresses:
     - https://bidrag-vedtak.intern.nav.no
+  kafka:
+    pool: nav-prod
   gcp:
     sqlInstances:
       - name: bidrag-vedtak
