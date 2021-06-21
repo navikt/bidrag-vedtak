@@ -1,35 +1,34 @@
 package no.nav.bidrag.vedtak.api.periode
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
+@Schema
 data class OpprettKomplettPeriodeRequest(
 
-  @ApiModelProperty(value = "Periode fra-og-med-dato")
+  @Schema(description = "Periode fra-og-med-dato")
   val periodeFomDato: LocalDate = LocalDate.now(),
 
-  @ApiModelProperty(value = "Periode til-dato")
+  @Schema(description = "Periode til-dato")
   val periodeTilDato: LocalDate? = null,
 
-  @ApiModelProperty(value = "Stonadsendring-id")
+  @Schema(description = "Stonadsendring-id")
   val stonadsendringId: Int = 0,
 
-  @ApiModelProperty(value = "Beregnet stønadsbeløp")
+  @Schema(description = "Beregnet stønadsbeløp")
   val belop: BigDecimal = BigDecimal.ZERO,
 
-  @ApiModelProperty(value = "Valutakoden tilhørende stønadsbeløpet")
+  @Schema(description = "Valutakoden tilhørende stønadsbeløpet")
   val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkoden tilhørende  stønadsbeløpet")
+  @Schema(description = "Resultatkoden tilhørende  stønadsbeløpet")
   val resultatkode: String = "",
 
-  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i perioden")
+  @Schema(description = "Liste over alle grunnlag som inngår i perioden")
   val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest> = emptyList()
 )
 

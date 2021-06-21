@@ -1,17 +1,16 @@
 package no.nav.bidrag.vedtak.api.periodegrunnlag
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
+@Schema
 data class OpprettPeriodeGrunnlagRequest(
 
-  @ApiModelProperty(value = "Periode-id")
+  @Schema(description = "Periode-id")
   val periodeId: Int = 0,
 
-  @ApiModelProperty(value = "grunnlag-id")
+  @Schema(description = "grunnlag-id")
   val grunnlagId: Int = 0
 )
 

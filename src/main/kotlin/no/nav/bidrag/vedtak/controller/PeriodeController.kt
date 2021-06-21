@@ -1,8 +1,9 @@
 package no.nav.bidrag.vedtak.controller
 
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.service.PeriodeService
@@ -21,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeController(private val periodeService: PeriodeService) {
 
   @PostMapping(OPPRETT_PERIODE)
-  @ApiOperation("Oppretter ny periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter ny periode")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Periode opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Periode opprettet"),
+      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun opprettPeriode(@RequestBody request: OpprettPeriodeRequest): ResponseEntity<PeriodeDto>? {
@@ -38,15 +39,15 @@ class PeriodeController(private val periodeService: PeriodeService) {
   }
 
   @GetMapping("$HENT_PERIODE/{periodeId}")
-  @ApiOperation("Henter en periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter en periode")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Periode funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
-      ApiResponse(code = 404, message = "Periode ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Periode funnet"),
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
+      ApiResponse(responseCode = "404", description = "Periode ikke funnet"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun hentPeriode(@PathVariable periodeId: Int): ResponseEntity<PeriodeDto> {
@@ -56,15 +57,15 @@ class PeriodeController(private val periodeService: PeriodeService) {
   }
 
   @GetMapping("$HENT_PERIODER_FOR_STONADSENDRING/{stonadsendringId}")
-  @ApiOperation("Henter alle perioder for en stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle perioder for en stønadsendring")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle perioder funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
-      ApiResponse(code = 404, message = "Perioder ikke funnet for stønad"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Alle perioder funnet"),
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell periode"),
+      ApiResponse(responseCode = "404", description = "Perioder ikke funnet for stønad"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun hentPerioderForStonadsendring(@PathVariable stonadsendringId: Int): ResponseEntity<List<PeriodeDto>> {

@@ -1,46 +1,45 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import java.math.BigDecimal
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
+@Schema
 data class OpprettKomplettEngangsbelopRequest(
 
-  @ApiModelProperty(value = "Vedtak-id")
+  @Schema(description ="Vedtak-id")
   val vedtakId: Int = 0,
 
-  @ApiModelProperty(value = "Løpenr innenfor vedtak")
+  @Schema(description ="Løpenr innenfor vedtak")
   val lopenr: Int = 0,
 
-  @ApiModelProperty(value = "Id for eventuelt engangsbeløp som skal endres")
+  @Schema(description ="Id for eventuelt engangsbeløp som skal endres")
   val endrerEngangsbelopId: Int? = 0,
 
-  @ApiModelProperty(value = "Beløpstype")
+  @Schema(description ="Beløpstype")
   val type: String = "",
 
-  @ApiModelProperty(value = "Id til den som skal betale bidraget")
+  @Schema(description ="Id til den som skal betale bidraget")
   val skyldnerId: String = "",
 
-  @ApiModelProperty(value = "Id til den som krever bidraget")
+  @Schema(description ="Id til den som krever bidraget")
   val kravhaverId: String = "",
 
-  @ApiModelProperty(value = "Id til den som mottar bidraget")
+  @Schema(description ="Id til den som mottar bidraget")
   val mottakerId: String = "",
 
-  @ApiModelProperty(value = "Beregnet engangsbeløp")
+  @Schema(description ="Beregnet engangsbeløp")
   val belop: BigDecimal = BigDecimal.ZERO,
 
-  @ApiModelProperty(value = "Valutakoden tilhørende engangsbeløpet")
+  @Schema(description ="Valutakoden tilhørende engangsbeløpet")
   val valutakode: String = "NOK",
 
-  @ApiModelProperty(value = "Resultatkoden tilhørende engangsbeløpet")
+  @Schema(description ="Resultatkoden tilhørende engangsbeløpet")
   val resultatkode: String = "",
 
-  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i engangsbeløpet")
+  @Schema(description ="Liste over alle grunnlag som inngår i engangsbeløpet")
   val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest> = emptyList()
 )
 
