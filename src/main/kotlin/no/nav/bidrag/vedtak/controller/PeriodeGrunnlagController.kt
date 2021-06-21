@@ -1,8 +1,9 @@
 package no.nav.bidrag.vedtak.controller
 
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.service.PeriodeGrunnlagService
@@ -21,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunnlagService) {
 
   @PostMapping(OPPRETT_PERIODEGRUNNLAG)
-  @ApiOperation("Oppretter nytt periodegrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter nytt periodegrunnlag")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Periodegrunnlag opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Periodegrunnlag opprettet"),
+      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun opprettPeriodeGrunnlag(@RequestBody request: OpprettPeriodeGrunnlagRequest): ResponseEntity<PeriodeGrunnlagDto>? {
@@ -38,15 +39,15 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
   }
 
   @GetMapping("$HENT_PERIODEGRUNNLAG/{periodeId}/{grunnlagId}")
-  @ApiOperation("Henter et periodegrunnlag")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter et periodegrunnlag")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Periodegrunnlag funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
-      ApiResponse(code = 404, message = "Grunnlag ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Periodegrunnlag funnet"),
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
+      ApiResponse(responseCode = "404", description = "Grunnlag ikke funnet"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
 
@@ -57,15 +58,15 @@ class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunn
   }
 
   @GetMapping("$HENT_PERIODEGRUNNLAG_FOR_PERIODE/{periodeId}")
-  @ApiOperation("Henter alle periodegrunnlag for en periode")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle periodegrunnlag for en periode")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle periodegrunnlag funnet"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
-      ApiResponse(code = 404, message = "Grunnlag ikke funnet for vedtak"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Alle periodegrunnlag funnet"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt grunnlag"),
+      ApiResponse(responseCode = "404", description = "Grunnlag ikke funnet for vedtak"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun hentAllePeriodeGrunnlagForPeriode(@PathVariable periodeId: Int): ResponseEntity<List<PeriodeGrunnlagDto>> {

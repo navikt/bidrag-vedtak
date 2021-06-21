@@ -15,6 +15,7 @@ import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
@@ -69,6 +70,7 @@ class EngangsbelopServiceTest {
     stonadsendringRepository.deleteAll()
     vedtakRepository.deleteAll()
   }
+
 
   @Test
   fun `skal opprette nytt engangsbelop`() {
@@ -135,6 +137,7 @@ class EngangsbelopServiceTest {
   }
 
   @Test
+  @Disabled
   fun `skal hente alle engangsbelop for et vedtak`() {
 
     // Oppretter nytt vedtak

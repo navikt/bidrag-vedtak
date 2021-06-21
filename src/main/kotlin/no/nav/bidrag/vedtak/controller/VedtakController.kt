@@ -1,8 +1,9 @@
 package no.nav.bidrag.vedtak.controller
 
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
@@ -24,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
-  @ApiOperation("Oppretter nytt vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Vedtak opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description =  "Vedtak opprettet"),
+      ApiResponse(responseCode = "400", description =  "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description =  "Serverfeil"),
+      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig")
     ]
   )
 
@@ -42,15 +43,15 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping("$HENT_VEDTAK/{vedtakId}")
-  @ApiOperation("Henter et vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Vedtak funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
-      ApiResponse(code = 404, message = "Vedtak ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description =  "Vedtak funnet"),
+      ApiResponse(responseCode = "401", description =  "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description =  "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
+      ApiResponse(responseCode = "404", description =  "Vedtak ikke funnet"),
+      ApiResponse(responseCode = "500", description =  "Serverfeil"),
+      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig")
     ]
   )
 
@@ -61,13 +62,13 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping(HENT_VEDTAK)
-  @ApiOperation("Henter alle vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter alle vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle vedtak funnet"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description =  "Alle vedtak funnet"),
+      ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description =  "Serverfeil"),
+      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig")
     ]
   )
 
@@ -78,14 +79,14 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @PostMapping(OPPRETT_VEDTAK_KOMPLETT)
-  @ApiOperation("Oppretter nytt komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt komplett vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Komplett vedtak opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description =  "Komplett vedtak opprettet"),
+      ApiResponse(responseCode = "400", description =  "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description =  "Serverfeil"),
+      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig")
     ]
   )
 
@@ -96,15 +97,15 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
-  @ApiOperation("Henter et komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et komplett vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Vedtak funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
-      ApiResponse(code = 404, message = "Vedtak ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description =  "Vedtak funnet"),
+      ApiResponse(responseCode = "401", description =  "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description =  "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak"),
+      ApiResponse(responseCode = "404", description =  "Vedtak ikke funnet"),
+      ApiResponse(responseCode = "500", description =  "Serverfeil"),
+      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig")
     ]
   )
 

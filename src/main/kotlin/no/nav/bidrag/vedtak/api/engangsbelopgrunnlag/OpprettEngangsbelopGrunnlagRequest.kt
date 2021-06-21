@@ -1,17 +1,16 @@
 package no.nav.bidrag.vedtak.api.engangsbelopgrunnlag
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import kotlin.reflect.full.memberProperties
 
-@ApiModel
+@Schema
 data class OpprettEngangsbelopGrunnlagRequest(
 
-  @ApiModelProperty(value = "Engangsbelop-id")
+  @Schema(description ="Engangsbelop-id")
   val engangsbelopId: Int = 0,
 
-  @ApiModelProperty(value = "grunnlag-id")
+  @Schema(description ="grunnlag-id")
   val grunnlagId: Int = 0
 )
 

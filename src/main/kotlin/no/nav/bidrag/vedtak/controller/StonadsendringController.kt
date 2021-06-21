@@ -1,8 +1,9 @@
 package no.nav.bidrag.vedtak.controller
 
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
-import io.swagger.annotations.ApiResponses
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.service.StonadsendringService
@@ -21,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 class StonadsendringController(private val stonadsendringService: StonadsendringService) {
 
   @PostMapping(OPPRETT_STONADSENDRING)
-  @ApiOperation("Oppretter ny stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Oppretter ny stønadsendring")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Stønadsendring opprettet"),
-      ApiResponse(code = 400, message = "Feil opplysinger oppgitt"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Stønadsendring opprettet"),
+      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
 
@@ -39,15 +40,15 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   }
 
   @GetMapping("$HENT_STONADSENDRING/{stonadsendringId}")
-  @ApiOperation("Henter en stønadsendring")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter en stønadsendring")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Stønadsendring funnet"),
-      ApiResponse(code = 401, message = "Manglende eller utløpt id-token"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
-      ApiResponse(code = 404, message = "Stønadsendring ikke funnet"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Stønadsendring funnet"),
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
+      ApiResponse(responseCode = "404", description = "Stønadsendring ikke funnet"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
 
@@ -58,15 +59,15 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   }
 
   @GetMapping("$HENT_STONADSENDRINGER_FOR_VEDTAK/{vedtakId}")
-  @ApiOperation("Henter alle stønadsendringer for et vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary ="Henter alle stønadsendringer for et vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(code = 200, message = "Alle stønadsendringer funnet"),
-      ApiResponse(code = 401, message = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(code = 403, message = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
-      ApiResponse(code = 404, message = "Stonadsendringer ikke funnet for vedtak"),
-      ApiResponse(code = 500, message = "Serverfeil"),
-      ApiResponse(code = 503, message = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "200", description = "Alle stønadsendringer funnet"),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
+      ApiResponse(responseCode = "404", description = "Stonadsendringer ikke funnet for vedtak"),
+      ApiResponse(responseCode = "500", description = "Serverfeil"),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
     ]
   )
   fun hentStonadsendringerForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<StonadsendringDto>> {

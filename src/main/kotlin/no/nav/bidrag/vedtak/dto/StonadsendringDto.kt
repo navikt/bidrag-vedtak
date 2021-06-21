@@ -1,34 +1,35 @@
 package no.nav.bidrag.vedtak.dto
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
 
+@Schema
 data class StonadsendringDto(
 
-  @ApiModelProperty(value = "Stønadsendring-id")
+  @Schema(description = "Stønadsendring-id")
   val stonadsendringId: Int = 0,
 
-  @ApiModelProperty(value = "Stønadstype")
+  @Schema(description = "Stønadstype")
   val stonadType: String = "",
 
-  @ApiModelProperty("Vedtak-id")
+  @Schema(description ="Vedtak-id")
   val vedtakId: Int = 0,
 
-  @ApiModelProperty("Referanse til sak")
+  @Schema(description ="Referanse til sak")
   val sakId: String? = null,
 
-  @ApiModelProperty(value = "Søknadsid, referanse til batchkjøring, fritekst")
+  @Schema(description = "Søknadsid, referanse til batchkjøring, fritekst")
   val behandlingId: String? = null,
 
-  @ApiModelProperty(value = "Id til den som skal betale bidraget")
+  @Schema(description = "Id til den som skal betale bidraget")
   val skyldnerId: String = "",
 
-  @ApiModelProperty(value = "Id til den som krever bidraget")
+  @Schema(description = "Id til den som krever bidraget")
   val kravhaverId: String = "",
 
-  @ApiModelProperty(value = "Id til den som mottar bidraget")
+  @Schema(description = "Id til den som mottar bidraget")
   val mottakerId: String = ""
 )
 
