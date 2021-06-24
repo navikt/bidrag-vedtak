@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 class BidragVedtak
 
+const val ISSUER = "isso"
+
 fun main(args: Array<String>) {
     val profile = if (args.isEmpty()) LIVE_PROFILE else args[0]
     val app = SpringApplication(BidragVedtak::class.java)
