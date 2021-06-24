@@ -30,6 +30,7 @@
     <bidrag-commons-test.version>0.2.1</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.17</bidrag-tilgangskontroll.version>
     <springdoc-openapi-ui.version>1.5.9</springdoc-openapi-ui.version>
+    <nimbus-jose-jwt.version>8.21.1</nimbus-jose-jwt.version>
 
   </properties>
 
@@ -63,6 +64,11 @@
     </dependency>
 
     <!-- nav -->
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>${nimbus-jose-jwt.version}</version>
+    </dependency>
     <dependency>
       <groupId>no.nav.bidrag</groupId>
       <artifactId>bidrag-commons</artifactId>
