@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer

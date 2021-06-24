@@ -148,10 +148,10 @@ class VedtakService(val persistenceService: PersistenceService) {
     }
 
     // Stønadsendring
-    vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
+    vedtakRequest.stonadsendringListe.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
 
     // Engangsbelop
-    vedtakRequest.engangsbelopListe?.forEach {
+    vedtakRequest.engangsbelopListe.forEach {
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
 

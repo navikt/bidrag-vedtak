@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class VedtakKafkaEventProducer(
-  private val kafkaTemplate: KafkaTemplate<String, String>,
+  private val kafkaTemplate: KafkaTemplate<String?, String?>?,
   private val objectMapper: ObjectMapper,
- @Value("TOPIC_VEDTAK") private val topic: String
+  @Value("TOPIC_VEDTAK") private val topic: String
 ) {
 
   fun publish(vedtakHendelse: VedtakHendelse) {
     try {
-      kafkaTemplate.send(
+      kafkaTemplate?.send(
         topic,
         vedtakHendelse.stonadType,
         objectMapper.writeValueAsString(vedtakHendelse)

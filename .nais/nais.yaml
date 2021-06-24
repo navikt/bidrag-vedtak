@@ -47,3 +47,6 @@ spec:
         databases:
           - name: {{ dbname }}
             envVarPrefix: DB
+  env:
+    - name: TOPIC_VEDTAK
+      value: {{ kafka.topic }}
