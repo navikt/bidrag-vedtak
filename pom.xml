@@ -30,7 +30,7 @@
     <bidrag-commons-test.version>0.2.1</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.17</bidrag-tilgangskontroll.version>
     <springdoc-openapi-ui.version>1.5.9</springdoc-openapi-ui.version>
-    <nimbus-jose-jwt.version>8.21.1</nimbus-jose-jwt.version>
+    <nimbus-jose-jwt.version>9.10</nimbus-jose-jwt.version>
 
   </properties>
 
