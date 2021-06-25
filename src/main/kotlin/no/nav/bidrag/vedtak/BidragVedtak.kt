@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 class BidragVedtak
 
-const val ISSUER = "isso"
+const val ISSUER = "aad"
 
 fun main(args: Array<String>) {
     val profile = if (args.isEmpty()) LIVE_PROFILE else args[0]
