@@ -22,7 +22,7 @@ const val LIVE_PROFILE = "live"
 
 @Configuration
 @OpenAPIDefinition(info = Info(title = "bidrag-vedtak", version = "v1"), security = [SecurityRequirement(name = "bearer-key")])
-@EnableJwtTokenValidation(ignore = ["org.springframework"])
+@EnableJwtTokenValidation
 @SecurityScheme(
     bearerFormat = "JWT",
     name = "bearer-key",
