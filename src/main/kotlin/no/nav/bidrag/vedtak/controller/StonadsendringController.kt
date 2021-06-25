@@ -4,10 +4,11 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import no.nav.bidrag.vedtak.ISSUER
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.service.StonadsendringService
-import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Protected
+@ProtectedWithClaims(issuer = ISSUER)
 class StonadsendringController(private val stonadsendringService: StonadsendringService) {
 
   @PostMapping(OPPRETT_STONADSENDRING)
