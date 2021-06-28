@@ -6,12 +6,12 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.4.2</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <relativePath /> <!-- lookup parent from repository -->
   </parent>
 
   <groupId>no.nav.bidrag</groupId>
   <artifactId>bidrag-vedtak</artifactId>
-  <version>0.0.42-SNAPSHOT</version>
+  <version>0.0.43-SNAPSHOT</version>
 
   <name>bidrag-vedtak</name>
   <description>Behandling av vedtak i Bidrag</description>
