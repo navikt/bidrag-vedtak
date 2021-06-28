@@ -1,3 +1,8 @@
 name: bidrag-vedtak
 ingress: https://bidrag-vedtak.dev.intern.nav.no
 dbname: bidrag-vedtak-main
+kafka:
+  pool: nav-dev
+env:
+  - name: TOPIC_VEDTAK
+    value: bidrag.vedtak
