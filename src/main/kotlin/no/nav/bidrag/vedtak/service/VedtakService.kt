@@ -23,6 +23,7 @@ import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -136,6 +137,7 @@ class VedtakService(val persistenceService: PersistenceService) {
   // Opprett komplett vedtak (alle tabeller)
   fun opprettKomplettVedtak(vedtakRequest: OpprettKomplettVedtakRequest): Int {
 
+
     // Opprett vedtak
     val vedtakDto = VedtakDto(enhetId = vedtakRequest.enhetId, saksbehandlerId = vedtakRequest.saksbehandlerId)
     val opprettetVedtak = persistenceService.opprettVedtak(vedtakDto)
@@ -154,6 +156,9 @@ class VedtakService(val persistenceService: PersistenceService) {
     vedtakRequest.engangsbelopListe.forEach {
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
+
+    lateinit var hendelserService: HendelserService
+    hendelserService.opprettHendelse(vedtakRequest)
 
     return opprettetVedtak.vedtakId
   }
