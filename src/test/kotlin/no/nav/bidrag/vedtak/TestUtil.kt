@@ -147,7 +147,7 @@ class TestUtil {
         )
       ),
       OpprettKomplettStonadsendringRequest(
-        stonadType = "SAERTILSKUDD",
+        stonadType = "FORSKUDD",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",

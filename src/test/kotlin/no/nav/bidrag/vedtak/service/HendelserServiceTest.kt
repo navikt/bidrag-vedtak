@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
+import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
+import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
@@ -55,4 +57,31 @@ class HendelserServiceTest {
 
     verify(vedtakEventProducerMock).publish(VedtakHendelse(skyldnerId = "1"))
   }
+
+  @Test
+  @Suppress("NonAsciiCharacters")
+  fun `skal ikke opprette hendelse ved engangsbeløp SAERBIDRAG`() {
+    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(engangsbelopListe = listOf(
+      OpprettKomplettEngangsbelopRequest(
+        type = "SAERBIDRAG"
+      )
+    )))
+    verify(vedtakEventProducerMock, never()).publish(anyOrNull())
+  }
+
+  @Test
+  @Suppress("NonAsciiCharacters")
+  fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
+    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(engangsbelopListe = listOf(
+      OpprettKomplettEngangsbelopRequest(
+        type = "SAERBIDRAG"
+      )
+    ), stonadsendringListe = listOf(
+      OpprettKomplettStonadsendringRequest(
+        skyldnerId = "1"
+      ))))
+    verify(vedtakEventProducerMock).publish(VedtakHendelse(skyldnerId = "1"))
+  }
+
+
 }
