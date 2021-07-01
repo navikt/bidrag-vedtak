@@ -8,7 +8,6 @@ import no.nav.bidrag.vedtak.ISSUER
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.service.GrunnlagService
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Protected
+@ProtectedWithClaims(issuer = ISSUER)
 class GrunnlagController(private val grunnlagService: GrunnlagService) {
 
   @PostMapping(OPPRETT_GRUNNLAG)

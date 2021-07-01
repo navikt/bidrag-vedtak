@@ -10,7 +10,6 @@ import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.service.VedtakService
-import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Protected
+@ProtectedWithClaims(issuer = ISSUER)
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
