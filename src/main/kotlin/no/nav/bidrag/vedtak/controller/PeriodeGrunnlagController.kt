@@ -8,6 +8,7 @@ import no.nav.bidrag.vedtak.ISSUER
 import no.nav.bidrag.vedtak.api.periodegrunnlag.OpprettPeriodeGrunnlagRequest
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.service.PeriodeGrunnlagService
+import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = ISSUER)
+@Protected
 class PeriodeGrunnlagController(private val periodeGrunnlagService: PeriodeGrunnlagService) {
 
   @PostMapping(OPPRETT_PERIODEGRUNNLAG)
