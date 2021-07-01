@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@ProtectedWithClaims(issuer = ISSUER)
+@Protected
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
