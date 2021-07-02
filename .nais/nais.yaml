@@ -49,4 +49,4 @@ spec:
             envVarPrefix: DB
   env:
     - name: TOPIC_VEDTAK
-      value: {{ kafka-topic-vedtak }
+      value: {{ kafka-topic-vedtak }}
