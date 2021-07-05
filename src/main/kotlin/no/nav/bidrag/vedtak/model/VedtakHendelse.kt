@@ -21,8 +21,6 @@ data class VedtakHendelse(
   )
 
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
-  val endretTimestamp: LocalDateTime = LocalDateTime.now()
-
 }
 
 data class Sporingsdata(val correlationId: String) {
