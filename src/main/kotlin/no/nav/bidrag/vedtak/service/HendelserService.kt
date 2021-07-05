@@ -15,14 +15,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     private val LOGGER = LoggerFactory.getLogger(HendelserService::class.java)
   }
 
-  fun opprettHendelse(request: OpprettKomplettVedtakRequest) {
+  fun opprettHendelse(request: OpprettKomplettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
     if (request.stonadsendringListe.isNotEmpty()) {
-      val vedtakHendelser = mapVedtakshendelser(request)
+      val vedtakHendelser = mapVedtakshendelser(request, vedtakId, opprettetTimestamp)
       vedtakHendelser.forEach { vedtakHendelse -> vedtakKafkaEventProducer.publish(vedtakHendelse) }
     }
   }
 
-  private fun mapVedtakshendelser(request: OpprettKomplettVedtakRequest): List<VedtakHendelse> {
+  private fun mapVedtakshendelser(
+    request: OpprettKomplettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
     val vedtakshendelser = mutableListOf<VedtakHendelse>()
     request.stonadsendringListe.forEach {
       val vedtakHendelsePeriodeListe = mutableListOf<VedtakHendelsePeriode>()
@@ -32,7 +33,6 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           VedtakHendelsePeriode(
             periodeFom = periode.periodeFomDato,
             periodeTil = periode.periodeTilDato,
-            vedtakId = vedtakId,
             belop = periode.belop,
             valutakode = periode.valutakode,
             resultatkode = periode.resultatkode
@@ -42,13 +42,14 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
       vedtakshendelser.add(
         VedtakHendelse(
+          vedtakId = vedtakId,
           stonadType = it.stonadType,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           opprettetAvSaksbehandlerId = request.saksbehandlerId,
-          endretAvSaksbehandlerId = request.saksbehandlerId,
+          opprettetTimestamp = opprettetTimestamp,
           periodeListe = vedtakHendelsePeriodeListe
         )
       )

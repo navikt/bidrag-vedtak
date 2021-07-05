@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
@@ -55,7 +54,7 @@ class HendelserServiceTest {
       )
     )))
 
-    verify(vedtakEventProducerMock).publish(VedtakHendelse(skyldnerId = "1"))
+    verify(vedtakEventProducerMock).publish(VedtakHendelse(, skyldnerId = "1"))
   }
 
   @Test
@@ -80,7 +79,7 @@ class HendelserServiceTest {
       OpprettKomplettStonadsendringRequest(
         skyldnerId = "1"
       ))))
-    verify(vedtakEventProducerMock).publish(VedtakHendelse(skyldnerId = "1"))
+    verify(vedtakEventProducerMock).publish(VedtakHendelse(, skyldnerId = "1"))
   }
 
 
