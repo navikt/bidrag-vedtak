@@ -48,7 +48,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           opprettetAvSaksbehandlerId = request.saksbehandlerId,
-          endretAvSaksbehandlerId = request.saksbehandlerId
+          endretAvSaksbehandlerId = request.saksbehandlerId,
+          periodeListe = vedtakHendelsePeriodeListe
         )
       )
     }
