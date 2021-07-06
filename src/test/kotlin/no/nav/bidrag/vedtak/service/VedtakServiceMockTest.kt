@@ -37,6 +37,9 @@ class VedtakServiceMockTest {
   private lateinit var vedtakService: VedtakService
 
   @Mock
+  private lateinit var hendelserService: HendelserService
+
+  @Mock
   private lateinit var persistenceServiceMock: PersistenceService
 
   @Captor

@@ -4,25 +4,21 @@ import no.nav.bidrag.commons.CorrelationId
 
 import java.time.LocalDateTime
 
-
 data class VedtakHendelse(
+  val vedtakId: Int = 0,
   val stonadType: String = "",
   val sakId: String? = null,
   val skyldnerId: String = "",
   val kravhaverId: String = "",
   val mottakerId: String = "",
   val opprettetAvSaksbehandlerId: String = "",
-  val endretAvSaksbehandlerId: String = "",
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
   val periodeListe: List<VedtakHendelsePeriode> = emptyList()
 ) {
   val sporing: Sporingsdata = Sporingsdata(
     CorrelationId.fetchCorrelationIdForThread() ?: CorrelationId.generateTimestamped(stonadType)
       .get()
   )
-
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
-  val endretTimestamp: LocalDateTime = LocalDateTime.now()
-
 }
 
 data class Sporingsdata(val correlationId: String) {

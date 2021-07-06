@@ -105,7 +105,7 @@
       ]
     },
     {
-      "stonadType": "SAERTILSKUDD",
+      "stonadType": "FORSKUDD",
       "sakId": "SAK-001",
       "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
@@ -117,7 +117,7 @@
           "periodeTilDato": "2019-07-01",
           "belop": 4240,
           "valutakode": "NOK",
-          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "resultatkode": "FORSKUDD_BEREGNET",
           "grunnlagReferanseListe": [
             {
               "grunnlagReferanse": "BM-LIGS-19"
@@ -132,7 +132,7 @@
           "periodeTilDato": "2019-09-01",
           "belop": 3410,
           "valutakode": "NOK",
-          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "resultatkode": "FORSKUDD_BEREGNET",
           "grunnlagReferanseListe": [
             {
               "grunnlagReferanse": "BM-LIGS-19"
@@ -149,7 +149,7 @@
     {
       "lopenr": 1,
       "endrerEngangsbelopId": null,
-      "type": "Saertilskudd",
+      "type": "SAERTILSKUDD",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
@@ -174,7 +174,7 @@
     {
       "lopenr": 2,
       "endrerEngangsbelopId": 1,
-      "type": "Saertilskudd",
+      "type": "SAERTILSKUDD",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",

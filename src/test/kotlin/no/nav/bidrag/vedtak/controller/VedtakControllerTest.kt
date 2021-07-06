@@ -15,6 +15,7 @@ import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
+import no.nav.bidrag.vedtak.service.HendelserService
 import no.nav.bidrag.vedtak.service.PersistenceService
 import no.nav.bidrag.vedtak.service.VedtakService
 import org.assertj.core.api.Assertions.assertThat

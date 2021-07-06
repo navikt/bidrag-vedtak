@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class VedtakService(val persistenceService: PersistenceService) {
+class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
 
   private val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
@@ -154,6 +154,8 @@ class VedtakService(val persistenceService: PersistenceService) {
     vedtakRequest.engangsbelopListe.forEach {
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
+
+    hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.opprettetTimestamp)
 
     return opprettetVedtak.vedtakId
   }

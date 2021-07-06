@@ -48,7 +48,5 @@ spec:
           - name: {{ dbname }}
             envVarPrefix: DB
   env:
-  {{#each env}}
-     - name: {{this.name}}
-  value: "{{this.value}}"
-  {{/each}}
+    - name: TOPIC_VEDTAK
+      value: {{ kafka-topic-vedtak }}
