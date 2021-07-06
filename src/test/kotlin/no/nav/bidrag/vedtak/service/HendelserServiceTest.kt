@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import java.time.LocalDateTime
 
 @DisplayName("HendelserServiceTest")
 @ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
@@ -30,7 +31,7 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
-    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest())
+    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(), LocalDateTime.now())
 
     verify(vedtakEventProducerMock, never()).publish(anyOrNull())
   }
@@ -40,31 +41,32 @@ class HendelserServiceTest {
   fun `skal opprette en hendelser når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest()
-    )))
+    )), LocalDateTime.now())
 
     verify(vedtakEventProducerMock).publish(anyOrNull())
   }
 
   @Test
   @Suppress("NonAsciiCharacters")
-  fun `skal opprette en hendelser med skyldner id`() {
+  fun `skal opprette en hendelser med skyldner-id`() {
     hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest(
         skyldnerId = "1"
       )
-    )))
+    )), LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
 
-    verify(vedtakEventProducerMock).publish(VedtakHendelse(, skyldnerId = "1"))
+    verify(vedtakEventProducerMock).publish(VedtakHendelse(
+      skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")))
   }
 
   @Test
   @Suppress("NonAsciiCharacters")
-  fun `skal ikke opprette hendelse ved engangsbeløp SAERBIDRAG`() {
+  fun `skal ikke opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(engangsbelopListe = listOf(
       OpprettKomplettEngangsbelopRequest(
-        type = "SAERBIDRAG"
+        type = "SAERTILSKUDD"
       )
-    )))
+    )), LocalDateTime.now())
     verify(vedtakEventProducerMock, never()).publish(anyOrNull())
   }
 
@@ -73,14 +75,14 @@ class HendelserServiceTest {
   fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
     hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(engangsbelopListe = listOf(
       OpprettKomplettEngangsbelopRequest(
-        type = "SAERBIDRAG"
+        type = "SAERTILSKUDD"
       )
     ), stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest(
         skyldnerId = "1"
-      ))))
-    verify(vedtakEventProducerMock).publish(VedtakHendelse(, skyldnerId = "1"))
+      ))), LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
+    verify(vedtakEventProducerMock).publish(VedtakHendelse(
+      skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")))
   }
-
 
 }
