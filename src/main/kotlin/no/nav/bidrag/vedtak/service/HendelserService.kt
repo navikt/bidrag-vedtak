@@ -15,15 +15,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     private val LOGGER = LoggerFactory.getLogger(HendelserService::class.java)
   }
 
-  fun opprettHendelse(request: OpprettKomplettVedtakRequest, opprettetTimestamp: LocalDateTime) {
+  fun opprettHendelse(request: OpprettKomplettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
     if (request.stonadsendringListe.isNotEmpty()) {
-      val vedtakHendelser = mapVedtakshendelser(request, opprettetTimestamp)
+      val vedtakHendelser = mapVedtakshendelser(request, vedtakid, opprettetTimestamp)
       vedtakHendelser.forEach { vedtakHendelse -> vedtakKafkaEventProducer.publish(vedtakHendelse) }
     }
   }
 
   private fun mapVedtakshendelser(
-    request: OpprettKomplettVedtakRequest, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
+    request: OpprettKomplettVedtakRequest, vedtakid: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
     val vedtakshendelser = mutableListOf<VedtakHendelse>()
     request.stonadsendringListe.forEach {
       val vedtakHendelsePeriodeListe = mutableListOf<VedtakHendelsePeriode>()
@@ -41,7 +41,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
       vedtakshendelser.add(
         VedtakHendelse(
-          vedtakId = it.vedtakId,
+          vedtakId = vedtakid,
           stonadType = it.stonadType,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
