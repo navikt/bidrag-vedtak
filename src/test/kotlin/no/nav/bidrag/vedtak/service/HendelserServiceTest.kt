@@ -31,7 +31,7 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
-    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(), LocalDateTime.now())
+    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(), 1, LocalDateTime.now())
 
     verify(vedtakEventProducerMock, never()).publish(anyOrNull())
   }
@@ -41,7 +41,7 @@ class HendelserServiceTest {
   fun `skal opprette en hendelser når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest()
-    )), LocalDateTime.now())
+    )), 1, LocalDateTime.now())
 
     verify(vedtakEventProducerMock).publish(anyOrNull())
   }
@@ -53,7 +53,7 @@ class HendelserServiceTest {
       OpprettKomplettStonadsendringRequest(
         skyldnerId = "1"
       )
-    )), LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
+    )), 0, LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
 
     verify(vedtakEventProducerMock).publish(VedtakHendelse(
       skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")))
@@ -66,7 +66,7 @@ class HendelserServiceTest {
       OpprettKomplettEngangsbelopRequest(
         type = "SAERTILSKUDD"
       )
-    )), LocalDateTime.now())
+    )), 1, LocalDateTime.now())
     verify(vedtakEventProducerMock, never()).publish(anyOrNull())
   }
 
@@ -80,7 +80,7 @@ class HendelserServiceTest {
     ), stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest(
         skyldnerId = "1"
-      ))), LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
+      ))), 0, LocalDateTime.parse("2021-07-06T09:31:25.007971200"))
     verify(vedtakEventProducerMock).publish(VedtakHendelse(
       skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")))
   }
