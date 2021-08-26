@@ -11,7 +11,7 @@
 
   <groupId>no.nav.bidrag</groupId>
   <artifactId>bidrag-vedtak</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.6-SNAPSHOT</version>
 
   <name>bidrag-vedtak</name>
   <description>Behandling av vedtak i Bidrag</description>
@@ -28,7 +28,7 @@
     <bidrag-commons.version>0.5.6</bidrag-commons.version>
     <bidrag-commons-test.version>0.2.1</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.17</bidrag-tilgangskontroll.version>
-    <springdoc-openapi-ui.version>1.5.9</springdoc-openapi-ui.version>
+    <springdoc-openapi-ui.version>1.5.10</springdoc-openapi-ui.version>
     <nimbus-jose-jwt.version>8.22.1</nimbus-jose-jwt.version>
 
   </properties>
