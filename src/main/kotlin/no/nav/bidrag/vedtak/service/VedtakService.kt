@@ -155,7 +155,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
 
-    hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.opprettetTimestamp)
+    hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
 
     return opprettetVedtak.vedtakId
   }
