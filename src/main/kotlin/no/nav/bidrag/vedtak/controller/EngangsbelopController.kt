@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -27,10 +29,10 @@ class EngangsbelopController(private val engangsbelopService: EngangsbelopServic
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Engangsbelop opprettet"),
-            ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
-            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-            ApiResponse(responseCode = "500", description = "Serverfeil"),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+            ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
         ]
     )
 
@@ -46,11 +48,11 @@ class EngangsbelopController(private val engangsbelopService: EngangsbelopServic
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Engangsbelop funnet"),
-            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
-            ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt engangsbelop"),
-            ApiResponse(responseCode = "404", description = "Engangsbelop ikke funnet"),
-            ApiResponse(responseCode = "500", description = "Serverfeil"),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt engangsbelop", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "404", description = "Engangsbelop ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
         ]
     )
 
@@ -65,11 +67,11 @@ class EngangsbelopController(private val engangsbelopService: EngangsbelopServic
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Alle engangsbelop funnet"),
-            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-            ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt engangsbelop"),
-            ApiResponse(responseCode = "404", description = "Engangsbelop ikke funnet for vedtak"),
-            ApiResponse(responseCode = "500", description = "Serverfeil"),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt engangsbelop", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "404", description = "Engangsbelop ikke funnet for vedtak", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
         ]
     )
     fun hentEngangsbelopForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<EngangsbelopDto>> {
