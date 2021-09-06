@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -27,10 +29,10 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Stønadsendring opprettet"),
-      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt"),
-      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(responseCode = "500", description = "Serverfeil"),
-      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
     ]
   )
 
@@ -45,11 +47,11 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Stønadsendring funnet"),
-      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token"),
-      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
-      ApiResponse(responseCode = "404", description = "Stønadsendring ikke funnet"),
-      ApiResponse(responseCode = "500", description = "Serverfeil"),
-      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "404", description = "Stønadsendring ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
     ]
   )
 
@@ -64,11 +66,11 @@ class StonadsendringController(private val stonadsendringService: Stonadsendring
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "Alle stønadsendringer funnet"),
-      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig"),
-      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring"),
-      ApiResponse(responseCode = "404", description = "Stonadsendringer ikke funnet for vedtak"),
-      ApiResponse(responseCode = "500", description = "Serverfeil"),
-      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig")
+      ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuell stønadsendring", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "404", description = "Stonadsendringer ikke funnet for vedtak", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+      ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
     ]
   )
   fun hentStonadsendringerForVedtak(@PathVariable vedtakId: Int): ResponseEntity<List<StonadsendringDto>> {
