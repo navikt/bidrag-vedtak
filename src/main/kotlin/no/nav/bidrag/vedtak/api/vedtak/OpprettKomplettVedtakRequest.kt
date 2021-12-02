@@ -1,15 +1,20 @@
 package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
+import java.time.LocalDate
 
 @Schema
 data class OpprettKomplettVedtakRequest(
 
   @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   val saksbehandlerId: String = "",
+
+  @Schema(description = "Dato vedtaket er fattet")
+  val vedtakDato: LocalDate? = null,
 
   @Schema(description = "Id til enheten som er ansvarlig for vedtaket")
   val enhetId: String = "",
@@ -21,6 +26,8 @@ data class OpprettKomplettVedtakRequest(
   val stonadsendringListe: List<OpprettKomplettStonadsendringRequest> = emptyList(),
 
   @Schema(description = "Liste over alle engangsbeløp som inngår i vedtaket")
-  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest> = emptyList()
+  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest> = emptyList(),
 
+  @Schema(description = "Liste med referanser til alle behandlinger som ligger som grunnlag til vedtaket")
+  val behandlingsreferanseListe: List<OpprettBehandlingsreferanseRequest> = emptyList()
 )
