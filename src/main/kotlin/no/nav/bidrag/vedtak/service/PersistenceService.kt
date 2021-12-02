@@ -58,23 +58,11 @@ class PersistenceService(
     return vedtak.toVedtakDto()
   }
 
-  fun hentAlleVedtak(): List<VedtakDto> {
-    val vedtakDtoListe = mutableListOf<VedtakDto>()
-    vedtakRepository.findAll().forEach { vedtakDtoListe.add(it.toVedtakDto()) }
-    return vedtakDtoListe
-  }
-
   fun opprettStonadsendring(dto: StonadsendringDto): StonadsendringDto {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyStonadsendring = dto.toStonadsendringEntity(eksisterendeVedtak)
     val stonadsendring = stonadsendringRepository.save(nyStonadsendring)
-    return stonadsendring.toStonadsendringDto()
-  }
-
-  fun hentStonadsendring(id: Int): StonadsendringDto {
-    val stonadsendring = stonadsendringRepository.findById(id)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", id)) }
     return stonadsendring.toStonadsendringDto()
   }
 
@@ -90,12 +78,6 @@ class PersistenceService(
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke stonadsendring med id %d i databasen", dto.stonadsendringId)) }
     val nyPeriode = dto.toPeriodeEntity(eksisterendeStonadsendring)
     val periode = periodeRepository.save(nyPeriode)
-    return periode.toPeriodeDto()
-  }
-
-  fun hentPeriode(id: Int): PeriodeDto {
-    val periode = periodeRepository.findById(id)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", id)) }
     return periode.toPeriodeDto()
   }
 
@@ -139,11 +121,6 @@ class PersistenceService(
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlagDto {
-    val periodeGrunnlag = periodeGrunnlagRepository.hentPeriodeGrunnlag(periodeId, grunnlagId)
-    return periodeGrunnlag.toPeriodeGrunnlagDto()
-  }
-
   fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
     val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
     periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
@@ -157,12 +134,6 @@ class PersistenceService(
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyttEngangsbelop = dto.toEngangsbelopEntity(eksisterendeVedtak)
     val engangsbelop = engangsbelopRepository.save(nyttEngangsbelop)
-    return engangsbelop.toEngangsbelopDto()
-  }
-
-  fun hentEngangsbelop(id: Int): EngangsbelopDto {
-    val engangsbelop = engangsbelopRepository.findById(id)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbelop med id %d i databasen", id)) }
     return engangsbelop.toEngangsbelopDto()
   }
 
@@ -181,11 +152,6 @@ class PersistenceService(
     val nyttEngangsbelopGrunnlag = dto.toEngangsbelopGrunnlagEntity(eksisterendeEngangsbelop, eksisterendeGrunnlag)
     LOGGER.info("nyttEngangsbelopGrunnlag: $nyttEngangsbelopGrunnlag")
     val engangsbelopGrunnlag = engangsbelopGrunnlagRepository.save(nyttEngangsbelopGrunnlag)
-    return engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()
-  }
-
-  fun hentEngangsbelopGrunnlag(engangsbelopId: Int, grunnlagId: Int): EngangsbelopGrunnlagDto {
-    val engangsbelopGrunnlag = engangsbelopGrunnlagRepository.hentEngangsbelopGrunnlag(engangsbelopId, grunnlagId)
     return engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()
   }
 

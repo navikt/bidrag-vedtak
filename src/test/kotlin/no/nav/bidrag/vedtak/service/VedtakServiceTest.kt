@@ -72,63 +72,6 @@ class VedtakServiceTest {
   }
 
   @Test
-  fun `skal opprette nytt vedtak`() {
-    // Oppretter nytt vedtak
-    val nyttVedtakRequest = OpprettVedtakRequest("TEST", "1111")
-    val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest)
-
-    assertAll(
-      Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
-      Executable { assertThat(nyttVedtakOpprettet.saksbehandlerId).isEqualTo(nyttVedtakRequest.saksbehandlerId) },
-      Executable { assertThat(nyttVedtakOpprettet.enhetId).isEqualTo(nyttVedtakRequest.enhetId) }
-    )
-  }
-
-  @Test
-  fun `skal hente data for ett vedtak`() {
-    // Oppretter nytt vedtak
-    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-
-    // Henter vedtaket som akkurat ble opprettet
-    val vedtakFunnet = vedtakService.hentVedtak(nyttVedtakOpprettet.vedtakId)
-
-    assertAll(
-      Executable { assertThat(vedtakFunnet).isNotNull() },
-      Executable { assertThat(vedtakFunnet.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(vedtakFunnet.saksbehandlerId).isEqualTo(nyttVedtakOpprettet.saksbehandlerId) },
-      Executable { assertThat(vedtakFunnet.enhetId).isEqualTo(nyttVedtakOpprettet.enhetId) }
-    )
-  }
-
-  @Test
-  fun `skal hente data for alle vedtak`() {
-    // Oppretter nye vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(
-      VedtakDto(saksbehandlerId = "TEST", vedtakDato = LocalDate.parse("2021-11-01"), enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(
-      VedtakDto(saksbehandlerId = "TEST", vedtakDato = LocalDate.parse("2021-11-02"), enhetId = "2222"))
-
-    // Henter begge vedtakene som akkurat ble opprettet
-    val vedtakFunnet = vedtakService.hentAlleVedtak()
-
-    assertAll(
-      Executable { assertThat(vedtakFunnet).isNotNull() },
-      Executable { assertThat(vedtakFunnet.size).isEqualTo(2) },
-      Executable { assertThat(vedtakFunnet[0]).isNotNull() },
-      Executable { assertThat(vedtakFunnet[0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
-      Executable { assertThat(vedtakFunnet[0].saksbehandlerId).isEqualTo(nyttVedtakOpprettet1.saksbehandlerId) },
-      Executable { assertThat(vedtakFunnet[0].vedtakDato).isEqualTo(nyttVedtakOpprettet1.vedtakDato) },
-      Executable { assertThat(vedtakFunnet[0].enhetId).isEqualTo(nyttVedtakOpprettet1.enhetId) },
-      Executable { assertThat(vedtakFunnet[1]).isNotNull() },
-      Executable { assertThat(vedtakFunnet[1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
-      Executable { assertThat(vedtakFunnet[1].saksbehandlerId).isEqualTo(nyttVedtakOpprettet2.saksbehandlerId) },
-      Executable { assertThat(vedtakFunnet[1].vedtakDato).isEqualTo(nyttVedtakOpprettet2.vedtakDato) },
-      Executable { assertThat(vedtakFunnet[1].vedtakDato).isEqualTo(LocalDate.parse("2021-11-02")) },
-      Executable { assertThat(vedtakFunnet[1].enhetId).isEqualTo(nyttVedtakOpprettet2.enhetId) }
-    )
-  }
-
-  @Test
   fun `skal opprette og hente komplett vedtak`() {
     // Oppretter nytt komplett vedtak
     val nyttKomplettVedtakRequest = byggKomplettVedtakRequest()
