@@ -27,60 +27,6 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
-  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtak")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description =  "Vedtak opprettet"),
-      ApiResponse(responseCode = "400", description =  "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "500", description =  "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-    ]
-  )
-
-  fun opprettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<VedtakDto>? {
-    val vedtakOpprettet = vedtakService.opprettVedtak(request)
-    LOGGER.info("Følgende vedtak er opprettet: $vedtakOpprettet")
-    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
-  }
-
-  @GetMapping("$HENT_VEDTAK/{vedtakId}")
-  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description =  "Vedtak funnet"),
-      ApiResponse(responseCode = "401", description =  "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "403", description =  "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "404", description =  "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "500", description =  "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-    ]
-  )
-
-  fun hentVedtak(@PathVariable vedtakId: Int): ResponseEntity<VedtakDto> {
-    val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
-    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
-  }
-
-  @GetMapping(HENT_VEDTAK)
-  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter alle vedtak")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description =  "Alle vedtak funnet"),
-      ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "500", description =  "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-      ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-    ]
-  )
-
-  fun hentAlleVedtak(): ResponseEntity<List<VedtakDto>> {
-    val alleVedtakFunnet = vedtakService.hentAlleVedtak()
-    LOGGER.info("Alle vedtak ble funnet")
-    return ResponseEntity(alleVedtakFunnet, HttpStatus.OK)
-  }
-
-  @PostMapping(OPPRETT_VEDTAK_KOMPLETT)
   @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt komplett vedtak")
   @ApiResponses(
     value = [
@@ -98,7 +44,8 @@ class VedtakController(private val vedtakService: VedtakService) {
     return ResponseEntity(komplettVedtakOpprettet, HttpStatus.OK)
   }
 
-  @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
+
+  @GetMapping("$HENT_VEDTAK/{vedtakId}")
   @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et komplett vedtak")
   @ApiResponses(
     value = [
@@ -118,10 +65,8 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   companion object {
-    const val OPPRETT_VEDTAK = "/vedtak/ny"
-    const val OPPRETT_VEDTAK_KOMPLETT = "/vedtak/ny/komplett"
-    const val HENT_VEDTAK = "/vedtak"
-    const val HENT_VEDTAK_KOMPLETT = "/vedtak/komplett"
+    const val OPPRETT_VEDTAK = "/vedtak/"
+    const val HENT_VEDTAK = "/vedtak/"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }
 }

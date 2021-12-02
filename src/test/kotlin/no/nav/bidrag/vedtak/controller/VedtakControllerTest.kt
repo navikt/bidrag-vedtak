@@ -108,76 +108,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  fun `skal opprette nytt vedtak`() {
-    // Oppretter ny forekomst
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForNyttVedtak(),
-      HttpMethod.POST,
-      byggRequest(),
-      VedtakDto::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body?.enhetId).isEqualTo("1111") },
-      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo("TEST") }
-    )
-  }
-
-  @Test
-  fun `skal hente data for ett vedtak`() {
-    // Oppretter ny forekomst
-    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
-
-    // Henter forekomst
-    val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokVedtak()}/${nyttVedtakOpprettet.vedtakId}",
-      HttpMethod.GET,
-      null,
-      VedtakDto::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.enhetId).isEqualTo(nyttVedtakOpprettet.enhetId) },
-      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet.saksbehandlerId) }
-    )
-  }
-
-  @Test
-  fun `skal hente data for alle vedtak`() {
-    // Oppretter nye forekomster
-    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "2222"))
-
-    // Henter forekomster
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForSokVedtak(),
-      HttpMethod.GET,
-      null,
-      vedtakDtoListe
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response.body).isNotNull },
-      Executable { assertThat(response.body?.size).isEqualTo(2) },
-      Executable { assertThat(response.body?.get(0)?.vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
-      Executable { assertThat(response.body?.get(0)?.enhetId).isEqualTo(nyttVedtakOpprettet1.enhetId) },
-      Executable { assertThat(response.body?.get(0)?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet1.saksbehandlerId) },
-      Executable { assertThat(response.body?.get(1)?.vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
-      Executable { assertThat(response.body?.get(1)?.enhetId).isEqualTo(nyttVedtakOpprettet2.enhetId) },
-      Executable { assertThat(response.body?.get(1)?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet2.saksbehandlerId) }
-    )
-  }
-
-  @Test
   fun `skal opprette nytt komplett vedtak`() {
     // Oppretter ny forekomst
     val response = securedTestRestTemplate.exchange(
@@ -262,20 +192,12 @@ class VedtakControllerTest {
     )
   }
 
-  private fun fullUrlForNyttVedtak(): String {
+  private fun fullUrlForNyttKomplettVedtak(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
   }
 
-  private fun fullUrlForNyttKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK_KOMPLETT).toUriString()
-  }
-
-  private fun fullUrlForSokVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
-  }
-
   private fun fullUrlForSokKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_KOMPLETT).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
   }
 
   private fun makeFullContextPath(): String {

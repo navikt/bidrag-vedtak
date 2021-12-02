@@ -35,14 +35,14 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
   private val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
-  fun opprettVedtak(request: OpprettVedtakRequest): VedtakDto {
+/*  fun opprettVedtak(request: OpprettVedtakRequest): VedtakDto {
     val vedtakDto = VedtakDto(enhetId = request.enhetId, saksbehandlerId = request.saksbehandlerId)
     return persistenceService.opprettVedtak(vedtakDto)
   }
 
   fun hentVedtak(vedtakId: Int) = persistenceService.hentVedtak(vedtakId)
 
-  fun hentAlleVedtak() = persistenceService.hentAlleVedtak()
+  fun hentAlleVedtak() = persistenceService.hentAlleVedtak()*/
 
   fun hentKomplettVedtak(vedtakId: Int): HentKomplettVedtakResponse {
     val vedtakDto = persistenceService.hentVedtak(vedtakId)
