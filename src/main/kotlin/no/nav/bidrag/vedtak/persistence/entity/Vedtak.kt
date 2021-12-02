@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -19,6 +20,9 @@ data class Vedtak (
 
   @Column(nullable = false, name = "enhet_id")
   val enhetId: String = "",
+
+  @Column(nullable = true, name = "vedtak_dato")
+  val vedtakDato: LocalDate? = null,
 
   @Column(nullable = false, name = "opprettet_av")
   val saksbehandlerId: String = "",

@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanseDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggGrunnlagDto
@@ -8,6 +9,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggStonadsendringDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakDto
+import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
@@ -63,6 +65,10 @@ class VedtakServiceMockTest {
   @Captor
   private lateinit var engangsbelopGrunnlagDtoCaptor: ArgumentCaptor<EngangsbelopGrunnlagDto>
 
+  @Captor
+  private lateinit var behandlingsreferanseDtoCaptor: ArgumentCaptor<BehandlingsreferanseDto>
+
+
   @Test
   fun `skal opprette nytt komplett vedtak`() {
 
@@ -80,6 +86,8 @@ class VedtakServiceMockTest {
       .thenReturn(byggPeriodeGrunnlagDto())
     Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagDtoCaptor)))
       .thenReturn(byggEngangsbelopGrunnlagDto())
+    Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseDtoCaptor)))
+      .thenReturn(byggBehandlingsreferanseDto())
 
     val komplettVedtak = byggKomplettVedtakRequest()
     val nyttKomplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(komplettVedtak)
@@ -91,6 +99,7 @@ class VedtakServiceMockTest {
     val grunnlagDtoListe = grunnlagDtoCaptor.allValues
     val periodeGrunnlagDtoListe = periodeGrunnlagDtoCaptor.allValues
     val engangsbelopGrunnlagDtoListe = engangsbelopGrunnlagDtoCaptor.allValues
+    val behandlingsreferanseDtoListe = behandlingsreferanseDtoCaptor.allValues
 
     Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(VedtakDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(StonadsendringDto::class.java))
@@ -99,6 +108,7 @@ class VedtakServiceMockTest {
     Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettGrunnlag(MockitoHelper.any(GrunnlagDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(6)).opprettEngangsbelopGrunnlag(MockitoHelper.any(EngangsbelopGrunnlagDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettBehandlingsreferanse(MockitoHelper.any(BehandlingsreferanseDto::class.java))
 
     assertAll(
       Executable { assertThat(nyttKomplettVedtakOpprettet).isNotNull() },
@@ -204,7 +214,11 @@ class VedtakServiceMockTest {
 
       // Sjekk EngangsbelopGrunnlagDto
       Executable { assertThat(engangsbelopGrunnlagDtoListe).isNotNull() },
-      Executable { assertThat(engangsbelopGrunnlagDtoListe.size).isEqualTo(6) }
+      Executable { assertThat(engangsbelopGrunnlagDtoListe.size).isEqualTo(6) },
+
+      // Sjekk BehandlingsreferanseDto
+      Executable { assertThat(behandlingsreferanseDtoListe).isNotNull() },
+      Executable { assertThat(behandlingsreferanseDtoListe.size).isEqualTo(2) }
 
 
     )
@@ -256,6 +270,10 @@ class VedtakServiceMockTest {
       listOf(byggEngangsbelopGrunnlagDto(engangsbelopId = 1,grunnlagId = 1),
         byggEngangsbelopGrunnlagDto(engangsbelopId = 2, grunnlagId = 2))
     )
+    Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-01"),
+        byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-02"))
+    )
 
     val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(1)
 
@@ -273,6 +291,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe.size).isEqualTo(1) },
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[0].lopenr).isEqualTo(1) },
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[0].type).isEqualTo("SAERTILSKUDD") },
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
     )
   }
 

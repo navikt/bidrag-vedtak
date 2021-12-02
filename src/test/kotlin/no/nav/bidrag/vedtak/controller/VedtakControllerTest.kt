@@ -8,6 +8,7 @@ import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
@@ -51,6 +52,9 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var behandlingsreferanseRepository: BehandlingsreferanseRepository
+
+  @Autowired
   private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
 
   @Autowired
@@ -88,6 +92,7 @@ class VedtakControllerTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    behandlingsreferanseRepository.deleteAll()
     engangsbelopGrunnlagRepository.deleteAll()
     engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
@@ -147,8 +152,8 @@ class VedtakControllerTest {
   @Test
   fun `skal hente data for alle vedtak`() {
     // Oppretter nye forekomster
-    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(enhetId = "2222", saksbehandlerId = "TEST"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "2222"))
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(

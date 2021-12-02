@@ -5,6 +5,7 @@ import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
@@ -28,6 +29,9 @@ import java.math.BigDecimal
 @ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
 @SpringBootTest(classes = [BidragVedtakLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class EngangsbelopServiceTest {
+
+  @Autowired
+  private lateinit var behandlingsreferanseRepository: BehandlingsreferanseRepository
 
   @Autowired
   private lateinit var engangsbelopService: EngangsbelopService
@@ -62,6 +66,7 @@ class EngangsbelopServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    behandlingsreferanseRepository.deleteAll()
     engangsbelopGrunnlagRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     engangsbelopRepository.deleteAll()
@@ -137,7 +142,6 @@ class EngangsbelopServiceTest {
   }
 
   @Test
-  @Disabled
   fun `skal hente alle engangsbelop for et vedtak`() {
 
     // Oppretter nytt vedtak

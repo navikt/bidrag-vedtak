@@ -144,5 +144,15 @@
         }
       ]
     }
+  ],
+  "behandlingsreferanseListe": [
+    {
+      "kilde": "Bisys",
+      "referanse": "Bisys-01"
+    },
+    {
+      "kilde": "Bisys",
+      "referanse": "Bisys-02"
+    }
   ]
 }

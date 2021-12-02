@@ -4,6 +4,7 @@ import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.time.LocalDate
 
 @DisplayName("VedtakServiceTest")
 @ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
@@ -28,6 +30,9 @@ class VedtakServiceTest {
 
   @Autowired
   private lateinit var vedtakService: VedtakService
+
+  @Autowired
+  private lateinit var behandlingsreferanseRepository: BehandlingsreferanseRepository
 
   @Autowired
   private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
@@ -56,6 +61,7 @@ class VedtakServiceTest {
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    behandlingsreferanseRepository.deleteAll()
     engangsbelopGrunnlagRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     engangsbelopRepository.deleteAll()
@@ -97,8 +103,10 @@ class VedtakServiceTest {
   @Test
   fun `skal hente data for alle vedtak`() {
     // Oppretter nye vedtak
-    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "1111"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(saksbehandlerId = "TEST", enhetId = "2222"))
+    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(
+      VedtakDto(saksbehandlerId = "TEST", vedtakDato = LocalDate.parse("2021-11-01"), enhetId = "1111"))
+    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(
+      VedtakDto(saksbehandlerId = "TEST", vedtakDato = LocalDate.parse("2021-11-02"), enhetId = "2222"))
 
     // Henter begge vedtakene som akkurat ble opprettet
     val vedtakFunnet = vedtakService.hentAlleVedtak()
@@ -109,10 +117,13 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet[0]).isNotNull() },
       Executable { assertThat(vedtakFunnet[0].vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
       Executable { assertThat(vedtakFunnet[0].saksbehandlerId).isEqualTo(nyttVedtakOpprettet1.saksbehandlerId) },
+      Executable { assertThat(vedtakFunnet[0].vedtakDato).isEqualTo(nyttVedtakOpprettet1.vedtakDato) },
       Executable { assertThat(vedtakFunnet[0].enhetId).isEqualTo(nyttVedtakOpprettet1.enhetId) },
       Executable { assertThat(vedtakFunnet[1]).isNotNull() },
       Executable { assertThat(vedtakFunnet[1].vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
       Executable { assertThat(vedtakFunnet[1].saksbehandlerId).isEqualTo(nyttVedtakOpprettet2.saksbehandlerId) },
+      Executable { assertThat(vedtakFunnet[1].vedtakDato).isEqualTo(nyttVedtakOpprettet2.vedtakDato) },
+      Executable { assertThat(vedtakFunnet[1].vedtakDato).isEqualTo(LocalDate.parse("2021-11-02")) },
       Executable { assertThat(vedtakFunnet[1].enhetId).isEqualTo(nyttVedtakOpprettet2.enhetId) }
     )
   }
@@ -136,10 +147,12 @@ class VedtakServiceTest {
       // Vedtak
       Executable { assertThat(komplettVedtakFunnet.vedtakId).isNotNull() },
       Executable { assertThat(komplettVedtakFunnet.opprettetTimestamp).isNotNull() },
-      Executable { assertThat(komplettVedtakFunnet.enhetId).isEqualTo(nyttKomplettVedtakRequest.enhetId) },
       Executable { assertThat(komplettVedtakFunnet.saksbehandlerId).isEqualTo(nyttKomplettVedtakRequest.saksbehandlerId) },
+      Executable { assertThat(komplettVedtakFunnet.vedtakDato).isEqualTo(nyttKomplettVedtakRequest.vedtakDato) },
+      Executable { assertThat(komplettVedtakFunnet.enhetId).isEqualTo(nyttKomplettVedtakRequest.enhetId) },
       Executable { assertThat(komplettVedtakFunnet.grunnlagListe.size).isEqualTo(4) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
 
       // Grunnlag
       Executable { assertThat(komplettVedtakFunnet.grunnlagListe[0].grunnlagReferanse).isEqualTo(nyttKomplettVedtakRequest.grunnlagListe[0].grunnlagReferanse) },
@@ -159,7 +172,6 @@ class VedtakServiceTest {
       Executable { assertThat(komplettVedtakFunnet.grunnlagListe[3].grunnlagInnhold).isEqualTo(nyttKomplettVedtakRequest.grunnlagListe[3].grunnlagInnhold.toString()) },
 
       // Stonadsendring
-      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].stonadType).isEqualTo(nyttKomplettVedtakRequest.stonadsendringListe[0].stonadType) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].sakId).isEqualTo(nyttKomplettVedtakRequest.stonadsendringListe[0].sakId) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].behandlingId).isEqualTo(nyttKomplettVedtakRequest.stonadsendringListe[0].behandlingId) },
@@ -251,6 +263,12 @@ class VedtakServiceTest {
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[1].valutakode).isEqualTo(nyttKomplettVedtakRequest.engangsbelopListe[1].valutakode) },
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[1].resultatkode).isEqualTo(nyttKomplettVedtakRequest.engangsbelopListe[1].resultatkode) },
       Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
+
+      // Behandlingsreferanse
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe[0].kilde).isEqualTo(nyttKomplettVedtakRequest.behandlingsreferanseListe[0].kilde) },
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe[0].referanse).isEqualTo(nyttKomplettVedtakRequest.behandlingsreferanseListe[0].referanse) },
+
     )
   }
 }

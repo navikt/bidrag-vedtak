@@ -1,12 +1,14 @@
 package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
@@ -24,10 +26,12 @@ class TestUtil {
 
     fun byggKomplettVedtakRequest() = OpprettKomplettVedtakRequest(
       saksbehandlerId = "X123456",
+      vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
       grunnlagListe = byggGrunnlagListe(),
       stonadsendringListe = byggStonadsendringListe(),
-      engangsbelopListe = byggEngangsbelopListe()
+      engangsbelopListe = byggEngangsbelopListe(),
+      behandlingsreferanseListe = byggBehandlingsreferanseListe()
     )
 
     private fun byggGrunnlagListe() = listOf(
@@ -234,6 +238,17 @@ class TestUtil {
       )
     )
 
+    private fun byggBehandlingsreferanseListe() = listOf(
+      OpprettBehandlingsreferanseRequest(
+        kilde = "Bisys",
+        referanse = "Bisysreferanse01"
+        ),
+      OpprettBehandlingsreferanseRequest(
+        kilde = "Bisys",
+        referanse = "Bisysreferanse02"
+      )
+    )
+
 
     fun byggVedtakDto(
       vedtakId: Int = (1..100).random(),
@@ -339,6 +354,18 @@ class TestUtil {
     ) = EngangsbelopGrunnlagDto(
       engangsbelopId = engangsbelopId,
       grunnlagId = grunnlagId
+    )
+
+    fun byggBehandlingsreferanseDto(
+      behandlingsreferanseId: Int = (1..100).random(),
+      vedtakId: Int = (1..100).random(),
+      kilde: String = "Bisys",
+      referanse: String = "Bisysreferanse01"
+    ) = BehandlingsreferanseDto(
+      behandlingsreferanseId = behandlingsreferanseId,
+      vedtakId = vedtakId,
+      kilde = kilde,
+      referanse = referanse
     )
   }
 }

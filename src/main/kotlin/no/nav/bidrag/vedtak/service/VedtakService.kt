@@ -1,5 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.toBehandlingsreferanseDto
 import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.toEngangsbelopDto
@@ -52,14 +55,23 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
     val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
     val engangsbelopDtoListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakDto.vedtakId)
+    val behandlingsreferanseResponseListe = ArrayList<HentBehandlingsreferanseResponse>()
+    val behandlingsreferanseDtoListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtakDto.vedtakId)
+    behandlingsreferanseDtoListe.forEach {
+      behandlingsreferanseResponseListe.add(
+        HentBehandlingsreferanseResponse(it.kilde, it.referanse)
+      )
+    }
     return HentKomplettVedtakResponse(
       vedtakDto.vedtakId,
       vedtakDto.saksbehandlerId,
+      vedtakDto.vedtakDato,
       vedtakDto.enhetId,
       vedtakDto.opprettetTimestamp,
       grunnlagResponseListe,
       finnStonadsendringerTilKomplettVedtak(stonadsendringDtoListe),
-      finnEngangsbelopTilKomplettVedtak(engangsbelopDtoListe)
+      finnEngangsbelopTilKomplettVedtak(engangsbelopDtoListe),
+      behandlingsreferanseResponseListe
     )
   }
 
@@ -137,7 +149,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   fun opprettKomplettVedtak(vedtakRequest: OpprettKomplettVedtakRequest): Int {
 
     // Opprett vedtak
-    val vedtakDto = VedtakDto(enhetId = vedtakRequest.enhetId, saksbehandlerId = vedtakRequest.saksbehandlerId)
+    val vedtakDto = VedtakDto(
+      saksbehandlerId = vedtakRequest.saksbehandlerId, vedtakDato = vedtakRequest.vedtakDato, enhetId = vedtakRequest.enhetId)
     val opprettetVedtak = persistenceService.opprettVedtak(vedtakDto)
     var lopenr: Int = 0
 
@@ -154,6 +167,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     vedtakRequest.engangsbelopListe.forEach {
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
+
+    // Behandlingsreferanse
+    vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak.vedtakId) }
 
     hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
 
@@ -213,6 +229,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       }
     }
   }
+
+  // Opprett behandlingsreferanse
+  private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequest, vedtakId: Int) =
+    persistenceService.opprettBehandlingsreferanse(behandlingsreferanseRequest.toBehandlingsreferanseDto(vedtakId)
+    )
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)

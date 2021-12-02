@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
@@ -7,6 +8,7 @@ import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.dto.toBehandlingsreferanseEntity
 import no.nav.bidrag.vedtak.dto.toEngangsbelopEntity
 import no.nav.bidrag.vedtak.dto.toEngangsbelopGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toGrunnlagEntity
@@ -14,6 +16,7 @@ import no.nav.bidrag.vedtak.dto.toPeriodeEntity
 import no.nav.bidrag.vedtak.dto.toPeriodeGrunnlagEntity
 import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
 import no.nav.bidrag.vedtak.dto.toVedtakEntity
+import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseDto
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopDto
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
@@ -21,6 +24,7 @@ import no.nav.bidrag.vedtak.persistence.entity.toPeriodeDto
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringDto
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
@@ -39,7 +43,8 @@ class PersistenceService(
   val grunnlagRepository: GrunnlagRepository,
   val periodeGrunnlagRepository: PeriodeGrunnlagRepository,
   val engangsbelopRepository: EngangsbelopRepository,
-  val engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+  val engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository,
+  val behandlingsreferanseRepository: BehandlingsreferanseRepository
 ) {
 
   fun opprettVedtak(dto: VedtakDto): VedtakDto {
@@ -190,6 +195,21 @@ class PersistenceService(
       .forEach {engangsbelopGrunnlag -> engangsbelopGrunnlagDtoListe.add(engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()) }
 
     return engangsbelopGrunnlagDtoListe
+  }
+
+  fun opprettBehandlingsreferanse(dto: BehandlingsreferanseDto): BehandlingsreferanseDto {
+    val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
+    val nyBehandlingsreferanse = dto.toBehandlingsreferanseEntity(eksisterendeVedtak)
+    val behandlingsreferanse = behandlingsreferanseRepository.save(nyBehandlingsreferanse)
+    return behandlingsreferanse.toBehandlingsreferanseDto()
+  }
+
+  fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<BehandlingsreferanseDto> {
+    val behandlingsreferanseDtoListe = mutableListOf<BehandlingsreferanseDto>()
+    behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
+      .forEach {behandlingsreferanse -> behandlingsreferanseDtoListe.add(behandlingsreferanse.toBehandlingsreferanseDto()) }
+    return behandlingsreferanseDtoListe
   }
 
   companion object {
