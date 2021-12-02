@@ -193,11 +193,11 @@ class VedtakControllerTest {
   }
 
   private fun fullUrlForNyttKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK_KOMPLETT).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
   }
 
   private fun fullUrlForSokKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_KOMPLETT).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
   }
 
   private fun makeFullContextPath(): String {

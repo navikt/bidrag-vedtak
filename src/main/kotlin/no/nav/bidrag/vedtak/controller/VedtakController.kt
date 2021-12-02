@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = ISSUER)
 class VedtakController(private val vedtakService: VedtakService) {
 
-  @PostMapping(OPPRETT_VEDTAK_KOMPLETT)
+  @PostMapping(OPPRETT_VEDTAK)
   @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt komplett vedtak")
   @ApiResponses(
     value = [
@@ -45,7 +45,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
 
-  @GetMapping("$HENT_VEDTAK_KOMPLETT/{vedtakId}")
+  @GetMapping("$HENT_VEDTAK/{vedtakId}")
   @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et komplett vedtak")
   @ApiResponses(
     value = [
@@ -65,8 +65,8 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
   companion object {
-    const val OPPRETT_VEDTAK_KOMPLETT = "/vedtak/ny/komplett"
-    const val HENT_VEDTAK_KOMPLETT = "/vedtak/komplett"
+    const val OPPRETT_VEDTAK = "/vedtak/"
+    const val HENT_VEDTAK = "/vedtak/"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }
 }
