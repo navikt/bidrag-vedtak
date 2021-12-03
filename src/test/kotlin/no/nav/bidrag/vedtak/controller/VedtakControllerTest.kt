@@ -84,8 +84,8 @@ class VedtakControllerTest {
   @LocalServerPort
   private val port = 0
 
-  @Value("\${server.servlet.context-path}")
-  private val contextPath: String? = null
+/*  @Value("\${server.servlet.context-path}")
+  private val contextPath: String? = null*/
 
   private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
 
@@ -201,7 +201,7 @@ class VedtakControllerTest {
   }
 
   private fun makeFullContextPath(): String {
-    return "http://localhost:$port$contextPath"
+    return "http://localhost:$port"
   }
 
   private fun byggRequest(): HttpEntity<OpprettVedtakRequest> {
