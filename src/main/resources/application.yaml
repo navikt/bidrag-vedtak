@@ -6,7 +6,7 @@
 
 server:
   servlet:
-    context-path: /bidrag-vedtak
+    context-path:
 management:
   endpoints:
     web:

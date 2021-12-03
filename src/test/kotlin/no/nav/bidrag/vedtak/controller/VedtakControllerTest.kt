@@ -104,7 +104,7 @@ class VedtakControllerTest {
 
   @Test
   fun `skal mappe til context path med random port`() {
-    assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port/bidrag-vedtak")
+    assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port")
   }
 
   @Test
