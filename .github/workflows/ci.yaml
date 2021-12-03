@@ -100,7 +100,7 @@ jobs:
       - run: |
           curl -H "Content-Type: application/json" -i \
                --request POST \
-               --data '{"ingressesForApps":[
+               --data '{"noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
                    "${{ env.INGRESS_VEDTAK }}@tag:bidrag-vedtak"
                  ]}' \
                ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result

@@ -1,0 +1,3 @@
+name: bidrag-vedtak
+ingress: https://bidrag-vedtak.intern.nav.no
+dbname: bidrag-vedtak-prod

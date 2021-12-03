@@ -64,7 +64,8 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          RESOURCE: deploy/.nais/nais-p.yaml
+          RESOURCE: deploy/.nais/nais.yaml
+          VARS: deploy/.nais/prod.yaml
 
   tag:
     runs-on: ubuntu-latest
@@ -85,7 +86,7 @@ jobs:
         id: release
       - uses: navikt/bidrag-git/tag@v5
         with:
-          tag_message: Releasing version ${{ steps.release.outputs.tag }}
+          tag_message: "Releasing version ${{ steps.release.outputs.tag }}"
           tag: ${{ steps.release.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
