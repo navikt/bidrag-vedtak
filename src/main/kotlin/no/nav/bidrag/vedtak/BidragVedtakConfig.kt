@@ -8,15 +8,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
-import no.nav.bidrag.tilgangskontroll.SecurityUtils
+import no.nav.bidrag.vedtak.BidragVedtakConfig.OidcTokenManager
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
-import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.beans.factory.annotation.Value
-
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile

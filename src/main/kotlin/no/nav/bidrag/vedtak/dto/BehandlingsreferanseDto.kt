@@ -2,7 +2,6 @@ package no.nav.bidrag.vedtak.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
-import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
 

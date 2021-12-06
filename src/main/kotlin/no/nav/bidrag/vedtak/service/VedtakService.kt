@@ -18,7 +18,6 @@ import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequ
 import no.nav.bidrag.vedtak.api.stonadsendring.toStonadsendringDto
 import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
