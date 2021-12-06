@@ -1,9 +1,7 @@
 package no.nav.bidrag.vedtak.api.behandlingsreferanse
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import kotlin.reflect.full.memberProperties
 
 @Schema

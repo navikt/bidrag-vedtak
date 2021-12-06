@@ -1,9 +1,7 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
 import java.io.Serializable
-import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.IdClass

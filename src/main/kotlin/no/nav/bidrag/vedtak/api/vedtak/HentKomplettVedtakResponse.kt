@@ -2,7 +2,6 @@ package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
-import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
 import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse

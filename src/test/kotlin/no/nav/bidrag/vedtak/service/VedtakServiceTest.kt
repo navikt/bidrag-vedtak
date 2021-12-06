@@ -2,8 +2,6 @@ package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggKomplettVedtakRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
@@ -21,7 +19,6 @@ import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.time.LocalDate
 
 @DisplayName("VedtakServiceTest")
 @ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
