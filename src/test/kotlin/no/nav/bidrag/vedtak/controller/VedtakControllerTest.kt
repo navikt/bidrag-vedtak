@@ -8,11 +8,15 @@ import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
 import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
+import no.nav.bidrag.vedtak.service.HendelserService
 import no.nav.bidrag.vedtak.service.PersistenceService
 import no.nav.bidrag.vedtak.service.VedtakService
 import org.assertj.core.api.Assertions.assertThat
@@ -48,6 +52,15 @@ class VedtakControllerTest {
   private lateinit var securedTestRestTemplate: HttpHeaderTestRestTemplate
 
   @Autowired
+  private lateinit var behandlingsreferanseRepository: BehandlingsreferanseRepository
+
+  @Autowired
+  private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+
+  @Autowired
+  private lateinit var engangsbelopRepository: EngangsbelopRepository
+
+  @Autowired
   private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
 
   @Autowired
@@ -71,14 +84,17 @@ class VedtakControllerTest {
   @LocalServerPort
   private val port = 0
 
-  @Value("\${server.servlet.context-path}")
-  private val contextPath: String? = null
+/*  @Value("\${server.servlet.context-path}")
+  private val contextPath: String? = null*/
 
   private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
 
   @BeforeEach
   fun `init`() {
     // Sletter alle forekomster
+    behandlingsreferanseRepository.deleteAll()
+    engangsbelopGrunnlagRepository.deleteAll()
+    engangsbelopRepository.deleteAll()
     periodeGrunnlagRepository.deleteAll()
     grunnlagRepository.deleteAll()
     periodeRepository.deleteAll()
@@ -88,77 +104,7 @@ class VedtakControllerTest {
 
   @Test
   fun `skal mappe til context path med random port`() {
-    assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port/bidrag-vedtak")
-  }
-
-  @Test
-  fun `skal opprette nytt vedtak`() {
-    // Oppretter ny forekomst
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForNyttVedtak(),
-      HttpMethod.POST,
-      byggRequest(),
-      VedtakDto::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body?.enhetId).isEqualTo("1111") },
-      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo("TEST") }
-    )
-  }
-
-  @Test
-  fun `skal hente data for ett vedtak`() {
-    // Oppretter ny forekomst
-    val nyttVedtakOpprettet = persistenceService.opprettVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
-
-    // Henter forekomst
-    val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokVedtak()}/${nyttVedtakOpprettet.vedtakId}",
-      HttpMethod.GET,
-      null,
-      VedtakDto::class.java
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull },
-      Executable { assertThat(response?.body?.vedtakId).isEqualTo(nyttVedtakOpprettet.vedtakId) },
-      Executable { assertThat(response?.body?.enhetId).isEqualTo(nyttVedtakOpprettet.enhetId) },
-      Executable { assertThat(response?.body?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet.saksbehandlerId) }
-    )
-  }
-
-  @Test
-  fun `skal hente data for alle vedtak`() {
-    // Oppretter nye forekomster
-    val nyttVedtakOpprettet1 = persistenceService.opprettVedtak(VedtakDto(enhetId = "1111", saksbehandlerId = "TEST"))
-    val nyttVedtakOpprettet2 = persistenceService.opprettVedtak(VedtakDto(enhetId = "2222", saksbehandlerId = "TEST"))
-
-    // Henter forekomster
-    val response = securedTestRestTemplate.exchange(
-      fullUrlForSokVedtak(),
-      HttpMethod.GET,
-      null,
-      vedtakDtoListe
-    )
-
-    assertAll(
-      Executable { assertThat(response).isNotNull() },
-      Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response.body).isNotNull },
-      Executable { assertThat(response.body?.size).isEqualTo(2) },
-      Executable { assertThat(response.body?.get(0)?.vedtakId).isEqualTo(nyttVedtakOpprettet1.vedtakId) },
-      Executable { assertThat(response.body?.get(0)?.enhetId).isEqualTo(nyttVedtakOpprettet1.enhetId) },
-      Executable { assertThat(response.body?.get(0)?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet1.saksbehandlerId) },
-      Executable { assertThat(response.body?.get(1)?.vedtakId).isEqualTo(nyttVedtakOpprettet2.vedtakId) },
-      Executable { assertThat(response.body?.get(1)?.enhetId).isEqualTo(nyttVedtakOpprettet2.enhetId) },
-      Executable { assertThat(response.body?.get(1)?.saksbehandlerId).isEqualTo(nyttVedtakOpprettet2.saksbehandlerId) }
-    )
+    assertThat(makeFullContextPath()).isEqualTo("http://localhost:$port")
   }
 
   @Test
@@ -224,24 +170,38 @@ class VedtakControllerTest {
     )
   }
 
-  private fun fullUrlForNyttVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
+  @Test
+  fun `skal opprette nytt komplett vedtak med engangsbelop med input fra fil`() {
+
+    // Bygger request
+    val filnavn = "src/test/resources/testfiler/opprett_nytt_komplett_vedtak_request_med_engangsbelop.json"
+    val request = lesFilOgByggRequest(filnavn)
+
+    // Oppretter ny forekomst
+    val opprettResponse = securedTestRestTemplate.exchange(
+      fullUrlForNyttKomplettVedtak(),
+      HttpMethod.POST,
+      request,
+      Int::class.java
+    )
+
+    assertAll(
+      Executable { assertThat(opprettResponse).isNotNull() },
+      Executable { assertThat(opprettResponse?.statusCode).isEqualTo(HttpStatus.OK) },
+      Executable { assertThat(opprettResponse?.body).isNotNull() }
+    )
   }
 
   private fun fullUrlForNyttKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK_KOMPLETT).toUriString()
-  }
-
-  private fun fullUrlForSokVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
   }
 
   private fun fullUrlForSokKomplettVedtak(): String {
-    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_KOMPLETT).toUriString()
+    return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
   }
 
   private fun makeFullContextPath(): String {
-    return "http://localhost:$port$contextPath"
+    return "http://localhost:$port"
   }
 
   private fun byggRequest(): HttpEntity<OpprettVedtakRequest> {

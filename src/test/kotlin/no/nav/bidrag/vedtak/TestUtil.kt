@@ -1,11 +1,16 @@
 package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
+import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -21,9 +26,12 @@ class TestUtil {
 
     fun byggKomplettVedtakRequest() = OpprettKomplettVedtakRequest(
       saksbehandlerId = "X123456",
+      vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
       grunnlagListe = byggGrunnlagListe(),
-      stonadsendringListe = byggStonadsendringListe()
+      stonadsendringListe = byggStonadsendringListe(),
+      engangsbelopListe = byggEngangsbelopListe(),
+      behandlingsreferanseListe = byggBehandlingsreferanseListe()
     )
 
     private fun byggGrunnlagListe() = listOf(
@@ -109,16 +117,13 @@ class TestUtil {
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGN-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
+                grunnlagReferanse = "SJAB-REF001"
               )
             )
           ),
@@ -130,27 +135,23 @@ class TestUtil {
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGN-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BP-SKATTEKLASSE-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BP-SKATTEKLASSE-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
-              ),
+                grunnlagReferanse = "SJAB-REF001"
+              )
             )
           )
         )
       ),
       OpprettKomplettStonadsendringRequest(
-        stonadType = "SAERTILSKUDD",
+        stonadType = "FORSKUDD",
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",
@@ -165,12 +166,10 @@ class TestUtil {
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = true
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
+                grunnlagReferanse = "SJAB-REF001"
               )
             )
           ),
@@ -182,16 +181,71 @@ class TestUtil {
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19",
-                grunnlagValgt = false
+                grunnlagReferanse = "BM-LIGS-19"
               ),
               OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001",
-                grunnlagValgt = true
-              ),
-            )
+                grunnlagReferanse = "SJAB-REF001"
+              ))
           )
         )
+      )
+    )
+
+    private fun byggEngangsbelopListe() = listOf(
+      OpprettKomplettEngangsbelopRequest(
+        lopenr = 1,
+        endrerEngangsbelopId = null,
+        type = "SAERTILSKUDD",
+        skyldnerId = "01018011111",
+        kravhaverId = "01010511111",
+        mottakerId = "01018211111",
+        belop = BigDecimal.valueOf(3490),
+        valutakode = "NOK",
+        resultatkode = "SAERTILSKUDD BEREGNET",
+        grunnlagReferanseListe = listOf(
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "BM-LIGS-19"
+          ),
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "BM-LIGN-19"
+          ),
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "SJAB-REF001"
+          )
+        )
+      ),
+      OpprettKomplettEngangsbelopRequest(
+        lopenr = 2,
+        endrerEngangsbelopId = 1,
+        type = "SAERTILSKUDD",
+        skyldnerId = "01018011111",
+        kravhaverId = "01010511111",
+        mottakerId = "01018211111",
+        belop = BigDecimal.valueOf(2990),
+        valutakode = "NOK",
+        resultatkode = "SAERTILSKUDD BEREGNET",
+        grunnlagReferanseListe = listOf(
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "BM-LIGS-19"
+          ),
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "BM-LIGN-19"
+          ),
+          OpprettGrunnlagReferanseRequest(
+            grunnlagReferanse = "SJAB-REF001"
+          )
+        )
+      )
+    )
+
+    private fun byggBehandlingsreferanseListe() = listOf(
+      OpprettBehandlingsreferanseRequest(
+        kilde = "Bisys",
+        referanse = "Bisysreferanse01"
+        ),
+      OpprettBehandlingsreferanseRequest(
+        kilde = "Bisys",
+        referanse = "Bisysreferanse02"
       )
     )
 
@@ -262,12 +316,56 @@ class TestUtil {
 
     fun byggPeriodeGrunnlagDto(
       periodeId: Int = (1..100).random(),
-      grunnlagId: Int = (1..100).random(),
-      grunnlagValgt: Boolean = true
+      grunnlagId: Int = (1..100).random()
     ) = PeriodeGrunnlagDto(
       periodeId = periodeId,
-      grunnlagId = grunnlagId,
-      grunnlagValgt = grunnlagValgt
+      grunnlagId = grunnlagId
+    )
+
+    fun byggEngangsbelopDto(
+      engangsbelopId: Int = (1..100).random(),
+      vedtakId: Int = (1..100).random(),
+      lopenr: Int = (1..100).random(),
+      endrerEngangsbelopId: Int? = null,
+      type: String = "SAERTILSKUDD",
+      skyldnerId: String = "01018011111",
+      kravhaverId: String = "01010511111",
+      mottakerId: String = "01018211111",
+      belop: BigDecimal = BigDecimal.valueOf(3490),
+      valutakode: String = "NOK",
+      resultatkode: String = "SAERTILSKUDD BEREGNET"
+    ) = EngangsbelopDto(
+      engangsbelopId = engangsbelopId,
+      vedtakId = vedtakId,
+      lopenr = lopenr,
+      endrerEngangsbelopId = endrerEngangsbelopId,
+      type = type,
+      skyldnerId = skyldnerId,
+      kravhaverId = kravhaverId,
+      mottakerId = mottakerId,
+      belop = belop,
+      valutakode = valutakode,
+      resultatkode = resultatkode
+    )
+
+    fun byggEngangsbelopGrunnlagDto(
+      engangsbelopId: Int = (1..100).random(),
+      grunnlagId: Int = (1..100).random()
+    ) = EngangsbelopGrunnlagDto(
+      engangsbelopId = engangsbelopId,
+      grunnlagId = grunnlagId
+    )
+
+    fun byggBehandlingsreferanseDto(
+      behandlingsreferanseId: Int = (1..100).random(),
+      vedtakId: Int = (1..100).random(),
+      kilde: String = "Bisys",
+      referanse: String = "Bisysreferanse01"
+    ) = BehandlingsreferanseDto(
+      behandlingsreferanseId = behandlingsreferanseId,
+      vedtakId = vedtakId,
+      kilde = kilde,
+      referanse = referanse
     )
   }
 }

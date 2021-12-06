@@ -1,25 +1,26 @@
 package no.nav.bidrag.vedtak.dto
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
 
+@Schema
 data class GrunnlagDto(
 
-  @ApiModelProperty(value = "Grunnlag-id")
+  @Schema(description = "Grunnlag-id")
   val grunnlagId: Int = 0,
 
-  @ApiModelProperty(value = "Referanse til grunnlaget")
+  @Schema(description = "Referanse til grunnlaget")
   val grunnlagReferanse: String = "",
 
-  @ApiModelProperty(value = "Vedtak-id")
+  @Schema(description = "Vedtak-id")
   val vedtakId: Int = 0,
 
-  @ApiModelProperty(value = "Grunnlagstype")
+  @Schema(description = "Grunnlagstype")
   val grunnlagType: String = "",
 
-  @ApiModelProperty(value = "Innholdet i grunnlaget")
+  @Schema(description = "Innholdet i grunnlaget")
   val grunnlagInnhold: String = ""
 )
 

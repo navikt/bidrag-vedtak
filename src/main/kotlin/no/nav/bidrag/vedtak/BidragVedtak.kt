@@ -1,11 +1,14 @@
 package no.nav.bidrag.vedtak
 
-import no.nav.bidrag.vedtak.BidragVedtakConfig.Companion.LIVE_PROFILE
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 
+@EnableJwtTokenValidation(ignore = ["org.springdoc", "org.springframework"])
 @SpringBootApplication
 class BidragVedtak
+
+const val ISSUER = "aad"
 
 fun main(args: Array<String>) {
     val profile = if (args.isEmpty()) LIVE_PROFILE else args[0]

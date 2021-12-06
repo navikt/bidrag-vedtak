@@ -1,11 +1,17 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanseDto
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopDto
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggGrunnlagDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggKomplettVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeGrunnlagDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggStonadsendringDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakDto
+import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
@@ -33,6 +39,9 @@ class VedtakServiceMockTest {
   private lateinit var vedtakService: VedtakService
 
   @Mock
+  private lateinit var hendelserService: HendelserService
+
+  @Mock
   private lateinit var persistenceServiceMock: PersistenceService
 
   @Captor
@@ -40,6 +49,9 @@ class VedtakServiceMockTest {
 
   @Captor
   private lateinit var stonadsendringDtoCaptor: ArgumentCaptor<StonadsendringDto>
+
+  @Captor
+  private lateinit var engangsbelopDtoCaptor: ArgumentCaptor<EngangsbelopDto>
 
   @Captor
   private lateinit var periodeDtoCaptor: ArgumentCaptor<PeriodeDto>
@@ -50,6 +62,13 @@ class VedtakServiceMockTest {
   @Captor
   private lateinit var periodeGrunnlagDtoCaptor: ArgumentCaptor<PeriodeGrunnlagDto>
 
+  @Captor
+  private lateinit var engangsbelopGrunnlagDtoCaptor: ArgumentCaptor<EngangsbelopGrunnlagDto>
+
+  @Captor
+  private lateinit var behandlingsreferanseDtoCaptor: ArgumentCaptor<BehandlingsreferanseDto>
+
+
   @Test
   fun `skal opprette nytt komplett vedtak`() {
 
@@ -57,27 +76,39 @@ class VedtakServiceMockTest {
       .thenReturn(byggVedtakDto())
     Mockito.`when`(persistenceServiceMock.opprettStonadsendring(MockitoHelper.capture(stonadsendringDtoCaptor)))
       .thenReturn(byggStonadsendringDto())
+    Mockito.`when`(persistenceServiceMock.opprettEngangsbelop(MockitoHelper.capture(engangsbelopDtoCaptor)))
+      .thenReturn(byggEngangsbelopDto())
     Mockito.`when`(persistenceServiceMock.opprettPeriode(MockitoHelper.capture(periodeDtoCaptor)))
       .thenReturn(byggPeriodeDto())
     Mockito.`when`(persistenceServiceMock.opprettGrunnlag(MockitoHelper.capture(grunnlagDtoCaptor)))
       .thenReturn(byggGrunnlagDto())
     Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagDtoCaptor)))
       .thenReturn(byggPeriodeGrunnlagDto())
+    Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagDtoCaptor)))
+      .thenReturn(byggEngangsbelopGrunnlagDto())
+    Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseDtoCaptor)))
+      .thenReturn(byggBehandlingsreferanseDto())
 
     val komplettVedtak = byggKomplettVedtakRequest()
     val nyttKomplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(komplettVedtak)
 
     val vedtakDto = vedtakDtoCaptor.value
     val stonadsendringDtoListe = stonadsendringDtoCaptor.allValues
+    val engangsbelopDtoListe = engangsbelopDtoCaptor.allValues
     val periodeDtoListe = periodeDtoCaptor.allValues
     val grunnlagDtoListe = grunnlagDtoCaptor.allValues
     val periodeGrunnlagDtoListe = periodeGrunnlagDtoCaptor.allValues
+    val engangsbelopGrunnlagDtoListe = engangsbelopGrunnlagDtoCaptor.allValues
+    val behandlingsreferanseDtoListe = behandlingsreferanseDtoCaptor.allValues
 
     Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(VedtakDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(StonadsendringDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettEngangsbelop(MockitoHelper.any(EngangsbelopDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettPeriode(MockitoHelper.any(PeriodeDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettGrunnlag(MockitoHelper.any(GrunnlagDto::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(6)).opprettEngangsbelopGrunnlag(MockitoHelper.any(EngangsbelopGrunnlagDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettBehandlingsreferanse(MockitoHelper.any(BehandlingsreferanseDto::class.java))
 
     assertAll(
       Executable { assertThat(nyttKomplettVedtakOpprettet).isNotNull() },
@@ -104,6 +135,30 @@ class VedtakServiceMockTest {
       Executable { assertThat(stonadsendringDtoListe[1].skyldnerId).isEqualTo(komplettVedtak.stonadsendringListe[1].skyldnerId) },
       Executable { assertThat(stonadsendringDtoListe[1].kravhaverId).isEqualTo(komplettVedtak.stonadsendringListe[1].kravhaverId) },
       Executable { assertThat(stonadsendringDtoListe[1].mottakerId).isEqualTo(komplettVedtak.stonadsendringListe[1].mottakerId) },
+
+      // Sjekk EngangsbelopDto
+      Executable { assertThat(engangsbelopDtoListe).isNotNull() },
+      Executable { assertThat(engangsbelopDtoListe.size).isEqualTo(2) },
+
+      Executable { assertThat(engangsbelopDtoListe[0].lopenr).isEqualTo(komplettVedtak.engangsbelopListe[0].lopenr) },
+      Executable { assertThat(engangsbelopDtoListe[0].endrerEngangsbelopId).isEqualTo(komplettVedtak.engangsbelopListe[0].endrerEngangsbelopId) },
+      Executable { assertThat(engangsbelopDtoListe[0].type).isEqualTo(komplettVedtak.engangsbelopListe[0].type) },
+      Executable { assertThat(engangsbelopDtoListe[0].skyldnerId).isEqualTo(komplettVedtak.engangsbelopListe[0].skyldnerId) },
+      Executable { assertThat(engangsbelopDtoListe[0].kravhaverId).isEqualTo(komplettVedtak.engangsbelopListe[0].kravhaverId) },
+      Executable { assertThat(engangsbelopDtoListe[0].mottakerId).isEqualTo(komplettVedtak.engangsbelopListe[0].mottakerId) },
+      Executable { assertThat(engangsbelopDtoListe[0].belop).isEqualTo(komplettVedtak.engangsbelopListe[0].belop) },
+      Executable { assertThat(engangsbelopDtoListe[0].valutakode).isEqualTo(komplettVedtak.engangsbelopListe[0].valutakode) },
+      Executable { assertThat(engangsbelopDtoListe[0].resultatkode).isEqualTo(komplettVedtak.engangsbelopListe[0].resultatkode) },
+
+      Executable { assertThat(engangsbelopDtoListe[1].lopenr).isEqualTo(komplettVedtak.engangsbelopListe[1].lopenr) },
+      Executable { assertThat(engangsbelopDtoListe[1].endrerEngangsbelopId).isEqualTo(komplettVedtak.engangsbelopListe[1].endrerEngangsbelopId) },
+      Executable { assertThat(engangsbelopDtoListe[1].type).isEqualTo(komplettVedtak.engangsbelopListe[1].type) },
+      Executable { assertThat(engangsbelopDtoListe[1].skyldnerId).isEqualTo(komplettVedtak.engangsbelopListe[1].skyldnerId) },
+      Executable { assertThat(engangsbelopDtoListe[1].kravhaverId).isEqualTo(komplettVedtak.engangsbelopListe[1].kravhaverId) },
+      Executable { assertThat(engangsbelopDtoListe[1].mottakerId).isEqualTo(komplettVedtak.engangsbelopListe[1].mottakerId) },
+      Executable { assertThat(engangsbelopDtoListe[1].belop).isEqualTo(komplettVedtak.engangsbelopListe[1].belop) },
+      Executable { assertThat(engangsbelopDtoListe[1].valutakode).isEqualTo(komplettVedtak.engangsbelopListe[1].valutakode) },
+      Executable { assertThat(engangsbelopDtoListe[1].resultatkode).isEqualTo(komplettVedtak.engangsbelopListe[1].resultatkode) },
 
       // Sjekk PeriodeDto
       Executable { assertThat(periodeDtoListe).isNotNull() },
@@ -157,17 +212,15 @@ class VedtakServiceMockTest {
       Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
       Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) },
 
-      Executable { assertThat(periodeGrunnlagDtoListe[0].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[1].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[2].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[3].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[4].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[5].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[6].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[7].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[8].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[9].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0].grunnlagValgt) },
-      Executable { assertThat(periodeGrunnlagDtoListe[10].grunnlagValgt).isEqualTo(komplettVedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1].grunnlagValgt) }
+      // Sjekk EngangsbelopGrunnlagDto
+      Executable { assertThat(engangsbelopGrunnlagDtoListe).isNotNull() },
+      Executable { assertThat(engangsbelopGrunnlagDtoListe.size).isEqualTo(6) },
+
+      // Sjekk BehandlingsreferanseDto
+      Executable { assertThat(behandlingsreferanseDtoListe).isNotNull() },
+      Executable { assertThat(behandlingsreferanseDtoListe.size).isEqualTo(2) }
+
+
     )
   }
 
@@ -190,6 +243,13 @@ class VedtakServiceMockTest {
         byggStonadsendringDto(stonadsendringId = 2, vedtakId = 1, behandlingId = "BEHID2")
       )
     )
+    Mockito.`when`(persistenceServiceMock.hentAlleEngangsbelopForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(
+        byggEngangsbelopDto(engangsbelopId =  1, vedtakId = 1, 1, null, "SAERTILSKUDD",
+          "01018011111", "01010511111", "01018211111", BigDecimal.valueOf(3490),
+          "NOK", "SAERTILSKUDD BEREGNET")
+      )
+    )
     Mockito.`when`(persistenceServiceMock.hentAllePerioderForStonadsendring(MockitoHelper.any(Int::class.java)))
       .thenReturn(
         listOf(
@@ -197,11 +257,22 @@ class VedtakServiceMockTest {
           byggPeriodeDto(periodeId = 2, stonadsendringId = 2, belop = BigDecimal.valueOf(200))
         )
       )
-    Mockito.`when`(persistenceServiceMock.hentAllePeriodeGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggPeriodeGrunnlagDto(periodeId = 1, grunnlagId = 1), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
+    Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(byggPeriodeGrunnlagDto(
+        periodeId = 1,
+        grunnlagId = 1
+      ), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
     )
     Mockito.`when`(persistenceServiceMock.hentGrunnlag(MockitoHelper.any(Int::class.java))).thenReturn(
       byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1")
+    )
+    Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForEngangsbelop(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(byggEngangsbelopGrunnlagDto(engangsbelopId = 1,grunnlagId = 1),
+        byggEngangsbelopGrunnlagDto(engangsbelopId = 2, grunnlagId = 2))
+    )
+    Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
+      listOf(byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-01"),
+        byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-02"))
     )
 
     val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(1)
@@ -216,7 +287,11 @@ class VedtakServiceMockTest {
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].belop).isEqualTo(BigDecimal.valueOf(100)) },
       Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
-      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagReferanse).isEqualTo("REF1") }
+      Executable { assertThat(komplettVedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].grunnlagReferanse).isEqualTo("REF1") },
+      Executable { assertThat(komplettVedtakFunnet.engangsbelopListe.size).isEqualTo(1) },
+      Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[0].lopenr).isEqualTo(1) },
+      Executable { assertThat(komplettVedtakFunnet.engangsbelopListe[0].type).isEqualTo("SAERTILSKUDD") },
+      Executable { assertThat(komplettVedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
     )
   }
 

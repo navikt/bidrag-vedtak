@@ -1,21 +1,19 @@
 package no.nav.bidrag.vedtak.dto
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import kotlin.reflect.full.memberProperties
 
+@Schema
 data class PeriodeGrunnlagDto(
 
-  @ApiModelProperty(value = "Periode-id")
+  @Schema(description = "Periode-id")
   val periodeId: Int = 0,
 
-  @ApiModelProperty(value = "Grunnlag-id")
-  val grunnlagId: Int = 0,
-
-  @ApiModelProperty(value = "Er grunnlaget valgt av saksbehandler?")
-  val grunnlagValgt: Boolean = true
+  @Schema(description = "Grunnlag-id")
+  val grunnlagId: Int = 0
 
 )
 

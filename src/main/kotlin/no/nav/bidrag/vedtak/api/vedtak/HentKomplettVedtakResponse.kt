@@ -1,29 +1,41 @@
 package no.nav.bidrag.vedtak.api.vedtak
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
+import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
+import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
 import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse
+import java.time.LocalDate
 import java.time.LocalDateTime
 
-@ApiModel
+@Schema
 data class HentKomplettVedtakResponse(
 
-  @ApiModelProperty(value = "Vedtak-id")
+  @Schema(description = "Vedtak-id")
   var vedtakId: Int = 0,
 
-  @ApiModelProperty(value = "Id til saksbehandler som oppretter vedtaket")
+  @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   var saksbehandlerId: String = "",
 
-  @ApiModelProperty(value = "Id til enheten som er ansvarlig for vedtaket")
+  @Schema(description = "Dato vedtaket er fattet")
+  val vedtakDato: LocalDate? = null,
+
+  @Schema(description = "Id til enheten som er ansvarlig for vedtaket")
   var enhetId: String = "",
 
-  @ApiModelProperty(value = "Opprettet timestamp")
+  @Schema(description = "Opprettet timestamp")
   var opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 
-  @ApiModelProperty(value = "Liste over alle grunnlag som inngår i vedtaket")
+  @Schema(description = "Liste over alle grunnlag som inngår i vedtaket")
   var grunnlagListe: List<HentGrunnlagResponse> = emptyList(),
 
-  @ApiModelProperty(value = "Liste over alle stønadsendringer som inngår i vedtaket")
-  var stonadsendringListe: List<HentStonadsendringResponse> = emptyList()
+  @Schema(description = "Liste over alle stønadsendringer som inngår i vedtaket")
+  var stonadsendringListe: List<HentStonadsendringResponse> = emptyList(),
+
+  @Schema(description = "Liste over alle engangsbeløp som inngår i vedtaket")
+  var engangsbelopListe: List<HentEngangsbelopResponse> = emptyList(),
+
+  @Schema(description = "Liste med referanser til alle behandlinger som ligger som grunnlag til vedtaket")
+  val behandlingsreferanseListe: List<HentBehandlingsreferanseResponse> = emptyList()
 )

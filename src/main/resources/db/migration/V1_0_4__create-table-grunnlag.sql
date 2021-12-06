@@ -1,4 +1,4 @@
--- Table: periode
+-- Table: grunnlag
 
 -- DROP TABLE grunnlag;
 

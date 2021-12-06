@@ -1,22 +1,27 @@
 package no.nav.bidrag.vedtak.dto
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
+@Schema
 data class VedtakDto(
 
-  @ApiModelProperty(value = "Vedtak-id")
+  @Schema(description = "Vedtak-id")
   val vedtakId: Int = 0,
 
-  @ApiModelProperty(value = "Id til saksbehandler som oppretter vedtaket")
+  @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   val saksbehandlerId: String = "",
 
-  @ApiModelProperty(value = "Id til enheten som er ansvarlig for vedtaket")
+  @Schema(description = "Dato vedtaket er fattet")
+  val vedtakDato: LocalDate? = null,
+
+  @Schema(description = "Id til enheten som er ansvarlig for vedtaket")
   val enhetId: String = "",
 
-  @ApiModelProperty(value = "Opprettet timestamp")
+  @Schema(description = "Opprettet timestamp")
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 

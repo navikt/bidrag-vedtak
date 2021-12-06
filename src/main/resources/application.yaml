@@ -4,9 +4,6 @@
 #
 ####################################################################
 
-server:
-  servlet:
-    context-path: /bidrag-vedtak
 management:
   endpoints:
     web:
@@ -24,6 +21,23 @@ management:
 ####################################################################
 
 spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    properties:
+      security.protocol: SSL
+      ssl:
+        keystore:
+          type: PKCS12
+          location: ${KAFKA_KEYSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
+        truststore:
+          location: ${KAFKA_TRUSTSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
+        endpoint.identification.algorithm:
+        producer:
+          key-serializer: org.apache.kafka.common.serialization.StringSerializer
+          value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   config.activate.on-profile: live
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

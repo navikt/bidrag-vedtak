@@ -5,7 +5,7 @@ on:
       - release
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/bidrag-vedtak:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
   verify:
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
-          java-version: '15'
+          java-version: '17'
       - uses: actions/cache@v1
         with:
           path: ~/.m2
@@ -47,9 +47,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} .
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker image build --tag ${IMAGE} .
+          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
+          docker image push ${IMAGE}
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,7 +64,8 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          RESOURCE: deploy/.nais/naiserator-prod.yaml
+          RESOURCE: deploy/.nais/nais.yaml
+          VARS: deploy/.nais/prod.yaml
 
   tag:
     runs-on: ubuntu-latest
@@ -85,7 +86,7 @@ jobs:
         id: release
       - uses: navikt/bidrag-git/tag@v5
         with:
-          tag_message: Releasing version ${{ steps.release.outputs.tag }}
+          tag_message: "Releasing version ${{ steps.release.outputs.tag }}"
           tag: ${{ steps.release.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

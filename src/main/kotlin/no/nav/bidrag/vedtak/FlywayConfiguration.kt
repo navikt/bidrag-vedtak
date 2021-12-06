@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak
 
-import no.nav.bidrag.vedtak.BidragVedtakConfig.Companion.LIVE_PROFILE
+//import no.nav.bidrag.vedtak.BidragVedtakConfig.Companion.LIVE_PROFILE
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
