@@ -4,21 +4,27 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 import kotlin.reflect.full.memberProperties
 
 @Schema
 data class OpprettGrunnlagRequest(
 
     @Schema(description = "Referanse til grunnlaget")
-    val grunnlagReferanse: String = "",
+    @NotBlank
+    val grunnlagReferanse: String,
 
     @Schema(description = "Vedtak-id")
-    val vedtakId: Int = 0,
+    @Min(0)
+    val vedtakId: Int,
 
     @Schema(description = "Grunnlagstype")
-    val grunnlagType: String = "",
+    @NotBlank
+    val grunnlagType: String,
 
     @Schema(description = "Innholdet i grunnlaget")
+    @NotBlank
     val grunnlagInnhold: JsonNode = ObjectMapper().createObjectNode()
 )
 

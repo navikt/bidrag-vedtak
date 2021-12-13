@@ -37,6 +37,7 @@ class TestUtil {
     private fun byggGrunnlagListe() = listOf(
       OpprettGrunnlagRequest(
         grunnlagReferanse = "BM-LIGS-19",
+        vedtakId = 0,
         grunnlagType = "INNTEKT",
         grunnlagInnhold =  ObjectMapper().readTree(
           """
@@ -52,6 +53,7 @@ class TestUtil {
       ),
       OpprettGrunnlagRequest(
         grunnlagReferanse = "BM-LIGN-19",
+        vedtakId = 0,
         grunnlagType = "INNTEKT",
         grunnlagInnhold = ObjectMapper().readTree(
           """
@@ -67,6 +69,7 @@ class TestUtil {
       ),
       OpprettGrunnlagRequest(
         grunnlagReferanse = "BP-SKATTEKLASSE-19",
+        vedtakId = 0,
         grunnlagType = "SKATTEKLASSE",
         grunnlagInnhold = ObjectMapper().readTree(
           """
@@ -81,6 +84,7 @@ class TestUtil {
       ),
       OpprettGrunnlagRequest(
         grunnlagReferanse = "SJAB-REF001",
+        vedtakId = 0,
         grunnlagType = "SJABLON",
         grunnlagInnhold = ObjectMapper().readTree(
           """
@@ -103,6 +107,7 @@ class TestUtil {
     private fun byggStonadsendringListe() = listOf(
       OpprettKomplettStonadsendringRequest(
         stonadType = "BIDRAG",
+        vedtakId = 0,
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",
@@ -112,6 +117,7 @@ class TestUtil {
           OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-01-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
+            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
@@ -130,6 +136,7 @@ class TestUtil {
           OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-07-01"),
             periodeTilDato = LocalDate.parse("2020-01-01"),
+            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
@@ -152,6 +159,7 @@ class TestUtil {
       ),
       OpprettKomplettStonadsendringRequest(
         stonadType = "FORSKUDD",
+        vedtakId = 0,
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",
@@ -161,6 +169,7 @@ class TestUtil {
           OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-06-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
+            stonadsendringId = 0,
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
@@ -176,6 +185,7 @@ class TestUtil {
           OpprettKomplettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-08-01"),
             periodeTilDato = LocalDate.parse("2019-09-01"),
+            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
@@ -193,6 +203,7 @@ class TestUtil {
 
     private fun byggEngangsbelopListe() = listOf(
       OpprettKomplettEngangsbelopRequest(
+        vedtakId = 0,
         lopenr = 1,
         endrerEngangsbelopId = null,
         type = "SAERTILSKUDD",
@@ -215,6 +226,7 @@ class TestUtil {
         )
       ),
       OpprettKomplettEngangsbelopRequest(
+        vedtakId = 0,
         lopenr = 2,
         endrerEngangsbelopId = 1,
         type = "SAERTILSKUDD",
@@ -240,10 +252,12 @@ class TestUtil {
 
     private fun byggBehandlingsreferanseListe() = listOf(
       OpprettBehandlingsreferanseRequest(
+        vedtakId = 0,
         kilde = "Bisys",
         referanse = "Bisysreferanse01"
         ),
       OpprettBehandlingsreferanseRequest(
+        vedtakId = 0,
         kilde = "Bisys",
         referanse = "Bisysreferanse02"
       )

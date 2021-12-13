@@ -2,31 +2,38 @@ package no.nav.bidrag.vedtak.api.stonadsendring
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 import kotlin.reflect.full.memberProperties
 
 @Schema
 data class OpprettStonadsendringRequest(
 
   @Schema(description = "Stønadstype")
-  val stonadType: String = "",
+  @NotBlank
+  val stonadType: String,
 
   @Schema(description = "Vedtak-id")
-  val vedtakId: Int = 0,
+  @Min(0)
+  val vedtakId: Int,
 
   @Schema(description = "Referanse til sak")
-  val sakId: String? = null,
+  val sakId: String?,
 
   @Schema(description = "Søknadsid, referanse til batchkjøring, fritekst")
-  val behandlingId: String? = null,
+  val behandlingId: String?,
 
   @Schema(description = "Id til den som skal betale bidraget")
-  val skyldnerId: String = "",
+  @NotBlank
+  val skyldnerId: String,
 
   @Schema(description = "Id til den som krever bidraget")
-  val kravhaverId: String = "",
+  @NotBlank
+  val kravhaverId: String,
 
   @Schema(description = "Id til den som mottar bidraget")
-  val mottakerId: String = ""
+  @NotBlank
+  val mottakerId: String
 )
 
 fun OpprettStonadsendringRequest.toStonadsendringDto() = with(::StonadsendringDto) {

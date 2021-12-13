@@ -2,6 +2,7 @@ package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
@@ -39,7 +40,9 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelser når en stønadsendring er del av request`() {
-    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(stonadsendringListe = listOf(
+    hendelserService.opprettHendelse(OpprettKomplettVedtakRequest(
+      grunnlagListe = listOf(OpprettGrunnlagRequest("1", 0, "1", )),
+      stonadsendringListe = listOf(
       OpprettKomplettStonadsendringRequest()
     )), 1, LocalDateTime.now())
 
