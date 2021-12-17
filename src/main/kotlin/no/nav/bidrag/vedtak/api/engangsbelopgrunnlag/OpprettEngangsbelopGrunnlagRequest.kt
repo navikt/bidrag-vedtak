@@ -10,6 +10,7 @@ import kotlin.reflect.full.memberProperties
 data class OpprettEngangsbelopGrunnlagRequest(
 
   @Schema(description ="Engangsbelop-id")
+  @Min(0)
   val engangsbelopId: Int,
 
   @Schema(description ="grunnlag-id")
