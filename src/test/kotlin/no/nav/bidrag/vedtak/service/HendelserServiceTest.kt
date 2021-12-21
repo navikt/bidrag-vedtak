@@ -9,6 +9,7 @@ import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequ
 import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.model.VedtakHendelse
+import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -43,17 +44,7 @@ class HendelserServiceTest {
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
-        stonadsendringListe = listOf(
-          OpprettKomplettStonadsendringRequest(
-            "A", 1, "B", "C", "D", "E", "F",
-            listOf(
-              OpprettKomplettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
-              )
-            )
-          )
-        ),
+        stonadsendringListe = null,
         engangsbelopListe = listOf(
           OpprettKomplettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
@@ -61,8 +52,7 @@ class HendelserServiceTest {
             listOf(OpprettGrunnlagReferanseRequest("A"))
           )
         ),
-        behandlingsreferanseListe = emptyList()
-      ), 1, LocalDateTime.now()
+        behandlingsreferanseListe = null), 1, LocalDateTime.now()
     )
 
     verify(vedtakEventProducerMock, never()).publish(anyOrNull())
@@ -70,7 +60,7 @@ class HendelserServiceTest {
 
   @Test
   @Suppress("NonAsciiCharacters")
-  fun `skal opprette en hendelser når en stønadsendring er del av request`() {
+  fun `skal opprette en hendelse når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
       OpprettKomplettVedtakRequest(
         saksbehandlerId = "ABCDEFG",
@@ -123,9 +113,10 @@ class HendelserServiceTest {
 
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")
-      )
-    )
+        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
+          valutakode = "NOK", resultatkode = "A"))))
   }
 
   @Test
@@ -183,9 +174,10 @@ class HendelserServiceTest {
     )
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        skyldnerId = "1", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200")
-      )
-    )
+        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
+        valutakode = "NOK", resultatkode = "A"))))
   }
 
 }

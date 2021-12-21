@@ -26,17 +26,17 @@ data class OpprettKomplettVedtakRequest(
 
   @Schema(description = "Liste over alle grunnlag som inngår i vedtaket")
   @field:Valid
-  val grunnlagListe: List<OpprettGrunnlagRequest>,
+  val grunnlagListe: List<OpprettGrunnlagRequest>?,
 
   @Schema(description = "Liste over alle stønadsendringer som inngår i vedtaket")
   @field:Valid
-  val stonadsendringListe: List<OpprettKomplettStonadsendringRequest>,
+  val stonadsendringListe: List<OpprettKomplettStonadsendringRequest>?,
 
   @Schema(description = "Liste over alle engangsbeløp som inngår i vedtaket")
   @field:Valid
-  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest>,
+  val engangsbelopListe: List<OpprettKomplettEngangsbelopRequest>?,
 
   @Schema(description = "Liste med referanser til alle behandlinger som ligger som grunnlag til vedtaket")
   @field:Valid
-  val behandlingsreferanseListe: List<OpprettBehandlingsreferanseRequest>
+  val behandlingsreferanseListe: List<OpprettBehandlingsreferanseRequest>?
 )

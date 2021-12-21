@@ -154,23 +154,25 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     var lopenr: Int = 0
 
     // Grunnlag
-    vedtakRequest.grunnlagListe.forEach {
+    vedtakRequest.grunnlagListe?.forEach {
       val opprettetGrunnlag = opprettGrunnlag(it, opprettetVedtak.vedtakId)
       grunnlagIdRefMap[it.grunnlagReferanse] = opprettetGrunnlag.grunnlagId
     }
 
     // Stønadsendring
-    vedtakRequest.stonadsendringListe.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
+    vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
 
     // Engangsbelop
-    vedtakRequest.engangsbelopListe.forEach {
+    vedtakRequest.engangsbelopListe?.forEach {
       lopenr ++
       opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
 
     // Behandlingsreferanse
-    vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak.vedtakId) }
+    vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak.vedtakId) }
 
-    hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
+    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true) {
+      hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
+    }
 
     return opprettetVedtak.vedtakId
   }
