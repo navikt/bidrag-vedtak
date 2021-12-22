@@ -3,7 +3,10 @@
 # Profiles: All
 #
 ####################################################################
-
+springdoc:
+  swagger-ui:
+    path: /
+    
 management:
   endpoints:
     web:
