@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.ISSUER
-import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
-  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtak")
   @ApiResponses(
     value = [
-      ApiResponse(responseCode = "200", description =  "Komplett vedtak opprettet"),
+      ApiResponse(responseCode = "200", description =  "Vedtak opprettet"),
       ApiResponse(responseCode = "400", description =  "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
       ApiResponse(responseCode = "401", description =  "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
       ApiResponse(responseCode = "500", description =  "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
@@ -36,15 +36,15 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettKomplettVedtak(@RequestBody request: OpprettKomplettVedtakRequest): ResponseEntity<Int>? {
-    val komplettVedtakOpprettet = vedtakService.opprettKomplettVedtak(request)
-    LOGGER.info("Vedtak med id $komplettVedtakOpprettet er opprettet")
-    return ResponseEntity(komplettVedtakOpprettet, HttpStatus.OK)
+  fun opprettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<Int>? {
+    val vedtakOpprettet = vedtakService.opprettVedtak(request)
+    LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
+    return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
   }
 
 
   @GetMapping("$HENT_VEDTAK/{vedtakId}")
-  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et komplett vedtak")
+  @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description =  "Vedtak funnet"),
@@ -56,10 +56,10 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun hentKomplettVedtak(@PathVariable vedtakId: Int): ResponseEntity<HentKomplettVedtakResponse> {
-    val komplettVedtakFunnet = vedtakService.hentKomplettVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble funnet: $komplettVedtakFunnet")
-    return ResponseEntity(komplettVedtakFunnet, HttpStatus.OK)
+  fun hentVedtak(@PathVariable vedtakId: Int): ResponseEntity<HentVedtakResponse> {
+    val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
+    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
+    return ResponseEntity(vedtakFunnet, HttpStatus.OK)
   }
 
   companion object {

@@ -39,14 +39,3 @@ fun OpprettGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
         }
     })
 }
-
-fun OpprettGrunnlagRequest.toGrunnlagDto() = with(::GrunnlagDto) {
-    val propertiesByName = OpprettGrunnlagRequest::class.memberProperties.associateBy { it.name }
-    callBy(parameters.associateWith { parameter ->
-        when (parameter.name) {
-            GrunnlagDto::grunnlagId.name -> 0
-            GrunnlagDto::grunnlagInnhold.name -> grunnlagInnhold.toString()
-            else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
-        }
-    })
-}

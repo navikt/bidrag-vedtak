@@ -4,8 +4,7 @@ import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakLocal
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
-import no.nav.bidrag.vedtak.api.vedtak.HentKomplettVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
@@ -82,9 +81,6 @@ class VedtakControllerTest {
   @LocalServerPort
   private val port = 0
 
-/*  @Value("\${server.servlet.context-path}")
-  private val contextPath: String? = null*/
-
   private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
 
   @BeforeEach
@@ -106,12 +102,12 @@ class VedtakControllerTest {
   }
 
   @Test
-  fun `skal opprette nytt komplett vedtak`() {
+  fun `skal opprette nytt vedtak`() {
     // Oppretter ny forekomst
     val response = securedTestRestTemplate.exchange(
-      fullUrlForNyttKomplettVedtak(),
+      fullUrlForNyttVedtak(),
       HttpMethod.POST,
-      byggKomplettVedtakRequest(),
+      byggVedtakRequest(),
       Int::class.java
     )
 
@@ -123,15 +119,15 @@ class VedtakControllerTest {
   }
 
   @Test
-  fun `skal opprette nytt komplett vedtak med input fra fil`() {
+  fun `skal opprette nytt vedtak med input fra fil`() {
 
     // Bygger request
-    val filnavn = "src/test/resources/testfiler/opprett_nytt_komplett_vedtak_request_eksempel1.json"
+    val filnavn = "src/test/resources/testfiler/opprett_nytt_vedtak_request_eksempel1.json"
     val request = lesFilOgByggRequest(filnavn)
 
     // Oppretter ny forekomst
     val opprettResponse = securedTestRestTemplate.exchange(
-      fullUrlForNyttKomplettVedtak(),
+      fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
       Int::class.java
@@ -148,16 +144,16 @@ class VedtakControllerTest {
   @Disabled
   // TODO Disablet denne testen, fordi den feiler pga JsonRawValue-annotasjonen i GrunnlagResponse. Testen fungerer hvis denne annotasjonen
   // TODO fjernes, men da vises escape-karakterer ved test i Swagger, så antar annotasjonen må være der
-  fun `skal hente komplette data for et vedtak`() {
+  fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = vedtakService.opprettKomplettVedtak(TestUtil.byggKomplettVedtakRequest())
+    val nyttVedtakOpprettet = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForSokKomplettVedtak()}/${nyttVedtakOpprettet}",
+      "${fullUrlForHentVedtak()}/${nyttVedtakOpprettet}",
       HttpMethod.GET,
       null,
-      HentKomplettVedtakResponse::class.java
+      HentVedtakResponse::class.java
     )
 
     assertAll(
@@ -169,15 +165,15 @@ class VedtakControllerTest {
   }
 
   @Test
-  fun `skal opprette nytt komplett vedtak med engangsbelop med input fra fil`() {
+  fun `skal opprette nytt vedtak med engangsbelop med input fra fil`() {
 
     // Bygger request
-    val filnavn = "src/test/resources/testfiler/opprett_nytt_komplett_vedtak_request_med_engangsbelop.json"
+    val filnavn = "src/test/resources/testfiler/opprett_nytt_vedtak_request_med_engangsbelop.json"
     val request = lesFilOgByggRequest(filnavn)
 
     // Oppretter ny forekomst
     val opprettResponse = securedTestRestTemplate.exchange(
-      fullUrlForNyttKomplettVedtak(),
+      fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
       Int::class.java
@@ -190,11 +186,11 @@ class VedtakControllerTest {
     )
   }
 
-  private fun fullUrlForNyttKomplettVedtak(): String {
+  private fun fullUrlForNyttVedtak(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
   }
 
-  private fun fullUrlForSokKomplettVedtak(): String {
+  private fun fullUrlForHentVedtak(): String {
     return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
   }
 
@@ -202,12 +198,8 @@ class VedtakControllerTest {
     return "http://localhost:$port"
   }
 
-  private fun byggRequest(): HttpEntity<OpprettVedtakRequest> {
-    return initHttpEntity(OpprettVedtakRequest(saksbehandlerId = "TEST", enhetId = "1111"))
-  }
-
-  private fun byggKomplettVedtakRequest(): HttpEntity<OpprettKomplettVedtakRequest> {
-    return initHttpEntity(TestUtil.byggKomplettVedtakRequest())
+  private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequest> {
+    return initHttpEntity(TestUtil.byggVedtakRequest())
   }
 
   // Les inn fil med request-data (json)

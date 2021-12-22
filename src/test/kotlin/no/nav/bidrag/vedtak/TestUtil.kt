@@ -2,12 +2,12 @@ package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
-import no.nav.bidrag.vedtak.api.engangsbelop.OpprettKomplettEngangsbelopRequest
+import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
-import no.nav.bidrag.vedtak.api.periode.OpprettKomplettPeriodeRequest
-import no.nav.bidrag.vedtak.api.stonadsendring.OpprettKomplettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
+import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
@@ -24,7 +24,7 @@ class TestUtil {
 
   companion object {
 
-    fun byggKomplettVedtakRequest() = OpprettKomplettVedtakRequest(
+    fun byggVedtakRequest() = OpprettVedtakRequest(
       saksbehandlerId = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
@@ -105,7 +105,7 @@ class TestUtil {
     )
 
     private fun byggStonadsendringListe() = listOf(
-      OpprettKomplettStonadsendringRequest(
+      OpprettStonadsendringRequest(
         stonadType = "BIDRAG",
         vedtakId = 0,
         sakId = "SAK-001",
@@ -114,7 +114,7 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettKomplettPeriodeRequest(
+          OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-01-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             stonadsendringId = 0,
@@ -133,7 +133,7 @@ class TestUtil {
               )
             )
           ),
-          OpprettKomplettPeriodeRequest(
+          OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-07-01"),
             periodeTilDato = LocalDate.parse("2020-01-01"),
             stonadsendringId = 0,
@@ -157,7 +157,7 @@ class TestUtil {
           )
         )
       ),
-      OpprettKomplettStonadsendringRequest(
+      OpprettStonadsendringRequest(
         stonadType = "FORSKUDD",
         vedtakId = 0,
         sakId = "SAK-001",
@@ -166,7 +166,7 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         periodeListe = listOf(
-          OpprettKomplettPeriodeRequest(
+          OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-06-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
             stonadsendringId = 0,
@@ -182,7 +182,7 @@ class TestUtil {
               )
             )
           ),
-          OpprettKomplettPeriodeRequest(
+          OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-08-01"),
             periodeTilDato = LocalDate.parse("2019-09-01"),
             stonadsendringId = 0,
@@ -202,7 +202,7 @@ class TestUtil {
     )
 
     private fun byggEngangsbelopListe() = listOf(
-      OpprettKomplettEngangsbelopRequest(
+      OpprettEngangsbelopRequest(
         vedtakId = 0,
         lopenr = 1,
         endrerEngangsbelopId = null,
@@ -225,7 +225,7 @@ class TestUtil {
           )
         )
       ),
-      OpprettKomplettEngangsbelopRequest(
+      OpprettEngangsbelopRequest(
         vedtakId = 0,
         lopenr = 2,
         endrerEngangsbelopId = 1,

@@ -14,7 +14,7 @@ data class OpprettEngangsbelopGrunnlagRequest(
   val engangsbelopId: Int,
 
   @Schema(description ="grunnlag-id")
-  @NotBlank
+  @Min(0)
   val grunnlagId: Int
 )
 
