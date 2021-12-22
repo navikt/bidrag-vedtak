@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Schema
-data class HentKomplettVedtakResponse(
+data class HentVedtakResponse(
 
   @Schema(description = "Vedtak-id")
   var vedtakId: Int = 0,

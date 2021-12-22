@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.vedtak.OpprettKomplettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.model.VedtakHendelse
 import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
@@ -15,17 +15,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     private val LOGGER = LoggerFactory.getLogger(HendelserService::class.java)
   }
 
-  fun opprettHendelse(request: OpprettKomplettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
-    if (request.stonadsendringListe.isNotEmpty()) {
-      val vedtakHendelser = mapVedtakshendelser(request, vedtakId, opprettetTimestamp)
+  fun opprettHendelse(vedtakRequest: OpprettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
+      val vedtakHendelser = mapVedtakshendelser(vedtakRequest, vedtakId, opprettetTimestamp)
       vedtakHendelser.forEach { vedtakHendelse -> vedtakKafkaEventProducer.publish(vedtakHendelse) }
-    }
   }
 
   private fun mapVedtakshendelser(
-    request: OpprettKomplettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
+    vedtakRequest: OpprettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
     val vedtakshendelser = mutableListOf<VedtakHendelse>()
-    request.stonadsendringListe.forEach {
+    vedtakRequest.stonadsendringListe?.forEach {
       val vedtakHendelsePeriodeListe = mutableListOf<VedtakHendelsePeriode>()
       it.periodeListe.forEach { periode ->
         vedtakHendelsePeriodeListe.add(
@@ -47,7 +45,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
-          opprettetAvSaksbehandlerId = request.saksbehandlerId,
+          opprettetAvSaksbehandlerId = vedtakRequest.saksbehandlerId,
           opprettetTimestamp = opprettetTimestamp,
           periodeListe = vedtakHendelsePeriodeListe
         )

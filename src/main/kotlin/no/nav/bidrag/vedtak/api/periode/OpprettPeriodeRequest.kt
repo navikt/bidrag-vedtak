@@ -1,37 +1,50 @@
 package no.nav.bidrag.vedtak.api.periode
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 import kotlin.reflect.full.memberProperties
 
 @Schema
 data class OpprettPeriodeRequest(
 
   @Schema(description = "Periode fra-og-med-dato")
-  val periodeFomDato: LocalDate = LocalDate.now(),
+  val periodeFomDato: LocalDate,
 
   @Schema(description = "Periode til-dato")
-  val periodeTilDato: LocalDate? = null,
+  val periodeTilDato: LocalDate?,
 
   @Schema(description = "Stonadsendring-id")
-  val stonadsendringId: Int = 0,
+  @Min(0)
+  val stonadsendringId: Int,
 
   @Schema(description = "Beregnet stønadsbeløp")
-  val belop: BigDecimal = BigDecimal.ZERO,
+  @Min(0)
+  val belop: BigDecimal,
 
   @Schema(description = "Valutakoden tilhørende stønadsbeløpet")
-  val valutakode: String = "NOK",
+  @NotBlank
+  val valutakode: String,
 
-  @Schema(description = "Resultatkoden tilhørende  stønadsbeløpet")
-  val resultatkode: String = ""
+  @Schema(description = "Resultatkoden tilhørende stønadsbeløpet")
+  @NotBlank
+  val resultatkode: String,
+
+  @Schema(description = "Liste over alle grunnlag som inngår i perioden")
+  @NotEmpty
+  val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest>
 )
 
-fun OpprettPeriodeRequest.toPeriodeDto() = with(::PeriodeDto) {
+fun OpprettPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
   val propertiesByName = OpprettPeriodeRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      PeriodeDto::stonadsendringId.name -> stonadsendringId
       PeriodeDto::periodeId.name -> 0
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
     }

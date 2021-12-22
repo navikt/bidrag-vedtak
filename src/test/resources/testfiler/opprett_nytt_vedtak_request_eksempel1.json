@@ -1,9 +1,11 @@
 {
   "saksbehandlerId": "X123456",
+  "vedtakDato": null,
   "enhetId": "4812",
   "grunnlagListe": [
     {
       "grunnlagReferanse": "BM-LIGS-19",
+      "vedtakId": 1,
       "grunnlagType": "INNTEKT",
       "grunnlagInnhold": {
         "inntektDatoFraTil": {
@@ -16,6 +18,7 @@
     },
     {
       "grunnlagReferanse": "BM-LIGN-19",
+      "vedtakId": 1,
       "grunnlagType": "INNTEKT",
       "grunnlagInnhold": {
         "inntektDatoFraTil": {
@@ -57,6 +60,7 @@
   "stonadsendringListe": [
     {
       "stonadType": "BIDRAG",
+      "vedtakId": 1,
       "sakId": "SAK-001",
       "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
@@ -66,6 +70,7 @@
         {
           "periodeFomDato": "2019-01-01",
           "periodeTilDato": "2019-07-01",
+          "stonadsendringId": 1,
           "belop": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -84,6 +89,7 @@
         {
           "periodeFomDato": "2019-07-01",
           "periodeTilDato": "2020-01-01",
+          "stonadsendringId": 1,
           "belop": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -105,7 +111,7 @@
       ]
     },
     {
-      "stonadType": "SAERTILSKUDD",
+      "stonadType": "FORSKUDD",
       "sakId": "SAK-001",
       "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
@@ -117,7 +123,7 @@
           "periodeTilDato": "2019-07-01",
           "belop": 4240,
           "valutakode": "NOK",
-          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "resultatkode": "FORSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
             {
               "grunnlagReferanse": "BM-LIGS-19"
@@ -132,7 +138,7 @@
           "periodeTilDato": "2019-09-01",
           "belop": 3410,
           "valutakode": "NOK",
-          "resultatkode": "SAERTILSKUDD_INNVILGET",
+          "resultatkode": "FORSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
             {
               "grunnlagReferanse": "BM-LIGS-19"
