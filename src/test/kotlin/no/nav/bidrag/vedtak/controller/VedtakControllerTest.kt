@@ -1,8 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
-import no.nav.bidrag.vedtak.BidragVedtakLocal
-import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.TEST_PROFILE
+import no.nav.bidrag.vedtak.BidragVedtakTest
+import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
 import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
@@ -17,6 +17,7 @@ import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import no.nav.bidrag.vedtak.service.VedtakService
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertAll
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -42,7 +44,9 @@ import java.nio.file.Paths
 
 @DisplayName("VedtakControllerTest")
 @ActiveProfiles(TEST_PROFILE)
-@SpringBootTest(classes = [BidragVedtakLocal::class], webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [BidragVedtakTest::class], webEnvironment = WebEnvironment.RANDOM_PORT)
+@EnableMockOAuth2Server
+@AutoConfigureWireMock(port = 0)
 class VedtakControllerTest {
 
   @Autowired
@@ -82,6 +86,7 @@ class VedtakControllerTest {
   private val port = 0
 
   private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
+
 
   @BeforeEach
   fun `init`() {

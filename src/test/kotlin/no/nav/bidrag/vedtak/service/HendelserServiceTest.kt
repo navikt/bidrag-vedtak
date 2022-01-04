@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.BidragVedtakLocal
+import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
@@ -23,8 +23,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @DisplayName("HendelserServiceTest")
-@ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
-@SpringBootTest(classes = [BidragVedtakLocal::class])
+@ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
+@SpringBootTest(classes = [BidragVedtakTest::class])
 class HendelserServiceTest {
 
   @Autowired

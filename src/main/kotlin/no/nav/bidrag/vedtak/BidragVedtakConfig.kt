@@ -8,18 +8,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
-import no.nav.bidrag.vedtak.BidragVedtakConfig.OidcTokenManager
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
-import no.nav.security.token.support.core.context.TokenValidationContext
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
-import no.nav.security.token.support.core.jwt.JwtToken
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
-import java.util.*
 
 
 const val LIVE_PROFILE = "live"
@@ -38,6 +34,11 @@ const val LIVE_PROFILE = "live"
 )
 
 class BidragVedtakConfig {
+  companion object {
+
+    @JvmStatic
+    private val LOGGER = LoggerFactory.getLogger(BidragVedtakConfig::class.java)
+  }
 
   @Bean
   fun exceptionLogger(): ExceptionLogger {
@@ -49,7 +50,7 @@ class BidragVedtakConfig {
     return CorrelationIdFilter()
   }
 
-  @Bean
+/*  @Bean
   fun oidcTokenManager(tokenValidationContextHolder: TokenValidationContextHolder?): OidcTokenManager? {
     return OidcTokenManager {
       Optional.ofNullable(tokenValidationContextHolder)
@@ -65,7 +66,7 @@ class BidragVedtakConfig {
           )
         }
     }
-  }
+  }*/
 
   @Bean
   @Profile(LIVE_PROFILE)
@@ -77,9 +78,9 @@ class BidragVedtakConfig {
     kafkaTemplate, objectMapper, topic
   )
 
-  fun interface OidcTokenManager {
+/*  fun interface OidcTokenManager {
     fun hentIdToken(): String?
-  }
+  }*/
 /*
     companion object {
         const val LIVE_PROFILE = "live"

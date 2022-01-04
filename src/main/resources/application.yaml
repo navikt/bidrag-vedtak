@@ -6,7 +6,7 @@
 springdoc:
   swagger-ui:
     path: /
-    
+
 management:
   endpoints:
     web:
@@ -66,29 +66,3 @@ no.nav.security.jwt:
       accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
 ---
-
-####################################################################
-# Profile: test
-#----------------------------
-#
-# Properties for unit testing and local runs.
-# Mocks OIDC.
-#
-####################################################################
-
-spring.config.activate.on-profile: test
-
-no.nav.security.jwt:
-  issuer:
-    aad:
-      discovery_url: http://metadata
-      accepted_audience: aud-localhost
-      cookie_name: localhost-idtoken
-
-spring:
-  config.activate.on-profile: test, local
-  flyway.enabled: false
-  datasource.type: com.zaxxer.hikari.HikariDataSource
-  datasource.url: jdbc:h2:mem:default
-  h2.console.enabled: true
-  jpa.hibernate.hbmddl-auto: create-drop

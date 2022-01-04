@@ -1,0 +1,33 @@
+####################################################################
+# Profile: test
+#----------------------------
+#
+# Properties for unit testing and local runs.
+# Mocks OIDC.
+#
+####################################################################
+
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+      accepted_audience: aud-localhost
+
+spring:
+  config.activate.on-profile: test, local
+  flyway.enabled: false
+  datasource.type: com.zaxxer.hikari.HikariDataSource
+  datasource.url: jdbc:h2:mem:default
+  h2.console.enabled: true
+  jpa.hibernate.hbmddl-auto: create-drop
+
+spring.kafka:
+  properties:
+    schema:
+      registry.url: http://unused-dummy-url
+      security.protocol: PLAINTEXT
+  consumer:
+    group-id: test
+    auto-offset-reset: earliest
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
