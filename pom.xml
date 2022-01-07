@@ -31,7 +31,7 @@
     <nimbus-jose-jwt.version>9.15.2</nimbus-jose-jwt.version>
     <springframework-cloud.version>3.0.4</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.9.2</com.squareup.okhttp3.version>
-    <springdoc-openapi-ui.version>1.6.1</springdoc-openapi-ui.version>
+    <springdoc-openapi-ui.version>1.6.3</springdoc-openapi-ui.version>
 
   </properties>
 
