@@ -134,8 +134,7 @@
       <artifactId>flyway-core</artifactId>
       <scope>compile</scope>
     </dependency>
-
-    <!-- Swagger -->
+    
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-ui</artifactId>

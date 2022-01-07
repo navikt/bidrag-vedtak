@@ -24,6 +24,7 @@ private val LOGGER = LoggerFactory.getLogger(BidragVedtakTestConfig::class.java)
   info = Info(title = "bidrag-vedtak", version = "v1"),
   security = [SecurityRequirement(name = "bearer-key")]
 )
+
 @Profile(TEST_PROFILE, LOCAL_PROFILE)
 class BidragVedtakTestConfig {
 

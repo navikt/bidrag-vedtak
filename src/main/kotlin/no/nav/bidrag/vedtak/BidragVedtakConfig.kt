@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
+import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
+import no.nav.bidrag.commons.web.HttpHeaderRestTemplate
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.slf4j.LoggerFactory
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.context.annotation.Scope
 import org.springframework.kafka.core.KafkaTemplate
 
 
@@ -34,11 +37,6 @@ const val LIVE_PROFILE = "live"
 )
 
 class BidragVedtakConfig {
-  companion object {
-
-    @JvmStatic
-    private val LOGGER = LoggerFactory.getLogger(BidragVedtakConfig::class.java)
-  }
 
   @Bean
   fun exceptionLogger(): ExceptionLogger {
@@ -50,23 +48,13 @@ class BidragVedtakConfig {
     return CorrelationIdFilter()
   }
 
-/*  @Bean
-  fun oidcTokenManager(tokenValidationContextHolder: TokenValidationContextHolder?): OidcTokenManager? {
-    return OidcTokenManager {
-      Optional.ofNullable(tokenValidationContextHolder)
-        .map { obj: TokenValidationContextHolder -> obj.tokenValidationContext }
-        .map { tokenValidationContext: TokenValidationContext ->
-          tokenValidationContext.getJwtTokenAsOptional(ISSUER)
-        }
-        .map { obj: Optional<JwtToken?> -> obj.get() }
-        .map { obj: JwtToken -> obj.tokenAsString }
-        .orElseThrow {
-          IllegalStateException(
-            "Kunne ikke videresende Bearer token"
-          )
-        }
-    }
-  }*/
+  @Bean
+  @Scope("prototype")
+  fun restTemplate(): HttpHeaderRestTemplate {
+    val httpHeaderRestTemplate = HttpHeaderRestTemplate()
+    httpHeaderRestTemplate.addHeaderGenerator(CorrelationIdFilter.CORRELATION_ID_HEADER) { CorrelationId.fetchCorrelationIdForThread() }
+    return httpHeaderRestTemplate
+  }
 
   @Bean
   @Profile(LIVE_PROFILE)
