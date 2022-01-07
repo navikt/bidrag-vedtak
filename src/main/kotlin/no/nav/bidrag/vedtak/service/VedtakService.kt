@@ -36,6 +36,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
   fun hentVedtak(vedtakId: Int): HentVedtakResponse {
     val vedtakDto = persistenceService.hentVedtak(vedtakId)
+    LOGGER.info("Følgende vedtakDto ble funnet: $vedtakDto")
     val grunnlagResponseListe = ArrayList<HentGrunnlagResponse>()
     val grunnlagDtoListe = persistenceService.hentAlleGrunnlagForVedtak(vedtakDto.vedtakId)
     grunnlagDtoListe.forEach {
@@ -43,8 +44,16 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         HentGrunnlagResponse(it.grunnlagId, it.grunnlagReferanse, it.grunnlagType, it.grunnlagInnhold)
       )
     }
+    LOGGER.info("Følgende grunnlagDtoListe ble funnet: $grunnlagDtoListe")
+
     val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
+
+    LOGGER.info("Følgende stonadsendringDtoListe ble funnet: $stonadsendringDtoListe")
+
     val engangsbelopDtoListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakDto.vedtakId)
+
+    LOGGER.info("Følgende engangsbelopDtoListe ble funnet: $engangsbelopDtoListe")
+
     val behandlingsreferanseResponseListe = ArrayList<HentBehandlingsreferanseResponse>()
     val behandlingsreferanseDtoListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtakDto.vedtakId)
     behandlingsreferanseDtoListe.forEach {
@@ -52,6 +61,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         HentBehandlingsreferanseResponse(it.kilde, it.referanse)
       )
     }
+
+    LOGGER.info("Følgende behandlingsreferanseResponseListe ble funnet: $behandlingsreferanseResponseListe")
+
     return HentVedtakResponse(
       vedtakDto.vedtakId,
       vedtakDto.saksbehandlerId,
