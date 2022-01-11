@@ -6,6 +6,7 @@ import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import java.math.BigDecimal
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
 import kotlin.reflect.full.memberProperties
 
@@ -40,15 +41,19 @@ data class OpprettEngangsbelopRequest(
   val mottakerId: String,
 
   @Schema(description ="Beregnet engangsbeløp")
+  @Min(0)
   val belop: BigDecimal,
 
   @Schema(description ="Valutakoden tilhørende engangsbeløpet")
+  @NotBlank
   val valutakode: String,
 
   @Schema(description ="Resultatkoden tilhørende engangsbeløpet")
+  @NotBlank
   val resultatkode: String,
 
   @Schema(description ="Liste over alle grunnlag som inngår i engangsbeløpet")
+  @NotEmpty
   val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest>
 )
 
