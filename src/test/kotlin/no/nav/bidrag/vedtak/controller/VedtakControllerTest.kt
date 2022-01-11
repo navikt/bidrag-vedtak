@@ -107,7 +107,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak`() {
     // Oppretter ny forekomst
     val response = securedTestRestTemplate.exchange(
@@ -125,7 +124,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak med input fra fil`() {
 
     // Bygger request
@@ -172,7 +170,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak med engangsbelop med input fra fil`() {
 
     // Bygger request
