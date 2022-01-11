@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.BidragVedtakLocal
+import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
@@ -9,6 +9,7 @@ import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.model.VedtakHendelse
 import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.never
@@ -23,8 +24,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @DisplayName("HendelserServiceTest")
-@ActiveProfiles(BidragVedtakLocal.TEST_PROFILE)
-@SpringBootTest(classes = [BidragVedtakLocal::class])
+@ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
+@SpringBootTest(classes = [BidragVedtakTest::class])
+@EnableMockOAuth2Server
 class HendelserServiceTest {
 
   @Autowired

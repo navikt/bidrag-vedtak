@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @RestController
 @ProtectedWithClaims(issuer = ISSUER)
@@ -36,7 +38,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettVedtak(@RequestBody request: OpprettVedtakRequest): ResponseEntity<Int>? {
+  fun opprettVedtak(@Valid @RequestBody request: OpprettVedtakRequest): ResponseEntity<Int>? {
     val vedtakOpprettet = vedtakService.opprettVedtak(request)
     LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
     return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
@@ -56,7 +58,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun hentVedtak(@PathVariable vedtakId: Int): ResponseEntity<HentVedtakResponse> {
+  fun hentVedtak(@PathVariable @NotNull vedtakId: Int): ResponseEntity<HentVedtakResponse> {
     val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
     LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
     return ResponseEntity(vedtakFunnet, HttpStatus.OK)

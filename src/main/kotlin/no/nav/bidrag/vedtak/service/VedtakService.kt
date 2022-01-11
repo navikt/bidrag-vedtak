@@ -52,6 +52,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         HentBehandlingsreferanseResponse(it.kilde, it.referanse)
       )
     }
+
     return HentVedtakResponse(
       vedtakDto.vedtakId,
       vedtakDto.saksbehandlerId,
