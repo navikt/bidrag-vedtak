@@ -17,8 +17,8 @@ data class HentVedtakResponse(
   @Schema(description = "Vedtak-type")
   var vedtakType: String = "",
 
-  @Schema(description = "Id til saksbehandler som oppretter vedtaket")
-  var saksbehandlerId: String = "",
+  @Schema(description = "Id til saksbehandler/batchjobb evt annet som opprettet vedtaket")
+  var opprettetAv: String = "",
 
   @Schema(description = "Dato vedtaket er fattet")
   val vedtakDato: LocalDate? = null,

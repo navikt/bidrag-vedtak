@@ -15,8 +15,8 @@ data class VedtakDto(
   @Schema(description = "Vedtak-type. Typisk manuelt eller en batchjobb")
   val vedtakType: String = "",
 
-  @Schema(description = "Id til saksbehandler som oppretter vedtaket")
-  val saksbehandlerId: String = "",
+  @Schema(description = "Id til saksbehandler/batchjobb evt. annet som oppretter vedtaket")
+  val opprettetAv: String = "",
 
   @Schema(description = "Dato vedtaket er fattet")
   val vedtakDato: LocalDate? = null,

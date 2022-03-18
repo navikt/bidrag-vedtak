@@ -16,9 +16,9 @@ data class OpprettVedtakRequest(
   @Schema(description = "Hva slags type vedtak som er fattet")
   val vedtakType: String,
 
-  @Schema(description = "Id til saksbehandler som oppretter vedtaket")
+  @Schema(description = "Id til saksbehandler/batchjobb evt. annet som oppretter vedtaket")
   @Size(min = 7)
-  val saksbehandlerId: String,
+  val opprettetAv: String,
 
   @Schema(description = "Dato vedtaket er fattet")
   val vedtakDato: LocalDate?,

@@ -56,7 +56,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     return HentVedtakResponse(
       vedtakDto.vedtakId,
       vedtakDto.vedtakType,
-      vedtakDto.saksbehandlerId,
+      vedtakDto.opprettetAv,
       vedtakDto.vedtakDato,
       vedtakDto.enhetId,
       vedtakDto.opprettetTimestamp,
@@ -143,7 +143,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Opprett vedtak
     val vedtakDto = VedtakDto(
       vedtakType = vedtakRequest.vedtakType,
-      saksbehandlerId = vedtakRequest.saksbehandlerId,
+      opprettetAv = vedtakRequest.opprettetAv,
       vedtakDato = vedtakRequest.vedtakDato,
       enhetId = vedtakRequest.enhetId)
     val opprettetVedtak = persistenceService.opprettVedtak(vedtakDto)

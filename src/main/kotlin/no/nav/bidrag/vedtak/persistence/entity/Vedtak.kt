@@ -28,7 +28,7 @@ data class Vedtak (
   val vedtakDato: LocalDate? = null,
 
   @Column(nullable = false, name = "opprettet_av")
-  val saksbehandlerId: String = "",
+  val opprettetAv: String = "",
 
   @Column(nullable = false, name = "opprettet_timestamp")
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()

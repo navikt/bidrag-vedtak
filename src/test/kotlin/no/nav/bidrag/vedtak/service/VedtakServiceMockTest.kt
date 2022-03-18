@@ -117,7 +117,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(vedtakDto).isNotNull() },
       Executable { assertThat(vedtakDto.vedtakType).isEqualTo(vedtak.vedtakType) },
       Executable { assertThat(vedtakDto.enhetId).isEqualTo(vedtak.enhetId) },
-      Executable { assertThat(vedtakDto.saksbehandlerId).isEqualTo(vedtak.saksbehandlerId) },
+      Executable { assertThat(vedtakDto.opprettetAv).isEqualTo(vedtak.opprettetAv) },
 
       // Sjekk StonadsendringDto
       Executable { assertThat(stonadsendringDtoListe).isNotNull() },

@@ -12,7 +12,7 @@ data class VedtakHendelse(
   val skyldnerId: String,
   val kravhaverId: String,
   val mottakerId: String,
-  val opprettetAvSaksbehandlerId: String,
+  val opprettetAv: String,
   val opprettetTimestamp: LocalDateTime,
   val periodeListe: List<VedtakHendelsePeriode>
 ) {
@@ -27,5 +27,5 @@ data class Sporingsdata(val correlationId: String) {
 
   @Suppress("unused") // brukes av jackson
   val opprettet: LocalDateTime = LocalDateTime.now()
-  var saksbehandlerId: String? = null
+  var opprettetAv: String? = null
 }

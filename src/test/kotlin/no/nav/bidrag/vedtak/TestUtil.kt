@@ -26,7 +26,7 @@ class TestUtil {
 
     fun byggVedtakRequest() = OpprettVedtakRequest(
       vedtakType = "Manuelt",
-      saksbehandlerId = "X123456",
+      opprettetAv = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
       grunnlagListe = byggGrunnlagListe(),
@@ -269,13 +269,13 @@ class TestUtil {
       vedtakId: Int = (1..100).random(),
       vedtakType: String = "Manuelt",
       enhetId: String = "4812",
-      saksbehandlerId: String = "X123456",
+      opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
     ) = VedtakDto(
       vedtakId = vedtakId,
       vedtakType = vedtakType,
       enhetId = enhetId,
-      saksbehandlerId = saksbehandlerId,
+      opprettetAv = opprettetAv,
       opprettetTimestamp = opprettetTimestamp!!
     )
 

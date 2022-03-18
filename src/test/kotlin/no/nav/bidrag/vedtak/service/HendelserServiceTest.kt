@@ -41,7 +41,7 @@ class HendelserServiceTest {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
         vedtakType = "Manuelt",
-        saksbehandlerId = "ABCDEFG",
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -65,7 +65,7 @@ class HendelserServiceTest {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
         vedtakType = "Manuelt",
-        saksbehandlerId = "ABCDEFG",
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -94,7 +94,7 @@ class HendelserServiceTest {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
         vedtakType = "Manuelt",
-        saksbehandlerId = "ABCDEFG",
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -117,7 +117,7 @@ class HendelserServiceTest {
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
         vedtakId = 1, vedtakType = "Manuelt", stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
-        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        opprettetAv = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
           valutakode = "NOK", resultatkode = "A"))))
   }
@@ -128,7 +128,7 @@ class HendelserServiceTest {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
         vedtakType = "Manuelt",
-        saksbehandlerId = "ABCDEFG",
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -152,7 +152,7 @@ class HendelserServiceTest {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
         vedtakType = "Manuelt",
-        saksbehandlerId = "ABCDEFG",
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -180,7 +180,7 @@ class HendelserServiceTest {
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
         vedtakId = 1, vedtakType = "Manuelt", stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
-        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        opprettetAv = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
         valutakode = "NOK", resultatkode = "A"))))
   }
