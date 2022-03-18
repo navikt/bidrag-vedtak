@@ -40,6 +40,7 @@ class HendelserServiceTest {
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
+        vedtakType = "Manuelt",
         saksbehandlerId = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
@@ -63,6 +64,7 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
+        vedtakType = "Manuelt",
         saksbehandlerId = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
@@ -91,6 +93,7 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse med skyldner-id`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
+        vedtakType = "Manuelt",
         saksbehandlerId = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
@@ -113,7 +116,7 @@ class HendelserServiceTest {
 
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        vedtakId = 1, vedtakType = "Manuelt", stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
         opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
           valutakode = "NOK", resultatkode = "A"))))
@@ -124,6 +127,7 @@ class HendelserServiceTest {
   fun `skal ikke opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
+        vedtakType = "Manuelt",
         saksbehandlerId = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
@@ -147,6 +151,7 @@ class HendelserServiceTest {
   fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
+        vedtakType = "Manuelt",
         saksbehandlerId = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
@@ -174,7 +179,7 @@ class HendelserServiceTest {
     )
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        vedtakId = 1, vedtakType = "Manuelt", stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
         opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
         valutakode = "NOK", resultatkode = "A"))))

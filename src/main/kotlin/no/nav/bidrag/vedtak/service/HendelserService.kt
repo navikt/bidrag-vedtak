@@ -40,6 +40,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       vedtakshendelser.add(
         VedtakHendelse(
           vedtakId = vedtakId,
+          vedtakType = vedtakRequest.vedtakType,
           stonadType = it.stonadType,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,

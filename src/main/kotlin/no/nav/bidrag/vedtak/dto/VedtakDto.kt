@@ -12,6 +12,9 @@ data class VedtakDto(
   @Schema(description = "Vedtak-id")
   val vedtakId: Int = 0,
 
+  @Schema(description = "Vedtak-type. Typisk manuelt eller en batchjobb")
+  val vedtakType: String = "",
+
   @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   val saksbehandlerId: String = "",
 

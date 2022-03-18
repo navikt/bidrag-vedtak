@@ -14,6 +14,9 @@ data class HentVedtakResponse(
   @Schema(description = "Vedtak-id")
   var vedtakId: Int = 0,
 
+  @Schema(description = "Vedtak-type")
+  var vedtakType: String = "",
+
   @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   var saksbehandlerId: String = "",
 

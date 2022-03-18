@@ -18,6 +18,9 @@ data class Vedtak (
   @Column(name = "vedtak_id")
   val vedtakId: Int = 0,
 
+  @Column(nullable = false, name = "vedtak_type")
+  val vedtakType: String = "",
+
   @Column(nullable = false, name = "enhet_id")
   val enhetId: String = "",
 

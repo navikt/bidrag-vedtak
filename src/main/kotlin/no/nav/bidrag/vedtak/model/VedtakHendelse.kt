@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 data class VedtakHendelse(
   val vedtakId: Int,
+  val vedtakType: String,
   val stonadType: String,
   val sakId: String?,
   val skyldnerId: String,

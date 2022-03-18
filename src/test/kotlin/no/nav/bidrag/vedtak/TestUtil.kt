@@ -25,6 +25,7 @@ class TestUtil {
   companion object {
 
     fun byggVedtakRequest() = OpprettVedtakRequest(
+      vedtakType = "Manuelt",
       saksbehandlerId = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
@@ -266,11 +267,13 @@ class TestUtil {
 
     fun byggVedtakDto(
       vedtakId: Int = (1..100).random(),
+      vedtakType: String = "Manuelt",
       enhetId: String = "4812",
       saksbehandlerId: String = "X123456",
       opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
     ) = VedtakDto(
       vedtakId = vedtakId,
+      vedtakType = vedtakType,
       enhetId = enhetId,
       saksbehandlerId = saksbehandlerId,
       opprettetTimestamp = opprettetTimestamp!!

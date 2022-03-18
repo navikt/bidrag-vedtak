@@ -13,6 +13,9 @@ import javax.validation.constraints.Size
 @Schema
 data class OpprettVedtakRequest(
 
+  @Schema(description = "Hva slags type vedtak som er fattet")
+  val vedtakType: String,
+
   @Schema(description = "Id til saksbehandler som oppretter vedtaket")
   @Size(min = 7)
   val saksbehandlerId: String,

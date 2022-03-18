@@ -115,6 +115,7 @@ class VedtakServiceMockTest {
 
       // Sjekk VedtakDto
       Executable { assertThat(vedtakDto).isNotNull() },
+      Executable { assertThat(vedtakDto.vedtakType).isEqualTo(vedtak.vedtakType) },
       Executable { assertThat(vedtakDto.enhetId).isEqualTo(vedtak.enhetId) },
       Executable { assertThat(vedtakDto.saksbehandlerId).isEqualTo(vedtak.saksbehandlerId) },
 
@@ -280,6 +281,7 @@ class VedtakServiceMockTest {
     assertAll(
       Executable { assertThat(vedtakFunnet).isNotNull() },
       Executable { assertThat(vedtakFunnet.vedtakId).isEqualTo(1) },
+      Executable { assertThat(vedtakFunnet.vedtakType).isEqualTo("Manuelt") },
       Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.grunnlagListe[0].grunnlagReferanse).isEqualTo("REF1") },
       Executable { assertThat(vedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
