@@ -1,10 +1,10 @@
 {
-  "vedtakType": "Manuelt",
+  "vedtakType": "MANUELT",
   "opprettetAv": "X123456",
   "enhetId": "4812",
   "grunnlagListe": [
     {
-      "grunnlagReferanse": "BM-LIGS-19",
+      "referanse": "BM-LIGS-19",
       "grunnlagType": "INNTEKT",
       "grunnlagInnhold": {
         "inntektDatoFraTil": {
@@ -16,7 +16,7 @@
       }
     },
     {
-      "grunnlagReferanse": "BM-LIGN-19",
+      "referanse": "BM-LIGN-19",
       "grunnlagType": "INNTEKT",
       "grunnlagInnhold": {
         "inntektDatoFraTil": {
@@ -28,7 +28,7 @@
       }
     },
     {
-      "grunnlagReferanse": "BP-SKATTEKLASSE-19",
+      "referanse": "BP-SKATTEKLASSE-19",
       "grunnlagType": "SKATTEKLASSE",
       "grunnlagInnhold": {
         "skatteklasseDatoFraTil": {
@@ -39,7 +39,7 @@
       }
     },
     {
-      "grunnlagReferanse": "SJAB-REF001",
+      "referanse": "SJAB-REF001",
       "grunnlagType": "SJABLON",
       "grunnlagInnhold": {
         "sjablonListe": [
@@ -72,13 +72,13 @@
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19"
+              "referanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "BM-LIGN-19"
+              "referanse": "BM-LIGN-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001"
+              "referanse": "SJAB-REF001"
             }
           ]
         },
@@ -90,16 +90,16 @@
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19"
+              "referanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "BM-LIGN-19"
+              "referanse": "BM-LIGN-19"
             },
             {
-              "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+              "referanse": "BP-SKATTEKLASSE-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001"
+              "referanse": "SJAB-REF001"
             }
           ]
         }
@@ -121,10 +121,10 @@
           "resultatkode": "FORSKUDD_BEREGNET",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19"
+              "referanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001"
+              "referanse": "SJAB-REF001"
             }
           ]
         },
@@ -136,10 +136,10 @@
           "resultatkode": "FORSKUDD_BEREGNET",
           "grunnlagReferanseListe": [
             {
-              "grunnlagReferanse": "BM-LIGS-19"
+              "referanse": "BM-LIGS-19"
             },
             {
-              "grunnlagReferanse": "SJAB-REF001"
+              "referanse": "SJAB-REF001"
             }
           ]
         }
@@ -159,16 +159,16 @@
       "resultatkode": "SAERTISLKUDD BEREGNET",
       "grunnlagReferanseListe": [
         {
-          "grunnlagReferanse": "BM-LIGS-19"
+          "referanse": "BM-LIGS-19"
         },
         {
-          "grunnlagReferanse": "BM-LIGN-19"
+          "referanse": "BM-LIGN-19"
         },
         {
-          "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+          "referanse": "BP-SKATTEKLASSE-19"
         },
         {
-          "grunnlagReferanse": "SJAB-REF001"
+          "referanse": "SJAB-REF001"
         }
       ]
     },
@@ -184,16 +184,16 @@
       "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
       "grunnlagReferanseListe": [
         {
-          "grunnlagReferanse": "BM-LIGS-19"
+          "referanse": "BM-LIGS-19"
         },
         {
-          "grunnlagReferanse": "BM-LIGN-19"
+          "referanse": "BM-LIGN-19"
         },
         {
-          "grunnlagReferanse": "BP-SKATTEKLASSE-19"
+          "referanse": "BP-SKATTEKLASSE-19"
         },
         {
-          "grunnlagReferanse": "SJAB-REF001"
+          "referanse": "SJAB-REF001"
         }
        ]
       }

@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
@@ -14,10 +15,10 @@ import javax.validation.constraints.Size
 data class OpprettVedtakRequest(
 
   @Schema(description = "Hva slags type vedtak som er fattet")
-  val vedtakType: String,
+  val vedtakType: VedtakType,
 
   @Schema(description = "Id til saksbehandler/batchjobb evt. annet som oppretter vedtaket")
-  @Size(min = 7)
+  @Size(min = 5)
   val opprettetAv: String,
 
   @Schema(description = "Dato vedtaket er fattet")

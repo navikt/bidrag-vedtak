@@ -17,7 +17,7 @@ data class OpprettPeriodeRequest(
   val periodeFomDato: LocalDate,
 
   @Schema(description = "Periode til-dato")
-  val periodeTilDato: LocalDate?,
+  val periodeTilDato: LocalDate? = null,
 
   @Schema(description = "Stonadsendring-id")
   @Min(0)

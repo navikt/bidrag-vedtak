@@ -2,20 +2,21 @@ package no.nav.bidrag.vedtak.api.grunnlag
 
 import com.fasterxml.jackson.annotation.JsonRawValue
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 
 @Schema
 data class HentGrunnlagResponse(
 
     @Schema(description = "Grunnlag-id")
-    val grunnlagId: Int = 0,
+    val grunnlagId: Int,
 
     @Schema(description = "Referanse til grunnlaget")
-    val grunnlagReferanse: String = "",
+    val referanse: String,
 
     @Schema(description = "Grunnlagstype")
-    val grunnlagType: String = "",
+    val grunnlagType: GrunnlagType,
 
     @Schema(description = "Innholdet i grunnlaget")
     @JsonRawValue
-    val grunnlagInnhold: String = ""
+    val grunnlagInnhold: String
 )

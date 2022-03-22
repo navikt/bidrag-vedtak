@@ -1,13 +1,15 @@
 package no.nav.bidrag.vedtak.model
 
+import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.commons.CorrelationId
 
 import java.time.LocalDateTime
 
 data class VedtakHendelse(
   val vedtakId: Int,
-  val vedtakType: String,
-  val stonadType: String,
+  val vedtakType: VedtakType,
+  val stonadType: StonadType,
   val sakId: String?,
   val skyldnerId: String,
   val kravhaverId: String,
@@ -17,7 +19,7 @@ data class VedtakHendelse(
   val periodeListe: List<VedtakHendelsePeriode>
 ) {
   val sporing: Sporingsdata = Sporingsdata(
-    CorrelationId.fetchCorrelationIdForThread() ?: CorrelationId.generateTimestamped(stonadType)
+    CorrelationId.fetchCorrelationIdForThread() ?: CorrelationId.generateTimestamped(stonadType.toString())
       .get()
   )
 }

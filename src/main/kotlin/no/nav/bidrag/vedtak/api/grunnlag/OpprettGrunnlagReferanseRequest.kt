@@ -8,5 +8,5 @@ data class OpprettGrunnlagReferanseRequest(
 
     @Schema(description = "Referanse til grunnlaget")
     @NotBlank
-    val grunnlagReferanse: String
+    val referanse: String
 )

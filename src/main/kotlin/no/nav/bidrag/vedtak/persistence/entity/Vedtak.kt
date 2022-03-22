@@ -38,6 +38,7 @@ fun Vedtak.toVedtakDto() = with(::VedtakDto) {
   val propertiesByName = Vedtak::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      VedtakDto::vedtakType.name -> vedtakType.toString()
       else -> propertiesByName[parameter.name]?.get(this@toVedtakDto)
     }
   })

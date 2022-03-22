@@ -1,5 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.enums.GrunnlagType
+import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.toBehandlingsreferanseDto
@@ -40,7 +43,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val grunnlagDtoListe = persistenceService.hentAlleGrunnlagForVedtak(vedtakDto.vedtakId)
     grunnlagDtoListe.forEach {
       grunnlagResponseListe.add(
-        HentGrunnlagResponse(it.grunnlagId, it.grunnlagReferanse, it.grunnlagType, it.grunnlagInnhold)
+        HentGrunnlagResponse(it.grunnlagId, it.referanse, GrunnlagType.valueOf(it.grunnlagType), it.grunnlagInnhold)
       )
     }
     val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
@@ -55,7 +58,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     return HentVedtakResponse(
       vedtakDto.vedtakId,
-      vedtakDto.vedtakType,
+      VedtakType.valueOf(vedtakDto.vedtakType),
       vedtakDto.opprettetAv,
       vedtakDto.vedtakDato,
       vedtakDto.enhetId,
@@ -73,7 +76,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       val periodeDtoListe = persistenceService.hentAllePerioderForStonadsendring(it.stonadsendringId)
       stonadsendringResponseListe.add(
         HentStonadsendringResponse(
-          it.stonadType,
+          StonadType.valueOf(it.stonadType),
           it.sakId,
           it.behandlingId,
           it.skyldnerId,
@@ -93,7 +96,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.periodeId)
       periodeGrunnlagListe.forEach {
         val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.grunnlagReferanse))
+        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.referanse))
       }
       periodeResponseListe.add(
         HentPeriodeResponse(
@@ -116,7 +119,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.engangsbelopId)
       engangsbelopGrunnlagListe.forEach {
         val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.grunnlagReferanse))
+        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.referanse))
       }
       engangsbelopResponseListe.add(
         HentEngangsbelopResponse(
@@ -142,7 +145,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // Opprett vedtak
     val vedtakDto = VedtakDto(
-      vedtakType = vedtakRequest.vedtakType,
+      vedtakType = vedtakRequest.vedtakType.toString(),
       opprettetAv = vedtakRequest.opprettetAv,
       vedtakDato = vedtakRequest.vedtakDato,
       enhetId = vedtakRequest.enhetId)
@@ -152,7 +155,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Grunnlag
     vedtakRequest.grunnlagListe.forEach {
       val opprettetGrunnlag = opprettGrunnlag(it, opprettetVedtak.vedtakId)
-      grunnlagIdRefMap[it.grunnlagReferanse] = opprettetGrunnlag.grunnlagId
+      grunnlagIdRefMap[it.referanse] = opprettetGrunnlag.grunnlagId
     }
 
     // Stønadsendring
@@ -191,9 +194,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // EngangsbelopGrunnlag
     engangsbelopRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.grunnlagReferanse, 0)
+      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.referanse, 0)
       if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse ${it.grunnlagReferanse} ikke funnet i intern mappingtabell"
+        val feilmelding = "grunnlagReferanse ${it.referanse} ikke funnet i intern mappingtabell"
         LOGGER.error(feilmelding)
         throw IllegalArgumentException(feilmelding)
       } else {
@@ -212,9 +215,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // PeriodeGrunnlag
     periodeRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.grunnlagReferanse, 0)
+      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.referanse, 0)
       if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse ${it.grunnlagReferanse} ikke funnet i intern mappingtabell"
+        val feilmelding = "grunnlagReferanse ${it.referanse} ikke funnet i intern mappingtabell"
         LOGGER.error(feilmelding)
         throw IllegalArgumentException(feilmelding)
       } else {

@@ -12,13 +12,13 @@ data class BehandlingsreferanseDto(
   val behandlingsreferanseId: Int = 0,
 
   @Schema(description ="Vedtak-id")
-  val vedtakId: Int = 0,
+  val vedtakId: Int,
 
   @Schema(description ="Kildesystem for behandlingen før vedtaket")
-  val kilde: String = "",
+  val kilde: String,
 
   @Schema(description = "Kildesystemets referanse til behandlingen")
-  val referanse: String = ""
+  val referanse: String
 )
 
 fun BehandlingsreferanseDto.toBehandlingsreferanseEntity(eksisterendeVedtak: Vedtak) = with(::Behandlingsreferanse) {

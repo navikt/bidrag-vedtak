@@ -19,7 +19,7 @@ data class Grunnlag(
   val grunnlagId: Int = 0,
 
   @Column(nullable = false, name = "grunnlag_referanse")
-  val grunnlagReferanse: String = "",
+  val referanse: String = "",
 
   @ManyToOne
   @JoinColumn(name = "vedtak_id")

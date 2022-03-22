@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.api.grunnlag
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 import no.nav.bidrag.vedtak.dto.GrunnlagDto
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -13,7 +14,7 @@ data class OpprettGrunnlagRequest(
 
     @Schema(description = "Referanse til grunnlaget")
     @NotBlank
-    val grunnlagReferanse: String,
+    val referanse: String,
 
     @Schema(description = "Vedtak-id")
     @Min(0)
@@ -21,7 +22,7 @@ data class OpprettGrunnlagRequest(
 
     @Schema(description = "Grunnlagstype")
     @NotBlank
-    val grunnlagType: String,
+    val grunnlagType: GrunnlagType,
 
     @Schema(description = "Innholdet i grunnlaget")
     @NotBlank
@@ -34,6 +35,7 @@ fun OpprettGrunnlagRequest.toGrunnlagDto(vedtakId: Int) = with(::GrunnlagDto) {
         when (parameter.name) {
             GrunnlagDto::vedtakId.name -> vedtakId
             GrunnlagDto::grunnlagId.name -> 0
+            GrunnlagDto::grunnlagType.name -> grunnlagType.toString()
             GrunnlagDto::grunnlagInnhold.name -> grunnlagInnhold.toString()
             else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
         }

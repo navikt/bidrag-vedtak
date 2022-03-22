@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.api.vedtak
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
 import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
@@ -12,22 +13,22 @@ import java.time.LocalDateTime
 data class HentVedtakResponse(
 
   @Schema(description = "Vedtak-id")
-  var vedtakId: Int = 0,
+  var vedtakId: Int,
 
   @Schema(description = "Vedtak-type")
-  var vedtakType: String = "",
+  var vedtakType: VedtakType,
 
   @Schema(description = "Id til saksbehandler/batchjobb evt annet som opprettet vedtaket")
-  var opprettetAv: String = "",
+  var opprettetAv: String,
 
   @Schema(description = "Dato vedtaket er fattet")
   val vedtakDato: LocalDate? = null,
 
   @Schema(description = "Id til enheten som er ansvarlig for vedtaket")
-  var enhetId: String = "",
+  var enhetId: String,
 
   @Schema(description = "Opprettet timestamp")
-  var opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
+  var opprettetTimestamp: LocalDateTime,
 
   @Schema(description = "Liste over alle grunnlag som inngår i vedtaket")
   var grunnlagListe: List<HentGrunnlagResponse> = emptyList(),

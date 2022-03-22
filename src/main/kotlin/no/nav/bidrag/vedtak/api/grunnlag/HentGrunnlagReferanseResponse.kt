@@ -6,5 +6,5 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class HentGrunnlagReferanseResponse(
 
     @Schema(description = "Referanse til grunnlaget")
-    val grunnlagReferanse: String = ""
+    val referanse: String
 )
