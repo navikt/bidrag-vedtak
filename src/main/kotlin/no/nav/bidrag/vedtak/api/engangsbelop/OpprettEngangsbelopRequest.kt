@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import java.math.BigDecimal
 import javax.validation.constraints.Min
@@ -54,7 +53,7 @@ data class OpprettEngangsbelopRequest(
 
   @Schema(description ="Liste over alle grunnlag som inngår i engangsbeløpet")
   @NotEmpty
-  val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest>
+  val grunnlagReferanseListe: List<String>
 )
 
 fun OpprettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int, lopenr: Int) = with(::EngangsbelopDto) {

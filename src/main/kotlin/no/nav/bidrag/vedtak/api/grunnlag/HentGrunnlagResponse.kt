@@ -14,9 +14,9 @@ data class HentGrunnlagResponse(
     val referanse: String,
 
     @Schema(description = "Grunnlagstype")
-    val grunnlagType: GrunnlagType,
+    val type: GrunnlagType,
 
     @Schema(description = "Innholdet i grunnlaget")
     @JsonRawValue
-    val grunnlagInnhold: String
+    val innhold: String
 )

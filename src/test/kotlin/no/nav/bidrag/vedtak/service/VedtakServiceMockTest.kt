@@ -195,20 +195,20 @@ class VedtakServiceMockTest {
       Executable { assertThat(grunnlagDtoListe.size).isEqualTo(4) },
 
       Executable { assertThat(grunnlagDtoListe[0].referanse).isEqualTo(vedtak.grunnlagListe[0].referanse) },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagType).isEqualTo(vedtak.grunnlagListe[0].grunnlagType.toString()) },
-      Executable { assertThat(grunnlagDtoListe[0].grunnlagInnhold).isEqualTo(vedtak.grunnlagListe[0].grunnlagInnhold.toString()) },
+      Executable { assertThat(grunnlagDtoListe[0].type).isEqualTo(vedtak.grunnlagListe[0].type.toString()) },
+      Executable { assertThat(grunnlagDtoListe[0].innhold).isEqualTo(vedtak.grunnlagListe[0].innhold.toString()) },
 
       Executable { assertThat(grunnlagDtoListe[1].referanse).isEqualTo(vedtak.grunnlagListe[1].referanse) },
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagType).isEqualTo(vedtak.grunnlagListe[1].grunnlagType.toString()) },
-      Executable { assertThat(grunnlagDtoListe[1].grunnlagInnhold).isEqualTo(vedtak.grunnlagListe[1].grunnlagInnhold.toString()) },
+      Executable { assertThat(grunnlagDtoListe[1].type).isEqualTo(vedtak.grunnlagListe[1].type.toString()) },
+      Executable { assertThat(grunnlagDtoListe[1].innhold).isEqualTo(vedtak.grunnlagListe[1].innhold.toString()) },
 
       Executable { assertThat(grunnlagDtoListe[2].referanse).isEqualTo(vedtak.grunnlagListe[2].referanse) },
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagType).isEqualTo(vedtak.grunnlagListe[2].grunnlagType.toString()) },
-      Executable { assertThat(grunnlagDtoListe[2].grunnlagInnhold).isEqualTo(vedtak.grunnlagListe[2].grunnlagInnhold.toString()) },
+      Executable { assertThat(grunnlagDtoListe[2].type).isEqualTo(vedtak.grunnlagListe[2].type.toString()) },
+      Executable { assertThat(grunnlagDtoListe[2].innhold).isEqualTo(vedtak.grunnlagListe[2].innhold.toString()) },
 
       Executable { assertThat(grunnlagDtoListe[3].referanse).isEqualTo(vedtak.grunnlagListe[3].referanse) },
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagType).isEqualTo(vedtak.grunnlagListe[3].grunnlagType.toString()) },
-      Executable { assertThat(grunnlagDtoListe[3].grunnlagInnhold).isEqualTo(vedtak.grunnlagListe[3].grunnlagInnhold.toString()) },
+      Executable { assertThat(grunnlagDtoListe[3].type).isEqualTo(vedtak.grunnlagListe[3].type.toString()) },
+      Executable { assertThat(grunnlagDtoListe[3].innhold).isEqualTo(vedtak.grunnlagListe[3].innhold.toString()) },
 
       // Sjekk PeriodeGrunnlagDto
       Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
@@ -290,7 +290,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].belop).isEqualTo(BigDecimal.valueOf(100)) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
-      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0].referanse).isEqualTo("REF1") },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo("REF1") },
       Executable { assertThat(vedtakFunnet.engangsbelopListe.size).isEqualTo(1) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].lopenr).isEqualTo(1) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].type).isEqualTo("SAERTILSKUDD") },

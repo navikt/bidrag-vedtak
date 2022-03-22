@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
 import java.math.BigDecimal
 
 @Schema
@@ -38,5 +37,5 @@ data class HentEngangsbelopResponse(
   val resultatkode: String,
 
   @Schema(description =  "Liste over alle grunnlag som inngår i beregningen")
-  val grunnlagReferanseListe: List<HentGrunnlagReferanseResponse> = emptyList()
+  val grunnlagReferanseListe: List<String> = emptyList()
 )

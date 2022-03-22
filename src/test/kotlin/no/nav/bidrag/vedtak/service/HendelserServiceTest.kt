@@ -4,7 +4,6 @@ import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
@@ -52,7 +51,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = null), 1, LocalDateTime.now()
@@ -73,11 +72,9 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            StonadType.BIDRAG, 1, "B", "C", "D", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "D", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -102,11 +99,9 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            StonadType.BIDRAG, 1, "B", "C", "1", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -139,7 +134,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()
@@ -160,11 +155,9 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            StonadType.BIDRAG, 1, "B", "C", "1", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -173,7 +166,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()

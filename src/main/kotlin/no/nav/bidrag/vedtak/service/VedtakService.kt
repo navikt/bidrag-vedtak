@@ -9,7 +9,6 @@ import no.nav.bidrag.vedtak.api.behandlingsreferanse.toBehandlingsreferanseDto
 import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.toEngangsbelopDto
-import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagReferanseResponse
 import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.grunnlag.toGrunnlagDto
@@ -43,7 +42,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val grunnlagDtoListe = persistenceService.hentAlleGrunnlagForVedtak(vedtakDto.vedtakId)
     grunnlagDtoListe.forEach {
       grunnlagResponseListe.add(
-        HentGrunnlagResponse(it.grunnlagId, it.referanse, GrunnlagType.valueOf(it.grunnlagType), it.grunnlagInnhold)
+        HentGrunnlagResponse(it.grunnlagId, it.referanse, GrunnlagType.valueOf(it.type), it.innhold)
       )
     }
     val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
@@ -92,11 +91,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   private fun finnPerioderTilVedtak(periodeDtoListe: List<PeriodeDto>): List<HentPeriodeResponse> {
     val periodeResponseListe = ArrayList<HentPeriodeResponse>()
     periodeDtoListe.forEach { dto ->
-      val grunnlagReferanseResponseListe = ArrayList<HentGrunnlagReferanseResponse>()
+      val grunnlagReferanseResponseListe = ArrayList<String>()
       val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.periodeId)
       periodeGrunnlagListe.forEach {
         val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.referanse))
+        grunnlagReferanseResponseListe.add(grunnlag.referanse)
       }
       periodeResponseListe.add(
         HentPeriodeResponse(
@@ -115,11 +114,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   private fun finnEngangsbelopTilVedtak(engangsbelopDtoListe: List<EngangsbelopDto>): List<HentEngangsbelopResponse> {
     val engangsbelopResponseListe = ArrayList<HentEngangsbelopResponse>()
     engangsbelopDtoListe.forEach { dto ->
-      val grunnlagReferanseResponseListe = ArrayList<HentGrunnlagReferanseResponse>()
+      val grunnlagReferanseResponseListe = ArrayList<String>()
       val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.engangsbelopId)
       engangsbelopGrunnlagListe.forEach {
         val grunnlag = persistenceService.hentGrunnlag(it.grunnlagId)
-        grunnlagReferanseResponseListe.add(HentGrunnlagReferanseResponse(grunnlag.referanse))
+        grunnlagReferanseResponseListe.add(grunnlag.referanse)
       }
       engangsbelopResponseListe.add(
         HentEngangsbelopResponse(
@@ -194,9 +193,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // EngangsbelopGrunnlag
     engangsbelopRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.referanse, 0)
+      val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
       if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse ${it.referanse} ikke funnet i intern mappingtabell"
+        val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
         LOGGER.error(feilmelding)
         throw IllegalArgumentException(feilmelding)
       } else {
@@ -215,9 +214,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // PeriodeGrunnlag
     periodeRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it.referanse, 0)
+      val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
       if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse ${it.referanse} ikke funnet i intern mappingtabell"
+        val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
         LOGGER.error(feilmelding)
         throw IllegalArgumentException(feilmelding)
       } else {

@@ -18,18 +18,18 @@ data class Grunnlag(
   @Column(name = "grunnlag_id")
   val grunnlagId: Int = 0,
 
-  @Column(nullable = false, name = "grunnlag_referanse")
+  @Column(nullable = false, name = "referanse")
   val referanse: String = "",
 
   @ManyToOne
   @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
-  @Column(nullable = false, name = "grunnlag_type")
-  val grunnlagType: String = "",
+  @Column(nullable = false, name = "type")
+  val type: String = "",
 
-  @Column(nullable = false, name = "grunnlag_innhold")
-  val grunnlagInnhold: String = "",
+  @Column(nullable = false, name = "innhold")
+  val innhold: String = "",
 
   )
 

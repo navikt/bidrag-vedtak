@@ -5,7 +5,6 @@ import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import javax.validation.Valid
-import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
@@ -18,10 +17,6 @@ data class OpprettStonadsendringRequest(
   @NotBlank
   val stonadType: StonadType,
 
-  @Schema(description = "Vedtak-id")
-  @Min(0)
-  val vedtakId: Int,
-
   @Schema(description = "Referanse til sak")
   val sakId: String? = null,
 
@@ -29,15 +24,24 @@ data class OpprettStonadsendringRequest(
   val behandlingId: String? = null,
 
   @Schema(description = "Id til den som skal betale bidraget")
-  @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
+  @field:Pattern(
+    regexp = "^[0-9]{9}$|^[0-9]{11}$",
+    message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer."
+  )
   val skyldnerId: String,
 
   @Schema(description = "Id til den som krever bidraget")
-  @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
+  @field:Pattern(
+    regexp = "^[0-9]{9}$|^[0-9]{11}$",
+    message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer."
+  )
   val kravhaverId: String,
 
   @Schema(description = "Id til den som mottar bidraget")
-  @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
+  @field:Pattern(
+    regexp = "^[0-9]{9}$|^[0-9]{11}$",
+    message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer."
+  )
   val mottakerId: String,
 
   @Schema(description = "Liste over alle perioder som inngår i stønadsendringen")
