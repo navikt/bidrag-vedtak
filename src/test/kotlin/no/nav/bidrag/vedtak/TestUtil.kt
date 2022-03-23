@@ -1,9 +1,11 @@
 package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.bidrag.behandling.felles.enums.GrunnlagType
+import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
@@ -25,7 +27,8 @@ class TestUtil {
   companion object {
 
     fun byggVedtakRequest() = OpprettVedtakRequest(
-      saksbehandlerId = "X123456",
+      vedtakType = VedtakType.MANUELT,
+      opprettetAv = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
       grunnlagListe = byggGrunnlagListe(),
@@ -36,10 +39,9 @@ class TestUtil {
 
     private fun byggGrunnlagListe() = listOf(
       OpprettGrunnlagRequest(
-        grunnlagReferanse = "BM-LIGS-19",
-        vedtakId = 0,
-        grunnlagType = "INNTEKT",
-        grunnlagInnhold =  ObjectMapper().readTree(
+        referanse = "BM-LIGS-19",
+        type = GrunnlagType.INNTEKT,
+        innhold =  ObjectMapper().readTree(
           """
           {
             "inntektDatoFraTil": {
@@ -52,10 +54,9 @@ class TestUtil {
         )
       ),
       OpprettGrunnlagRequest(
-        grunnlagReferanse = "BM-LIGN-19",
-        vedtakId = 0,
-        grunnlagType = "INNTEKT",
-        grunnlagInnhold = ObjectMapper().readTree(
+        referanse = "BM-LIGN-19",
+        type = GrunnlagType.INNTEKT,
+        innhold = ObjectMapper().readTree(
           """
           {
             "inntektDatoFraTil": {
@@ -68,10 +69,9 @@ class TestUtil {
         )
       ),
       OpprettGrunnlagRequest(
-        grunnlagReferanse = "BP-SKATTEKLASSE-19",
-        vedtakId = 0,
-        grunnlagType = "SKATTEKLASSE",
-        grunnlagInnhold = ObjectMapper().readTree(
+        referanse = "BP-SKATTEKLASSE-19",
+        type = GrunnlagType.SKATTEKLASSE,
+        innhold = ObjectMapper().readTree(
           """
           {
             "skatteklasseDatoFraTil": {
@@ -83,10 +83,9 @@ class TestUtil {
         )
       ),
       OpprettGrunnlagRequest(
-        grunnlagReferanse = "SJAB-REF001",
-        vedtakId = 0,
-        grunnlagType = "SJABLON",
-        grunnlagInnhold = ObjectMapper().readTree(
+        referanse = "SJAB-REF001",
+        type = GrunnlagType.SJABLON,
+        innhold = ObjectMapper().readTree(
           """
           {
             "sjablonListe": [
@@ -106,8 +105,7 @@ class TestUtil {
 
     private fun byggStonadsendringListe() = listOf(
       OpprettStonadsendringRequest(
-        stonadType = "BIDRAG",
-        vedtakId = 0,
+        stonadType = StonadType.BIDRAG,
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",
@@ -117,49 +115,31 @@ class TestUtil {
           OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-01-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
-            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001"
-              )
-            )
-          ),
+                "BM-LIGS-19",
+                "BM-LIGN-19",
+               "SJAB-REF001")
+          )
+          ,
           OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-07-01"),
             periodeTilDato = LocalDate.parse("2020-01-01"),
-            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
             grunnlagReferanseListe = listOf(
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGN-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BP-SKATTEKLASSE-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001"
-              )
-            )
+              "BM-LIGS-19",
+              "BM-LIGN-19",
+              "BP-SKATTEKLASSE-19",
+              "SJAB-REF001")
           )
         )
       ),
       OpprettStonadsendringRequest(
-        stonadType = "FORSKUDD",
-        vedtakId = 0,
+        stonadType = StonadType.BIDRAG,
         sakId = "SAK-001",
         behandlingId = "Fritekst",
         skyldnerId = "01018011111",
@@ -169,33 +149,23 @@ class TestUtil {
           OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-06-01"),
             periodeTilDato = LocalDate.parse("2019-07-01"),
-            stonadsendringId = 0,
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001"
-              )
-            )
-          ),
+              "BM-LIGS-19",
+              "SJAB-REF001")
+          )
+          ,
           OpprettPeriodeRequest(
             periodeFomDato = LocalDate.parse("2019-08-01"),
             periodeTilDato = LocalDate.parse("2019-09-01"),
-            stonadsendringId = 0,
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
             grunnlagReferanseListe = listOf(
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "BM-LIGS-19"
-              ),
-              OpprettGrunnlagReferanseRequest(
-                grunnlagReferanse = "SJAB-REF001"
-              ))
+              "BM-LIGS-19",
+              "SJAB-REF001")
           )
         )
       )
@@ -214,16 +184,9 @@ class TestUtil {
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
         grunnlagReferanseListe = listOf(
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "BM-LIGS-19"
-          ),
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "BM-LIGN-19"
-          ),
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "SJAB-REF001"
-          )
-        )
+          "BM-LIGS-19",
+          "BM-LIGN-19",
+          "SJAB-REF001")
       ),
       OpprettEngangsbelopRequest(
         vedtakId = 0,
@@ -237,16 +200,9 @@ class TestUtil {
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
         grunnlagReferanseListe = listOf(
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "BM-LIGS-19"
-          ),
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "BM-LIGN-19"
-          ),
-          OpprettGrunnlagReferanseRequest(
-            grunnlagReferanse = "SJAB-REF001"
-          )
-        )
+          "BM-LIGS-19",
+          "BM-LIGN-19",
+          "SJAB-REF001")
       )
     )
 
@@ -266,19 +222,21 @@ class TestUtil {
 
     fun byggVedtakDto(
       vedtakId: Int = (1..100).random(),
+      vedtakType: String = VedtakType.MANUELT.toString(),
       enhetId: String = "4812",
-      saksbehandlerId: String = "X123456",
+      opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
     ) = VedtakDto(
       vedtakId = vedtakId,
+      vedtakType = vedtakType,
       enhetId = enhetId,
-      saksbehandlerId = saksbehandlerId,
+      opprettetAv = opprettetAv,
       opprettetTimestamp = opprettetTimestamp!!
     )
 
     fun byggStonadsendringDto(
       stonadsendringId: Int = (1..100).random(),
-      stonadType: String = "BIDRAG",
+      stonadType: String = StonadType.BIDRAG.toString(),
       vedtakId: Int = (1..100).random(),
       sakId: String = "SAK-001",
       behandlingId: String = "Fritekst",
@@ -318,14 +276,14 @@ class TestUtil {
       grunnlagId: Int = (1..100).random(),
       grunnlagReferanse: String = "BM-LIGN-19",
       vedtakId: Int = (1..100).random(),
-      grunnlagType: String = "INNTEKT",
-      grunnlagInnhold: String = "Innhold"
+      type: String = GrunnlagType.INNTEKT.toString(),
+      innhold: String = "Innhold"
     ) = GrunnlagDto(
       grunnlagId = grunnlagId,
-      grunnlagReferanse = grunnlagReferanse,
+      referanse = grunnlagReferanse,
       vedtakId = vedtakId,
-      grunnlagType = grunnlagType,
-      grunnlagInnhold = grunnlagInnhold
+      type = type,
+      innhold = innhold
     )
 
     fun byggPeriodeGrunnlagDto(

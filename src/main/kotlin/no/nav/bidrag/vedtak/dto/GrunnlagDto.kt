@@ -12,16 +12,16 @@ data class GrunnlagDto(
   val grunnlagId: Int = 0,
 
   @Schema(description = "Referanse til grunnlaget")
-  val grunnlagReferanse: String = "",
+  val referanse: String,
 
   @Schema(description = "Vedtak-id")
-  val vedtakId: Int = 0,
+  val vedtakId: Int,
 
   @Schema(description = "Grunnlagstype")
-  val grunnlagType: String = "",
+  val type: String,
 
   @Schema(description = "Innholdet i grunnlaget")
-  val grunnlagInnhold: String = ""
+  val innhold: String
 )
 
 fun GrunnlagDto.toGrunnlagEntity(eksisterendeVedtak: Vedtak) = with(::Grunnlag) {

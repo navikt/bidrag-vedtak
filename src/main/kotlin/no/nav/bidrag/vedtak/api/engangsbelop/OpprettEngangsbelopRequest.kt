@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.EngangsbelopDto
 import java.math.BigDecimal
 import javax.validation.constraints.Min
@@ -24,19 +23,19 @@ data class OpprettEngangsbelopRequest(
   @Schema(description ="Id for eventuelt engangsbeløp som skal endres")
   val endrerEngangsbelopId: Int?,
 
-  @Schema(description ="Beløpstype")
+  @Schema(description ="Beløpstype. Saertilskudd, gebyr m.m.")
   @NotBlank
   val type: String,
 
-  @Schema(description ="Id til den som skal betale bidraget")
+  @Schema(description ="Id til den som skal betale engangsbeløpet")
   @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
   val skyldnerId: String,
 
-  @Schema(description ="Id til den som krever bidraget")
+  @Schema(description ="Id til den som krever engangsbeløpet")
   @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
   val kravhaverId: String,
 
-  @Schema(description ="Id til den som mottar bidraget")
+  @Schema(description ="Id til den som mottar engangsbeløpet")
   @field:Pattern(regexp = "^[0-9]{9}$|^[0-9]{11}$", message = "Ugyldig format. Må inneholde eksakt 9 eller 11 siffer.")
   val mottakerId: String,
 
@@ -54,7 +53,7 @@ data class OpprettEngangsbelopRequest(
 
   @Schema(description ="Liste over alle grunnlag som inngår i engangsbeløpet")
   @NotEmpty
-  val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest>
+  val grunnlagReferanseListe: List<String>
 )
 
 fun OpprettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int, lopenr: Int) = with(::EngangsbelopDto) {

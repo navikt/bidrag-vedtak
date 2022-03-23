@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
@@ -12,10 +13,10 @@ data class StonadsendringDto(
   val stonadsendringId: Int = 0,
 
   @Schema(description = "Stønadstype")
-  val stonadType: String = "",
+  val stonadType: String,
 
   @Schema(description ="Vedtak-id")
-  val vedtakId: Int = 0,
+  val vedtakId: Int,
 
   @Schema(description ="Referanse til sak")
   val sakId: String? = null,
@@ -24,13 +25,13 @@ data class StonadsendringDto(
   val behandlingId: String? = null,
 
   @Schema(description = "Id til den som skal betale bidraget")
-  val skyldnerId: String = "",
+  val skyldnerId: String,
 
   @Schema(description = "Id til den som krever bidraget")
-  val kravhaverId: String = "",
+  val kravhaverId: String,
 
   @Schema(description = "Id til den som mottar bidraget")
-  val mottakerId: String = ""
+  val mottakerId: String
 )
 
 fun StonadsendringDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {

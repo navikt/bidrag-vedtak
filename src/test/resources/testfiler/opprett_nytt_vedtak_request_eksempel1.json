@@ -1,13 +1,14 @@
 {
-  "saksbehandlerId": "X123456",
+  "vedtakType": "MANUELT",
+  "opprettetAv": "X123456",
   "vedtakDato": null,
   "enhetId": "4812",
   "grunnlagListe": [
     {
-      "grunnlagReferanse": "BM-LIGS-19",
+      "referanse": "BM-LIGS-19",
       "vedtakId": 1,
-      "grunnlagType": "INNTEKT",
-      "grunnlagInnhold": {
+      "type": "INNTEKT",
+      "innhold": {
         "inntektDatoFraTil": {
           "periodeDatoFra": "2019-01-01",
           "periodeDatoTil": "2020-01-01"
@@ -17,10 +18,10 @@
       }
     },
     {
-      "grunnlagReferanse": "BM-LIGN-19",
+      "referanse": "BM-LIGN-19",
       "vedtakId": 1,
-      "grunnlagType": "INNTEKT",
-      "grunnlagInnhold": {
+      "type": "INNTEKT",
+      "innhold": {
         "inntektDatoFraTil": {
           "periodeDatoFra": "2019-01-01",
           "periodeDatoTil": "2020-01-01"
@@ -30,9 +31,9 @@
       }
     },
     {
-      "grunnlagReferanse": "BP-SKATTEKLASSE-19",
-      "grunnlagType": "SKATTEKLASSE",
-      "grunnlagInnhold": {
+      "referanse": "BP-SKATTEKLASSE-19",
+      "type": "SKATTEKLASSE",
+      "innhold": {
         "skatteklasseDatoFraTil": {
           "periodeDatoFra": "2019-01-01",
           "periodeDatoTil": "2020-01-01"
@@ -41,9 +42,9 @@
       }
     },
     {
-      "grunnlagReferanse": "SJAB-REF001",
-      "grunnlagType": "SJABLON",
-      "grunnlagInnhold": {
+      "referanse": "SJAB-REF001",
+      "type": "SJABLON",
+      "innhold": {
         "sjablonListe": [
           {
             "sjablonNavn": "BoutgiftBeløp",
@@ -75,15 +76,9 @@
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
-            {
-              "grunnlagReferanse": "BM-LIGS-19"
-            },
-            {
-              "grunnlagReferanse": "BM-LIGN-19"
-            },
-            {
-              "grunnlagReferanse": "SJAB-REF001"
-            }
+            "BM-LIGS-19",
+            "BM-LIGN-19",
+            "SJAB-REF001"
           ]
         },
         {
@@ -94,18 +89,10 @@
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "grunnlagReferanseListe": [
-            {
-              "grunnlagReferanse": "BM-LIGS-19"
-            },
-            {
-              "grunnlagReferanse": "BM-LIGN-19"
-            },
-            {
-              "grunnlagReferanse": "BP-SKATTEKLASSE-19"
-            },
-            {
-              "grunnlagReferanse": "SJAB-REF001"
-            }
+            "BM-LIGS-19",
+            "BM-LIGN-19",
+            "BP-SKATTEKLASSE-19",
+            "SJAB-REF001"
           ]
         }
       ]
@@ -125,12 +112,8 @@
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
-            {
-              "grunnlagReferanse": "BM-LIGS-19"
-            },
-            {
-              "grunnlagReferanse": "SJAB-REF001"
-            }
+            "BM-LIGS-19",
+            "SJAB-REF001"
           ]
         },
         {
@@ -140,12 +123,8 @@
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
           "grunnlagReferanseListe": [
-            {
-              "grunnlagReferanse": "BM-LIGS-19"
-            },
-            {
-              "grunnlagReferanse": "SJAB-REF001"
-            }
+            "BM-LIGS-19",
+            "SJAB-REF001"
           ]
         }
       ]

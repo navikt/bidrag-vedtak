@@ -32,6 +32,7 @@
     <springframework-cloud.version>3.0.4</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.9.2</com.squareup.okhttp3.version>
     <springdoc-openapi-ui.version>1.6.6</springdoc-openapi-ui.version>
+    <bidrag-behandling-felles.version>0.0.4</bidrag-behandling-felles.version>
 
   </properties>
 
@@ -78,6 +79,11 @@
     </dependency>
 
     <!-- nav -->
+    <dependency>
+      <groupId>no.nav.bidrag</groupId>
+      <artifactId>bidrag-behandling-felles</artifactId>
+      <version>${bidrag-behandling-felles.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>

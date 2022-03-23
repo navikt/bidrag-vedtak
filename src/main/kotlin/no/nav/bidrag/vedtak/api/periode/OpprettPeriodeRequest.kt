@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.api.periode
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.dto.PeriodeDto
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -17,11 +16,7 @@ data class OpprettPeriodeRequest(
   val periodeFomDato: LocalDate,
 
   @Schema(description = "Periode til-dato")
-  val periodeTilDato: LocalDate?,
-
-  @Schema(description = "Stonadsendring-id")
-  @Min(0)
-  val stonadsendringId: Int,
+  val periodeTilDato: LocalDate? = null,
 
   @Schema(description = "Beregnet stønadsbeløp")
   @Min(0)
@@ -37,7 +32,7 @@ data class OpprettPeriodeRequest(
 
   @Schema(description = "Liste over alle grunnlag som inngår i perioden")
   @NotEmpty
-  val grunnlagReferanseListe: List<OpprettGrunnlagReferanseRequest>
+  val grunnlagReferanseListe: List<String>
 )
 
 fun OpprettPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {

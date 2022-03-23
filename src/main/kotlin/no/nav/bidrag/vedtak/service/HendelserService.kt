@@ -40,12 +40,13 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       vedtakshendelser.add(
         VedtakHendelse(
           vedtakId = vedtakId,
+          vedtakType = vedtakRequest.vedtakType,
           stonadType = it.stonadType,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
-          opprettetAvSaksbehandlerId = vedtakRequest.saksbehandlerId,
+          opprettetAv = vedtakRequest.opprettetAv,
           opprettetTimestamp = opprettetTimestamp,
           periodeListe = vedtakHendelsePeriodeListe
         )

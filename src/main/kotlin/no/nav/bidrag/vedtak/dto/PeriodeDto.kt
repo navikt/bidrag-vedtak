@@ -14,22 +14,22 @@ data class PeriodeDto(
   val periodeId: Int = 0,
 
   @Schema(description = "Periode fra-og-med-dato")
-  val periodeFomDato: LocalDate = LocalDate.now(),
+  val periodeFomDato: LocalDate,
 
   @Schema(description = "Periode til-dato")
   val periodeTilDato: LocalDate? = null,
 
   @Schema(description = "Stonadsendring-id")
-  val stonadsendringId: Int = 0,
+  val stonadsendringId: Int,
 
   @Schema(description = "Beregnet stønadsbeløp")
-  val belop: BigDecimal = BigDecimal.ZERO,
+  val belop: BigDecimal,
 
   @Schema(description = "Valutakoden tilhørende stønadsbeløpet")
-  val valutakode: String = "NOK",
+  val valutakode: String,
 
   @Schema(description = "Resultatkoden tilhørende stønadsbeløpet")
-  val resultatkode: String = ""
+  val resultatkode: String
 )
 
 fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {

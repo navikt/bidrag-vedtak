@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.vedtak.dto.StonadsendringDto
 import javax.persistence.Column
 import javax.persistence.Entity

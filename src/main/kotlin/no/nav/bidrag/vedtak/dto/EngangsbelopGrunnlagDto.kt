@@ -10,10 +10,10 @@ import kotlin.reflect.full.memberProperties
 data class EngangsbelopGrunnlagDto(
 
   @Schema(description = "Engangsbeløp-id")
-  val engangsbelopId: Int = 0,
+  val engangsbelopId: Int,
 
   @Schema(description = "Grunnlag-id")
-  val grunnlagId: Int = 0
+  val grunnlagId: Int
 
 )
 

@@ -1,8 +1,9 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagReferanseRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
 import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
@@ -40,7 +41,8 @@ class HendelserServiceTest {
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
-        saksbehandlerId = "ABCDEFG",
+        vedtakType = VedtakType.MANUELT,
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -49,7 +51,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = null), 1, LocalDateTime.now()
@@ -63,17 +65,16 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
-        saksbehandlerId = "ABCDEFG",
+        vedtakType = VedtakType.MANUELT,
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            "A", 1, "B", "C", "D", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "D", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -91,17 +92,16 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse med skyldner-id`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
-        saksbehandlerId = "ABCDEFG",
+        vedtakType = VedtakType.MANUELT,
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            "A", 1, "B", "C", "1", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -113,8 +113,8 @@ class HendelserServiceTest {
 
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
-        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        vedtakId = 1, vedtakType = VedtakType.MANUELT, stonadType = StonadType.BIDRAG, sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        opprettetAv = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
           valutakode = "NOK", resultatkode = "A"))))
   }
@@ -124,7 +124,8 @@ class HendelserServiceTest {
   fun `skal ikke opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
-        saksbehandlerId = "ABCDEFG",
+        vedtakType = VedtakType.MANUELT,
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
@@ -133,7 +134,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()
@@ -147,17 +148,16 @@ class HendelserServiceTest {
   fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequest(
-        saksbehandlerId = "ABCDEFG",
+        vedtakType = VedtakType.MANUELT,
+        opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequest(
-            "A", 1, "B", "C", "1", "E", "F",
-            listOf(
+            StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
               OpprettPeriodeRequest(
-                LocalDate.now(), LocalDate.now(), 1, BigDecimal.ONE, "NOK", "A",
-                listOf(OpprettGrunnlagReferanseRequest("A"))
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
@@ -166,7 +166,7 @@ class HendelserServiceTest {
           OpprettEngangsbelopRequest(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
-            listOf(OpprettGrunnlagReferanseRequest("A"))
+            listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()
@@ -174,8 +174,8 @@ class HendelserServiceTest {
     )
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakId = 1, stonadType = "A", sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
-        opprettetAvSaksbehandlerId = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+        vedtakId = 1, vedtakType = VedtakType.MANUELT, stonadType = StonadType.BIDRAG, sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
+        opprettetAv = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
         valutakode = "NOK", resultatkode = "A"))))
   }
