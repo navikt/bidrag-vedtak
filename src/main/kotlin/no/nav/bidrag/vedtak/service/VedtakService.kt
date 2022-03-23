@@ -34,8 +34,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
 
-  private val grunnlagIdRefMap = mutableMapOf<String, Int>()
-
   fun hentVedtak(vedtakId: Int): HentVedtakResponse {
     val vedtakDto = persistenceService.hentVedtak(vedtakId)
     val grunnlagResponseListe = ArrayList<HentGrunnlagResponse>()
@@ -142,6 +140,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   // Opprett vedtak (alle tabeller)
   fun opprettVedtak(vedtakRequest: OpprettVedtakRequest): Int {
 
+    val grunnlagIdRefMap = mutableMapOf<String, Int>()
+
     // Opprett vedtak
     val vedtakDto = VedtakDto(
       vedtakType = vedtakRequest.vedtakType.toString(),
@@ -158,12 +158,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Stønadsendring
-    vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId) }
+    vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak.vedtakId, grunnlagIdRefMap) }
 
     // Engangsbelop
     vedtakRequest.engangsbelopListe?.forEach {
       lopenr ++
-      opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr) }
+      opprettEngangsbelop(it, opprettetVedtak.vedtakId, lopenr, grunnlagIdRefMap) }
 
     // Behandlingsreferanse
     vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak.vedtakId) }
@@ -180,15 +180,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagDto(vedtakId))
 
   // Opprett stønadsendring
-  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequest, vedtakId: Int) {
+  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequest, vedtakId: Int, grunnlagIdRefMap: Map<String, Int>) {
     val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringDto(vedtakId))
 
     // Periode
-    stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring.stonadsendringId) }
+    stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring.stonadsendringId, grunnlagIdRefMap) }
   }
 
   // Opprett Engangsbelop
-  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequest, vedtakId: Int, lopenr: Int) {
+  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequest, vedtakId: Int, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) {
     val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopDto(vedtakId, lopenr))
 
     // EngangsbelopGrunnlag
@@ -209,7 +209,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett periode
-  private fun opprettPeriode(periodeRequest: OpprettPeriodeRequest, stonadsendringId: Int) {
+  private fun opprettPeriode(periodeRequest: OpprettPeriodeRequest, stonadsendringId: Int, grunnlagIdRefMap: Map<String, Int>) {
     val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeDto(stonadsendringId))
 
     // PeriodeGrunnlag
