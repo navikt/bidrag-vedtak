@@ -1,7 +1,7 @@
 package no.nav.bidrag.vedtak.api.periode
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.dto.PeriodeDto
+import no.nav.bidrag.vedtak.bo.PeriodeBo
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.validation.constraints.Min
@@ -35,12 +35,12 @@ data class OpprettPeriodeRequest(
   val grunnlagReferanseListe: List<String>
 )
 
-fun OpprettPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeDto) {
+fun OpprettPeriodeRequest.toPeriodeDto(stonadsendringId: Int) = with(::PeriodeBo) {
   val propertiesByName = OpprettPeriodeRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      PeriodeDto::stonadsendringId.name -> stonadsendringId
-      PeriodeDto::periodeId.name -> 0
+      PeriodeBo::stonadsendringId.name -> stonadsendringId
+      PeriodeBo::periodeId.name -> 0
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
     }
   })

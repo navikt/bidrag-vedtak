@@ -1,13 +1,12 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class StonadsendringDto(
+data class StonadsendringBo(
 
   @Schema(description = "Stønadsendring-id")
   val stonadsendringId: Int = 0,
@@ -34,8 +33,8 @@ data class StonadsendringDto(
   val mottakerId: String
 )
 
-fun StonadsendringDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
-  val propertiesByName = StonadsendringDto::class.memberProperties.associateBy { it.name }
+fun StonadsendringBo.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
+  val propertiesByName = StonadsendringBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       Stonadsendring::vedtak.name -> eksisterendeVedtak

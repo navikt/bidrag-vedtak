@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
+import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -29,11 +29,11 @@ data class Behandlingsreferanse(
   val referanse: String = ""
 )
 
-fun Behandlingsreferanse.toBehandlingsreferanseDto() = with(::BehandlingsreferanseDto) {
+fun Behandlingsreferanse.toBehandlingsreferanseDto() = with(::BehandlingsreferanseBo) {
   val propertiesByName = Behandlingsreferanse::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      BehandlingsreferanseDto::vedtakId.name -> vedtak.vedtakId
+      BehandlingsreferanseBo::vedtakId.name -> vedtak.vedtakId
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseDto)
     }
   })

@@ -5,8 +5,8 @@ import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
 import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.vedtak.bo.VedtakBo
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
@@ -85,7 +85,7 @@ class VedtakControllerTest {
   @LocalServerPort
   private val port = 0
 
-  private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
+  private val vedtakBoListe = object : ParameterizedTypeReference<List<VedtakBo>>() {}
 
 
   @BeforeEach
@@ -203,7 +203,7 @@ class VedtakControllerTest {
     return "http://localhost:$port"
   }
 
-  private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequest> {
+  private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequestDto> {
     return initHttpEntity(TestUtil.byggVedtakRequest())
   }
 

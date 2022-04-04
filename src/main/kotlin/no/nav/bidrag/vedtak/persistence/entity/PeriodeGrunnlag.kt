@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
+import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -27,12 +27,12 @@ data class PeriodeGrunnlag(
 
 )
 
-fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
+fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagBo) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      PeriodeGrunnlagDto::periodeId.name -> periode.periodeId
-      PeriodeGrunnlagDto::grunnlagId.name -> grunnlag.grunnlagId
+      PeriodeGrunnlagBo::periodeId.name -> periode.periodeId
+      PeriodeGrunnlagBo::grunnlagId.name -> grunnlag.grunnlagId
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
     }
   })

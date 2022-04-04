@@ -1,7 +1,7 @@
 package no.nav.bidrag.vedtak.api.behandlingsreferanse
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
+import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import kotlin.reflect.full.memberProperties
@@ -22,12 +22,12 @@ data class OpprettBehandlingsreferanseRequest(
   val referanse: String
 )
 
-fun OpprettBehandlingsreferanseRequest.toBehandlingsreferanseDto(vedtakId: Int) = with(::BehandlingsreferanseDto) {
+fun OpprettBehandlingsreferanseRequest.toBehandlingsreferanseDto(vedtakId: Int) = with(::BehandlingsreferanseBo) {
   val propertiesByName = OpprettBehandlingsreferanseRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      BehandlingsreferanseDto::vedtakId.name -> vedtakId
-      BehandlingsreferanseDto::behandlingsreferanseId.name -> 0
+      BehandlingsreferanseBo::vedtakId.name -> vedtakId
+      BehandlingsreferanseBo::behandlingsreferanseId.name -> 0
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseDto)
     }
   })

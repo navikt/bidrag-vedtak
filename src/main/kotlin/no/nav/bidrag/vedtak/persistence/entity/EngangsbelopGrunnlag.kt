@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
+import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -27,12 +27,12 @@ data class EngangsbelopGrunnlag(
 
 )
 
-fun EngangsbelopGrunnlag.toEngangsbelopGrunnlagDto() = with(::EngangsbelopGrunnlagDto) {
+fun EngangsbelopGrunnlag.toEngangsbelopGrunnlagDto() = with(::EngangsbelopGrunnlagBo) {
   val propertiesByName = EngangsbelopGrunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      EngangsbelopGrunnlagDto::engangsbelopId.name -> engangsbelop.engangsbelopId
-      EngangsbelopGrunnlagDto::grunnlagId.name -> grunnlag.grunnlagId
+      EngangsbelopGrunnlagBo::engangsbelopId.name -> engangsbelop.engangsbelopId
+      EngangsbelopGrunnlagBo::grunnlagId.name -> grunnlag.grunnlagId
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopGrunnlagDto)
     }
   })

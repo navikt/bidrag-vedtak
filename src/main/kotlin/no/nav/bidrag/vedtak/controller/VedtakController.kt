@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.vedtak.ISSUER
 import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -38,7 +38,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun opprettVedtak(@Valid @RequestBody request: OpprettVedtakRequest): ResponseEntity<Int>? {
+  fun opprettVedtak(@Valid @RequestBody request: OpprettVedtakRequestDto): ResponseEntity<Int>? {
     val vedtakOpprettet = vedtakService.opprettVedtak(request)
     LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
     return ResponseEntity(vedtakOpprettet, HttpStatus.OK)

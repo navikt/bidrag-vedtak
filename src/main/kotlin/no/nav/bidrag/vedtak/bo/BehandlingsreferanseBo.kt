@@ -1,4 +1,4 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
@@ -6,7 +6,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class BehandlingsreferanseDto(
+data class BehandlingsreferanseBo(
 
   @Schema(description = "Behandlingsreferanse-id")
   val behandlingsreferanseId: Int = 0,
@@ -21,8 +21,8 @@ data class BehandlingsreferanseDto(
   val referanse: String
 )
 
-fun BehandlingsreferanseDto.toBehandlingsreferanseEntity(eksisterendeVedtak: Vedtak) = with(::Behandlingsreferanse) {
-  val propertiesByName = BehandlingsreferanseDto::class.memberProperties.associateBy { it.name }
+fun BehandlingsreferanseBo.toBehandlingsreferanseEntity(eksisterendeVedtak: Vedtak) = with(::Behandlingsreferanse) {
+  val propertiesByName = BehandlingsreferanseBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       Behandlingsreferanse::vedtak.name -> eksisterendeVedtak

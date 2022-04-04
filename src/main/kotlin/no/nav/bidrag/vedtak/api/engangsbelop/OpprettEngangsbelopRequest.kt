@@ -1,7 +1,7 @@
 package no.nav.bidrag.vedtak.api.engangsbelop
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import java.math.BigDecimal
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -56,13 +56,13 @@ data class OpprettEngangsbelopRequest(
   val grunnlagReferanseListe: List<String>
 )
 
-fun OpprettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int, lopenr: Int) = with(::EngangsbelopDto) {
+fun OpprettEngangsbelopRequest.toEngangsbelopDto(vedtakId: Int, lopenr: Int) = with(::EngangsbelopBo) {
   val propertiesByName = OpprettEngangsbelopRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      EngangsbelopDto::vedtakId.name -> vedtakId
-      EngangsbelopDto::engangsbelopId.name -> 0
-      EngangsbelopDto::lopenr.name -> lopenr
+      EngangsbelopBo::vedtakId.name -> vedtakId
+      EngangsbelopBo::engangsbelopId.name -> 0
+      EngangsbelopBo::lopenr.name -> lopenr
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopDto)
     }
   })

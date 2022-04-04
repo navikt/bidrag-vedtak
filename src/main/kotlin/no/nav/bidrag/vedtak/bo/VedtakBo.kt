@@ -1,14 +1,13 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class VedtakDto(
+data class VedtakBo(
 
   @Schema(description = "Vedtak-id")
   val vedtakId: Int = 0,
@@ -29,8 +28,8 @@ data class VedtakDto(
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
-fun VedtakDto.toVedtakEntity() = with(::Vedtak) {
-  val propertiesByName = VedtakDto::class.memberProperties.associateBy { it.name }
+fun VedtakBo.toVedtakEntity() = with(::Vedtak) {
+  val propertiesByName = VedtakBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)

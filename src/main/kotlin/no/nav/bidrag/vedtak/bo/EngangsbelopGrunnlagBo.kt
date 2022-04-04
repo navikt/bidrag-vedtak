@@ -1,4 +1,4 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
@@ -7,7 +7,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class EngangsbelopGrunnlagDto(
+data class EngangsbelopGrunnlagBo(
 
   @Schema(description = "Engangsbeløp-id")
   val engangsbelopId: Int,
@@ -17,10 +17,10 @@ data class EngangsbelopGrunnlagDto(
 
 )
 
-fun EngangsbelopGrunnlagDto.toEngangsbelopGrunnlagEntity(
+fun EngangsbelopGrunnlagBo.toEngangsbelopGrunnlagEntity(
   eksisterendeEngangsbelop: Engangsbelop, eksisterendeGrunnlag: Grunnlag) = with(::EngangsbelopGrunnlag) {
 
-  val propertiesByName = EngangsbelopGrunnlagDto::class.memberProperties.associateBy { it.name }
+  val propertiesByName = EngangsbelopGrunnlagBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       EngangsbelopGrunnlag::engangsbelop.name -> eksisterendeEngangsbelop

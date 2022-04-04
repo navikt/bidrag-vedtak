@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
 @Schema
-data class OpprettVedtakRequest(
+data class OpprettVedtakRequestDto(
 
   @Schema(description = "Hva slags type vedtak som er fattet")
   val vedtakType: VedtakType,

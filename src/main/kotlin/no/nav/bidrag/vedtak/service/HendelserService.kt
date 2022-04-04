@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.model.VedtakHendelse
 import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
@@ -15,13 +15,13 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     private val LOGGER = LoggerFactory.getLogger(HendelserService::class.java)
   }
 
-  fun opprettHendelse(vedtakRequest: OpprettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
+  fun opprettHendelse(vedtakRequest: OpprettVedtakRequestDto, vedtakId: Int, opprettetTimestamp: LocalDateTime) {
       val vedtakHendelser = mapVedtakshendelser(vedtakRequest, vedtakId, opprettetTimestamp)
       vedtakHendelser.forEach { vedtakHendelse -> vedtakKafkaEventProducer.publish(vedtakHendelse) }
   }
 
   private fun mapVedtakshendelser(
-    vedtakRequest: OpprettVedtakRequest, vedtakId: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
+    vedtakRequest: OpprettVedtakRequestDto, vedtakId: Int, opprettetTimestamp: LocalDateTime):List<VedtakHendelse> {
     val vedtakshendelser = mutableListOf<VedtakHendelse>()
     vedtakRequest.stonadsendringListe?.forEach {
       val vedtakHendelsePeriodeListe = mutableListOf<VedtakHendelsePeriode>()

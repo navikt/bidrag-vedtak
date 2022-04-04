@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.behandling.felles.enums.StonadType
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
+import no.nav.bidrag.vedtak.bo.StonadsendringBo
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -42,11 +41,11 @@ data class Stonadsendring(
   val mottakerId: String = ""
 )
 
-fun Stonadsendring.toStonadsendringDto() = with(::StonadsendringDto) {
+fun Stonadsendring.toStonadsendringDto() = with(::StonadsendringBo) {
   val propertiesByName = Stonadsendring::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      StonadsendringDto::vedtakId.name -> vedtak.vedtakId
+      StonadsendringBo::vedtakId.name -> vedtak.vedtakId
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }
   })

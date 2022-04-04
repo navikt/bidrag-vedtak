@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.EngangsbelopDto
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -51,11 +51,11 @@ data class Engangsbelop(
   val resultatkode: String = ""
 )
 
-fun Engangsbelop.toEngangsbelopDto() = with(::EngangsbelopDto) {
+fun Engangsbelop.toEngangsbelopDto() = with(::EngangsbelopBo) {
   val propertiesByName = Engangsbelop::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      EngangsbelopDto::vedtakId.name -> vedtak.vedtakId
+      EngangsbelopBo::vedtakId.name -> vedtak.vedtakId
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopDto)
     }
   })

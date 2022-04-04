@@ -3,7 +3,7 @@ package no.nav.bidrag.vedtak.api.stonadsendring
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
+import no.nav.bidrag.vedtak.bo.StonadsendringBo
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
@@ -50,13 +50,13 @@ data class OpprettStonadsendringRequest(
   val periodeListe: List<OpprettPeriodeRequest>
 )
 
-fun OpprettStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringDto) {
+fun OpprettStonadsendringRequest.toStonadsendringDto(vedtakId: Int) = with(::StonadsendringBo) {
   val propertiesByName = OpprettStonadsendringRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      StonadsendringDto::vedtakId.name -> vedtakId
-      StonadsendringDto::stonadsendringId.name -> 0
-      StonadsendringDto::stonadType.name -> stonadType.toString()
+      StonadsendringBo::vedtakId.name -> vedtakId
+      StonadsendringBo::stonadsendringId.name -> 0
+      StonadsendringBo::stonadType.name -> stonadType.toString()
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
     }
   })

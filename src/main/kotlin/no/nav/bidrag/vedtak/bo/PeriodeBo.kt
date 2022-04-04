@@ -1,4 +1,4 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Periode
@@ -8,7 +8,7 @@ import java.time.LocalDate
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class PeriodeDto(
+data class PeriodeBo(
 
   @Schema(description = "Periode-id")
   val periodeId: Int = 0,
@@ -32,8 +32,8 @@ data class PeriodeDto(
   val resultatkode: String
 )
 
-fun PeriodeDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
-  val propertiesByName = PeriodeDto::class.memberProperties.associateBy { it.name }
+fun PeriodeBo.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
+  val propertiesByName = PeriodeBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       Periode::stonadsendring.name -> eksisterendeStonadsendring

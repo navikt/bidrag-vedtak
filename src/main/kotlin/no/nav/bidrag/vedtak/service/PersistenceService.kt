@@ -1,21 +1,21 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
-import no.nav.bidrag.vedtak.dto.GrunnlagDto
-import no.nav.bidrag.vedtak.dto.PeriodeDto
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import no.nav.bidrag.vedtak.dto.VedtakDto
-import no.nav.bidrag.vedtak.dto.toBehandlingsreferanseEntity
-import no.nav.bidrag.vedtak.dto.toEngangsbelopEntity
-import no.nav.bidrag.vedtak.dto.toEngangsbelopGrunnlagEntity
-import no.nav.bidrag.vedtak.dto.toGrunnlagEntity
-import no.nav.bidrag.vedtak.dto.toPeriodeEntity
-import no.nav.bidrag.vedtak.dto.toPeriodeGrunnlagEntity
-import no.nav.bidrag.vedtak.dto.toStonadsendringEntity
-import no.nav.bidrag.vedtak.dto.toVedtakEntity
+import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
+import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
+import no.nav.bidrag.vedtak.bo.GrunnlagBo
+import no.nav.bidrag.vedtak.bo.PeriodeBo
+import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.bo.StonadsendringBo
+import no.nav.bidrag.vedtak.bo.VedtakBo
+import no.nav.bidrag.vedtak.bo.toBehandlingsreferanseEntity
+import no.nav.bidrag.vedtak.bo.toEngangsbelopEntity
+import no.nav.bidrag.vedtak.bo.toEngangsbelopGrunnlagEntity
+import no.nav.bidrag.vedtak.bo.toGrunnlagEntity
+import no.nav.bidrag.vedtak.bo.toPeriodeEntity
+import no.nav.bidrag.vedtak.bo.toPeriodeGrunnlagEntity
+import no.nav.bidrag.vedtak.bo.toStonadsendringEntity
+import no.nav.bidrag.vedtak.bo.toVedtakEntity
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseDto
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopDto
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopGrunnlagDto
@@ -47,18 +47,18 @@ class PersistenceService(
   val behandlingsreferanseRepository: BehandlingsreferanseRepository
 ) {
 
-  fun opprettVedtak(dto: VedtakDto): VedtakDto {
+  fun opprettVedtak(dto: VedtakBo): VedtakBo {
     val nyttVedtak = dto.toVedtakEntity()
     val vedtak = vedtakRepository.save(nyttVedtak)
     return vedtak.toVedtakDto()
   }
 
-  fun hentVedtak(id: Int): VedtakDto {
+  fun hentVedtak(id: Int): VedtakBo {
     val vedtak = vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
     return vedtak.toVedtakDto()
   }
 
-  fun opprettStonadsendring(dto: StonadsendringDto): StonadsendringDto {
+  fun opprettStonadsendring(dto: StonadsendringBo): StonadsendringBo {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyStonadsendring = dto.toStonadsendringEntity(eksisterendeVedtak)
@@ -66,14 +66,14 @@ class PersistenceService(
     return stonadsendring.toStonadsendringDto()
   }
 
-  fun hentAlleStonadsendringerForVedtak(id: Int): List<StonadsendringDto> {
-    val stonadsendringDtoListe = mutableListOf<StonadsendringDto>()
+  fun hentAlleStonadsendringerForVedtak(id: Int): List<StonadsendringBo> {
+    val stonadsendringBoListe = mutableListOf<StonadsendringBo>()
     stonadsendringRepository.hentAlleStonadsendringerForVedtak(id)
-      .forEach {stonadsendring -> stonadsendringDtoListe.add(stonadsendring.toStonadsendringDto()) }
-    return stonadsendringDtoListe
+      .forEach {stonadsendring -> stonadsendringBoListe.add(stonadsendring.toStonadsendringDto()) }
+    return stonadsendringBoListe
   }
 
-  fun opprettPeriode(dto: PeriodeDto): PeriodeDto {
+  fun opprettPeriode(dto: PeriodeBo): PeriodeBo {
     val eksisterendeStonadsendring = stonadsendringRepository.findById(dto.stonadsendringId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke stonadsendring med id %d i databasen", dto.stonadsendringId)) }
     val nyPeriode = dto.toPeriodeEntity(eksisterendeStonadsendring)
@@ -81,15 +81,15 @@ class PersistenceService(
     return periode.toPeriodeDto()
   }
 
-  fun hentAllePerioderForStonadsendring(id: Int): List<PeriodeDto> {
-    val periodeDtoListe = mutableListOf<PeriodeDto>()
+  fun hentAllePerioderForStonadsendring(id: Int): List<PeriodeBo> {
+    val periodeBoListe = mutableListOf<PeriodeBo>()
     periodeRepository.hentAllePerioderForStonadsendring(id)
-      .forEach {periode -> periodeDtoListe.add(periode.toPeriodeDto())}
+      .forEach {periode -> periodeBoListe.add(periode.toPeriodeDto())}
 
-    return periodeDtoListe
+    return periodeBoListe
   }
 
-  fun opprettGrunnlag(dto: GrunnlagDto): GrunnlagDto {
+  fun opprettGrunnlag(dto: GrunnlagBo): GrunnlagBo {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyttGrunnlag = dto.toGrunnlagEntity(eksisterendeVedtak)
@@ -97,20 +97,20 @@ class PersistenceService(
     return grunnlag.toGrunnlagDto()
   }
 
-  fun hentGrunnlag(id: Int): GrunnlagDto {
+  fun hentGrunnlag(id: Int): GrunnlagBo {
     val grunnlag = grunnlagRepository.findById(id)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", id)) }
     return grunnlag.toGrunnlagDto()
   }
 
-  fun hentAlleGrunnlagForVedtak(id: Int): List<GrunnlagDto> {
-    val grunnlagDtoListe = mutableListOf<GrunnlagDto>()
+  fun hentAlleGrunnlagForVedtak(id: Int): List<GrunnlagBo> {
+    val grunnlagBoListe = mutableListOf<GrunnlagBo>()
     grunnlagRepository.hentAlleGrunnlagForVedtak(id)
-      .forEach {grunnlag -> grunnlagDtoListe.add(grunnlag.toGrunnlagDto()) }
-    return grunnlagDtoListe
+      .forEach {grunnlag -> grunnlagBoListe.add(grunnlag.toGrunnlagDto()) }
+    return grunnlagBoListe
   }
 
-  fun opprettPeriodeGrunnlag(dto: PeriodeGrunnlagDto): PeriodeGrunnlagDto {
+  fun opprettPeriodeGrunnlag(dto: PeriodeGrunnlagBo): PeriodeGrunnlagBo {
     val eksisterendePeriode = periodeRepository.findById(dto.periodeId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", dto.periodeId)) }
     val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
@@ -121,15 +121,15 @@ class PersistenceService(
     return periodeGrunnlag.toPeriodeGrunnlagDto()
   }
 
-  fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagDto> {
-    val periodeGrunnlagDtoListe = mutableListOf<PeriodeGrunnlagDto>()
+  fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlagBo> {
+    val periodeGrunnlagBoListe = mutableListOf<PeriodeGrunnlagBo>()
     periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
-      .forEach {periodeGrunnlag -> periodeGrunnlagDtoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
+      .forEach {periodeGrunnlag -> periodeGrunnlagBoListe.add(periodeGrunnlag.toPeriodeGrunnlagDto()) }
 
-    return periodeGrunnlagDtoListe
+    return periodeGrunnlagBoListe
   }
 
-  fun opprettEngangsbelop(dto: EngangsbelopDto): EngangsbelopDto {
+  fun opprettEngangsbelop(dto: EngangsbelopBo): EngangsbelopBo {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyttEngangsbelop = dto.toEngangsbelopEntity(eksisterendeVedtak)
@@ -137,14 +137,14 @@ class PersistenceService(
     return engangsbelop.toEngangsbelopDto()
   }
 
-  fun hentAlleEngangsbelopForVedtak(id: Int): List<EngangsbelopDto> {
-    val engangsbelopDtoListe = mutableListOf<EngangsbelopDto>()
+  fun hentAlleEngangsbelopForVedtak(id: Int): List<EngangsbelopBo> {
+    val engangsbelopBoListe = mutableListOf<EngangsbelopBo>()
     engangsbelopRepository.hentAlleEngangsbelopForVedtak(id)
-      .forEach {engangsbelop -> engangsbelopDtoListe.add(engangsbelop.toEngangsbelopDto()) }
-    return engangsbelopDtoListe
+      .forEach {engangsbelop -> engangsbelopBoListe.add(engangsbelop.toEngangsbelopDto()) }
+    return engangsbelopBoListe
   }
 
-  fun opprettEngangsbelopGrunnlag(dto: EngangsbelopGrunnlagDto): EngangsbelopGrunnlagDto {
+  fun opprettEngangsbelopGrunnlag(dto: EngangsbelopGrunnlagBo): EngangsbelopGrunnlagBo {
     val eksisterendeEngangsbelop = engangsbelopRepository.findById(dto.engangsbelopId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbelop med id %d i databasen", dto.engangsbelopId)) }
     val eksisterendeGrunnlag = grunnlagRepository.findById(dto.grunnlagId)
@@ -155,15 +155,15 @@ class PersistenceService(
     return engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()
   }
 
-  fun hentAlleGrunnlagForEngangsbelop(engangsbelopId: Int): List<EngangsbelopGrunnlagDto> {
-    val engangsbelopGrunnlagDtoListe = mutableListOf<EngangsbelopGrunnlagDto>()
+  fun hentAlleGrunnlagForEngangsbelop(engangsbelopId: Int): List<EngangsbelopGrunnlagBo> {
+    val engangsbelopGrunnlagBoListe = mutableListOf<EngangsbelopGrunnlagBo>()
     engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
-      .forEach {engangsbelopGrunnlag -> engangsbelopGrunnlagDtoListe.add(engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()) }
+      .forEach {engangsbelopGrunnlag -> engangsbelopGrunnlagBoListe.add(engangsbelopGrunnlag.toEngangsbelopGrunnlagDto()) }
 
-    return engangsbelopGrunnlagDtoListe
+    return engangsbelopGrunnlagBoListe
   }
 
-  fun opprettBehandlingsreferanse(dto: BehandlingsreferanseDto): BehandlingsreferanseDto {
+  fun opprettBehandlingsreferanse(dto: BehandlingsreferanseBo): BehandlingsreferanseBo {
     val eksisterendeVedtak = vedtakRepository.findById(dto.vedtakId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", dto.vedtakId)) }
     val nyBehandlingsreferanse = dto.toBehandlingsreferanseEntity(eksisterendeVedtak)
@@ -171,11 +171,11 @@ class PersistenceService(
     return behandlingsreferanse.toBehandlingsreferanseDto()
   }
 
-  fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<BehandlingsreferanseDto> {
-    val behandlingsreferanseDtoListe = mutableListOf<BehandlingsreferanseDto>()
+  fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<BehandlingsreferanseBo> {
+    val behandlingsreferanseBoListe = mutableListOf<BehandlingsreferanseBo>()
     behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
-      .forEach {behandlingsreferanse -> behandlingsreferanseDtoListe.add(behandlingsreferanse.toBehandlingsreferanseDto()) }
-    return behandlingsreferanseDtoListe
+      .forEach {behandlingsreferanse -> behandlingsreferanseBoListe.add(behandlingsreferanse.toBehandlingsreferanseDto()) }
+    return behandlingsreferanseBoListe
   }
 
   companion object {

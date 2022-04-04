@@ -1,4 +1,4 @@
-package no.nav.bidrag.vedtak.dto
+package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
@@ -7,7 +7,7 @@ import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import kotlin.reflect.full.memberProperties
 
 @Schema
-data class PeriodeGrunnlagDto(
+data class PeriodeGrunnlagBo(
 
   @Schema(description = "Periode-id")
   val periodeId: Int,
@@ -17,8 +17,8 @@ data class PeriodeGrunnlagDto(
 
 )
 
-fun PeriodeGrunnlagDto.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
-  val propertiesByName = PeriodeGrunnlagDto::class.memberProperties.associateBy { it.name }
+fun PeriodeGrunnlagBo.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
+  val propertiesByName = PeriodeGrunnlagBo::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       PeriodeGrunnlag::periode.name -> eksisterendePeriode

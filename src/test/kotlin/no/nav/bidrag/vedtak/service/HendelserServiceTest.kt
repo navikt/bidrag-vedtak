@@ -6,7 +6,7 @@ import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.model.VedtakHendelse
 import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
@@ -40,7 +40,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -64,7 +64,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelse når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -91,7 +91,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelse med skyldner-id`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -123,7 +123,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -147,7 +147,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),

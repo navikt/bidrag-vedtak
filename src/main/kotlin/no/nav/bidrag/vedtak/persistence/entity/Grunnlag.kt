@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.GrunnlagDto
+import no.nav.bidrag.vedtak.bo.GrunnlagBo
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -33,11 +33,11 @@ data class Grunnlag(
 
   )
 
-fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
+fun Grunnlag.toGrunnlagDto() = with(::GrunnlagBo) {
   val propertiesByName = Grunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      GrunnlagDto::vedtakId.name -> vedtak.vedtakId
+      GrunnlagBo::vedtakId.name -> vedtak.vedtakId
       else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
     }
   })

@@ -9,15 +9,15 @@ import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
 import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
 import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
 import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
-import no.nav.bidrag.vedtak.dto.GrunnlagDto
-import no.nav.bidrag.vedtak.dto.PeriodeDto
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
+import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
+import no.nav.bidrag.vedtak.bo.GrunnlagBo
+import no.nav.bidrag.vedtak.bo.PeriodeBo
+import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.bo.StonadsendringBo
+import no.nav.bidrag.vedtak.bo.VedtakBo
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,7 +26,7 @@ class TestUtil {
 
   companion object {
 
-    fun byggVedtakRequest() = OpprettVedtakRequest(
+    fun byggVedtakRequest() = OpprettVedtakRequestDto(
       vedtakType = VedtakType.MANUELT,
       opprettetAv = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
@@ -226,7 +226,7 @@ class TestUtil {
       enhetId: String = "4812",
       opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
-    ) = VedtakDto(
+    ) = VedtakBo(
       vedtakId = vedtakId,
       vedtakType = vedtakType,
       enhetId = enhetId,
@@ -243,7 +243,7 @@ class TestUtil {
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
       mottakerId: String = "01018211111"
-    ) = StonadsendringDto(
+    ) = StonadsendringBo(
       stonadsendringId = stonadsendringId,
       stonadType = stonadType,
       vedtakId = vedtakId,
@@ -262,7 +262,7 @@ class TestUtil {
       belop: BigDecimal = BigDecimal.valueOf(3520),
       valutakode: String = "NOK",
       resultatkode: String = "KOSTNADSBEREGNET_BIDRAG"
-    ) = PeriodeDto(
+    ) = PeriodeBo(
       periodeId = periodeId,
       periodeFomDato = periodeFomDato,
       periodeTilDato = periodeTilDato,
@@ -278,7 +278,7 @@ class TestUtil {
       vedtakId: Int = (1..100).random(),
       type: String = GrunnlagType.INNTEKT.toString(),
       innhold: String = "Innhold"
-    ) = GrunnlagDto(
+    ) = GrunnlagBo(
       grunnlagId = grunnlagId,
       referanse = grunnlagReferanse,
       vedtakId = vedtakId,
@@ -289,7 +289,7 @@ class TestUtil {
     fun byggPeriodeGrunnlagDto(
       periodeId: Int = (1..100).random(),
       grunnlagId: Int = (1..100).random()
-    ) = PeriodeGrunnlagDto(
+    ) = PeriodeGrunnlagBo(
       periodeId = periodeId,
       grunnlagId = grunnlagId
     )
@@ -306,7 +306,7 @@ class TestUtil {
       belop: BigDecimal = BigDecimal.valueOf(3490),
       valutakode: String = "NOK",
       resultatkode: String = "SAERTILSKUDD BEREGNET"
-    ) = EngangsbelopDto(
+    ) = EngangsbelopBo(
       engangsbelopId = engangsbelopId,
       vedtakId = vedtakId,
       lopenr = lopenr,
@@ -323,7 +323,7 @@ class TestUtil {
     fun byggEngangsbelopGrunnlagDto(
       engangsbelopId: Int = (1..100).random(),
       grunnlagId: Int = (1..100).random()
-    ) = EngangsbelopGrunnlagDto(
+    ) = EngangsbelopGrunnlagBo(
       engangsbelopId = engangsbelopId,
       grunnlagId = grunnlagId
     )
@@ -333,7 +333,7 @@ class TestUtil {
       vedtakId: Int = (1..100).random(),
       kilde: String = "Bisys",
       referanse: String = "Bisysreferanse01"
-    ) = BehandlingsreferanseDto(
+    ) = BehandlingsreferanseBo(
       behandlingsreferanseId = behandlingsreferanseId,
       vedtakId = vedtakId,
       kilde = kilde,

@@ -1,7 +1,7 @@
 package no.nav.bidrag.vedtak.api.periodegrunnlag
 
 import io.swagger.v3.oas.annotations.media.Schema
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
+import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import javax.validation.constraints.Min
 import kotlin.reflect.full.memberProperties
 
@@ -17,12 +17,12 @@ data class OpprettPeriodeGrunnlagRequest(
   val grunnlagId: Int
 )
 
-fun OpprettPeriodeGrunnlagRequest.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagDto) {
+fun OpprettPeriodeGrunnlagRequest.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagBo) {
   val propertiesByName = OpprettPeriodeGrunnlagRequest::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      PeriodeGrunnlagDto::periodeId.name -> periodeId
-      PeriodeGrunnlagDto::grunnlagId.name -> grunnlagId
+      PeriodeGrunnlagBo::periodeId.name -> periodeId
+      PeriodeGrunnlagBo::grunnlagId.name -> grunnlagId
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
     }
   })
