@@ -40,12 +40,12 @@ data class Periode(
   val resultatkode: String = ""
 )
 
-  fun Periode.toPeriodeDto() = with(::PeriodeBo) {
+  fun Periode.toPeriodeBo() = with(::PeriodeBo) {
     val propertiesByName = Periode::class.memberProperties.associateBy { it.name }
     callBy(parameters.associateWith { parameter ->
       when (parameter.name) {
         PeriodeBo::stonadsendringId.name -> stonadsendring.stonadsendringId
-        else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
+        else -> propertiesByName[parameter.name]?.get(this@toPeriodeBo)
       }
     })
 

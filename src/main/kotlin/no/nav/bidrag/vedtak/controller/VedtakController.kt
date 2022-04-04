@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.vedtak.ISSUER
-import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -58,7 +58,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ]
   )
 
-  fun hentVedtak(@PathVariable @NotNull vedtakId: Int): ResponseEntity<HentVedtakResponse> {
+  fun hentVedtak(@PathVariable @NotNull vedtakId: Int): ResponseEntity<VedtakDto> {
     val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
     LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
     return ResponseEntity(vedtakFunnet, HttpStatus.OK)

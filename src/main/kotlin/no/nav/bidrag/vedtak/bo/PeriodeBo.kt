@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import java.math.BigDecimal
@@ -31,6 +32,18 @@ data class PeriodeBo(
   @Schema(description = "Resultatkoden tilhørende stønadsbeløpet")
   val resultatkode: String
 )
+
+fun OpprettVedtakPeriodeRequestDto.toPeriodeBo(stonadsendringId: Int) = with(::PeriodeBo) {
+  val propertiesByName = OpprettVedtakPeriodeRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      PeriodeBo::stonadsendringId.name -> stonadsendringId
+      PeriodeBo::periodeId.name -> 0
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeBo)
+    }
+  })
+}
+
 
 fun PeriodeBo.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
   val propertiesByName = PeriodeBo::class.memberProperties.associateBy { it.name }

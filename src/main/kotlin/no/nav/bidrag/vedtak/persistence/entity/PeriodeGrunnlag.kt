@@ -27,13 +27,13 @@ data class PeriodeGrunnlag(
 
 )
 
-fun PeriodeGrunnlag.toPeriodeGrunnlagDto() = with(::PeriodeGrunnlagBo) {
+fun PeriodeGrunnlag.toPeriodeGrunnlagBo() = with(::PeriodeGrunnlagBo) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       PeriodeGrunnlagBo::periodeId.name -> periode.periodeId
       PeriodeGrunnlagBo::grunnlagId.name -> grunnlag.grunnlagId
-      else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagDto)
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagBo)
     }
   })
 }

@@ -34,12 +34,12 @@ data class Vedtak (
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
-fun Vedtak.toVedtakDto() = with(::VedtakBo) {
+fun Vedtak.toVedtakBo() = with(::VedtakBo) {
   val propertiesByName = Vedtak::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       VedtakBo::vedtakType.name -> vedtakType.toString()
-      else -> propertiesByName[parameter.name]?.get(this@toVedtakDto)
+      else -> propertiesByName[parameter.name]?.get(this@toVedtakBo)
     }
   })
 }

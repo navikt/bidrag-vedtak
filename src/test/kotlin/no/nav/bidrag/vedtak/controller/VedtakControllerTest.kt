@@ -1,11 +1,11 @@
 package no.nav.bidrag.vedtak.controller
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
-import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.VedtakBo
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
@@ -158,7 +158,7 @@ class VedtakControllerTest {
       "${fullUrlForHentVedtak()}/${nyttVedtakOpprettet}",
       HttpMethod.GET,
       null,
-      HentVedtakResponse::class.java
+      VedtakDto::class.java
     )
 
     assertAll(

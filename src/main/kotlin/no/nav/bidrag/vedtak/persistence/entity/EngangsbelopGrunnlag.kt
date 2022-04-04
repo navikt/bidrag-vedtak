@@ -27,13 +27,13 @@ data class EngangsbelopGrunnlag(
 
 )
 
-fun EngangsbelopGrunnlag.toEngangsbelopGrunnlagDto() = with(::EngangsbelopGrunnlagBo) {
+fun EngangsbelopGrunnlag.toEngangsbelopGrunnlagBo() = with(::EngangsbelopGrunnlagBo) {
   val propertiesByName = EngangsbelopGrunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       EngangsbelopGrunnlagBo::engangsbelopId.name -> engangsbelop.engangsbelopId
       EngangsbelopGrunnlagBo::grunnlagId.name -> grunnlag.grunnlagId
-      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopGrunnlagDto)
+      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopGrunnlagBo)
     }
   })
 }

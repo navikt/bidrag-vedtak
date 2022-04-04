@@ -41,12 +41,12 @@ data class Stonadsendring(
   val mottakerId: String = ""
 )
 
-fun Stonadsendring.toStonadsendringDto() = with(::StonadsendringBo) {
+fun Stonadsendring.toStonadsendringBo() = with(::StonadsendringBo) {
   val propertiesByName = Stonadsendring::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       StonadsendringBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringDto)
+      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringBo)
     }
   })
 }

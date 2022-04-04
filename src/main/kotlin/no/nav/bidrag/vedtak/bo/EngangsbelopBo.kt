@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.math.BigDecimal
@@ -42,6 +43,19 @@ data class EngangsbelopBo(
   @Schema(description = "Resultatkoden tilhørende engangsbeløpet")
   val resultatkode: String,
 )
+
+
+fun OpprettEngangsbelopRequestDto.toEngangsbelopBo(vedtakId: Int, lopenr: Int) = with(::EngangsbelopBo) {
+  val propertiesByName = OpprettEngangsbelopRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      EngangsbelopBo::vedtakId.name -> vedtakId
+      EngangsbelopBo::engangsbelopId.name -> 0
+      EngangsbelopBo::lopenr.name -> lopenr
+      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopBo)
+    }
+  })
+}
 
 fun EngangsbelopBo.toEngangsbelopEntity(eksisterendeVedtak: Vedtak) = with(::Engangsbelop) {
   val propertiesByName = EngangsbelopBo::class.memberProperties.associateBy { it.name }

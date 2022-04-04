@@ -1,31 +1,31 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.BehandlingsreferanseDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.EngangsbelopDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.GrunnlagDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettBehandlingsreferanseRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettGrunnlagRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.StonadsendringDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakPeriodeDto
 import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
-import no.nav.bidrag.vedtak.api.behandlingsreferanse.HentBehandlingsreferanseResponse
-import no.nav.bidrag.vedtak.api.behandlingsreferanse.OpprettBehandlingsreferanseRequest
-import no.nav.bidrag.vedtak.api.behandlingsreferanse.toBehandlingsreferanseDto
-import no.nav.bidrag.vedtak.api.engangsbelop.HentEngangsbelopResponse
-import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
-import no.nav.bidrag.vedtak.api.engangsbelop.toEngangsbelopDto
-import no.nav.bidrag.vedtak.api.grunnlag.HentGrunnlagResponse
-import no.nav.bidrag.vedtak.api.grunnlag.OpprettGrunnlagRequest
-import no.nav.bidrag.vedtak.api.grunnlag.toGrunnlagDto
-import no.nav.bidrag.vedtak.api.periode.HentPeriodeResponse
-import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
-import no.nav.bidrag.vedtak.api.periode.toPeriodeDto
-import no.nav.bidrag.vedtak.api.stonadsendring.HentStonadsendringResponse
-import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.stonadsendring.toStonadsendringDto
-import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StonadsendringBo
 import no.nav.bidrag.vedtak.bo.VedtakBo
+import no.nav.bidrag.vedtak.bo.toBehandlingsreferanseBo
+import no.nav.bidrag.vedtak.bo.toEngangsbelopBo
+import no.nav.bidrag.vedtak.bo.toGrunnlagBo
+import no.nav.bidrag.vedtak.bo.toPeriodeBo
+import no.nav.bidrag.vedtak.bo.toStonadsendringBo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,26 +34,26 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
 
-  fun hentVedtak(vedtakId: Int): HentVedtakResponse {
+  fun hentVedtak(vedtakId: Int): VedtakDto {
     val vedtakDto = persistenceService.hentVedtak(vedtakId)
-    val grunnlagResponseListe = ArrayList<HentGrunnlagResponse>()
+    val grunnlagResponseListe = ArrayList<GrunnlagDto>()
     val grunnlagDtoListe = persistenceService.hentAlleGrunnlagForVedtak(vedtakDto.vedtakId)
     grunnlagDtoListe.forEach {
       grunnlagResponseListe.add(
-        HentGrunnlagResponse(it.grunnlagId, it.referanse, GrunnlagType.valueOf(it.type), it.innhold)
+        GrunnlagDto(it.grunnlagId, it.referanse, GrunnlagType.valueOf(it.type), it.innhold)
       )
     }
     val stonadsendringDtoListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakDto.vedtakId)
     val engangsbelopDtoListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakDto.vedtakId)
-    val behandlingsreferanseResponseListe = ArrayList<HentBehandlingsreferanseResponse>()
+    val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
     val behandlingsreferanseDtoListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtakDto.vedtakId)
     behandlingsreferanseDtoListe.forEach {
       behandlingsreferanseResponseListe.add(
-        HentBehandlingsreferanseResponse(it.kilde, it.referanse)
+        BehandlingsreferanseDto(it.kilde, it.referanse)
       )
     }
 
-    return HentVedtakResponse(
+    return VedtakDto(
       vedtakDto.vedtakId,
       VedtakType.valueOf(vedtakDto.vedtakType),
       vedtakDto.opprettetAv,
@@ -67,12 +67,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     )
   }
 
-  private fun finnStonadsendringerTilVedtak(stonadsendringBoListe: List<StonadsendringBo>): List<HentStonadsendringResponse> {
-    val stonadsendringResponseListe = ArrayList<HentStonadsendringResponse>()
+  private fun finnStonadsendringerTilVedtak(stonadsendringBoListe: List<StonadsendringBo>): List<StonadsendringDto> {
+    val stonadsendringResponseListe = ArrayList<StonadsendringDto>()
     stonadsendringBoListe.forEach {
       val periodeDtoListe = persistenceService.hentAllePerioderForStonadsendring(it.stonadsendringId)
       stonadsendringResponseListe.add(
-        HentStonadsendringResponse(
+        StonadsendringDto(
           StonadType.valueOf(it.stonadType),
           it.sakId,
           it.behandlingId,
@@ -86,8 +86,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     return stonadsendringResponseListe
   }
 
-  private fun finnPerioderTilVedtak(periodeBoListe: List<PeriodeBo>): List<HentPeriodeResponse> {
-    val periodeResponseListe = ArrayList<HentPeriodeResponse>()
+  private fun finnPerioderTilVedtak(periodeBoListe: List<PeriodeBo>): List<VedtakPeriodeDto> {
+    val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
     periodeBoListe.forEach { dto ->
       val grunnlagReferanseResponseListe = ArrayList<String>()
       val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.periodeId)
@@ -96,7 +96,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         grunnlagReferanseResponseListe.add(grunnlag.referanse)
       }
       periodeResponseListe.add(
-        HentPeriodeResponse(
+        VedtakPeriodeDto(
           dto.periodeFomDato,
           dto.periodeTilDato,
           dto.belop,
@@ -109,8 +109,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     return periodeResponseListe
   }
 
-  private fun finnEngangsbelopTilVedtak(engangsbelopBoListe: List<EngangsbelopBo>): List<HentEngangsbelopResponse> {
-    val engangsbelopResponseListe = ArrayList<HentEngangsbelopResponse>()
+  private fun finnEngangsbelopTilVedtak(engangsbelopBoListe: List<EngangsbelopBo>): List<EngangsbelopDto> {
+    val engangsbelopResponseListe = ArrayList<EngangsbelopDto>()
     engangsbelopBoListe.forEach { dto ->
       val grunnlagReferanseResponseListe = ArrayList<String>()
       val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.engangsbelopId)
@@ -119,7 +119,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         grunnlagReferanseResponseListe.add(grunnlag.referanse)
       }
       engangsbelopResponseListe.add(
-        HentEngangsbelopResponse(
+        EngangsbelopDto(
           dto.engangsbelopId,
           dto.lopenr,
           dto.endrerEngangsbelopId,
@@ -176,20 +176,20 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett grunnlag
-  private fun opprettGrunnlag(grunnlagRequest: OpprettGrunnlagRequest, vedtakId: Int) =
-    persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagDto(vedtakId))
+  private fun opprettGrunnlag(grunnlagRequest: OpprettGrunnlagRequestDto, vedtakId: Int) =
+    persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagBo(vedtakId))
 
   // Opprett stønadsendring
-  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequest, vedtakId: Int, grunnlagIdRefMap: Map<String, Int>) {
-    val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringDto(vedtakId))
+  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequestDto, vedtakId: Int, grunnlagIdRefMap: Map<String, Int>) {
+    val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringBo(vedtakId))
 
     // Periode
     stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring.stonadsendringId, grunnlagIdRefMap) }
   }
 
   // Opprett Engangsbelop
-  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequest, vedtakId: Int, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) {
-    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopDto(vedtakId, lopenr))
+  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtakId: Int, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) {
+    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopBo(vedtakId, lopenr))
 
     // EngangsbelopGrunnlag
     engangsbelopRequest.grunnlagReferanseListe.forEach {
@@ -209,8 +209,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett periode
-  private fun opprettPeriode(periodeRequest: OpprettPeriodeRequest, stonadsendringId: Int, grunnlagIdRefMap: Map<String, Int>) {
-    val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeDto(stonadsendringId))
+  private fun opprettPeriode(periodeRequest: OpprettVedtakPeriodeRequestDto, stonadsendringId: Int, grunnlagIdRefMap: Map<String, Int>) {
+    val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeBo(stonadsendringId))
 
     // PeriodeGrunnlag
     periodeRequest.grunnlagReferanseListe.forEach {
@@ -230,8 +230,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett behandlingsreferanse
-  private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequest, vedtakId: Int) =
-    persistenceService.opprettBehandlingsreferanse(behandlingsreferanseRequest.toBehandlingsreferanseDto(vedtakId)
+  private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequestDto, vedtakId: Int) =
+    persistenceService.opprettBehandlingsreferanse(behandlingsreferanseRequest.toBehandlingsreferanseBo(vedtakId)
     )
 
   companion object {

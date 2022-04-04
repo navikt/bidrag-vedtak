@@ -33,12 +33,12 @@ data class Grunnlag(
 
   )
 
-fun Grunnlag.toGrunnlagDto() = with(::GrunnlagBo) {
+fun Grunnlag.toGrunnlagBo() = with(::GrunnlagBo) {
   val propertiesByName = Grunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       GrunnlagBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
+      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagBo)
     }
   })
 }

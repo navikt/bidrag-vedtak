@@ -29,12 +29,12 @@ data class Behandlingsreferanse(
   val referanse: String = ""
 )
 
-fun Behandlingsreferanse.toBehandlingsreferanseDto() = with(::BehandlingsreferanseBo) {
+fun Behandlingsreferanse.toBehandlingsreferanseBo() = with(::BehandlingsreferanseBo) {
   val propertiesByName = Behandlingsreferanse::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       BehandlingsreferanseBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseDto)
+      else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseBo)
     }
   })
 }

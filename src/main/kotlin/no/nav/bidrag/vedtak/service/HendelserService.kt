@@ -1,9 +1,9 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelsePeriode
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
-import no.nav.bidrag.vedtak.model.VedtakHendelse
-import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime

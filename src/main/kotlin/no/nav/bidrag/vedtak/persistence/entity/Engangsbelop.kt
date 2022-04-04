@@ -51,12 +51,12 @@ data class Engangsbelop(
   val resultatkode: String = ""
 )
 
-fun Engangsbelop.toEngangsbelopDto() = with(::EngangsbelopBo) {
+fun Engangsbelop.toEngangsbelopBo() = with(::EngangsbelopBo) {
   val propertiesByName = Engangsbelop::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       EngangsbelopBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopDto)
+      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopBo)
     }
   })
 }
