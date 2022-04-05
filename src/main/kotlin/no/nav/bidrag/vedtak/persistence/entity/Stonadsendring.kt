@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
 import no.nav.bidrag.vedtak.bo.StonadsendringBo
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -40,6 +41,16 @@ data class Stonadsendring(
   @Column(nullable = false, name = "mottaker_id")
   val mottakerId: String = ""
 )
+
+fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
+  val propertiesByName = OpprettStonadsendringRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      Stonadsendring::vedtak.name -> eksisterendeVedtak
+      else -> propertiesByName[parameter.name]?.get(this@toStonadsendringEntity)
+    }
+  })
+}
 
 fun Stonadsendring.toStonadsendringBo() = with(::StonadsendringBo) {
   val propertiesByName = Stonadsendring::class.memberProperties.associateBy { it.name }

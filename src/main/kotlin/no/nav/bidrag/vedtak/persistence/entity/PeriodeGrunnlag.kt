@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeGrunnlagRequestDto
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import java.io.Serializable
 import javax.persistence.Entity
@@ -26,6 +27,18 @@ data class PeriodeGrunnlag(
   val grunnlag: Grunnlag = Grunnlag()
 
 )
+
+fun OpprettVedtakPeriodeGrunnlagRequestDto.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
+  val propertiesByName = OpprettVedtakPeriodeGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      PeriodeGrunnlag::periode.name -> eksisterendePeriode
+      PeriodeGrunnlag::grunnlag.name -> eksisterendeGrunnlag
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagEntity)
+    }
+  })
+}
+
 
 fun PeriodeGrunnlag.toPeriodeGrunnlagBo() = with(::PeriodeGrunnlagBo) {
   val propertiesByName = PeriodeGrunnlag::class.memberProperties.associateBy { it.name }

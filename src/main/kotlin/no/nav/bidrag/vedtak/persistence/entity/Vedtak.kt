@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.VedtakBo
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,6 +34,15 @@ data class Vedtak (
   @Column(nullable = false, name = "opprettet_timestamp")
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
 )
+
+fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
+  val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
+    }
+  })
+}
 
 fun Vedtak.toVedtakBo() = with(::VedtakBo) {
   val propertiesByName = Vedtak::class.memberProperties.associateBy { it.name }
