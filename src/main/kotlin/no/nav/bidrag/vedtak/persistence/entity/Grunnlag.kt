@@ -1,7 +1,9 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.bidrag.behandling.felles.dto.vedtak.GrunnlagDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettGrunnlagRequestDto
-import no.nav.bidrag.vedtak.bo.GrunnlagBo
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -49,12 +51,17 @@ fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag
 }
 
 
-fun Grunnlag.toGrunnlagEntity() = with(::GrunnlagBo) {
+fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
   val propertiesByName = Grunnlag::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      GrunnlagBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
+      GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
+      else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
     }
   })
+}
+
+private fun stringTilJsonNode(innhold: String): JsonNode {
+  val mapper = ObjectMapper()
+  return mapper.readTree(innhold)
 }

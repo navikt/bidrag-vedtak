@@ -10,14 +10,16 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
-import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
-import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
-import no.nav.bidrag.vedtak.bo.GrunnlagBo
-import no.nav.bidrag.vedtak.bo.PeriodeBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
-import no.nav.bidrag.vedtak.bo.StonadsendringBo
-import no.nav.bidrag.vedtak.bo.VedtakBo
+import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
+import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
+import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Periode
+import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
+import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -220,33 +222,34 @@ class TestUtil {
     )
 
 
-    fun byggVedtakDto(
+    fun byggVedtak(
       vedtakId: Int = (1..100).random(),
       vedtakType: String = VedtakType.MANUELT.toString(),
       enhetId: String = "4812",
+      vedtakDato: LocalDate = LocalDate.now(),
       opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
-    ) = VedtakBo(
+    ) = Vedtak(
       vedtakId = vedtakId,
       vedtakType = vedtakType,
       enhetId = enhetId,
+      vedtakDato = vedtakDato,
       opprettetAv = opprettetAv,
       opprettetTimestamp = opprettetTimestamp!!
     )
 
-    fun byggStonadsendringDto(
+    fun byggStonadsendring(
       stonadsendringId: Int = (1..100).random(),
       stonadType: String = StonadType.BIDRAG.toString(),
-      vedtakId: Int = (1..100).random(),
       sakId: String = "SAK-001",
       behandlingId: String = "Fritekst",
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
       mottakerId: String = "01018211111"
-    ) = StonadsendringBo(
+    ) = Stonadsendring(
       stonadsendringId = stonadsendringId,
       stonadType = stonadType,
-      vedtakId = vedtakId,
+      vedtak = byggVedtak(),
       sakId = sakId,
       behandlingId = behandlingId,
       skyldnerId = skyldnerId,
@@ -254,49 +257,55 @@ class TestUtil {
       mottakerId = mottakerId
     )
 
-    fun byggPeriodeDto(
+    fun byggPeriode(
       periodeId: Int = (1..100).random(),
       periodeFomDato: LocalDate = LocalDate.parse("2019-07-01"),
       periodeTilDato: LocalDate? = LocalDate.parse("2020-01-01"),
-      stonadsendringId: Int = (1..100).random(),
       belop: BigDecimal = BigDecimal.valueOf(3520),
       valutakode: String = "NOK",
       resultatkode: String = "KOSTNADSBEREGNET_BIDRAG"
-    ) = PeriodeBo(
+    ) = Periode(
       periodeId = periodeId,
       periodeFomDato = periodeFomDato,
       periodeTilDato = periodeTilDato,
-      stonadsendringId = stonadsendringId,
+      stonadsendring = byggStonadsendring(),
       belop = belop,
       valutakode = valutakode,
       resultatkode = resultatkode
     )
 
-    fun byggGrunnlagDto(
+    fun byggGrunnlag(
       grunnlagId: Int = (1..100).random(),
       grunnlagReferanse: String = "BM-LIGN-19",
-      vedtakId: Int = (1..100).random(),
+      vedtak: Vedtak = byggVedtak(),
       type: String = GrunnlagType.INNTEKT.toString(),
       innhold: String = "Innhold"
-    ) = GrunnlagBo(
+    ) = Grunnlag(
       grunnlagId = grunnlagId,
       referanse = grunnlagReferanse,
-      vedtakId = vedtakId,
+      vedtak = vedtak,
       type = type,
       innhold = innhold
     )
 
-    fun byggPeriodeGrunnlagDto(
-      periodeId: Int = (1..100).random(),
-      grunnlagId: Int = (1..100).random()
+    fun byggPeriodeGrunnlagBo(
+      periodeId: Int = byggPeriode().periodeId,
+      grunnlagId: Int = byggGrunnlag().grunnlagId
     ) = PeriodeGrunnlagBo(
       periodeId = periodeId,
       grunnlagId = grunnlagId
     )
 
-    fun byggEngangsbelopDto(
+    fun byggPeriodeGrunnlag(
+      periode: Periode = byggPeriode(),
+      grunnlag: Grunnlag = byggGrunnlag()
+    ) = PeriodeGrunnlag(
+      periode = periode,
+      grunnlag = grunnlag
+    )
+
+    fun byggEngangsbelop(
       engangsbelopId: Int = (1..100).random(),
-      vedtakId: Int = (1..100).random(),
       lopenr: Int = (1..100).random(),
       endrerEngangsbelopId: Int? = null,
       type: String = "SAERTILSKUDD",
@@ -306,9 +315,9 @@ class TestUtil {
       belop: BigDecimal = BigDecimal.valueOf(3490),
       valutakode: String = "NOK",
       resultatkode: String = "SAERTILSKUDD BEREGNET"
-    ) = EngangsbelopBo(
+    ) = Engangsbelop(
       engangsbelopId = engangsbelopId,
-      vedtakId = vedtakId,
+      vedtak = byggVedtak(),
       lopenr = lopenr,
       endrerEngangsbelopId = endrerEngangsbelopId,
       type = type,
@@ -320,7 +329,7 @@ class TestUtil {
       resultatkode = resultatkode
     )
 
-    fun byggEngangsbelopGrunnlagDto(
+    fun byggEngangsbelopGrunnlagBo(
       engangsbelopId: Int = (1..100).random(),
       grunnlagId: Int = (1..100).random()
     ) = EngangsbelopGrunnlagBo(
@@ -328,14 +337,22 @@ class TestUtil {
       grunnlagId = grunnlagId
     )
 
-    fun byggBehandlingsreferanseDto(
+    fun byggEngangsbelopGrunnlag(
+      engangsbelop: Engangsbelop = byggEngangsbelop(),
+      grunnlag: Grunnlag = byggGrunnlag(),
+    ) = EngangsbelopGrunnlag(
+      engangsbelop = engangsbelop,
+      grunnlag = grunnlag
+    )
+
+    fun byggBehandlingsreferanse(
       behandlingsreferanseId: Int = (1..100).random(),
-      vedtakId: Int = (1..100).random(),
+      vedtak: Vedtak = byggVedtak(),
       kilde: String = "Bisys",
       referanse: String = "Bisysreferanse01"
-    ) = BehandlingsreferanseBo(
+    ) = Behandlingsreferanse(
       behandlingsreferanseId = behandlingsreferanseId,
-      vedtakId = vedtakId,
+      vedtak = vedtak,
       kilde = kilde,
       referanse = referanse
     )

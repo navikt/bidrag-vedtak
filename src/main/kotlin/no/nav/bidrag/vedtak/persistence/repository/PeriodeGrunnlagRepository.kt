@@ -9,11 +9,13 @@ interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGru
 
   @Query(
     "select pg from PeriodeGrunnlag pg " +
-        "where pg.periode.periodeId = :periodeId and pg.grunnlag.grunnlagId = :grunnlagId")
+        "where pg.periode.periodeId = :periodeId and pg.grunnlag.grunnlagId = :grunnlagId"
+  )
   fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlag
 
   @Query(
-    "select pg from PeriodeGrunnlag pg where pg.periode.periodeId = :periodeId")
+    "select pg from PeriodeGrunnlag pg where pg.periode.periodeId = :periodeId"
+  )
   fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlag>
 
 }

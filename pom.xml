@@ -34,7 +34,7 @@
     <jackson-datatype-jsr310.version>2.13.2</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>1.6.6</springdoc-openapi-ui.version>
     <bidrag-behandling-felles.version>0.0.9</bidrag-behandling-felles.version>
-    <bidrag-behandling-felles-dto.version>0.0.8</bidrag-behandling-felles-dto.version>
+    <bidrag-behandling-felles-dto.version>0.0.9</bidrag-behandling-felles-dto.version>
 
   </properties>
 
