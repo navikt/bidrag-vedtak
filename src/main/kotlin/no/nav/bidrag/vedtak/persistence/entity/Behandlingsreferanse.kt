@@ -34,6 +34,7 @@ fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksistere
   val propertiesByName = OpprettBehandlingsreferanseRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      Behandlingsreferanse::behandlingsreferanseId.name -> 0
       Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
     }

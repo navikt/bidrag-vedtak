@@ -279,7 +279,14 @@ class TestUtil {
       grunnlagReferanse: String = "BM-LIGN-19",
       vedtak: Vedtak = byggVedtak(),
       type: String = GrunnlagType.INNTEKT.toString(),
-      innhold: String = "Innhold"
+      innhold: String =
+          """{
+          "rolle": "BIDRAGSMOTTAKER",
+          "datoFom": "2021-01-01",
+            "datoTil": null,
+         "sivilstandKode": "sivilstandkode1"
+        }"""
+
     ) = Grunnlag(
       grunnlagId = grunnlagId,
       referanse = grunnlagReferanse,

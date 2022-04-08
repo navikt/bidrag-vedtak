@@ -46,6 +46,8 @@ fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: V
   val propertiesByName = OpprettStonadsendringRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      Stonadsendring::stonadsendringId.name -> 0
+      Stonadsendring::stonadType.name -> stonadType.toString()
       Stonadsendring::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringEntity)
     }

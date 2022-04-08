@@ -45,6 +45,7 @@ fun OpprettVedtakPeriodeRequestDto.toPeriodeEntity(eksisterendeStonadsendring: S
   val propertiesByName = OpprettVedtakPeriodeRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      Periode::periodeId.name -> 0
       Periode::stonadsendring.name -> eksisterendeStonadsendring
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
     }

@@ -88,10 +88,10 @@ class VedtakServiceMockTest {
       .thenReturn(byggPeriode())
     Mockito.`when`(persistenceServiceMock.opprettGrunnlag(MockitoHelper.capture(grunnlagCaptor)))
       .thenReturn(byggGrunnlag())
-    Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagBoCaptor)).toPeriodeGrunnlagBo())
-      .thenReturn(byggPeriodeGrunnlagBo())
-    Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagBoCaptor)).toEngangsbelopGrunnlagBo())
-      .thenReturn(byggEngangsbelopGrunnlagBo())
+    Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagBoCaptor)))
+      .thenReturn(byggPeriodeGrunnlag())
+    Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagBoCaptor)))
+      .thenReturn(byggEngangsbelopGrunnlag())
     Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
       .thenReturn(byggBehandlingsreferanse())
 
@@ -252,7 +252,7 @@ class VedtakServiceMockTest {
     )
     Mockito.`when`(persistenceServiceMock.hentAlleEngangsbelopForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
       listOf(
-        byggEngangsbelop(engangsbelopId =  1, 0,null, "SAERTILSKUDD",
+        byggEngangsbelop(engangsbelopId =  1, 1,null, "SAERTILSKUDD",
           "01018011111", "01010511111", "01018211111", BigDecimal.valueOf(3490),
           "NOK", "SAERTILSKUDD BEREGNET")
       )

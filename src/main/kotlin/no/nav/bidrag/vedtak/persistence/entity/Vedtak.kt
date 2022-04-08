@@ -39,6 +39,9 @@ fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
   val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      Vedtak::vedtakId.name -> 0
+      Vedtak::vedtakType.name -> vedtakType.toString()
+      Vedtak::opprettetTimestamp.name -> LocalDateTime.now()
       else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
     }
   })

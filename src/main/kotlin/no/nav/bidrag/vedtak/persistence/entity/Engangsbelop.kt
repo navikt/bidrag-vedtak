@@ -56,6 +56,7 @@ fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedta
   val propertiesByName = OpprettEngangsbelopRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
+      Engangsbelop::engangsbelopId.name -> 0
       Engangsbelop::vedtak.name -> eksisterendeVedtak
       Engangsbelop::lopenr.name -> lopenr
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)
