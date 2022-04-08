@@ -27,15 +27,4 @@ data class EngangsbelopGrunnlag(
 
 )
 
-fun EngangsbelopGrunnlag.toEngangsbelopGrunnlagBo() = with(::EngangsbelopGrunnlagBo) {
-  val propertiesByName = EngangsbelopGrunnlag::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      EngangsbelopGrunnlagBo::engangsbelopId.name -> engangsbelop.engangsbelopId
-      EngangsbelopGrunnlagBo::grunnlagId.name -> grunnlag.grunnlagId
-      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopGrunnlagBo)
-    }
-  })
-}
-
 class EngangsbelopGrunnlagPK(val engangsbelop: Int = 0, val grunnlag: Int = 0) : Serializable

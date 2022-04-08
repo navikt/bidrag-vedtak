@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettBehandlingsreferanseRequestDto
-import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -37,16 +36,6 @@ fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksistere
       Behandlingsreferanse::behandlingsreferanseId.name -> 0
       Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
-    }
-  })
-}
-
-fun Behandlingsreferanse.toBehandlingsreferanseBo() = with(::BehandlingsreferanseBo) {
-  val propertiesByName = Behandlingsreferanse::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      BehandlingsreferanseBo::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseBo)
     }
   })
 }

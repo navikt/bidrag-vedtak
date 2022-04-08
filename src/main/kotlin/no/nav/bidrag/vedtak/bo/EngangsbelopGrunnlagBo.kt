@@ -16,16 +16,3 @@ data class EngangsbelopGrunnlagBo(
   val grunnlagId: Int
 
 )
-
-fun EngangsbelopGrunnlagBo.toEngangsbelopGrunnlagEntity(
-  eksisterendeEngangsbelop: Engangsbelop, eksisterendeGrunnlag: Grunnlag) = with(::EngangsbelopGrunnlag) {
-
-  val propertiesByName = EngangsbelopGrunnlagBo::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      EngangsbelopGrunnlag::engangsbelop.name -> eksisterendeEngangsbelop
-      EngangsbelopGrunnlag::grunnlag.name -> eksisterendeGrunnlag
-      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopGrunnlagEntity)
-    }
-  })
-}

@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
-import no.nav.bidrag.vedtak.bo.VedtakBo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.Column
@@ -43,16 +42,6 @@ fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
       Vedtak::vedtakType.name -> vedtakType.toString()
       Vedtak::opprettetTimestamp.name -> LocalDateTime.now()
       else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
-    }
-  })
-}
-
-fun Vedtak.toVedtakBo() = with(::VedtakBo) {
-  val propertiesByName = Vedtak::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      VedtakBo::vedtakType.name -> vedtakType.toString()
-      else -> propertiesByName[parameter.name]?.get(this@toVedtakBo)
     }
   })
 }

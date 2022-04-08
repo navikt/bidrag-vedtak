@@ -1,7 +1,5 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.vedtak.bo.BehandlingsreferanseBo
-import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
@@ -12,8 +10,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
-import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseBo
-import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopBo
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
