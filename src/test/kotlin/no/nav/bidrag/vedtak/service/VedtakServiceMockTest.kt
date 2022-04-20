@@ -1,23 +1,23 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.behandling.felles.enums.VedtakType
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanseDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopGrunnlagDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggGrunnlagDto
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanse
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelop
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopGrunnlag
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggGrunnlag
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriode
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeGrunnlag
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggStonadsendring
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtak
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggPeriodeGrunnlagDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggStonadsendringDto
-import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakDto
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopDto
-import no.nav.bidrag.vedtak.dto.EngangsbelopGrunnlagDto
-import no.nav.bidrag.vedtak.dto.GrunnlagDto
-import no.nav.bidrag.vedtak.dto.PeriodeDto
-import no.nav.bidrag.vedtak.dto.PeriodeGrunnlagDto
-import no.nav.bidrag.vedtak.dto.StonadsendringDto
-import no.nav.bidrag.vedtak.dto.VedtakDto
+import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
+import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
+import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
+import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Periode
+import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
+import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
@@ -46,70 +46,70 @@ class VedtakServiceMockTest {
   private lateinit var persistenceServiceMock: PersistenceService
 
   @Captor
-  private lateinit var vedtakDtoCaptor: ArgumentCaptor<VedtakDto>
+  private lateinit var vedtakCaptor: ArgumentCaptor<Vedtak>
 
   @Captor
-  private lateinit var stonadsendringDtoCaptor: ArgumentCaptor<StonadsendringDto>
+  private lateinit var stonadsendringCaptor: ArgumentCaptor<Stonadsendring>
 
   @Captor
-  private lateinit var engangsbelopDtoCaptor: ArgumentCaptor<EngangsbelopDto>
+  private lateinit var engangsbelopCaptor: ArgumentCaptor<Engangsbelop>
 
   @Captor
-  private lateinit var periodeDtoCaptor: ArgumentCaptor<PeriodeDto>
+  private lateinit var periodeCaptor: ArgumentCaptor<Periode>
 
   @Captor
-  private lateinit var grunnlagDtoCaptor: ArgumentCaptor<GrunnlagDto>
+  private lateinit var grunnlagCaptor: ArgumentCaptor<Grunnlag>
 
   @Captor
-  private lateinit var periodeGrunnlagDtoCaptor: ArgumentCaptor<PeriodeGrunnlagDto>
+  private lateinit var periodeGrunnlagBoCaptor: ArgumentCaptor<PeriodeGrunnlagBo>
 
   @Captor
-  private lateinit var engangsbelopGrunnlagDtoCaptor: ArgumentCaptor<EngangsbelopGrunnlagDto>
+  private lateinit var engangsbelopGrunnlagBoCaptor: ArgumentCaptor<EngangsbelopGrunnlagBo>
 
   @Captor
-  private lateinit var behandlingsreferanseDtoCaptor: ArgumentCaptor<BehandlingsreferanseDto>
+  private lateinit var behandlingsreferanseCaptor: ArgumentCaptor<Behandlingsreferanse>
 
 
   @Test
   fun `skal opprette nytt vedtak`() {
 
-    Mockito.`when`(persistenceServiceMock.opprettVedtak(MockitoHelper.capture(vedtakDtoCaptor)))
-      .thenReturn(byggVedtakDto())
-    Mockito.`when`(persistenceServiceMock.opprettStonadsendring(MockitoHelper.capture(stonadsendringDtoCaptor)))
-      .thenReturn(byggStonadsendringDto())
-    Mockito.`when`(persistenceServiceMock.opprettEngangsbelop(MockitoHelper.capture(engangsbelopDtoCaptor)))
-      .thenReturn(byggEngangsbelopDto())
-    Mockito.`when`(persistenceServiceMock.opprettPeriode(MockitoHelper.capture(periodeDtoCaptor)))
-      .thenReturn(byggPeriodeDto())
-    Mockito.`when`(persistenceServiceMock.opprettGrunnlag(MockitoHelper.capture(grunnlagDtoCaptor)))
-      .thenReturn(byggGrunnlagDto())
-    Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagDtoCaptor)))
-      .thenReturn(byggPeriodeGrunnlagDto())
-    Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagDtoCaptor)))
-      .thenReturn(byggEngangsbelopGrunnlagDto())
-    Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseDtoCaptor)))
-      .thenReturn(byggBehandlingsreferanseDto())
+    Mockito.`when`(persistenceServiceMock.opprettVedtak(MockitoHelper.capture(vedtakCaptor)))
+      .thenReturn(byggVedtak())
+    Mockito.`when`(persistenceServiceMock.opprettStonadsendring(MockitoHelper.capture(stonadsendringCaptor)))
+      .thenReturn(byggStonadsendring())
+    Mockito.`when`(persistenceServiceMock.opprettEngangsbelop(MockitoHelper.capture(engangsbelopCaptor)))
+      .thenReturn(byggEngangsbelop())
+    Mockito.`when`(persistenceServiceMock.opprettPeriode(MockitoHelper.capture(periodeCaptor)))
+      .thenReturn(byggPeriode())
+    Mockito.`when`(persistenceServiceMock.opprettGrunnlag(MockitoHelper.capture(grunnlagCaptor)))
+      .thenReturn(byggGrunnlag())
+    Mockito.`when`(persistenceServiceMock.opprettPeriodeGrunnlag(MockitoHelper.capture(periodeGrunnlagBoCaptor)))
+      .thenReturn(byggPeriodeGrunnlag())
+    Mockito.`when`(persistenceServiceMock.opprettEngangsbelopGrunnlag(MockitoHelper.capture(engangsbelopGrunnlagBoCaptor)))
+      .thenReturn(byggEngangsbelopGrunnlag())
+    Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
+      .thenReturn(byggBehandlingsreferanse())
 
     val vedtak = byggVedtakRequest()
     val nyttVedtakOpprettet = vedtakService.opprettVedtak(vedtak)
 
-    val vedtakDto = vedtakDtoCaptor.value
-    val stonadsendringDtoListe = stonadsendringDtoCaptor.allValues
-    val engangsbelopDtoListe = engangsbelopDtoCaptor.allValues
-    val periodeDtoListe = periodeDtoCaptor.allValues
-    val grunnlagDtoListe = grunnlagDtoCaptor.allValues
-    val periodeGrunnlagDtoListe = periodeGrunnlagDtoCaptor.allValues
-    val engangsbelopGrunnlagDtoListe = engangsbelopGrunnlagDtoCaptor.allValues
-    val behandlingsreferanseDtoListe = behandlingsreferanseDtoCaptor.allValues
+    val vedtakDto = vedtakCaptor.value
+    val stonadsendringDtoListe = stonadsendringCaptor.allValues
+    val engangsbelopDtoListe = engangsbelopCaptor.allValues
+    val periodeDtoListe = periodeCaptor.allValues
+    val grunnlagDtoListe = grunnlagCaptor.allValues
+    val periodeGrunnlagDtoListe = periodeGrunnlagBoCaptor.allValues
+    val engangsbelopGrunnlagDtoListe = engangsbelopGrunnlagBoCaptor.allValues
+    val behandlingsreferanseDtoListe = behandlingsreferanseCaptor.allValues
 
-    Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(VedtakDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(StonadsendringDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettEngangsbelop(MockitoHelper.any(EngangsbelopDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettPeriode(MockitoHelper.any(PeriodeDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettGrunnlag(MockitoHelper.any(GrunnlagDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(6)).opprettEngangsbelopGrunnlag(MockitoHelper.any(EngangsbelopGrunnlagDto::class.java))
-    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettBehandlingsreferanse(MockitoHelper.any(BehandlingsreferanseDto::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(Vedtak::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(Stonadsendring::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettEngangsbelop(MockitoHelper.any(Engangsbelop::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettPeriode(MockitoHelper.any(Periode::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(4)).opprettGrunnlag(MockitoHelper.any(Grunnlag::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(11)).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagBo::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(6)).opprettEngangsbelopGrunnlag(MockitoHelper.any(EngangsbelopGrunnlagBo::class.java))
+    Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettBehandlingsreferanse(MockitoHelper.any(Behandlingsreferanse::class.java))
 
     assertAll(
       Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
@@ -230,24 +230,24 @@ class VedtakServiceMockTest {
   fun `skal hente vedtak`() {
 
     // Hent vedtak
-    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtakDto(vedtakId = 1))
-    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtakDto(vedtakId = 1))
+    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtak(vedtakId = 1))
+    Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.any(Int::class.java))).thenReturn(byggVedtak(vedtakId = 1))
     Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForVedtak(MockitoHelper.any(Int::class.java)))
       .thenReturn(
         listOf(
-          byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1"),
-          byggGrunnlagDto(grunnlagId = 2, vedtakId = 1, grunnlagReferanse = "REF2")
+          byggGrunnlag(grunnlagId = 1, vedtak = byggVedtak(), grunnlagReferanse = "REF1"),
+          byggGrunnlag(grunnlagId = 2, vedtak = byggVedtak(), grunnlagReferanse = "REF2")
         )
       )
     Mockito.`when`(persistenceServiceMock.hentAlleStonadsendringerForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
       listOf(
-        byggStonadsendringDto(stonadsendringId = 1, vedtakId = 1, behandlingId = "BEHID1"),
-        byggStonadsendringDto(stonadsendringId = 2, vedtakId = 1, behandlingId = "BEHID2")
+        byggStonadsendring(stonadsendringId = 1, behandlingId = "BEHID1"),
+        byggStonadsendring(stonadsendringId = 2, behandlingId = "BEHID2")
       )
     )
     Mockito.`when`(persistenceServiceMock.hentAlleEngangsbelopForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
       listOf(
-        byggEngangsbelopDto(engangsbelopId =  1, vedtakId = 1, 1, null, "SAERTILSKUDD",
+        byggEngangsbelop(engangsbelopId =  1, 1,null, "SAERTILSKUDD",
           "01018011111", "01010511111", "01018211111", BigDecimal.valueOf(3490),
           "NOK", "SAERTILSKUDD BEREGNET")
       )
@@ -255,26 +255,24 @@ class VedtakServiceMockTest {
     Mockito.`when`(persistenceServiceMock.hentAllePerioderForStonadsendring(MockitoHelper.any(Int::class.java)))
       .thenReturn(
         listOf(
-          byggPeriodeDto(periodeId = 1, stonadsendringId = 1, belop = BigDecimal.valueOf(100)),
-          byggPeriodeDto(periodeId = 2, stonadsendringId = 2, belop = BigDecimal.valueOf(200))
+          byggPeriode(periodeId = 1, belop = BigDecimal.valueOf(100)),
+          byggPeriode(periodeId = 2, belop = BigDecimal.valueOf(200))
         )
       )
     Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggPeriodeGrunnlagDto(
-        periodeId = 1,
-        grunnlagId = 1
-      ), byggPeriodeGrunnlagDto(periodeId = 2, grunnlagId = 2))
+      listOf(byggPeriodeGrunnlag(periode = byggPeriode(periodeId = 1), grunnlag = byggGrunnlag(grunnlagId = 1)),
+      byggPeriodeGrunnlag(periode = byggPeriode(periodeId = 2), grunnlag = byggGrunnlag(grunnlagId = 2)))
     )
     Mockito.`when`(persistenceServiceMock.hentGrunnlag(MockitoHelper.any(Int::class.java))).thenReturn(
-      byggGrunnlagDto(grunnlagId = 1, vedtakId = 1, grunnlagReferanse = "REF1")
+      byggGrunnlag(grunnlagId = 1, vedtak = byggVedtak(), grunnlagReferanse = "REF1")
     )
     Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForEngangsbelop(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggEngangsbelopGrunnlagDto(engangsbelopId = 1,grunnlagId = 1),
-        byggEngangsbelopGrunnlagDto(engangsbelopId = 2, grunnlagId = 2))
+      listOf(byggEngangsbelopGrunnlag(engangsbelop = byggEngangsbelop(engangsbelopId = 1), grunnlag = byggGrunnlag(grunnlagId = 1)),
+      byggEngangsbelopGrunnlag(engangsbelop = byggEngangsbelop(engangsbelopId = 2), grunnlag = byggGrunnlag(grunnlagId = 2)))
     )
     Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-01"),
-        byggBehandlingsreferanseDto(kilde = "Bisys", referanse = "Bisys-02"))
+      listOf(byggBehandlingsreferanse(kilde = "Bisys", referanse = "Bisys-01"),
+        byggBehandlingsreferanse(kilde = "Bisys", referanse = "Bisys-02"))
     )
 
     val vedtakFunnet = vedtakService.hentVedtak(1)

@@ -13,6 +13,7 @@ spec:
     inbound:
       rules:
         - application: {{ name }}
+        - application: {{ inbound.bidrag-revurder-forskudd-app }}
   image: {{ image }}
   kafka:
     pool: {{ kafka.pool }}

@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.BehandlingsreferanseDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettBehandlingsreferanseRequestDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -29,12 +29,13 @@ data class Behandlingsreferanse(
   val referanse: String = ""
 )
 
-fun Behandlingsreferanse.toBehandlingsreferanseDto() = with(::BehandlingsreferanseDto) {
-  val propertiesByName = Behandlingsreferanse::class.memberProperties.associateBy { it.name }
+fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksisterendeVedtak: Vedtak) = with(::Behandlingsreferanse) {
+  val propertiesByName = OpprettBehandlingsreferanseRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      BehandlingsreferanseDto::vedtakId.name -> vedtak.vedtakId
-      else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseDto)
+      Behandlingsreferanse::behandlingsreferanseId.name -> 0
+      Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
+      else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
     }
   })
 }

@@ -2,7 +2,7 @@ package no.nav.bidrag.vedtak.hendelser
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.bidrag.vedtak.model.VedtakHendelse
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import org.springframework.kafka.core.KafkaTemplate
 
 interface VedtakKafkaEventProducer{

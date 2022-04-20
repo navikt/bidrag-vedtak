@@ -4,3 +4,5 @@ dbname: bidrag-vedtak-prod
 kafka:
   pool: nav-prod
 kafka-topic-vedtak: bidrag.vedtak
+inbound:
+  bidrag-revurder-forskudd-app: bidrag-revurder-forskudd-data
