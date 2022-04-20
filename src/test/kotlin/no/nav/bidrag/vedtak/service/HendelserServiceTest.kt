@@ -1,15 +1,15 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelsePeriode
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.BidragVedtakTest
-import no.nav.bidrag.vedtak.api.engangsbelop.OpprettEngangsbelopRequest
-import no.nav.bidrag.vedtak.api.periode.OpprettPeriodeRequest
-import no.nav.bidrag.vedtak.api.stonadsendring.OpprettStonadsendringRequest
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
-import no.nav.bidrag.vedtak.model.VedtakHendelse
-import no.nav.bidrag.vedtak.model.VedtakHendelsePeriode
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelser når ingen stønadsendringer er del av request`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -48,7 +48,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = null,
         engangsbelopListe = listOf(
-          OpprettEngangsbelopRequest(
+          OpprettEngangsbelopRequestDto(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
             listOf("A")
@@ -64,16 +64,16 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelse når en stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
-          OpprettStonadsendringRequest(
+          OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "D", "E", "F", listOf(
-              OpprettPeriodeRequest(
+              OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
@@ -91,16 +91,16 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelse med skyldner-id`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
-          OpprettStonadsendringRequest(
+          OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
-              OpprettPeriodeRequest(
+              OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
@@ -116,14 +116,16 @@ class HendelserServiceTest {
         vedtakId = 1, vedtakType = VedtakType.MANUELT, stonadType = StonadType.BIDRAG, sakId = "B", skyldnerId = "1", kravhaverId = "E", mottakerId = "F",
         opprettetAv = "ABCDEFG", opprettetTimestamp = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(VedtakHendelsePeriode(periodeFom = LocalDate.now(), periodeTil = LocalDate.now(), belop = BigDecimal.valueOf(1),
-          valutakode = "NOK", resultatkode = "A"))))
+          valutakode = "NOK", resultatkode = "A")
+        ))
+    )
   }
 
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
@@ -131,7 +133,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = emptyList(),
         engangsbelopListe = listOf(
-          OpprettEngangsbelopRequest(
+          OpprettEngangsbelopRequestDto(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
             listOf("A")
@@ -147,23 +149,23 @@ class HendelserServiceTest {
   @Suppress("NonAsciiCharacters")
   fun `skal kun opprette hendelse ved stønadsendring og ikke for engangsbeløp`() {
     hendelserService.opprettHendelse(
-      OpprettVedtakRequest(
+      OpprettVedtakRequestDto(
         vedtakType = VedtakType.MANUELT,
         opprettetAv = "ABCDEFG",
         vedtakDato = LocalDate.now(),
         enhetId = "ABCD",
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
-          OpprettStonadsendringRequest(
+          OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "1", "E", "F", listOf(
-              OpprettPeriodeRequest(
+              OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
               )
             )
           )
         ),
         engangsbelopListe = listOf(
-          OpprettEngangsbelopRequest(
+          OpprettEngangsbelopRequestDto(
             1, 1, 1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
             listOf("A")

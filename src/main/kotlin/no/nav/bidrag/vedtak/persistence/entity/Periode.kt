@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.dto.PeriodeDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.persistence.Column
@@ -40,13 +40,13 @@ data class Periode(
   val resultatkode: String = ""
 )
 
-  fun Periode.toPeriodeDto() = with(::PeriodeDto) {
-    val propertiesByName = Periode::class.memberProperties.associateBy { it.name }
-    callBy(parameters.associateWith { parameter ->
-      when (parameter.name) {
-        PeriodeDto::stonadsendringId.name -> stonadsendring.stonadsendringId
-        else -> propertiesByName[parameter.name]?.get(this@toPeriodeDto)
-      }
-    })
-
+fun OpprettVedtakPeriodeRequestDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
+  val propertiesByName = OpprettVedtakPeriodeRequestDto::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      Periode::periodeId.name -> 0
+      Periode::stonadsendring.name -> eksisterendeStonadsendring
+      else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
+    }
+  })
 }

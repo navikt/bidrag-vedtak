@@ -1,12 +1,11 @@
 package no.nav.bidrag.vedtak.controller
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
-import no.nav.bidrag.vedtak.api.vedtak.HentVedtakResponse
-import no.nav.bidrag.vedtak.api.vedtak.OpprettVedtakRequest
-import no.nav.bidrag.vedtak.dto.VedtakDto
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
@@ -31,7 +30,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -84,9 +82,6 @@ class VedtakControllerTest {
 
   @LocalServerPort
   private val port = 0
-
-  private val vedtakDtoListe = object : ParameterizedTypeReference<List<VedtakDto>>() {}
-
 
   @BeforeEach
   fun `init`() {
@@ -151,21 +146,21 @@ class VedtakControllerTest {
   // TODO fjernes, men da vises escape-karakterer ved test i Swagger, så antar annotasjonen må være der
   fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
+    val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForHentVedtak()}/${nyttVedtakOpprettet}",
+      "/vedtak/${opprettetVedtakId}",
       HttpMethod.GET,
       null,
-      HentVedtakResponse::class.java
+      VedtakDto::class.java
     )
 
     assertAll(
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body!!.vedtakId).isEqualTo(nyttVedtakOpprettet) }
+      Executable { assertThat(response?.body!!.vedtakId).isEqualTo(opprettetVedtakId) }
     )
   }
 
@@ -203,7 +198,7 @@ class VedtakControllerTest {
     return "http://localhost:$port"
   }
 
-  private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequest> {
+  private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequestDto> {
     return initHttpEntity(TestUtil.byggVedtakRequest())
   }
 
