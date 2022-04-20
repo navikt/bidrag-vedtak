@@ -144,16 +144,16 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     return VedtakDto(
-      vedtak.vedtakId,
-      VedtakType.valueOf(vedtak.vedtakType),
-      vedtak.opprettetAv,
-      vedtak.vedtakDato,
-      vedtak.enhetId,
-      vedtak.opprettetTimestamp,
-      grunnlagDtoListe,
-      hentStonadsendringerTilVedtak(stonadsendringListe),
-      hentEngangsbelopTilVedtak(engangsbelopListe),
-      behandlingsreferanseResponseListe
+      vedtakId = vedtak.vedtakId,
+      vedtakType = VedtakType.valueOf(vedtak.vedtakType),
+      opprettetAv = vedtak.opprettetAv,
+      vedtakDato = vedtak.vedtakDato,
+      enhetId = vedtak.enhetId,
+      opprettetTimestamp = vedtak.opprettetTimestamp,
+      grunnlagListe = grunnlagDtoListe,
+      stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
+      engangsbelopListe = hentEngangsbelopTilVedtak(engangsbelopListe),
+      behandlingsreferanseListe = behandlingsreferanseResponseListe
     )
   }
 
@@ -163,13 +163,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       val periodeListe = persistenceService.hentAllePerioderForStonadsendring(it.stonadsendringId)
       stonadsendringDtoListe.add(
         StonadsendringDto(
-          StonadType.valueOf(it.stonadType),
-          it.sakId,
-          it.behandlingId,
-          it.skyldnerId,
-          it.kravhaverId,
-          it.mottakerId,
-          hentPerioderTilVedtak(periodeListe)
+          stonadType = StonadType.valueOf(it.stonadType),
+          sakId = it.sakId,
+          behandlingId = it.behandlingId,
+          skyldnerId = it.skyldnerId,
+          kravhaverId = it.kravhaverId,
+          mottakerId = it.mottakerId,
+          periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )
     }
@@ -187,12 +187,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       }
       periodeResponseListe.add(
         VedtakPeriodeDto(
-          dto.periodeFomDato,
-          dto.periodeTilDato,
-          dto.belop,
-          dto.valutakode.trimEnd(),
-          dto.resultatkode,
-          grunnlagReferanseResponseListe
+          periodeFomDato = dto.periodeFomDato,
+          periodeTilDato = dto.periodeTilDato,
+          belop = dto.belop,
+          valutakode = dto.valutakode.trimEnd(),
+          resultatkode = dto.resultatkode,
+          grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )
     }
@@ -210,17 +210,17 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       }
       engangsbelopResponseListe.add(
         EngangsbelopDto(
-          dto.engangsbelopId,
-          dto.lopenr,
-          dto.endrerEngangsbelopId,
-          dto.type,
-          dto.skyldnerId,
-          dto.kravhaverId,
-          dto.mottakerId,
-          dto.belop,
-          dto.valutakode,
-          dto.resultatkode,
-          grunnlagReferanseResponseListe
+          engangsbelopId = dto.engangsbelopId,
+          lopenr = dto.lopenr,
+          endrerEngangsbelopId = dto.endrerEngangsbelopId,
+          type = dto.type,
+          skyldnerId = dto.skyldnerId,
+          kravhaverId = dto.kravhaverId,
+          mottakerId = dto.mottakerId,
+          belop = dto.belop,
+          valutakode = dto.valutakode,
+          resultatkode = dto.resultatkode,
+          grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )
     }

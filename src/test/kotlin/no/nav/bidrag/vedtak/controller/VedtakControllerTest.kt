@@ -146,11 +146,11 @@ class VedtakControllerTest {
   // TODO fjernes, men da vises escape-karakterer ved test i Swagger, så antar annotasjonen må være der
   fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
-    val nyttVedtakOpprettet = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
+    val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
 
     // Henter forekomster
     val response = securedTestRestTemplate.exchange(
-      "${fullUrlForHentVedtak()}/${nyttVedtakOpprettet}",
+      "/vedtak/${opprettetVedtakId}",
       HttpMethod.GET,
       null,
       VedtakDto::class.java
@@ -160,7 +160,7 @@ class VedtakControllerTest {
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
       Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body!!.vedtakId).isEqualTo(nyttVedtakOpprettet) }
+      Executable { assertThat(response?.body!!.vedtakId).isEqualTo(opprettetVedtakId) }
     )
   }
 
