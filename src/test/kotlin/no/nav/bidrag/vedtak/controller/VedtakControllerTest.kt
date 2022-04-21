@@ -141,9 +141,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
-  // TODO Disablet denne testen, fordi den feiler pga JsonRawValue-annotasjonen i GrunnlagResponse. Testen fungerer hvis denne annotasjonen
-  // TODO fjernes, men da vises escape-karakterer ved test i Swagger, så antar annotasjonen må være der
   fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
     val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
