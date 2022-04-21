@@ -45,7 +45,7 @@ class VedtakController(private val vedtakService: VedtakService) {
   }
 
 
-  @GetMapping("$HENT_VEDTAK/{vedtakId}")
+  @GetMapping(HENT_VEDTAK)
   @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak")
   @ApiResponses(
     value = [
@@ -66,7 +66,7 @@ class VedtakController(private val vedtakService: VedtakService) {
 
   companion object {
     const val OPPRETT_VEDTAK = "/vedtak/"
-    const val HENT_VEDTAK = "/vedtak/"
+    const val HENT_VEDTAK = "/vedtak/{vedtakId}"
     private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
   }
 }
