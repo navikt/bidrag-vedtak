@@ -49,7 +49,7 @@ class HendelserServiceTest {
         stonadsendringListe = null,
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            1, 1, 1, "C", "D", "E", "F",
+            1, "C", "D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
             listOf("A")
           )
