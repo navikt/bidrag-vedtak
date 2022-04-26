@@ -98,9 +98,9 @@ class VedtakServiceMockTest {
     val engangsbelopDtoListe = engangsbelopCaptor.allValues
     val periodeDtoListe = periodeCaptor.allValues
     val grunnlagDtoListe = grunnlagCaptor.allValues
-    val periodeGrunnlagDtoListe = periodeGrunnlagBoCaptor.allValues
-    val engangsbelopGrunnlagDtoListe = engangsbelopGrunnlagBoCaptor.allValues
-    val behandlingsreferanseDtoListe = behandlingsreferanseCaptor.allValues
+    val periodeGrunnlagBoListe = periodeGrunnlagBoCaptor.allValues
+    val engangsbelopGrunnlagBoListe = engangsbelopGrunnlagBoCaptor.allValues
+    val behandlingsreferanseListe = behandlingsreferanseCaptor.allValues
 
     Mockito.verify(persistenceServiceMock, Mockito.times(1)).opprettVedtak(MockitoHelper.any(Vedtak::class.java))
     Mockito.verify(persistenceServiceMock, Mockito.times(2)).opprettStonadsendring(MockitoHelper.any(Stonadsendring::class.java))
@@ -142,7 +142,6 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe).isNotNull() },
       Executable { assertThat(engangsbelopDtoListe.size).isEqualTo(2) },
 
-      Executable { assertThat(engangsbelopDtoListe[0].lopenr).isEqualTo(vedtak.engangsbelopListe!![0].lopenr) },
       Executable { assertThat(engangsbelopDtoListe[0].endrerEngangsbelopId).isEqualTo(vedtak.engangsbelopListe!![0].endrerEngangsbelopId) },
       Executable { assertThat(engangsbelopDtoListe[0].type).isEqualTo(vedtak.engangsbelopListe!![0].type) },
       Executable { assertThat(engangsbelopDtoListe[0].skyldnerId).isEqualTo(vedtak.engangsbelopListe!![0].skyldnerId) },
@@ -152,7 +151,6 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe[0].valutakode).isEqualTo(vedtak.engangsbelopListe!![0].valutakode) },
       Executable { assertThat(engangsbelopDtoListe[0].resultatkode).isEqualTo(vedtak.engangsbelopListe!![0].resultatkode) },
 
-      Executable { assertThat(engangsbelopDtoListe[1].lopenr).isEqualTo(vedtak.engangsbelopListe!![1].lopenr) },
       Executable { assertThat(engangsbelopDtoListe[1].endrerEngangsbelopId).isEqualTo(vedtak.engangsbelopListe!![1].endrerEngangsbelopId) },
       Executable { assertThat(engangsbelopDtoListe[1].type).isEqualTo(vedtak.engangsbelopListe!![1].type) },
       Executable { assertThat(engangsbelopDtoListe[1].skyldnerId).isEqualTo(vedtak.engangsbelopListe!![1].skyldnerId) },
@@ -211,16 +209,16 @@ class VedtakServiceMockTest {
       Executable { assertThat(grunnlagDtoListe[3].innhold).isEqualTo(vedtak.grunnlagListe[3].innhold.toString()) },
 
       // Sjekk PeriodeGrunnlagDto
-      Executable { assertThat(periodeGrunnlagDtoListe).isNotNull() },
-      Executable { assertThat(periodeGrunnlagDtoListe.size).isEqualTo(11) },
+      Executable { assertThat(periodeGrunnlagBoListe).isNotNull() },
+      Executable { assertThat(periodeGrunnlagBoListe.size).isEqualTo(11) },
 
       // Sjekk EngangsbelopGrunnlagDto
-      Executable { assertThat(engangsbelopGrunnlagDtoListe).isNotNull() },
-      Executable { assertThat(engangsbelopGrunnlagDtoListe.size).isEqualTo(6) },
+      Executable { assertThat(engangsbelopGrunnlagBoListe).isNotNull() },
+      Executable { assertThat(engangsbelopGrunnlagBoListe.size).isEqualTo(6) },
 
       // Sjekk BehandlingsreferanseDto
-      Executable { assertThat(behandlingsreferanseDtoListe).isNotNull() },
-      Executable { assertThat(behandlingsreferanseDtoListe.size).isEqualTo(2) }
+      Executable { assertThat(behandlingsreferanseListe).isNotNull() },
+      Executable { assertThat(behandlingsreferanseListe.size).isEqualTo(2) }
 
 
     )

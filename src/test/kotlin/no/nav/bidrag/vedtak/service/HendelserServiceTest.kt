@@ -134,9 +134,15 @@ class HendelserServiceTest {
         stonadsendringListe = emptyList(),
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            1, 1, 1, "C", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A",
-            listOf("A")
+            endrerEngangsbelopId = 1,
+            type = "SAERTILSKUDD",
+            skyldnerId = "skyldner",
+            kravhaverId = "kravhaver",
+            mottakerId = "mottaker",
+            belop = BigDecimal.ONE,
+            resultatkode = "all is well",
+            valutakode = "Nok",
+            grunnlagReferanseListe = listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()
@@ -166,9 +172,15 @@ class HendelserServiceTest {
         ),
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            1, 1, 1, "C", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A",
-            listOf("A")
+            endrerEngangsbelopId = 1,
+            type = "SAERTILSKUDD",
+            skyldnerId = "skyldner",
+            kravhaverId = "kravhaver",
+            mottakerId = "mottaker",
+            belop = BigDecimal.ONE,
+            resultatkode = "all is well",
+            valutakode = "Nok",
+            grunnlagReferanseListe = listOf("A")
           )
         ),
         behandlingsreferanseListe = emptyList()
