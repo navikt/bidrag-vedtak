@@ -175,8 +175,6 @@ class TestUtil {
 
     private fun byggEngangsbelopListe() = listOf(
       OpprettEngangsbelopRequestDto(
-        vedtakId = 0,
-        lopenr = 1,
         endrerEngangsbelopId = null,
         type = "SAERTILSKUDD",
         skyldnerId = "01018011111",
@@ -191,8 +189,6 @@ class TestUtil {
           "SJAB-REF001")
       ),
       OpprettEngangsbelopRequestDto(
-        vedtakId = 0,
-        lopenr = 2,
         endrerEngangsbelopId = 1,
         type = "SAERTILSKUDD",
         skyldnerId = "01018011111",
@@ -210,12 +206,10 @@ class TestUtil {
 
     private fun byggBehandlingsreferanseListe() = listOf(
       OpprettBehandlingsreferanseRequestDto(
-        vedtakId = 0,
         kilde = "Bisys",
         referanse = "Bisysreferanse01"
         ),
       OpprettBehandlingsreferanseRequestDto(
-        vedtakId = 0,
         kilde = "Bisys",
         referanse = "Bisysreferanse02"
       )
