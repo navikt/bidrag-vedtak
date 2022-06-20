@@ -28,7 +28,7 @@
     <bidrag-commons-test.version>0.2.2</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.0.0</mockito-kotlin.version>
-    <nimbus-jose-jwt.version>9.22</nimbus-jose-jwt.version>
+    <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
     <springframework-cloud.version>3.0.4</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.9.2</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.13.3</jackson-datatype-jsr310.version>
