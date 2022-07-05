@@ -3,9 +3,10 @@ package no.nav.bidrag.vedtak
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
 @EnableJwtTokenValidation(ignore = ["org.springdoc", "org.springframework"])
-@SpringBootApplication
+@SpringBootApplication(exclude = [UserDetailsServiceAutoConfiguration::class])
 class BidragVedtak
 
 const val ISSUER = "aad"
