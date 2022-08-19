@@ -26,6 +26,9 @@ data class Engangsbelop(
   @Column(name = "lopenr")
   val lopenr: Int = 0,
 
+  @Column(nullable = true, name = "sak_id")
+  val sakId: String? = null,
+
   @Column(name = "endrer_engangsbelop_id")
   val endrerEngangsbelopId: Int? = 0,
 
@@ -58,6 +61,7 @@ fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedta
       Engangsbelop::engangsbelopId.name -> 0
       Engangsbelop::vedtak.name -> eksisterendeVedtak
       Engangsbelop::lopenr.name -> lopenr
+      Engangsbelop::type.name -> type.toString()
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)
     }
   })

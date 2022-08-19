@@ -12,6 +12,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.StonadsendringDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakPeriodeDto
+import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
@@ -213,7 +214,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           engangsbelopId = dto.engangsbelopId,
           lopenr = dto.lopenr,
           endrerEngangsbelopId = dto.endrerEngangsbelopId,
-          type = dto.type,
+          type = EngangsbelopType.valueOf(dto.type),
+          sakId = dto.sakId,
           skyldnerId = dto.skyldnerId,
           kravhaverId = dto.kravhaverId,
           mottakerId = dto.mottakerId,
