@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanse
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelop
@@ -143,7 +144,8 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe.size).isEqualTo(2) },
 
       Executable { assertThat(engangsbelopDtoListe[0].endrerEngangsbelopId).isEqualTo(vedtak.engangsbelopListe!![0].endrerEngangsbelopId) },
-      Executable { assertThat(engangsbelopDtoListe[0].type).isEqualTo(vedtak.engangsbelopListe!![0].type) },
+      Executable { assertThat(engangsbelopDtoListe[0].type).isEqualTo(vedtak.engangsbelopListe!![0].type.toString()) },
+      Executable { assertThat(engangsbelopDtoListe[0].sakId).isEqualTo(vedtak.engangsbelopListe!![0].sakId) },
       Executable { assertThat(engangsbelopDtoListe[0].skyldnerId).isEqualTo(vedtak.engangsbelopListe!![0].skyldnerId) },
       Executable { assertThat(engangsbelopDtoListe[0].kravhaverId).isEqualTo(vedtak.engangsbelopListe!![0].kravhaverId) },
       Executable { assertThat(engangsbelopDtoListe[0].mottakerId).isEqualTo(vedtak.engangsbelopListe!![0].mottakerId) },
@@ -152,7 +154,8 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe[0].resultatkode).isEqualTo(vedtak.engangsbelopListe!![0].resultatkode) },
 
       Executable { assertThat(engangsbelopDtoListe[1].endrerEngangsbelopId).isEqualTo(vedtak.engangsbelopListe!![1].endrerEngangsbelopId) },
-      Executable { assertThat(engangsbelopDtoListe[1].type).isEqualTo(vedtak.engangsbelopListe!![1].type) },
+      Executable { assertThat(engangsbelopDtoListe[1].type).isEqualTo(vedtak.engangsbelopListe!![1].type.toString()) },
+      Executable { assertThat(engangsbelopDtoListe[1].sakId).isEqualTo(vedtak.engangsbelopListe!![1].sakId) },
       Executable { assertThat(engangsbelopDtoListe[1].skyldnerId).isEqualTo(vedtak.engangsbelopListe!![1].skyldnerId) },
       Executable { assertThat(engangsbelopDtoListe[1].kravhaverId).isEqualTo(vedtak.engangsbelopListe!![1].kravhaverId) },
       Executable { assertThat(engangsbelopDtoListe[1].mottakerId).isEqualTo(vedtak.engangsbelopListe!![1].mottakerId) },
@@ -245,7 +248,7 @@ class VedtakServiceMockTest {
     )
     Mockito.`when`(persistenceServiceMock.hentAlleEngangsbelopForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
       listOf(
-        byggEngangsbelop(engangsbelopId =  1, 1,null, "SAERTILSKUDD",
+        byggEngangsbelop(engangsbelopId =  1, 1,null, "SAERTILSKUDD", "SAK-101",
           "01018011111", "01010511111", "01018211111", BigDecimal.valueOf(3490),
           "NOK", "SAERTILSKUDD BEREGNET")
       )
@@ -289,7 +292,8 @@ class VedtakServiceMockTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo("REF1") },
       Executable { assertThat(vedtakFunnet.engangsbelopListe.size).isEqualTo(1) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].lopenr).isEqualTo(1) },
-      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].type).isEqualTo("SAERTILSKUDD") },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].type).isEqualTo(EngangsbelopType.SAERTILSKUDD) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].sakId).isEqualTo("SAK-101") },
       Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
     )
   }

@@ -6,6 +6,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelsePeriode
+import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.BidragVedtakTest
@@ -49,7 +50,7 @@ class HendelserServiceTest {
         stonadsendringListe = null,
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            1, "C", "D", "E", "F",
+            1, EngangsbelopType.SAERTILSKUDD, "sak01","D", "E", "F",
             BigDecimal.ONE, "NOK", "A",
             listOf("A")
           )
@@ -135,7 +136,8 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             endrerEngangsbelopId = 1,
-            type = "SAERTILSKUDD",
+            type = EngangsbelopType.SAERTILSKUDD,
+            sakId = "SAK-101",
             skyldnerId = "skyldner",
             kravhaverId = "kravhaver",
             mottakerId = "mottaker",
@@ -173,7 +175,8 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             endrerEngangsbelopId = 1,
-            type = "SAERTILSKUDD",
+            type = EngangsbelopType.SAERTILSKUDD,
+            sakId = "SAK-101",
             skyldnerId = "skyldner",
             kravhaverId = "kravhaver",
             mottakerId = "mottaker",

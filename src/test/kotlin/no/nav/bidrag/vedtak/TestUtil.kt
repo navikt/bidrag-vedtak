@@ -7,6 +7,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettGrunnlagRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
@@ -176,7 +177,8 @@ class TestUtil {
     private fun byggEngangsbelopListe() = listOf(
       OpprettEngangsbelopRequestDto(
         endrerEngangsbelopId = null,
-        type = "SAERTILSKUDD",
+        type = EngangsbelopType.SAERTILSKUDD,
+        sakId = "SAK-101",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
@@ -190,7 +192,8 @@ class TestUtil {
       ),
       OpprettEngangsbelopRequestDto(
         endrerEngangsbelopId = 1,
-        type = "SAERTILSKUDD",
+        type = EngangsbelopType.SAERTILSKUDD,
+        sakId = "SAK-101",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
@@ -310,6 +313,7 @@ class TestUtil {
       lopenr: Int = (1..100).random(),
       endrerEngangsbelopId: Int? = null,
       type: String = "SAERTILSKUDD",
+      sakId: String = "SAK-101",
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
       mottakerId: String = "01018211111",
@@ -322,6 +326,7 @@ class TestUtil {
       lopenr = lopenr,
       endrerEngangsbelopId = endrerEngangsbelopId,
       type = type,
+      sakId = sakId,
       skyldnerId = skyldnerId,
       kravhaverId = kravhaverId,
       mottakerId = mottakerId,
