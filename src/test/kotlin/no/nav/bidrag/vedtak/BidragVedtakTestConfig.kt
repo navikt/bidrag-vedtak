@@ -49,6 +49,6 @@ class BidragVedtakTestConfig {
 
 class TestVedtakKafkaEventProducer: VedtakKafkaEventProducer{
   override fun publish(vedtakHendelse: VedtakHendelse) {
-    LOGGER.info("Test Kafka: $vedtakHendelse")
+    SECURE_LOGGER.info("Test Kafka: $vedtakHendelse")
   }
 }
