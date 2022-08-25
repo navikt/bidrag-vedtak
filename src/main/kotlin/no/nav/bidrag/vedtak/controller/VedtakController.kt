@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.vedtak.ISSUER
+import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -60,7 +61,8 @@ class VedtakController(private val vedtakService: VedtakService) {
 
   fun hentVedtak(@PathVariable @NotNull vedtakId: Int): ResponseEntity<VedtakDto> {
     val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble funnet: $vedtakFunnet")
+    LOGGER.info("Følgende vedtak ble hentet: ${vedtakFunnet.vedtakId}")
+    SECURE_LOGGER.info("Følgende vedtak ble hentet: $vedtakFunnet")
     return ResponseEntity(vedtakFunnet, HttpStatus.OK)
   }
 

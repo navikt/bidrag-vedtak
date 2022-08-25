@@ -30,6 +30,8 @@ spec:
   prometheus:
     enabled: true
     path: /actuator/prometheus
+  secureLogs:
+    enabled: true
   resources:
     limits:
       cpu: 1000m
