@@ -12,8 +12,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: {{ name }}
-        - application: {{ inbound.bidrag-revurder-forskudd-app }}
+      {{#each azureAccessInbound}}
+          - application: {{this.application}}
+            namespace: {{this.namespace}}
+            cluster: {{this.cluster}}
+      {{/each}}
   image: {{ image }}
   kafka:
     pool: {{ kafka.pool }}
