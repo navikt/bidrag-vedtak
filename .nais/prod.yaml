@@ -6,3 +6,13 @@ kafka:
 kafka-topic-vedtak: bidrag.vedtak
 inbound:
   bidrag-revurder-forskudd-app: bidrag-revurder-forskudd-data
+azureAccessInbound:
+  - application: bidrag-vedtak
+    namespace: bidrag
+    cluster: prod-gcp
+  - application: bidrag-revurder-forskudd-data
+    namespace: bidrag
+    cluster: prod-gcp
+  - application: bisys
+    namespace: bidrag
+    cluster: prod-fss
