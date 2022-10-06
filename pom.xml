@@ -28,12 +28,12 @@
     <bidrag-commons-test.version>0.2.2</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.0.0</mockito-kotlin.version>
-    <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
+    <nimbus-jose-jwt.version>9.24.1</nimbus-jose-jwt.version>
     <springframework-cloud.version>3.0.4</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.9.2</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.13.4</jackson-datatype-jsr310.version>
-    <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
-    <bidrag-behandling-felles.version>0.0.39</bidrag-behandling-felles.version>
+    <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
+    <bidrag-behandling-felles.version>0.0.49</bidrag-behandling-felles.version>
     <bidrag-behandling-felles-dto.version>0.0.41</bidrag-behandling-felles-dto.version>
 
   </properties>
