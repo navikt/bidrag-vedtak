@@ -62,7 +62,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Behandlingsreferanse
     vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
-    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true) {
+    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
       hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
     }
 
@@ -166,7 +166,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         StonadsendringDto(
           stonadType = StonadType.valueOf(it.stonadType),
           sakId = it.sakId,
-          behandlingId = it.behandlingId,
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,

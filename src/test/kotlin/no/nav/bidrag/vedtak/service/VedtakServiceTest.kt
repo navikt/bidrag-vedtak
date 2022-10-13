@@ -117,7 +117,6 @@ class VedtakServiceTest {
       // Stonadsendring
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].stonadType).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].stonadType) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].sakId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].sakId) },
-      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].behandlingId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].behandlingId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].skyldnerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].skyldnerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].mottakerId) },
@@ -125,7 +124,6 @@ class VedtakServiceTest {
 
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].stonadType).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].stonadType) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].sakId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].sakId) },
-      Executable { assertThat(vedtakFunnet.stonadsendringListe[1].behandlingId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].behandlingId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].skyldnerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].skyldnerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].mottakerId) },

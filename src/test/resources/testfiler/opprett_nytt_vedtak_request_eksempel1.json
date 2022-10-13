@@ -63,7 +63,6 @@
       "stonadType": "BIDRAG",
       "vedtakId": 1,
       "sakId": "SAK-001",
-      "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
@@ -100,7 +99,6 @@
     {
       "stonadType": "FORSKUDD",
       "sakId": "SAK-001",
-      "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",

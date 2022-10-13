@@ -110,7 +110,6 @@ class TestUtil {
       OpprettStonadsendringRequestDto(
         stonadType = StonadType.BIDRAG,
         sakId = "SAK-001",
-        behandlingId = "Fritekst",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
@@ -144,7 +143,6 @@ class TestUtil {
       OpprettStonadsendringRequestDto(
         stonadType = StonadType.BIDRAG,
         sakId = "SAK-001",
-        behandlingId = "Fritekst",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
@@ -239,7 +237,6 @@ class TestUtil {
       stonadsendringId: Int = (1..100).random(),
       stonadType: String = StonadType.BIDRAG.toString(),
       sakId: String = "SAK-001",
-      behandlingId: String = "Fritekst",
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
       mottakerId: String = "01018211111"
@@ -248,7 +245,6 @@ class TestUtil {
       stonadType = stonadType,
       vedtak = byggVedtak(),
       sakId = sakId,
-      behandlingId = behandlingId,
       skyldnerId = skyldnerId,
       kravhaverId = kravhaverId,
       mottakerId = mottakerId
