@@ -1,9 +1,12 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.behandling.felles.dto.vedtak.*
+import no.nav.bidrag.behandling.felles.dto.vedtak.Engangsbelop
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
+import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
+import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
