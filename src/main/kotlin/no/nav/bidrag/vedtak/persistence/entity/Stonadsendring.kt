@@ -28,9 +28,6 @@ data class Stonadsendring(
   @Column(nullable = true, name = "sak_id")
   val sakId: String? = null,
 
-  @Column(nullable = true, name = "behandling_id")
-  val behandlingId: String? = null,
-
   @Column(nullable = false, name = "skyldner_id")
   val skyldnerId: String = "",
 

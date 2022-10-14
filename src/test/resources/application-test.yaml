@@ -6,13 +6,6 @@
 # Mocks OIDC.
 #
 ####################################################################
-
-no.nav.security.jwt:
-  issuer:
-    aad:
-      discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
-      accepted_audience: aud-localhost
-
 spring:
   config.activate.on-profile: test, local
   flyway.enabled: false
@@ -20,7 +13,21 @@ spring:
   datasource.url: jdbc:h2:mem:default
   h2.console.enabled: true
   jpa.hibernate.hbmddl-auto: create-drop
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:${mock-oauth2-server.port}/azure
+      client:
+        provider:
+          aad:
+            token-uri: http://localhost:${mock-oauth2-server.port}/azure/token
+            jwk-set-uri: http://localhost:${mock-oauth2-server.port}/azure/jwks
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+      accepted_audience: aud-localhost
 spring.kafka:
   properties:
     schema:

@@ -21,10 +21,10 @@
     <!-- build/language -->
     <kotlin.version>1.6.10</kotlin.version>
     <build-helper-maven.version>3.2.0</build-helper-maven.version>
-    <token-support.version>2.1.5</token-support.version>
+    <token-support.version>2.1.6</token-support.version>
 
     <!-- dependencies -->
-    <bidrag-commons.version>0.7.9</bidrag-commons.version>
+    <bidrag-commons.version>0.7.10</bidrag-commons.version>
     <bidrag-commons-test.version>0.2.2</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.0.0</mockito-kotlin.version>
@@ -33,8 +33,8 @@
     <com.squareup.okhttp3.version>4.9.2</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.13.4</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>1.6.11</springdoc-openapi-ui.version>
-    <bidrag-behandling-felles.version>0.0.49</bidrag-behandling-felles.version>
-    <bidrag-behandling-felles-dto.version>0.0.41</bidrag-behandling-felles-dto.version>
+    <bidrag-behandling-felles.version>0.0.51</bidrag-behandling-felles.version>
+    <bidrag-behandling-felles-dto.version>0.0.46</bidrag-behandling-felles-dto.version>
 
   </properties>
 

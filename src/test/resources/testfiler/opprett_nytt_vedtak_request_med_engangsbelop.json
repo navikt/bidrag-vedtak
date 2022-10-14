@@ -59,7 +59,6 @@
     {
       "stonadType": "BIDRAG",
       "sakId": "SAK-001",
-      "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
@@ -94,7 +93,6 @@
     {
       "stonadType": "FORSKUDD",
       "sakId": "SAK-001",
-      "behandlingId": "Fritekst",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
@@ -129,6 +127,7 @@
       "lopenr": 1,
       "endrerEngangsbelopId": null,
       "type": "SAERTILSKUDD",
+      "sakId": "SAK1",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
@@ -146,6 +145,7 @@
       "lopenr": 2,
       "endrerEngangsbelopId": 1,
       "type": "SAERTILSKUDD",
+      "sakId": "SAK2",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",

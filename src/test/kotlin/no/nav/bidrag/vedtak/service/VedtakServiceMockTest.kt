@@ -127,14 +127,12 @@ class VedtakServiceMockTest {
 
       Executable { assertThat(stonadsendringDtoListe[0].stonadType).isEqualTo(vedtak.stonadsendringListe!![0].stonadType.toString()) },
       Executable { assertThat(stonadsendringDtoListe[0].sakId).isEqualTo(vedtak.stonadsendringListe!![0].sakId) },
-      Executable { assertThat(stonadsendringDtoListe[0].behandlingId).isEqualTo(vedtak.stonadsendringListe!![0].behandlingId) },
       Executable { assertThat(stonadsendringDtoListe[0].skyldnerId).isEqualTo(vedtak.stonadsendringListe!![0].skyldnerId) },
       Executable { assertThat(stonadsendringDtoListe[0].kravhaverId).isEqualTo(vedtak.stonadsendringListe!![0].kravhaverId) },
       Executable { assertThat(stonadsendringDtoListe[0].mottakerId).isEqualTo(vedtak.stonadsendringListe!![0].mottakerId) },
 
       Executable { assertThat(stonadsendringDtoListe[1].stonadType).isEqualTo(vedtak.stonadsendringListe!![1].stonadType.toString()) },
       Executable { assertThat(stonadsendringDtoListe[1].sakId).isEqualTo(vedtak.stonadsendringListe!![1].sakId) },
-      Executable { assertThat(stonadsendringDtoListe[1].behandlingId).isEqualTo(vedtak.stonadsendringListe!![1].behandlingId) },
       Executable { assertThat(stonadsendringDtoListe[1].skyldnerId).isEqualTo(vedtak.stonadsendringListe!![1].skyldnerId) },
       Executable { assertThat(stonadsendringDtoListe[1].kravhaverId).isEqualTo(vedtak.stonadsendringListe!![1].kravhaverId) },
       Executable { assertThat(stonadsendringDtoListe[1].mottakerId).isEqualTo(vedtak.stonadsendringListe!![1].mottakerId) },
@@ -242,8 +240,8 @@ class VedtakServiceMockTest {
       )
     Mockito.`when`(persistenceServiceMock.hentAlleStonadsendringerForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
       listOf(
-        byggStonadsendring(stonadsendringId = 1, behandlingId = "BEHID1"),
-        byggStonadsendring(stonadsendringId = 2, behandlingId = "BEHID2")
+        byggStonadsendring(stonadsendringId = 1),
+        byggStonadsendring(stonadsendringId = 2)
       )
     )
     Mockito.`when`(persistenceServiceMock.hentAlleEngangsbelopForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
@@ -285,7 +283,6 @@ class VedtakServiceMockTest {
       Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.grunnlagListe[0].referanse).isEqualTo("REF1") },
       Executable { assertThat(vedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
-      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].behandlingId).isEqualTo("BEHID1") },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].belop).isEqualTo(BigDecimal.valueOf(100)) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
