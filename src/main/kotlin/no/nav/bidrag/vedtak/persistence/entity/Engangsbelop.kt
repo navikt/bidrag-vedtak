@@ -51,7 +51,10 @@ data class Engangsbelop(
   val valutakode: String = "",
 
   @Column(nullable = false, name = "resultatkode")
-  val resultatkode: String = ""
+  val resultatkode: String = "",
+
+  @Column(nullable = true, name = "referanse")
+  val referanse: String = ""
 )
 
 fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak, lopenr: Int) = with(::Engangsbelop) {

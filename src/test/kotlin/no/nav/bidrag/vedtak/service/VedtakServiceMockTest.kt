@@ -150,6 +150,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe[0].belop).isEqualTo(vedtak.engangsbelopListe!![0].belop) },
       Executable { assertThat(engangsbelopDtoListe[0].valutakode).isEqualTo(vedtak.engangsbelopListe!![0].valutakode) },
       Executable { assertThat(engangsbelopDtoListe[0].resultatkode).isEqualTo(vedtak.engangsbelopListe!![0].resultatkode) },
+      Executable { assertThat(engangsbelopDtoListe[0].referanse).isEqualTo(vedtak.engangsbelopListe!![0].referanse) },
 
       Executable { assertThat(engangsbelopDtoListe[1].endrerEngangsbelopId).isEqualTo(vedtak.engangsbelopListe!![1].endrerEngangsbelopId) },
       Executable { assertThat(engangsbelopDtoListe[1].type).isEqualTo(vedtak.engangsbelopListe!![1].type.toString()) },
@@ -160,6 +161,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(engangsbelopDtoListe[1].belop).isEqualTo(vedtak.engangsbelopListe!![1].belop) },
       Executable { assertThat(engangsbelopDtoListe[1].valutakode).isEqualTo(vedtak.engangsbelopListe!![1].valutakode) },
       Executable { assertThat(engangsbelopDtoListe[1].resultatkode).isEqualTo(vedtak.engangsbelopListe!![1].resultatkode) },
+      Executable { assertThat(engangsbelopDtoListe[1].referanse).isEqualTo(vedtak.engangsbelopListe!![1].referanse) },
 
       // Sjekk PeriodeDto
       Executable { assertThat(periodeDtoListe).isNotNull() },
@@ -170,24 +172,28 @@ class VedtakServiceMockTest {
       Executable { assertThat(periodeDtoListe[0].belop).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[0].belop) },
       Executable { assertThat(periodeDtoListe[0].valutakode).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[0].valutakode) },
       Executable { assertThat(periodeDtoListe[0].resultatkode).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[0].resultatkode) },
+      Executable { assertThat(periodeDtoListe[0].referanse).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[0].referanse) },
 
       Executable { assertThat(periodeDtoListe[1].periodeFomDato).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].periodeFomDato) },
       Executable { assertThat(periodeDtoListe[1].periodeTilDato).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].periodeTilDato) },
       Executable { assertThat(periodeDtoListe[1].belop).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].belop) },
       Executable { assertThat(periodeDtoListe[1].valutakode).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].valutakode) },
       Executable { assertThat(periodeDtoListe[1].resultatkode).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].resultatkode) },
+      Executable { assertThat(periodeDtoListe[1].referanse).isEqualTo(vedtak.stonadsendringListe!![0].periodeListe[1].referanse) },
 
       Executable { assertThat(periodeDtoListe[2].periodeFomDato).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].periodeFomDato) },
       Executable { assertThat(periodeDtoListe[2].periodeTilDato).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].periodeTilDato) },
       Executable { assertThat(periodeDtoListe[2].belop).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].belop) },
       Executable { assertThat(periodeDtoListe[2].valutakode).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].valutakode) },
       Executable { assertThat(periodeDtoListe[2].resultatkode).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].resultatkode) },
+      Executable { assertThat(periodeDtoListe[2].referanse).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[0].referanse) },
 
       Executable { assertThat(periodeDtoListe[3].periodeFomDato).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].periodeFomDato) },
       Executable { assertThat(periodeDtoListe[3].periodeTilDato).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].periodeTilDato) },
       Executable { assertThat(periodeDtoListe[3].belop).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].belop) },
       Executable { assertThat(periodeDtoListe[3].valutakode).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].valutakode) },
       Executable { assertThat(periodeDtoListe[3].resultatkode).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].resultatkode) },
+      Executable { assertThat(periodeDtoListe[3].referanse).isEqualTo(vedtak.stonadsendringListe!![1].periodeListe[1].referanse) },
 
       // Sjekk GrunnlagDto
       Executable { assertThat(grunnlagDtoListe).isNotNull() },
@@ -248,7 +254,7 @@ class VedtakServiceMockTest {
       listOf(
         byggEngangsbelop(engangsbelopId =  1, 1,null, "SAERTILSKUDD", "SAK-101",
           "01018011111", "01010511111", "01018211111", BigDecimal.valueOf(3490),
-          "NOK", "SAERTILSKUDD BEREGNET")
+          "NOK", "SAERTILSKUDD BEREGNET", "referanse1")
       )
     )
     Mockito.`when`(persistenceServiceMock.hentAllePerioderForStonadsendring(MockitoHelper.any(Int::class.java)))

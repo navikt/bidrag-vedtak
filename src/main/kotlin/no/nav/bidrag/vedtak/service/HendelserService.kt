@@ -29,7 +29,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       engangsbelopListe = mapEngangsbelop(vedtakRequest)
     )
     vedtakKafkaEventProducer.publish(vedtakHendelse)
-    SECURE_LOGGER.info("ny melding lagt på topic vedtak: $vedtakHendelse")
+    SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
   }
 
   private fun mapStonadsendringer(vedtakRequest: OpprettVedtakRequestDto): List<Stonadsendring> {
@@ -43,7 +43,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             periodeTilDato = periode.periodeTilDato,
             belop = periode.belop,
             valutakode = periode.valutakode,
-            resultatkode = periode.resultatkode
+            resultatkode = periode.resultatkode,
+            referanse = periode.referanse
           )
         )
       }
@@ -75,7 +76,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           mottakerId = it.mottakerId,
           belop = it.belop,
           valutakode = it.valutakode,
-          resultatkode = it.resultatkode
+          resultatkode = it.resultatkode,
+          referanse = it.referanse
         )
       )
     }
