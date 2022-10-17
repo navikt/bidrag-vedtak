@@ -192,6 +192,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           belop = dto.belop,
           valutakode = dto.valutakode.trimEnd(),
           resultatkode = dto.resultatkode,
+          referanse = dto.referanse,
           grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )
@@ -221,6 +222,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           belop = dto.belop,
           valutakode = dto.valutakode,
           resultatkode = dto.resultatkode,
+          referanse = dto.referanse,
           grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )

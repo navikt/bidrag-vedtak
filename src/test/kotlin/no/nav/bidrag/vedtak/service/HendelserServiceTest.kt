@@ -53,7 +53,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A",
+            BigDecimal.ONE, "NOK", "A", "referanse1",
             listOf("A")
           )
         ),
@@ -77,7 +77,7 @@ class HendelserServiceTest {
           OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "D", "E", listOf(
               OpprettVedtakPeriodeRequestDto(
-                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", "referanse1", listOf("A")
               )
             )
           )
@@ -104,7 +104,7 @@ class HendelserServiceTest {
           OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "D", "E", listOf(
               OpprettVedtakPeriodeRequestDto(
-                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", "referanse1", listOf("A")
               )
             )
           )
@@ -112,7 +112,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A",
+            BigDecimal.ONE, "NOK", "A","referanse1",
             listOf("A")
           )
         ),
@@ -137,7 +137,7 @@ class HendelserServiceTest {
           OpprettStonadsendringRequestDto(
             StonadType.BIDRAG, "B", "C", "D", "E", listOf(
               OpprettVedtakPeriodeRequestDto(
-                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", listOf("A")
+                LocalDate.now(), LocalDate.now(), BigDecimal.ONE, "NOK", "A", "referanse1", listOf("A")
               )
             )
           )
@@ -168,7 +168,8 @@ class HendelserServiceTest {
                 periodeTilDato = LocalDate.now(),
                 belop = BigDecimal.valueOf(1),
                 valutakode = "NOK",
-                resultatkode = "A"
+                resultatkode = "A",
+                referanse = "referanse1"
               )
             )
           )
@@ -200,6 +201,7 @@ class HendelserServiceTest {
             belop = BigDecimal.ONE,
             resultatkode = "all is well",
             valutakode = "Nok",
+            referanse = "referanse1",
             grunnlagReferanseListe = listOf("A")
           )
         ),

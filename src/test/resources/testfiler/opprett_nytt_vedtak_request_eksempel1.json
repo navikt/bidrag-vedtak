@@ -74,6 +74,7 @@
           "belop": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
+          "referanse": "referanse1",
           "grunnlagReferanseListe": [
             "BM-LIGS-19",
             "BM-LIGN-19",
@@ -87,6 +88,7 @@
           "belop": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
+          "referanse": "referanse2",
           "grunnlagReferanseListe": [
             "BM-LIGS-19",
             "BM-LIGN-19",
@@ -109,6 +111,7 @@
           "belop": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
+          "referanse": "referanse1",
           "grunnlagReferanseListe": [
             "BM-LIGS-19",
             "SJAB-REF001"
@@ -120,6 +123,7 @@
           "belop": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
+          "referanse": "referanse2",
           "grunnlagReferanseListe": [
             "BM-LIGS-19",
             "SJAB-REF001"

@@ -120,6 +120,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+            referanse = "referanse1",
             grunnlagReferanseListe = listOf(
                 "BM-LIGS-19",
                 "BM-LIGN-19",
@@ -132,6 +133,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+            referanse = "referanse2",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "BM-LIGN-19",
@@ -153,6 +155,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
+            referanse = "referanse3",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "SJAB-REF001")
@@ -164,6 +167,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
+            referanse = "referanse4",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "SJAB-REF001")
@@ -183,6 +187,7 @@ class TestUtil {
         belop = BigDecimal.valueOf(3490),
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
+        referanse = "referanse1",
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -198,6 +203,7 @@ class TestUtil {
         belop = BigDecimal.valueOf(2990),
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
+        referanse = "referanse2",
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -256,15 +262,17 @@ class TestUtil {
       periodeTilDato: LocalDate? = LocalDate.parse("2020-01-01"),
       belop: BigDecimal = BigDecimal.valueOf(3520),
       valutakode: String = "NOK",
-      resultatkode: String = "KOSTNADSBEREGNET_BIDRAG"
-    ) = Periode(
+      resultatkode: String = "KOSTNADSBEREGNET_BIDRAG",
+      referanse: String = "referanse1",
+      ) = Periode(
       periodeId = periodeId,
       periodeFomDato = periodeFomDato,
       periodeTilDato = periodeTilDato,
       stonadsendring = byggStonadsendring(),
       belop = belop,
       valutakode = valutakode,
-      resultatkode = resultatkode
+      resultatkode = resultatkode,
+      referanse = referanse
     )
 
     fun byggGrunnlag(
@@ -315,8 +323,9 @@ class TestUtil {
       mottakerId: String = "01018211111",
       belop: BigDecimal = BigDecimal.valueOf(3490),
       valutakode: String = "NOK",
-      resultatkode: String = "SAERTILSKUDD BEREGNET"
-    ) = Engangsbelop(
+      resultatkode: String = "SAERTILSKUDD BEREGNET",
+      referanse: String = "referanse1",
+      ) = Engangsbelop(
       engangsbelopId = engangsbelopId,
       vedtak = byggVedtak(),
       lopenr = lopenr,
@@ -328,7 +337,8 @@ class TestUtil {
       mottakerId = mottakerId,
       belop = belop,
       valutakode = valutakode,
-      resultatkode = resultatkode
+      resultatkode = resultatkode,
+      referanse = referanse
     )
 
     fun byggEngangsbelopGrunnlagBo(
