@@ -34,6 +34,8 @@ class TestUtil {
       opprettetAv = "X123456",
       vedtakDato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
+      eksternReferanse = "eksternReferanse1",
+      utsattTilDato = LocalDate.now(),
       grunnlagListe = byggGrunnlagListe(),
       stonadsendringListe = byggStonadsendringListe(),
       engangsbelopListe = byggEngangsbelopListe(),
@@ -113,6 +115,7 @@ class TestUtil {
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
+        indeksreguleringAar = "2024",
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             periodeFomDato = LocalDate.parse("2019-01-01"),
@@ -148,6 +151,7 @@ class TestUtil {
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
+        indeksreguleringAar = "2024",
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             periodeFomDato = LocalDate.parse("2019-06-01"),
@@ -229,14 +233,18 @@ class TestUtil {
       enhetId: String = "4812",
       vedtakDato: LocalDate = LocalDate.now(),
       opprettetAv: String = "X123456",
-      opprettetTimestamp: LocalDateTime? = LocalDateTime.now()
+      opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
+      eksternReferanse: String = "eksternReferanse1",
+      utsattTilDato: LocalDate = LocalDate.now()
     ) = Vedtak(
       vedtakId = vedtakId,
       vedtakType = vedtakType,
       enhetId = enhetId,
       vedtakDato = vedtakDato,
       opprettetAv = opprettetAv,
-      opprettetTimestamp = opprettetTimestamp!!
+      opprettetTimestamp = opprettetTimestamp,
+      eksternReferanse = eksternReferanse,
+      utsattTilDato = utsattTilDato,
     )
 
     fun byggStonadsendring(

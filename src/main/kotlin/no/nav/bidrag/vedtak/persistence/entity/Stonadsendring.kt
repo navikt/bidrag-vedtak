@@ -25,8 +25,8 @@ data class Stonadsendring(
   @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
-  @Column(nullable = true, name = "sak_id")
-  val sakId: String? = null,
+  @Column(nullable = false, name = "sak_id")
+  val sakId: String = "",
 
   @Column(nullable = false, name = "skyldner_id")
   val skyldnerId: String = "",
@@ -35,7 +35,10 @@ data class Stonadsendring(
   val kravhaverId: String = "",
 
   @Column(nullable = false, name = "mottaker_id")
-  val mottakerId: String = ""
+  val mottakerId: String = "",
+
+  @Column(nullable = false, name = "indeksregulering_aar")
+  val indeksreguleringAar: String? = ""
 )
 
 fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
