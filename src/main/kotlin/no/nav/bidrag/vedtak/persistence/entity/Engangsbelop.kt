@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -26,8 +27,8 @@ data class Engangsbelop(
   @Column(name = "lopenr")
   val lopenr: Int = 0,
 
-  @Column(nullable = true, name = "sak_id")
-  val sakId: String? = null,
+  @Column(nullable = false, name = "sak_id")
+  val sakId: String = "",
 
   @Column(name = "endrer_engangsbelop_id")
   val endrerEngangsbelopId: Int? = 0,
@@ -66,6 +67,15 @@ fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedta
       Engangsbelop::lopenr.name -> lopenr
       Engangsbelop::type.name -> type.toString()
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)
+    }
+  })
+}
+
+fun Engangsbelop.toEngangsbelopBo() = with(::EngangsbelopBo) {
+  val propertiesByName = Engangsbelop::class.memberProperties.associateBy { it.name }
+  callBy(parameters.associateWith { parameter ->
+    when (parameter.name) {
+      else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopBo)
     }
   })
 }

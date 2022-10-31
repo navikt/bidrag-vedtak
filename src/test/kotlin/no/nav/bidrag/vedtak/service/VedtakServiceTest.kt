@@ -93,6 +93,9 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
       Executable { assertThat(vedtakFunnet.vedtakDato).isEqualTo(nyttVedtakRequest.vedtakDato) },
       Executable { assertThat(vedtakFunnet.enhetId).isEqualTo(nyttVedtakRequest.enhetId) },
+      Executable { assertThat(vedtakFunnet.eksternReferanse).isEqualTo(nyttVedtakRequest.eksternReferanse) },
+      Executable { assertThat(vedtakFunnet.utsattTilDato).isEqualTo(nyttVedtakRequest.utsattTilDato) },
+      Executable { assertThat(vedtakFunnet.utsattTilDato).isEqualTo(nyttVedtakRequest.utsattTilDato) },
       Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(4) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
@@ -120,6 +123,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].skyldnerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].skyldnerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].mottakerId) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].indeksreguleringAar) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
 
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].stonadType).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].stonadType) },
@@ -127,6 +131,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].skyldnerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].skyldnerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].mottakerId) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[1].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].indeksreguleringAar) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].periodeListe.size).isEqualTo(2) },
 
       // Periode
@@ -191,6 +196,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.engangsbelopListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].endrerEngangsbelopId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].endrerEngangsbelopId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].type).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].type) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].sakId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].sakId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].skyldnerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].skyldnerId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].kravhaverId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].kravhaverId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].mottakerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].mottakerId) },
@@ -202,6 +208,7 @@ class VedtakServiceTest {
 
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].endrerEngangsbelopId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].endrerEngangsbelopId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].type).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].type) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[1].sakId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].sakId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].skyldnerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].skyldnerId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].kravhaverId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].kravhaverId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].mottakerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].mottakerId) },

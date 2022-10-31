@@ -15,6 +15,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakPeriodeDto
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakType
+import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
@@ -22,6 +23,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
+import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopBo
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopEntity
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
@@ -54,16 +56,20 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
     // Engangsbelop
-    var lopenr: Int = 0
+    // Går via en liste med EngangsbelopBo for å kunne legge med engangsbelopId på topic
+    var lopenr = 0
+    val engangsbelopBoListe: ArrayList<EngangsbelopBo>? = null
     vedtakRequest.engangsbelopListe?.forEach {
-      lopenr ++
-      opprettEngangsbelop(it, opprettetVedtak, lopenr, grunnlagIdRefMap) }
+      lopenr++
+      val opprettetEngangsbelop = opprettEngangsbelop(it, opprettetVedtak, lopenr, grunnlagIdRefMap)
+      engangsbelopBoListe?.add(opprettetEngangsbelop.toEngangsbelopBo())
+    }
 
     // Behandlingsreferanse
     vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
-    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
-      hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
+    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || engangsbelopBoListe?.isNotEmpty() == true) {
+      hendelserService.opprettHendelse(vedtakRequest, engangsbelopBoListe, opprettetVedtak.vedtakId, opprettetVedtak.opprettetTimestamp)
     }
 
     return opprettetVedtak.vedtakId
@@ -83,7 +89,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett Engangsbelop
-  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) {
+  private fun opprettEngangsbelop(
+    engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) : Engangsbelop {
     val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak, lopenr))
 
     // EngangsbelopGrunnlag
@@ -97,6 +104,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         persistenceService.opprettEngangsbelopGrunnlag(EngangsbelopGrunnlagBo(opprettetEngangsbelop.engangsbelopId, grunnlagId))
       }
     }
+    return opprettetEngangsbelop
   }
 
   // Opprett periode
@@ -151,6 +159,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       vedtakDato = vedtak.vedtakDato,
       enhetId = vedtak.enhetId,
       opprettetTimestamp = vedtak.opprettetTimestamp,
+      eksternReferanse = vedtak.eksternReferanse,
+      utsattTilDato = vedtak.utsattTilDato,
       grunnlagListe = grunnlagDtoListe,
       stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
       engangsbelopListe = hentEngangsbelopTilVedtak(engangsbelopListe),
@@ -169,6 +179,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
+          indeksreguleringAar = it.indeksreguleringAar,
           periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )

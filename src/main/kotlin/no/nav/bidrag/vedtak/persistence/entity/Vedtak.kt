@@ -11,7 +11,7 @@ import javax.persistence.Id
 import kotlin.reflect.full.memberProperties
 
 @Entity
-data class Vedtak (
+data class Vedtak(
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,14 +24,20 @@ data class Vedtak (
   @Column(nullable = false, name = "enhet_id")
   val enhetId: String = "",
 
-  @Column(nullable = true, name = "vedtak_dato")
-  val vedtakDato: LocalDate? = null,
+  @Column(nullable = false, name = "vedtak_dato")
+  val vedtakDato: LocalDate = LocalDate.now(),
 
   @Column(nullable = false, name = "opprettet_av")
   val opprettetAv: String = "",
 
   @Column(nullable = false, name = "opprettet_timestamp")
-  val opprettetTimestamp: LocalDateTime = LocalDateTime.now()
+  val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
+
+  @Column(nullable = true, name = "ekstern_referanse")
+  val eksternReferanse: String? = "",
+
+  @Column(nullable = true, name = "utsatt_til_dato")
+  val utsattTilDato: LocalDate? = LocalDate.now()
 )
 
 fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
