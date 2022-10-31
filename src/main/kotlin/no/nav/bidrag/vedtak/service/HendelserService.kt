@@ -83,7 +83,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           valutakode = it.valutakode,
           resultatkode = it.resultatkode,
           referanse = it.referanse,
-          endrerEngangsbelopId = it.endrerEngangsbelopId,
+          endrerEngangsbelopId = it.endrerEngangsbelopId
           )
       )
     }
