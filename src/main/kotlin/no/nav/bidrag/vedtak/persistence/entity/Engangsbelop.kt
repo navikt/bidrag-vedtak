@@ -46,10 +46,10 @@ data class Engangsbelop(
   val mottakerId: String = "",
 
   @Column(nullable = false, name = "belop")
-  val belop: BigDecimal = BigDecimal.ZERO,
+  val belop: BigDecimal? = BigDecimal.ZERO,
 
   @Column(nullable = false, name = "valutakode")
-  val valutakode: String = "",
+  val valutakode: String? = "",
 
   @Column(nullable = false, name = "resultatkode")
   val resultatkode: String = "",

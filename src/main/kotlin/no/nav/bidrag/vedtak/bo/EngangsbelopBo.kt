@@ -2,11 +2,7 @@ package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
-import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
-import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlag
-import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import java.math.BigDecimal
-import kotlin.reflect.full.memberProperties
 
 @Schema
 data class EngangsbelopBo(
@@ -33,10 +29,10 @@ data class EngangsbelopBo(
   val mottakerId: String,
 
   @Schema(description = "Beregnet engangsbeløp")
-  val belop: BigDecimal,
+  val belop: BigDecimal?,
 
   @Schema(description = "Valutakoden tilhørende engangsbeløpet")
-  val valutakode: String,
+  val valutakode: String?,
 
   @Schema(description = "Resultatkoden tilhørende engangsbeløpet")
   val resultatkode: String,

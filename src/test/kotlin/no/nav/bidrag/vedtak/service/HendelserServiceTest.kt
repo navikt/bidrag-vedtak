@@ -17,7 +17,6 @@ import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.anyOrNull
 import org.springframework.beans.factory.annotation.Autowired
