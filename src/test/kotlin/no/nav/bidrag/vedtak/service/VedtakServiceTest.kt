@@ -124,6 +124,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].mottakerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].indeksreguleringAar) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].opphortFra).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].opphortFra) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
 
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].stonadType).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].stonadType) },
@@ -132,6 +133,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].kravhaverId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].kravhaverId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].mottakerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].indeksreguleringAar) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[1].opphortFra).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].opphortFra) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].periodeListe.size).isEqualTo(2) },
 
       // Periode
@@ -200,7 +202,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].skyldnerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].skyldnerId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].kravhaverId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].kravhaverId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].mottakerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].mottakerId) },
-      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].belop.toInt()).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].belop.toInt()) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].belop?.toInt()).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].belop?.toInt()) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].valutakode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].valutakode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].resultatkode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].resultatkode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].referanse).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].referanse) },
@@ -212,7 +214,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].skyldnerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].skyldnerId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].kravhaverId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].kravhaverId) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].mottakerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].mottakerId) },
-      Executable { assertThat(vedtakFunnet.engangsbelopListe[1].belop.toInt()).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].belop.toInt()) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[1].belop?.toInt()).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].belop?.toInt()) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].valutakode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].valutakode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].resultatkode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].resultatkode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].referanse).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].referanse) },

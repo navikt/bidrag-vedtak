@@ -180,6 +180,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
+          opphortFra = it.opphortFra,
           periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )
