@@ -17,7 +17,6 @@ import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.anyOrNull
 import org.springframework.beans.factory.annotation.Autowired
@@ -88,7 +87,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -126,7 +125,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -175,7 +174,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -214,6 +213,7 @@ class HendelserServiceTest {
             kravhaverId = "D",
             mottakerId = "E",
             indeksreguleringAar = "2024",
+            opphortFra = LocalDate.now(),
             listOf(
               Periode(
                 periodeFomDato = LocalDate.now(),

@@ -1,6 +1,5 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
-import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -8,7 +7,6 @@ import javax.persistence.IdClass
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.Table
-import kotlin.reflect.full.memberProperties
 
 @IdClass(EngangsbelopGrunnlagPK::class)
 @Entity
