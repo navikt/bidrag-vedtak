@@ -38,7 +38,7 @@ data class Stonadsendring(
   @Column(nullable = false, name = "mottaker_id")
   val mottakerId: String = "",
 
-  @Column(nullable = false, name = "indeksregulering_aar")
+  @Column(nullable = true, name = "indeksregulering_aar")
   val indeksreguleringAar: String? = "",
 
   @Column(nullable = true, name = "opphort_fra")
