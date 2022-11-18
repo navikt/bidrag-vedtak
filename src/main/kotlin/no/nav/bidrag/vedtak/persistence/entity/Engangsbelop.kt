@@ -24,13 +24,13 @@ data class Engangsbelop(
   @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
-  @Column(name = "lopenr")
+  @Column(nullable = false, name = "lopenr")
   val lopenr: Int = 0,
 
   @Column(nullable = false, name = "sak_id")
   val sakId: String = "",
 
-  @Column(name = "endrer_engangsbelop_id")
+  @Column(nullable = true, name = "endrer_engangsbelop_id")
   val endrerEngangsbelopId: Int? = 0,
 
   @Column(nullable = false, name = "type")
@@ -45,17 +45,17 @@ data class Engangsbelop(
   @Column(nullable = false, name = "mottaker_id")
   val mottakerId: String = "",
 
-  @Column(nullable = false, name = "belop")
+  @Column(nullable = true, name = "belop")
   val belop: BigDecimal? = BigDecimal.ZERO,
 
-  @Column(nullable = false, name = "valutakode")
+  @Column(nullable = true, name = "valutakode")
   val valutakode: String? = "",
 
   @Column(nullable = false, name = "resultatkode")
   val resultatkode: String = "",
 
   @Column(nullable = true, name = "referanse")
-  val referanse: String = ""
+  val referanse: String? = ""
 )
 
 fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak, lopenr: Int) = with(::Engangsbelop) {
