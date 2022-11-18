@@ -28,7 +28,7 @@ import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -102,7 +102,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak`() {
     // Oppretter ny forekomst
     val response = securedTestRestTemplate.exchange(
@@ -132,7 +131,7 @@ class VedtakControllerTest {
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
-      Int::class.java
+      String::class.java
     )
 
     assertAll(
@@ -143,7 +142,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
     val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
@@ -177,7 +175,7 @@ class VedtakControllerTest {
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
-      Int::class.java
+      String::class.java
     )
 
     assertAll(
