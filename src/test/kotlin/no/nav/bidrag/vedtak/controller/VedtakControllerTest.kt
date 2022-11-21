@@ -102,14 +102,13 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak`() {
     // Oppretter ny forekomst
     val response = securedTestRestTemplate.exchange(
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       byggVedtakRequest(),
-      Int::class.java
+      String::class.java
     )
 
     assertAll(
@@ -120,11 +119,10 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak med input fra fil`() {
 
     // Bygger request
-    val filnavn = "src/test/resources/testfiler/opprett_nytt_vedtak_request_eksempel1.json"
+    val filnavn = "/testfiler/opprett_nytt_vedtak_request_eksempel1.json"
     val request = lesFilOgByggRequest(filnavn)
 
     // Oppretter ny forekomst
@@ -143,7 +141,6 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal hente alle data for et vedtak`() {
     // Oppretter ny forekomst
     val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
@@ -165,11 +162,10 @@ class VedtakControllerTest {
   }
 
   @Test
-  @Disabled
   fun `skal opprette nytt vedtak med engangsbelop med input fra fil`() {
 
     // Bygger request
-    val filnavn = "src/test/resources/testfiler/opprett_nytt_vedtak_request_med_engangsbelop.json"
+    val filnavn = "/testfiler/opprett_nytt_vedtak_request_med_engangsbelop.json"
     val request = lesFilOgByggRequest(filnavn)
 
     // Oppretter ny forekomst
@@ -207,7 +203,7 @@ class VedtakControllerTest {
   private fun lesFilOgByggRequest(filnavn: String): HttpEntity<String> {
     var json = ""
     try {
-      json = Files.readString(Paths.get(filnavn))
+      json = this::class.java.getResource(filnavn)!!.readText()
     } catch (e: Exception) {
       Assertions.fail("Klarte ikke å lese fil: $filnavn")
     }

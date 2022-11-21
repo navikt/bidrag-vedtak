@@ -1,6 +1,7 @@
 {
   "vedtakType": "MANUELT",
   "opprettetAv": "X123456",
+  "vedtakDato": "2020-01-01",
   "enhetId": "4812",
   "grunnlagListe": [
     {
@@ -62,6 +63,8 @@
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
+      "indeksreguleringAar": null,
+      "opphortFra": null,
       "periodeListe": [
         {
           "periodeFomDato": "2019-01-01",
@@ -98,6 +101,8 @@
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
+      "indeksreguleringAar": null,
+      "opphortFra": null,
       "periodeListe": [
         {
           "periodeFomDato": "2019-06-01",
