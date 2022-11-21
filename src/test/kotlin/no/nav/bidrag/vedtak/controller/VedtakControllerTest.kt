@@ -130,7 +130,7 @@ class VedtakControllerTest {
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
-      Int::class.java
+      String::class.java
     )
 
     assertAll(
@@ -173,7 +173,7 @@ class VedtakControllerTest {
       fullUrlForNyttVedtak(),
       HttpMethod.POST,
       request,
-      Int::class.java
+      String::class.java
     )
 
     assertAll(
