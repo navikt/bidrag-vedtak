@@ -61,7 +61,6 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
-          opphortFra = it.opphortFra,
           periodeListe = periodeListe
         )
       )

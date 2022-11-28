@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
-import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -39,10 +38,7 @@ data class Stonadsendring(
   val mottakerId: String = "",
 
   @Column(nullable = true, name = "indeksregulering_aar")
-  val indeksreguleringAar: String? = "",
-
-  @Column(nullable = true, name = "opphort_fra")
-  val opphortFra: LocalDate? = null,
+  val indeksreguleringAar: String? = ""
 )
 
 fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {

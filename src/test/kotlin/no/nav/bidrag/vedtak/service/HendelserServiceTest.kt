@@ -87,7 +87,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -125,7 +125,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -174,7 +174,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", LocalDate.now(),
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -213,7 +213,6 @@ class HendelserServiceTest {
             kravhaverId = "D",
             mottakerId = "E",
             indeksreguleringAar = "2024",
-            opphortFra = LocalDate.now(),
             listOf(
               Periode(
                 periodeFomDato = LocalDate.now(),

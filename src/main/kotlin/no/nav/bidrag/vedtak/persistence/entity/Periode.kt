@@ -30,11 +30,11 @@ data class Periode(
   @JoinColumn(name = "stonadsendring_id")
   val stonadsendring: Stonadsendring = Stonadsendring(),
 
-  @Column(nullable = false, name = "belop")
-  val belop: BigDecimal = BigDecimal.ZERO,
+  @Column(nullable = true, name = "belop")
+  val belop: BigDecimal? = BigDecimal.ZERO,
 
-  @Column(nullable = false, name = "valutakode")
-  val valutakode: String = "",
+  @Column(nullable = true, name = "valutakode")
+  val valutakode: String? = "",
 
   @Column(nullable = false, name = "resultatkode")
   val resultatkode: String = "",
