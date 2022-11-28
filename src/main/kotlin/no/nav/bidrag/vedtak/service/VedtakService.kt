@@ -153,7 +153,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     return VedtakDto(
-      vedtakId = vedtak.vedtakId,
       vedtakType = VedtakType.valueOf(vedtak.vedtakType),
       opprettetAv = vedtak.opprettetAv,
       vedtakDato = vedtak.vedtakDato,

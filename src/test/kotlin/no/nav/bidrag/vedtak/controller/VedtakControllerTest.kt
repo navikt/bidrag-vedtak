@@ -156,8 +156,7 @@ class VedtakControllerTest {
     assertAll(
       Executable { assertThat(response).isNotNull() },
       Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-      Executable { assertThat(response?.body).isNotNull() },
-      Executable { assertThat(response?.body!!.vedtakId).isEqualTo(opprettetVedtakId) }
+      Executable { assertThat(response?.body).isNotNull() }
     )
   }
 

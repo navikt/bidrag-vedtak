@@ -87,7 +87,6 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet).isNotNull() },
 
       // Vedtak
-      Executable { assertThat(vedtakFunnet.vedtakId).isNotNull() },
       Executable { assertThat(vedtakFunnet.vedtakType).isEqualTo(nyttVedtakRequest.vedtakType) },
       Executable { assertThat(vedtakFunnet.opprettetTimestamp).isNotNull() },
       Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },

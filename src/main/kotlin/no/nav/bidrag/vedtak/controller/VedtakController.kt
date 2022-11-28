@@ -61,7 +61,7 @@ class VedtakController(private val vedtakService: VedtakService) {
 
   fun hentVedtak(@PathVariable @NotNull vedtakId: Int): ResponseEntity<VedtakDto> {
     val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
-    LOGGER.info("Følgende vedtak ble hentet: ${vedtakFunnet.vedtakId}")
+    LOGGER.info("Følgende vedtak ble hentet: $vedtakId")
     SECURE_LOGGER.info("Følgende vedtak ble hentet: $vedtakFunnet")
     return ResponseEntity(vedtakFunnet, HttpStatus.OK)
   }

@@ -287,7 +287,6 @@ class VedtakServiceMockTest {
 
     assertAll(
       Executable { assertThat(vedtakFunnet).isNotNull() },
-      Executable { assertThat(vedtakFunnet.vedtakId).isEqualTo(1) },
       Executable { assertThat(vedtakFunnet.vedtakType).isEqualTo(VedtakType.MANUELT) },
       Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.grunnlagListe[0].referanse).isEqualTo("REF1") },
