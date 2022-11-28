@@ -180,7 +180,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
-          opphortFra = it.opphortFra,
           periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )
@@ -202,7 +201,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           periodeFomDato = dto.periodeFomDato,
           periodeTilDato = dto.periodeTilDato,
           belop = dto.belop,
-          valutakode = dto.valutakode.trimEnd(),
+          valutakode = dto.valutakode?.trimEnd(),
           resultatkode = dto.resultatkode,
           referanse = dto.referanse,
           grunnlagReferanseListe = grunnlagReferanseResponseListe

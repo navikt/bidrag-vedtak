@@ -116,7 +116,6 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
-        opphortFra = LocalDate.parse("2023-06-01"),
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             periodeFomDato = LocalDate.parse("2019-01-01"),
@@ -153,7 +152,6 @@ class TestUtil {
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
-        opphortFra = LocalDate.parse("2023-06-01"),
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             periodeFomDato = LocalDate.parse("2019-06-01"),
