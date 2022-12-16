@@ -9,12 +9,14 @@ CREATE TABLE IF NOT EXISTS engangsbelop
     lopenr integer,
     endrer_engangsbelop_id integer,
     type varchar(20) NOT NULL,
+    sak_id varchar(20) NOT NULL,
     skyldner_id varchar(20) NOT NULL,
     kravhaver_id varchar(20) NOT NULL,
     mottaker_id varchar(20) NOT NULL,
-    belop float NOT NULL,
-    valutakode varchar(10) NOT NULL,
+    belop float,
+    valutakode varchar(10),
     resultatkode varchar(255) NOT NULL,
+    referanse varchar(32),
     CONSTRAINT engangsbelop_pkey PRIMARY KEY (engangsbelop_id),
     CONSTRAINT engangsbelop_fk_vedtak_id FOREIGN KEY (vedtak_id)
         REFERENCES vedtak (vedtak_id) MATCH SIMPLE
@@ -24,3 +26,5 @@ CREATE TABLE IF NOT EXISTS engangsbelop
 )
 
     TABLESPACE pg_default;
+
+CREATE INDEX idx_engangsbelop_1 ON engangsbelop(vedtak_id);

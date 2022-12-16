@@ -17,3 +17,5 @@ CREATE TABLE IF NOT EXISTS behandlingsreferanse
 )
 
     TABLESPACE pg_default;
+
+CREATE INDEX idx_behandlingsreferanse_1 ON behandlingsreferanse(vedtak_id);
