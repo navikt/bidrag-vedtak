@@ -1,6 +1,6 @@
 -- Table: periode
 
--- DROP TABLE periode;
+DROP TABLE periode;
 
 CREATE TABLE IF NOT EXISTS periode
 (
@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS periode
     periode_fom date NOT NULL,
     periode_til date,
     stonadsendring_id integer NOT NULL,
-    belop float NOT NULL,
-    valutakode varchar(10) NOT NULL,
+    belop float,
+    valutakode varchar(10),
     resultatkode varchar(255) NOT NULL,
+    referanse varchar(32),
     CONSTRAINT periode_pkey PRIMARY KEY (periode_id),
     CONSTRAINT fk_stonad_id FOREIGN KEY (stonadsendring_id)
         REFERENCES stonadsendring (stonadsendring_id) MATCH SIMPLE
@@ -18,5 +19,6 @@ CREATE TABLE IF NOT EXISTS periode
         ON DELETE NO ACTION,
     UNIQUE (stonadsendring_id, periode_fom)
 )
-
     TABLESPACE pg_default;
+
+CREATE INDEX idx_periode_1 ON periode(stonadsendring_id);

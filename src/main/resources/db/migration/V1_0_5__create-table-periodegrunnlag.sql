@@ -1,6 +1,6 @@
 -- Table: periode
 
--- DROP TABLE periodegrunnlag;
+DROP TABLE periodegrunnlag;
 
 CREATE TABLE IF NOT EXISTS periodegrunnlag
 (
@@ -19,3 +19,7 @@ CREATE TABLE IF NOT EXISTS periodegrunnlag
 )
 
     TABLESPACE pg_default;
+
+CREATE INDEX idx_periodegrunnlag_1 ON periodegrunnlag(periode_id);
+
+CREATE INDEX idx_periodegrunnlag_2 ON periodegrunnlag(periode_id, grunnlag_id);
