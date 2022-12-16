@@ -16,4 +16,4 @@ azureAccessInbound:
     cluster: dev-fss
 spec:
   replicas:
-    min: 2
+    min: 1
