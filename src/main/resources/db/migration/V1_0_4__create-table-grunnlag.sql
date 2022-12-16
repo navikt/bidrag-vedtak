@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS grunnlag
         REFERENCES vedtak (vedtak_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-    UNIQUE (vedtak_id, grunnlag_referanse)
+    UNIQUE (vedtak_id, referanse)
 )
 
     TABLESPACE pg_default;
