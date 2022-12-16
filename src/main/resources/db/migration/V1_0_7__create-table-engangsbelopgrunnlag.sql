@@ -1,6 +1,6 @@
 -- Table: engangsbelopgrunnlag
 
-DROP TABLE engangsbelopgrunnlag;
+-- DROP TABLE engangsbelopgrunnlag;
 
 CREATE TABLE IF NOT EXISTS engangsbelopgrunnlag
 (

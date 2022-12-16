@@ -1,6 +1,6 @@
 -- Table: behandlingsreferanse
 
-DROP TABLE behandlingsreferanse;
+-- DROP TABLE behandlingsreferanse;
 
 CREATE TABLE IF NOT EXISTS behandlingsreferanse
 (
