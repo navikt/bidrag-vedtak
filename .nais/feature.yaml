@@ -17,6 +17,6 @@ azureAccessInbound:
 spec:
   replicas:
     min: 1
-gcp:
-  sqlInstances:
-    tier: db-f1-micro
+  gcp:
+    sqlInstances:
+      tier: db-f1-micro

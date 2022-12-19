@@ -55,7 +55,7 @@ spec:
         databases:
           - name: {{ dbname }}
             envVarPrefix: DB
-      - tier: {{ gcp.sqlInstances.tier }}
+      - tier: {{ spec.gcp.sqlInstances.tier }}
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
