@@ -9,11 +9,13 @@ interface EngangsbelopGrunnlagRepository : CrudRepository<EngangsbelopGrunnlag, 
 
   @Query(
     "select ebg from EngangsbelopGrunnlag ebg " +
-        "where ebg.engangsbelop.engangsbelopId = :engangsbelopId and ebg.grunnlag.grunnlagId = :grunnlagId")
+        "where ebg.engangsbelop.id = :engangsbelopId and ebg.grunnlag.id = :grunnlagId"
+  )
   fun hentEngangsbelopGrunnlag(engangsbelopId: Int, grunnlagId: Int): EngangsbelopGrunnlag
 
   @Query(
-    "select ebg from EngangsbelopGrunnlag ebg where ebg.engangsbelop.engangsbelopId = :engangsbelopId")
+    "select ebg from EngangsbelopGrunnlag ebg where ebg.engangsbelop.id = :engangsbelopId"
+  )
   fun hentAlleGrunnlagForEngangsbelop(engangsbelopId: Int): List<EngangsbelopGrunnlag>
 
 }

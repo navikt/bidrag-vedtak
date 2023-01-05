@@ -1,7 +1,8 @@
 {
-  "vedtakType": "MANUELT",
+  "kilde": "MANUELT",
+  "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
-  "vedtakDato": "2020-01-01",
+  "dato": "2020-01-01",
   "enhetId": "4812",
   "grunnlagListe": [
     {
@@ -58,17 +59,17 @@
   ],
   "stonadsendringListe": [
     {
-      "stonadType": "BIDRAG",
+      "type": "BIDRAG",
       "sakId": "SAK-001",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
       "indeksreguleringAar": null,
-      "opphortFra": null,
+      "innkreving": "JA",
       "periodeListe": [
         {
-          "periodeFomDato": "2019-01-01",
-          "periodeTilDato": "2019-07-01",
+          "fomDato": "2019-01-01",
+          "tilDato": "2019-07-01",
           "belop": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -80,8 +81,8 @@
           ]
         },
         {
-          "periodeFomDato": "2019-07-01",
-          "periodeTilDato": "2020-01-01",
+          "fomDato": "2019-07-01",
+          "tilDato": "2020-01-01",
           "belop": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -96,17 +97,17 @@
       ]
     },
     {
-      "stonadType": "FORSKUDD",
+      "type": "FORSKUDD",
       "sakId": "SAK-001",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
       "indeksreguleringAar": null,
-      "opphortFra": null,
+      "innkreving": "JA",
       "periodeListe": [
         {
-          "periodeFomDato": "2019-06-01",
-          "periodeTilDato": "2019-07-01",
+          "fomDato": "2019-06-01",
+          "tilDato": "2019-07-01",
           "belop": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
@@ -117,8 +118,8 @@
           ]
         },
         {
-          "periodeFomDato": "2019-08-01",
-          "periodeTilDato": "2019-09-01",
+          "fomDato": "2019-08-01",
+          "tilDato": "2019-09-01",
           "belop": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
@@ -134,7 +135,7 @@
   "engangsbelopListe": [
     {
       "lopenr": 1,
-      "endrerEngangsbelopId": null,
+      "endrerId": null,
       "type": "SAERTILSKUDD",
       "sakId": "SAK1",
       "skyldnerId": "01018011111",
@@ -144,6 +145,7 @@
       "valutakode": "NOK",
       "resultatkode": "SAERTISLKUDD BEREGNET",
       "referanse": "referanse1",
+      "innkreving": "JA",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",
@@ -153,7 +155,7 @@
     },
     {
       "lopenr": 2,
-      "endrerEngangsbelopId": 1,
+      "endrerId": 1,
       "type": "SAERTILSKUDD",
       "sakId": "SAK2",
       "skyldnerId": "01018011111",
@@ -163,6 +165,7 @@
       "valutakode": "NOK",
       "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
       "referanse": "referanse2",
+      "innkreving": "JA",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",

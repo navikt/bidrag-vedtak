@@ -18,7 +18,7 @@ data class Engangsbelop(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "engangsbelop_id")
-  val engangsbelopId: Int = 0,
+  val id: Int = 0,
 
   @ManyToOne
   @JoinColumn(name = "vedtak_id")
@@ -31,7 +31,7 @@ data class Engangsbelop(
   val sakId: String = "",
 
   @Column(nullable = true, name = "endrer_engangsbelop_id")
-  val endrerEngangsbelopId: Int? = 0,
+  val endrerId: Int? = 0,
 
   @Column(nullable = false, name = "type")
   val type: String = "",
@@ -55,17 +55,21 @@ data class Engangsbelop(
   val resultatkode: String = "",
 
   @Column(nullable = true, name = "referanse")
-  val referanse: String? = ""
+  val referanse: String? = "",
+
+  @Column(nullable = false, name = "innkreving")
+  val innkreving: String = "",
 )
 
 fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak, lopenr: Int) = with(::Engangsbelop) {
   val propertiesByName = OpprettEngangsbelopRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Engangsbelop::engangsbelopId.name -> 0
+      Engangsbelop::id.name -> 0
       Engangsbelop::vedtak.name -> eksisterendeVedtak
       Engangsbelop::lopenr.name -> lopenr
       Engangsbelop::type.name -> type.toString()
+      Engangsbelop::innkreving.name -> innkreving.toString()
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)
     }
   })

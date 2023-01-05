@@ -16,7 +16,7 @@ data class Behandlingsreferanse(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "behandlingsreferanse_id")
-  val behandlingsreferanseId: Int = 0,
+  val id: Int = 0,
 
   @ManyToOne
   @JoinColumn(name = "vedtak_id")
@@ -33,7 +33,7 @@ fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksistere
   val propertiesByName = OpprettBehandlingsreferanseRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Behandlingsreferanse::behandlingsreferanseId.name -> 0
+      Behandlingsreferanse::id.name -> 0
       Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
     }

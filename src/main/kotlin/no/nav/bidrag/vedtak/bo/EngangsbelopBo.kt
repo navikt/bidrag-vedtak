@@ -2,13 +2,14 @@ package no.nav.bidrag.vedtak.bo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
+import no.nav.bidrag.behandling.felles.enums.Innkreving
 import java.math.BigDecimal
 
 @Schema
 data class EngangsbelopBo(
 
   @Schema(description = "Generert id for engangsbeløp")
-  val engangsbelopId: Int,
+  val id: Int,
 
   @Schema(description = "Løpenr innenfor vedtak")
   val lopenr: Int,
@@ -41,7 +42,10 @@ data class EngangsbelopBo(
   val referanse: String?,
 
   @Schema(description = "Id for eventuelt engangsbeløp som skal endres, skal være id for opprinnelig engangsbeløp")
-  val endrerEngangsbelopId: Int?
+  val endrerId: Int?,
+
+  @Schema(description = "Angir om stønaden skal innkreves")
+  val innkreving: Innkreving,
 )
 
 

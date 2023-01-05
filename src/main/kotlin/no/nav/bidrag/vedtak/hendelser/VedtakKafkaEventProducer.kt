@@ -19,7 +19,7 @@ class DefaultVedtakKafkaEventProducer(
     try {
       kafkaTemplate?.send(
         topic,
-        vedtakHendelse.vedtakType.toString(),
+        vedtakHendelse.kilde.toString(),
         objectMapper.writeValueAsString(vedtakHendelse)
       )
     } catch (e: JsonProcessingException) {

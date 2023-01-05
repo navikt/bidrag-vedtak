@@ -21,9 +21,10 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     opprettetTimestamp: LocalDateTime
   ) {
     val vedtakHendelse = VedtakHendelse(
-      vedtakType = vedtakRequest.vedtakType,
-      vedtakId = vedtakId,
-      vedtakDato = vedtakRequest.vedtakDato,
+      kilde = vedtakRequest.kilde,
+      type = vedtakRequest.type,
+      id = vedtakId,
+      dato = vedtakRequest.dato,
       enhetId = vedtakRequest.enhetId,
       opprettetAv = vedtakRequest.opprettetAv,
       opprettetTidspunkt = opprettetTimestamp,
@@ -43,8 +44,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       it.periodeListe.forEach { periode ->
         periodeListe.add(
           Periode(
-            periodeFomDato = periode.periodeFomDato,
-            periodeTilDato = periode.periodeTilDato,
+            fomDato = periode.fomDato,
+            tilDato = periode.tilDato,
             belop = periode.belop,
             valutakode = periode.valutakode,
             resultatkode = periode.resultatkode,
@@ -55,12 +56,13 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
       stonadsendringListe.add(
         Stonadsendring(
-          stonadType = it.stonadType,
+          type = it.type,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
           kravhaverId = it.kravhaverId,
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
+          innkreving = it.innkreving,
           periodeListe = periodeListe
         )
       )
@@ -73,7 +75,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     engangsbelopBoListe?.forEach {
       engangsbelopListe.add(
         Engangsbelop(
-          engangsbelopId = it.engangsbelopId,
+          id = it.id,
           type = it.type,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
@@ -83,7 +85,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           valutakode = it.valutakode,
           resultatkode = it.resultatkode,
           referanse = it.referanse,
-          endrerEngangsbelopId = it.endrerEngangsbelopId
+          endrerId = it.endrerId,
+          innkreving = it.innkreving
           )
       )
     }

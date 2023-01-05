@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository
 interface EngangsbelopRepository : CrudRepository<Engangsbelop, Int?>{
 
   @Query(
-    "select eb from Engangsbelop eb where eb.vedtak.vedtakId = :vedtakId")
+    "select eb from Engangsbelop eb where eb.vedtak.id = :vedtakId"
+  )
   fun hentAlleEngangsbelopForVedtak(vedtakId: Int): List<Engangsbelop>
 }
