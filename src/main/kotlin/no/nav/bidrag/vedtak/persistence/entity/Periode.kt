@@ -18,13 +18,13 @@ data class Periode(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "periode_id")
-  val periodeId: Int = 0,
+  val id: Int = 0,
 
-  @Column(nullable = false, name = "periode_fom")
-  val periodeFomDato: LocalDate = LocalDate.now(),
+  @Column(nullable = false, name = "fom_dato")
+  val fomDato: LocalDate = LocalDate.now(),
 
-  @Column(nullable = true, name = "periode_til")
-  val periodeTilDato: LocalDate? = null,
+  @Column(nullable = true, name = "til_dato")
+  val tilDato: LocalDate? = null,
 
   @ManyToOne
   @JoinColumn(name = "stonadsendring_id")
@@ -47,7 +47,7 @@ fun OpprettVedtakPeriodeRequestDto.toPeriodeEntity(eksisterendeStonadsendring: S
   val propertiesByName = OpprettVedtakPeriodeRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Periode::periodeId.name -> 0
+      Periode::id.name -> 0
       Periode::stonadsendring.name -> eksisterendeStonadsendring
       else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
     }

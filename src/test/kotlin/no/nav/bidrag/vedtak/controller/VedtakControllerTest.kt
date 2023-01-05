@@ -21,7 +21,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
@@ -37,8 +36,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.util.UriComponentsBuilder
-import java.nio.file.Files
-import java.nio.file.Paths
 
 @DisplayName("VedtakControllerTest")
 @ActiveProfiles(TEST_PROFILE)
@@ -162,7 +159,6 @@ class VedtakControllerTest {
 
   @Test
   fun `skal opprette nytt vedtak med engangsbelop med input fra fil`() {
-
     // Bygger request
     val filnavn = "/testfiler/opprett_nytt_vedtak_request_med_engangsbelop.json"
     val request = lesFilOgByggRequest(filnavn)

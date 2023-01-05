@@ -43,8 +43,8 @@ class PersistenceService(
   }
 
   fun opprettStonadsendring(stonadsendring: Stonadsendring): Stonadsendring {
-    vedtakRepository.findById(stonadsendring.vedtak.vedtakId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", stonadsendring.vedtak.vedtakId)) }
+    vedtakRepository.findById(stonadsendring.vedtak.id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", stonadsendring.vedtak.id)) }
     return stonadsendringRepository.save(stonadsendring)
   }
 
@@ -53,8 +53,8 @@ class PersistenceService(
   }
 
   fun opprettPeriode(periode: Periode): Periode {
-    stonadsendringRepository.findById(periode.stonadsendring.stonadsendringId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", periode.stonadsendring.stonadsendringId)) }
+    stonadsendringRepository.findById(periode.stonadsendring.id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", periode.stonadsendring.id)) }
     return periodeRepository.save(periode)
   }
 
@@ -63,8 +63,8 @@ class PersistenceService(
   }
 
   fun opprettGrunnlag(grunnlag: Grunnlag): Grunnlag {
-    vedtakRepository.findById(grunnlag.vedtak.vedtakId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", grunnlag.vedtak.vedtakId)) }
+    vedtakRepository.findById(grunnlag.vedtak.id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", grunnlag.vedtak.id)) }
     return grunnlagRepository.save(grunnlag)
   }
 
@@ -93,8 +93,8 @@ class PersistenceService(
   }
 
   fun opprettEngangsbelop(engangsbelop: Engangsbelop): Engangsbelop {
-    vedtakRepository.findById(engangsbelop.vedtak.vedtakId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", engangsbelop.vedtak.vedtakId)) }
+    vedtakRepository.findById(engangsbelop.vedtak.id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", engangsbelop.vedtak.id)) }
     return engangsbelopRepository.save(engangsbelop)
   }
 
@@ -117,8 +117,8 @@ class PersistenceService(
   }
 
   fun opprettBehandlingsreferanse(behandlingsreferanse: Behandlingsreferanse): Behandlingsreferanse {
-    vedtakRepository.findById(behandlingsreferanse.vedtak.vedtakId)
-      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", behandlingsreferanse.vedtak.vedtakId)) }
+    vedtakRepository.findById(behandlingsreferanse.vedtak.id)
+      .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", behandlingsreferanse.vedtak.id)) }
     return behandlingsreferanseRepository.save(behandlingsreferanse)
   }
 

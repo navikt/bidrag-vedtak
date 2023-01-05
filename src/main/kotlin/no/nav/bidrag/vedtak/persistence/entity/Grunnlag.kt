@@ -20,7 +20,7 @@ data class Grunnlag(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "grunnlag_id")
-  val grunnlagId: Int = 0,
+  val id: Int = 0,
 
   @Column(nullable = false, name = "referanse")
   val referanse: String = "",
@@ -42,7 +42,7 @@ fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag
   val propertiesByName = OpprettGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Grunnlag::grunnlagId.name -> 0
+      Grunnlag::id.name -> 0
       Grunnlag::vedtak.name -> vedtak
       Grunnlag::type.name -> type.toString()
       Grunnlag::innhold.name -> innhold.toString()

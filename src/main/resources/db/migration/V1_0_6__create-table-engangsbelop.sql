@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS engangsbelop
     vedtak_id integer NOT NULL,
     lopenr integer,
     endrer_engangsbelop_id integer,
-    type varchar(20) NOT NULL,
+    type varchar(50) NOT NULL,
     sak_id varchar(20) NOT NULL,
     skyldner_id varchar(20) NOT NULL,
     kravhaver_id varchar(20) NOT NULL,
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS engangsbelop
     valutakode varchar(10),
     resultatkode varchar(255) NOT NULL,
     referanse varchar(32),
+    innkreving varchar(20) NOT NULL,
     CONSTRAINT engangsbelop_pkey PRIMARY KEY (engangsbelop_id),
     CONSTRAINT engangsbelop_fk_vedtak_id FOREIGN KEY (vedtak_id)
         REFERENCES vedtak (vedtak_id) MATCH SIMPLE

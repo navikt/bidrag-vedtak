@@ -1,7 +1,8 @@
 {
-  "vedtakType": "MANUELT",
+  "kilde": "MANUELT",
+  "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
-  "vedtakDato": "2020-01-01",
+  "dato": "2020-01-01",
   "enhetId": "4812",
   "grunnlagListe": [
     {
@@ -60,18 +61,18 @@
   ],
   "stonadsendringListe": [
     {
-      "stonadType": "BIDRAG",
+      "type": "BIDRAG",
       "vedtakId": 1,
       "sakId": "SAK-001",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
       "indeksreguleringAar": null,
-      "opphortFra": null,
+      "innkreving": "JA",
       "periodeListe": [
         {
-          "periodeFomDato": "2019-01-01",
-          "periodeTilDato": "2019-07-01",
+          "fomDato": "2019-01-01",
+          "tilDato": "2019-07-01",
           "stonadsendringId": 1,
           "belop": 3490,
           "valutakode": "NOK",
@@ -84,8 +85,8 @@
           ]
         },
         {
-          "periodeFomDato": "2019-07-01",
-          "periodeTilDato": "2020-01-01",
+          "fomDato": "2019-07-01",
+          "tilDato": "2020-01-01",
           "stonadsendringId": 1,
           "belop": 3520,
           "valutakode": "NOK",
@@ -101,17 +102,18 @@
       ]
     },
     {
-      "stonadType": "FORSKUDD",
+      "type": "FORSKUDD",
       "sakId": "SAK-001",
       "skyldnerId": "01018011111",
       "kravhaverId": "01010511111",
       "mottakerId": "01018211111",
       "indeksreguleringAar": null,
       "opphortFra": null,
+      "innkreving": "JA",
       "periodeListe": [
         {
-          "periodeFomDato": "2019-06-01",
-          "periodeTilDato": "2019-07-01",
+          "fomDato": "2019-06-01",
+          "tilDato": "2019-07-01",
           "belop": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
@@ -122,8 +124,8 @@
           ]
         },
         {
-          "periodeFomDato": "2019-08-01",
-          "periodeTilDato": "2019-09-01",
+          "fomDato": "2019-08-01",
+          "tilDato": "2019-09-01",
           "belop": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",

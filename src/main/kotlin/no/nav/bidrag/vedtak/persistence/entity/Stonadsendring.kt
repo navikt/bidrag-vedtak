@@ -16,10 +16,10 @@ data class Stonadsendring(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "stonadsendring_id")
-  val stonadsendringId: Int = 0,
+  val id: Int = 0,
 
-  @Column(nullable = false, name = "stonad_type")
-  val stonadType: String = "",
+  @Column(nullable = false, name = "type")
+  val type: String = "",
 
   @ManyToOne
   @JoinColumn(name = "vedtak_id")
@@ -38,16 +38,20 @@ data class Stonadsendring(
   val mottakerId: String = "",
 
   @Column(nullable = true, name = "indeksregulering_aar")
-  val indeksreguleringAar: String? = ""
+  val indeksreguleringAar: String? = "",
+
+  @Column(nullable = false, name = "innkreving")
+  val innkreving: String = ""
 )
 
 fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
   val propertiesByName = OpprettStonadsendringRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Stonadsendring::stonadsendringId.name -> 0
-      Stonadsendring::stonadType.name -> stonadType.toString()
+      Stonadsendring::id.name -> 0
+      Stonadsendring::type.name -> type.toString()
       Stonadsendring::vedtak.name -> eksisterendeVedtak
+      Stonadsendring::innkreving.name -> innkreving.toString()
       else -> propertiesByName[parameter.name]?.get(this@toStonadsendringEntity)
     }
   })

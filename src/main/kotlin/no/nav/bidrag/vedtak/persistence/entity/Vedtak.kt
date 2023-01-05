@@ -16,16 +16,19 @@ data class Vedtak(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "vedtak_id")
-  val vedtakId: Int = 0,
+  val id: Int = 0,
 
-  @Column(nullable = false, name = "vedtak_type")
-  val vedtakType: String = "",
+  @Column(nullable = false, name = "kilde")
+  val kilde: String = "",
+
+  @Column(nullable = false, name = "type")
+  val type: String = "",
 
   @Column(nullable = false, name = "enhet_id")
   val enhetId: String = "",
 
-  @Column(nullable = false, name = "vedtak_dato")
-  val vedtakDato: LocalDate = LocalDate.now(),
+  @Column(nullable = false, name = "dato")
+  val dato: LocalDate = LocalDate.now(),
 
   @Column(nullable = false, name = "opprettet_av")
   val opprettetAv: String = "",
@@ -44,8 +47,9 @@ fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
   val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
-      Vedtak::vedtakId.name -> 0
-      Vedtak::vedtakType.name -> vedtakType.toString()
+      Vedtak::id.name -> 0
+      Vedtak::kilde.name -> kilde.toString()
+      Vedtak::type.name -> type.toString()
       Vedtak::opprettetTimestamp.name -> LocalDateTime.now()
       else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
     }

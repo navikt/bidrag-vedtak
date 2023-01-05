@@ -9,7 +9,9 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
 import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
+import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.bo.EngangsbelopBo
@@ -44,9 +46,10 @@ class HendelserServiceTest {
   fun `skal opprette hendelse når kun engangsbelop er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type = VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -55,7 +58,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A", "referanse1",
+            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA,
             listOf("A")
           )
         ),
@@ -64,7 +67,7 @@ class HendelserServiceTest {
       engangsbelopBoListe = arrayListOf(
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-          BigDecimal.ONE, "NOK", "A", "referanse1", 1
+          BigDecimal.ONE, "NOK", "A", "referanse1", 1, Innkreving.JA,
         )
       ),
       1, LocalDateTime.now()
@@ -78,16 +81,17 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse når kun stønadsendring er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -116,16 +120,17 @@ class HendelserServiceTest {
   fun `skal opprette hendelse når både stonadsendring og engangsbelop er del av request`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -142,7 +147,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A", "referanse1",
+            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA,
             listOf("A")
           )
         ),
@@ -151,7 +156,7 @@ class HendelserServiceTest {
       engangsbelopBoListe = arrayListOf(
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-          BigDecimal.ONE, "NOK", "A", "B", 1
+          BigDecimal.ONE, "NOK", "A", "B", 1, Innkreving.JA,
         )
       ),
       1, LocalDateTime.now()
@@ -165,16 +170,17 @@ class HendelserServiceTest {
   fun `skal opprette en hendelse med skyldner-id`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024",
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -197,9 +203,10 @@ class HendelserServiceTest {
 
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakType = VedtakType.MANUELT,
-        vedtakId = 1,
-        vedtakDato = LocalDate.now(),
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
+        id = 1,
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -207,16 +214,17 @@ class HendelserServiceTest {
         opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         listOf(
           Stonadsendring(
-            stonadType = StonadType.BIDRAG,
+            type = StonadType.BIDRAG,
             sakId = "B",
             skyldnerId = "C",
             kravhaverId = "D",
             mottakerId = "E",
             indeksreguleringAar = "2024",
+            innkreving = Innkreving.JA,
             listOf(
               Periode(
-                periodeFomDato = LocalDate.now(),
-                periodeTilDato = LocalDate.now(),
+                fomDato = LocalDate.now(),
+                tilDato = LocalDate.now(),
                 belop = BigDecimal.valueOf(1),
                 valutakode = "NOK",
                 resultatkode = "A",
@@ -235,9 +243,10 @@ class HendelserServiceTest {
   fun `skal opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -245,7 +254,7 @@ class HendelserServiceTest {
         stonadsendringListe = emptyList(),
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            endrerEngangsbelopId = 1,
+            endrerId = 1,
             type = EngangsbelopType.SAERTILSKUDD,
             sakId = "SAK-101",
             skyldnerId = "skyldner",
@@ -255,6 +264,7 @@ class HendelserServiceTest {
             resultatkode = "all is well",
             valutakode = "Nok",
             referanse = "referanse1",
+            innkreving = Innkreving.JA,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -264,7 +274,7 @@ class HendelserServiceTest {
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "skyldner",
           "kravhaver", "mottaker",
-          BigDecimal.ONE, "NOK", "all is well", "referanse1", 1
+          BigDecimal.ONE, "NOK", "all is well", "referanse1", 1, Innkreving.JA,
         )
       ), 1, LocalDateTime.now()
     )
@@ -276,9 +286,10 @@ class HendelserServiceTest {
   fun `skal ikke opprette hendelse når engangsbelopBoListe = null`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -286,7 +297,7 @@ class HendelserServiceTest {
         stonadsendringListe = emptyList(),
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            endrerEngangsbelopId = 1,
+            endrerId = 1,
             type = EngangsbelopType.SAERTILSKUDD,
             sakId = "SAK-101",
             skyldnerId = "skyldner",
@@ -296,6 +307,7 @@ class HendelserServiceTest {
             resultatkode = "all is well",
             valutakode = "Nok",
             referanse = "referanse1",
+            innkreving = Innkreving.JA,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -305,9 +317,10 @@ class HendelserServiceTest {
     )
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakType = VedtakType.MANUELT,
-        vedtakId = 1,
-        vedtakDato = LocalDate.now(),
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
+        id = 1,
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -324,9 +337,10 @@ class HendelserServiceTest {
   fun `opprettet hendelse skal ha innhold fra engangsbelopBoListe, ikke engangsbelopListe, skal aldri være diff`() {
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
-        vedtakType = VedtakType.MANUELT,
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
         opprettetAv = "ABCDEFG",
-        vedtakDato = LocalDate.now(),
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -334,7 +348,7 @@ class HendelserServiceTest {
         stonadsendringListe = emptyList(),
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
-            endrerEngangsbelopId = 1,
+            endrerId = 1,
             type = EngangsbelopType.SAERTILSKUDD,
             sakId = "SAK-1x1",
             skyldnerId = "skyldnerx",
@@ -344,6 +358,7 @@ class HendelserServiceTest {
             resultatkode = "all is wellx",
             valutakode = "Nokx",
             referanse = "referanse1x",
+            innkreving = Innkreving.JA,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -352,7 +367,7 @@ class HendelserServiceTest {
       engangsbelopBoListe =
        arrayListOf(
         EngangsbelopBo(
-          engangsbelopId = 2,
+          id = 2,
           lopenr = 1,
           type = EngangsbelopType.SAERTILSKUDD,
           sakId = "SAK-101",
@@ -363,16 +378,18 @@ class HendelserServiceTest {
           resultatkode = "all is well",
           valutakode = "Nok",
           referanse = "referanse1",
-          endrerEngangsbelopId = 1
+          endrerId = 1,
+          innkreving = Innkreving.JA
         )
         ) ,
       1, LocalDateTime.parse("2021-07-06T09:31:25.007971200")
     )
     verify(vedtakEventProducerMock).publish(
       VedtakHendelse(
-        vedtakType = VedtakType.MANUELT,
-        vedtakId = 1,
-        vedtakDato = LocalDate.now(),
+        kilde = VedtakKilde.MANUELT,
+        type= VedtakType.ALDERSJUSTERING,
+        id = 1,
+        dato = LocalDate.now(),
         enhetId = "ABCD",
         eksternReferanse = "eksternReferanse1",
         utsattTilDato = LocalDate.now(),
@@ -382,7 +399,7 @@ class HendelserServiceTest {
         engangsbelopListe =
           listOf(
             Engangsbelop(
-              engangsbelopId = 2,
+              id = 2,
               type = EngangsbelopType.SAERTILSKUDD,
               sakId = "SAK-101",
               skyldnerId = "skyldner",
@@ -392,7 +409,8 @@ class HendelserServiceTest {
               resultatkode = "all is well",
               valutakode = "Nok",
               referanse = "referanse1",
-              endrerEngangsbelopId = 1
+              endrerId = 1,
+              innkreving = Innkreving.JA
             )
           )
       )

@@ -9,7 +9,9 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.GrunnlagType
+import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
+import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -30,9 +32,10 @@ class TestUtil {
   companion object {
 
     fun byggVedtakRequest() = OpprettVedtakRequestDto(
-      vedtakType = VedtakType.MANUELT,
+      kilde = VedtakKilde.MANUELT,
+      type= VedtakType.ALDERSJUSTERING,
       opprettetAv = "X123456",
-      vedtakDato = LocalDate.parse("2021-11-01"),
+      dato = LocalDate.parse("2021-11-01"),
       enhetId = "4812",
       eksternReferanse = "eksternReferanse1",
       utsattTilDato = LocalDate.now(),
@@ -110,16 +113,17 @@ class TestUtil {
 
     private fun byggStonadsendringListe() = listOf(
       OpprettStonadsendringRequestDto(
-        stonadType = StonadType.BIDRAG,
+        type = StonadType.BIDRAG,
         sakId = "SAK-001",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
+        innkreving = Innkreving.JA,
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
-            periodeFomDato = LocalDate.parse("2019-01-01"),
-            periodeTilDato = LocalDate.parse("2019-07-01"),
+            fomDato = LocalDate.parse("2019-01-01"),
+            tilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
@@ -131,8 +135,8 @@ class TestUtil {
           )
           ,
           OpprettVedtakPeriodeRequestDto(
-            periodeFomDato = LocalDate.parse("2019-07-01"),
-            periodeTilDato = LocalDate.parse("2020-01-01"),
+            fomDato = LocalDate.parse("2019-07-01"),
+            tilDato = LocalDate.parse("2020-01-01"),
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
@@ -146,16 +150,17 @@ class TestUtil {
         )
       ),
       OpprettStonadsendringRequestDto(
-        stonadType = StonadType.BIDRAG,
+        type = StonadType.BIDRAG,
         sakId = "SAK-001",
         skyldnerId = "01018011111",
         kravhaverId = "01010511111",
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
+        innkreving = Innkreving.JA,
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
-            periodeFomDato = LocalDate.parse("2019-06-01"),
-            periodeTilDato = LocalDate.parse("2019-07-01"),
+            fomDato = LocalDate.parse("2019-06-01"),
+            tilDato = LocalDate.parse("2019-07-01"),
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
@@ -166,8 +171,8 @@ class TestUtil {
           )
           ,
           OpprettVedtakPeriodeRequestDto(
-            periodeFomDato = LocalDate.parse("2019-08-01"),
-            periodeTilDato = LocalDate.parse("2019-09-01"),
+            fomDato = LocalDate.parse("2019-08-01"),
+            tilDato = LocalDate.parse("2019-09-01"),
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
@@ -182,7 +187,7 @@ class TestUtil {
 
     private fun byggEngangsbelopListe() = listOf(
       OpprettEngangsbelopRequestDto(
-        endrerEngangsbelopId = null,
+        endrerId = null,
         type = EngangsbelopType.SAERTILSKUDD,
         sakId = "SAK-101",
         skyldnerId = "01018011111",
@@ -192,13 +197,14 @@ class TestUtil {
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
         referanse = "referanse1",
+        innkreving = Innkreving.JA,
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
           "SJAB-REF001")
       ),
       OpprettEngangsbelopRequestDto(
-        endrerEngangsbelopId = 1,
+        endrerId = 1,
         type = EngangsbelopType.SAERTILSKUDD,
         sakId = "SAK-101",
         skyldnerId = "01018011111",
@@ -208,6 +214,7 @@ class TestUtil {
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
         referanse = "referanse2",
+        innkreving = Innkreving.JA,
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -229,18 +236,20 @@ class TestUtil {
 
     fun byggVedtak(
       vedtakId: Int = (1..100).random(),
-      vedtakType: String = VedtakType.MANUELT.toString(),
+      kilde: String = VedtakKilde.MANUELT.toString(),
+      type: String = VedtakType.ALDERSJUSTERING.toString(),
       enhetId: String = "4812",
-      vedtakDato: LocalDate = LocalDate.now(),
+      dato: LocalDate = LocalDate.now(),
       opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
       eksternReferanse: String = "eksternReferanse1",
       utsattTilDato: LocalDate = LocalDate.now()
     ) = Vedtak(
-      vedtakId = vedtakId,
-      vedtakType = vedtakType,
+      id = vedtakId,
+      kilde = kilde,
+      type = type,
       enhetId = enhetId,
-      vedtakDato = vedtakDato,
+      dato = dato,
       opprettetAv = opprettetAv,
       opprettetTimestamp = opprettetTimestamp,
       eksternReferanse = eksternReferanse,
@@ -249,33 +258,35 @@ class TestUtil {
 
     fun byggStonadsendring(
       stonadsendringId: Int = (1..100).random(),
-      stonadType: String = StonadType.BIDRAG.toString(),
+      type: String = StonadType.BIDRAG.toString(),
       sakId: String = "SAK-001",
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
-      mottakerId: String = "01018211111"
+      mottakerId: String = "01018211111",
+      innkreving: String = Innkreving.JA.toString()
     ) = Stonadsendring(
-      stonadsendringId = stonadsendringId,
-      stonadType = stonadType,
+      id = stonadsendringId,
+      type = type,
       vedtak = byggVedtak(),
       sakId = sakId,
       skyldnerId = skyldnerId,
       kravhaverId = kravhaverId,
-      mottakerId = mottakerId
+      mottakerId = mottakerId,
+      innkreving = innkreving
     )
 
     fun byggPeriode(
       periodeId: Int = (1..100).random(),
-      periodeFomDato: LocalDate = LocalDate.parse("2019-07-01"),
-      periodeTilDato: LocalDate? = LocalDate.parse("2020-01-01"),
+      fomDato: LocalDate = LocalDate.parse("2019-07-01"),
+      tilDato: LocalDate? = LocalDate.parse("2020-01-01"),
       belop: BigDecimal = BigDecimal.valueOf(3520),
       valutakode: String = "NOK",
       resultatkode: String = "KOSTNADSBEREGNET_BIDRAG",
       referanse: String = "referanse1",
       ) = Periode(
-      periodeId = periodeId,
-      periodeFomDato = periodeFomDato,
-      periodeTilDato = periodeTilDato,
+      id = periodeId,
+      fomDato = fomDato,
+      tilDato = tilDato,
       stonadsendring = byggStonadsendring(),
       belop = belop,
       valutakode = valutakode,
@@ -297,7 +308,7 @@ class TestUtil {
         }"""
 
     ) = Grunnlag(
-      grunnlagId = grunnlagId,
+      id = grunnlagId,
       referanse = grunnlagReferanse,
       vedtak = vedtak,
       type = type,
@@ -305,8 +316,8 @@ class TestUtil {
     )
 
     fun byggPeriodeGrunnlagBo(
-      periodeId: Int = byggPeriode().periodeId,
-      grunnlagId: Int = byggGrunnlag().grunnlagId
+      periodeId: Int = byggPeriode().id,
+      grunnlagId: Int = byggGrunnlag().id
     ) = PeriodeGrunnlagBo(
       periodeId = periodeId,
       grunnlagId = grunnlagId
@@ -323,7 +334,7 @@ class TestUtil {
     fun byggEngangsbelop(
       engangsbelopId: Int = (1..100).random(),
       lopenr: Int = (1..100).random(),
-      endrerEngangsbelopId: Int? = null,
+      endrerId: Int? = null,
       type: String = "SAERTILSKUDD",
       sakId: String = "SAK-101",
       skyldnerId: String = "01018011111",
@@ -333,11 +344,12 @@ class TestUtil {
       valutakode: String = "NOK",
       resultatkode: String = "SAERTILSKUDD BEREGNET",
       referanse: String = "referanse1",
+      innkreving: String = "JA"
       ) = Engangsbelop(
-      engangsbelopId = engangsbelopId,
+      id = engangsbelopId,
       vedtak = byggVedtak(),
       lopenr = lopenr,
-      endrerEngangsbelopId = endrerEngangsbelopId,
+      endrerId = endrerId,
       type = type,
       sakId = sakId,
       skyldnerId = skyldnerId,
@@ -346,7 +358,8 @@ class TestUtil {
       belop = belop,
       valutakode = valutakode,
       resultatkode = resultatkode,
-      referanse = referanse
+      referanse = referanse,
+      innkreving = innkreving
     )
 
     fun byggEngangsbelopGrunnlagBo(
@@ -371,7 +384,7 @@ class TestUtil {
       kilde: String = "Bisys",
       referanse: String = "Bisysreferanse01"
     ) = Behandlingsreferanse(
-      behandlingsreferanseId = behandlingsreferanseId,
+      id = behandlingsreferanseId,
       vedtak = vedtak,
       kilde = kilde,
       referanse = referanse
