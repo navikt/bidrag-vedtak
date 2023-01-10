@@ -279,8 +279,8 @@ class VedtakServiceMockTest {
       byggEngangsbelopGrunnlag(engangsbelop = byggEngangsbelop(engangsbelopId = 2), grunnlag = byggGrunnlag(grunnlagId = 2)))
     )
     Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
-      listOf(byggBehandlingsreferanse(kilde = "Bisys", referanse = "Bisys-01"),
-        byggBehandlingsreferanse(kilde = "Bisys", referanse = "Bisys-02"))
+      listOf(byggBehandlingsreferanse(kilde = "BISYS_SOKNAD", referanse = "Bisys-01"),
+        byggBehandlingsreferanse(kilde = "BISYS_SOKNAD", referanse = "Bisys-02"))
     )
 
     val vedtakFunnet = vedtakService.hentVedtak(1)

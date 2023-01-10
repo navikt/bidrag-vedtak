@@ -34,6 +34,7 @@ fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksistere
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       Behandlingsreferanse::id.name -> 0
+      Behandlingsreferanse::kilde.name -> kilde.toString()
       Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
       else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
     }
