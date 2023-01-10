@@ -12,6 +12,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.StonadsendringDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakPeriodeDto
+import no.nav.bidrag.behandling.felles.enums.BehandlingsrefKilde
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
@@ -150,7 +151,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
     behandlingsreferanseListe.forEach {
       behandlingsreferanseResponseListe.add(
-        BehandlingsreferanseDto(it.kilde, it.referanse)
+        BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
       )
     }
 
