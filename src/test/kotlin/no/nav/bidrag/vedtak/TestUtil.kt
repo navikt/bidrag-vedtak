@@ -7,6 +7,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettGrunnlagRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
+import no.nav.bidrag.behandling.felles.enums.BehandlingsrefKilde
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.GrunnlagType
 import no.nav.bidrag.behandling.felles.enums.Innkreving
@@ -224,11 +225,11 @@ class TestUtil {
 
     private fun byggBehandlingsreferanseListe() = listOf(
       OpprettBehandlingsreferanseRequestDto(
-        kilde = "Bisys",
+        kilde = BehandlingsrefKilde.BISYS_SOKNAD,
         referanse = "Bisysreferanse01"
         ),
       OpprettBehandlingsreferanseRequestDto(
-        kilde = "Bisys",
+        kilde = BehandlingsrefKilde.BISYS_SOKNAD,
         referanse = "Bisysreferanse02"
       )
     )
@@ -381,7 +382,7 @@ class TestUtil {
     fun byggBehandlingsreferanse(
       behandlingsreferanseId: Int = (1..100).random(),
       vedtak: Vedtak = byggVedtak(),
-      kilde: String = "Bisys",
+      kilde: String = "BISYS_SOKNAD",
       referanse: String = "Bisysreferanse01"
     ) = Behandlingsreferanse(
       id = behandlingsreferanseId,
