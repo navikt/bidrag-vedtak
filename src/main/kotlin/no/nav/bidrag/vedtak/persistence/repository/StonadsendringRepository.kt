@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository
 interface StonadsendringRepository : CrudRepository<Stonadsendring, Int?>{
 
   @Query(
-    "select st from Stonadsendring st where st.vedtak.id = :vedtakId"
+    "select st from Stonadsendring st where st.vedtak.id = :vedtakId order by st.id"
   )
   fun hentAlleStonadsendringerForVedtak(vedtakId: Int): List<Stonadsendring>
 }
