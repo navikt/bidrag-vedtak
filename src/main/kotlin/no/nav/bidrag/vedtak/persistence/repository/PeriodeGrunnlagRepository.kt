@@ -14,7 +14,7 @@ interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGru
   fun hentPeriodeGrunnlag(periodeId: Int, grunnlagId: Int): PeriodeGrunnlag
 
   @Query(
-    "select pg from PeriodeGrunnlag pg where pg.periode.id = :periodeId"
+    "select pg from PeriodeGrunnlag pg where pg.periode.id = :periodeId order by pg.grunnlag.id"
   )
   fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlag>
 

@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository
 interface BehandlingsreferanseRepository : CrudRepository<Behandlingsreferanse, Int?>{
 
   @Query(
-    "select be from Behandlingsreferanse be where be.vedtak.id = :vedtakId"
+    "select be from Behandlingsreferanse be where be.vedtak.id = :vedtakId order by be.id"
   )
   fun hentAlleBehandlingsreferanserForVedtak(vedtakId: Int): List<Behandlingsreferanse>
 }
