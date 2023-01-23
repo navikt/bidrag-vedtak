@@ -27,8 +27,8 @@ data class Vedtak(
   @Column(nullable = false, name = "enhet_id")
   val enhetId: String = "",
 
-  @Column(nullable = false, name = "dato")
-  val dato: LocalDate = LocalDate.now(),
+  @Column(nullable = false, name = "vedtak_tidspunkt")
+  val vedtakTidspunkt: LocalDateTime = LocalDateTime.now(),
 
   @Column(nullable = false, name = "opprettet_av")
   val opprettetAv: String = "",

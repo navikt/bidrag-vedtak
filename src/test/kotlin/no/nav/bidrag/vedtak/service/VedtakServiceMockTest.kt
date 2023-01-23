@@ -121,7 +121,7 @@ class VedtakServiceMockTest {
       Executable { assertThat(vedtakDto.type).isEqualTo(vedtak.type.toString()) },
       Executable { assertThat(vedtakDto.enhetId).isEqualTo(vedtak.enhetId) },
       Executable { assertThat(vedtakDto.opprettetAv).isEqualTo(vedtak.opprettetAv) },
-      Executable { assertThat(vedtakDto.dato).isEqualTo(vedtak.dato) },
+      Executable { assertThat(vedtakDto.vedtakTidspunkt).isEqualTo(vedtak.vedtakTidspunkt) },
       Executable { assertThat(vedtakDto.eksternReferanse).isEqualTo(vedtak.eksternReferanse) },
       Executable { assertThat(vedtakDto.utsattTilDato).isEqualTo(vedtak.utsattTilDato) },
 
