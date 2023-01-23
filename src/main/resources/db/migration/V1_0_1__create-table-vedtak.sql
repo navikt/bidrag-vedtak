@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS vedtak
     kilde varchar(20) NOT NULL default 'Manuelt',
     type varchar(50) NOT NULL,
     enhet_id character(4) NOT NULL,
-    dato date NOT NULL,
+    vedtak_tidspunkt timestamp NOT NULL,
     opprettet_av varchar(50) NOT NULL,
     opprettet_timestamp timestamp DEFAULT now() NOT NULL,
     ekstern_referanse varchar(20),
