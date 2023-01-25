@@ -20,3 +20,4 @@ spec:
   gcp:
     sqlInstances:
       tier: db-f1-micro
+      diskAutoresize: true

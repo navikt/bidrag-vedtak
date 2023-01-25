@@ -56,6 +56,7 @@ spec:
           - name: {{ dbname }}
             envVarPrefix: DB
         tier: {{ spec.gcp.sqlInstances.tier }}
+        diskAutoresize: {{ spec.gcp.sqlInstances.diskAutoresize }}
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
