@@ -19,6 +19,7 @@ azureAccessInbound:
 spec:
   replicas:
     min: 2
+    max: 4
   gcp:
     sqlInstances:
       tier: db-custom-1-3840
