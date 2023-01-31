@@ -1,36 +1,58 @@
 package no.nav.bidrag.vedtak.exception
 
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import no.nav.bidrag.commons.ExceptionLogger
+import no.nav.bidrag.vedtak.controller.VedtakController
+import org.slf4j.LoggerFactory
+import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.RestClientException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 @RestControllerAdvice
 @Component
-class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
-
-  @ResponseBody
-  @ExceptionHandler(RestClientException::class)
-  protected fun handleRestClientException(e: RestClientException): ResponseEntity<*> {
-    exceptionLogger.logException(e, "RestExceptionHandler")
-    val feilmelding = "Restkall feilet!"
-    val headers = HttpHeaders()
-    headers.add(HttpHeaders.WARNING, feilmelding)
-    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ResponseEntity(e.message, headers, HttpStatus.SERVICE_UNAVAILABLE))
+class RestExceptionHandler() {
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(RestExceptionHandler::class.java)
   }
 
   @ResponseBody
-  @ExceptionHandler(IllegalArgumentException::class)
-  protected fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<*> {
-    exceptionLogger.logException(e, "RestExceptionHandler")
-    val feilmelding = if (e.message == null || e.message!!.isBlank()) "Restkall feilet!" else e.message!!
-    val headers = HttpHeaders()
-    headers.add(HttpHeaders.WARNING, feilmelding)
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity(feilmelding, headers, HttpStatus.BAD_REQUEST))
+  @ExceptionHandler(Exception::class)
+  protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
+    val feilmelding = "Det skjedde en feil ${e.message}"
+    LOGGER.error(feilmelding, e)
+    return ResponseEntity
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .header(HttpHeaders.WARNING, feilmelding)
+      .build<Any>()
+  }
+
+  @ResponseBody
+  @ExceptionHandler(value = [IllegalArgumentException::class, MethodArgumentTypeMismatchException::class, ConversionFailedException::class, HttpMessageNotReadableException::class])
+  fun handleInvalidValueExceptions(exception: Exception): ResponseEntity<*> {
+    val cause = exception.cause
+    val valideringsFeil = if (cause is MissingKotlinParameterException) createMissingKotlinParameterViolation(cause) else null
+    LOGGER.error("Forespørselen inneholder ugyldig verdi: ${valideringsFeil ?: "ukjent feil"}", exception)
+
+    return ResponseEntity
+      .status(HttpStatus.BAD_REQUEST)
+      .header(HttpHeaders.WARNING, "Forespørselen inneholder ugyldig verdi: ${valideringsFeil ?: exception.message}")
+      .build<Any>()
+  }
+
+  private fun createMissingKotlinParameterViolation(ex: MissingKotlinParameterException): String {
+    val errorFieldRegex = Regex("\\.([^.]*)\\[\\\"(.*)\"\\]\$")
+    val paths = ex.path.map { errorFieldRegex.find(it.description)!! }.map {
+      val (objectName, field) = it.destructured
+      "${objectName}.$field"
+    }
+    return "${paths.joinToString("->")} kan ikke være null"
   }
 }

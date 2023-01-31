@@ -24,7 +24,7 @@
     <token-support.version>2.1.9</token-support.version>
 
     <!-- dependencies -->
-    <bidrag-commons.version>0.7.10</bidrag-commons.version>
+    <bidrag-commons.version>0.7.40</bidrag-commons.version>
     <bidrag-commons-test.version>0.2.2</bidrag-commons-test.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.1.0</mockito-kotlin.version>
@@ -34,7 +34,7 @@
     <jackson-datatype-jsr310.version>2.14.1</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
     <bidrag-behandling-felles.version>0.0.76</bidrag-behandling-felles.version>
-    <bidrag-behandling-felles-dto.version>0.0.65</bidrag-behandling-felles-dto.version>
+    <bidrag-behandling-felles-dto.version>0.0.68</bidrag-behandling-felles-dto.version>
 
   </properties>
 
@@ -100,11 +100,6 @@
       <groupId>no.nav.bidrag</groupId>
       <artifactId>bidrag-commons</artifactId>
       <version>${bidrag-commons.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>no.nav.bidrag</groupId>
-      <artifactId>bidrag-tilgangskontroll</artifactId>
-      <version>${bidrag-tilgangskontroll.version}</version>
     </dependency>
     <dependency>
       <groupId>no.nav.security</groupId>

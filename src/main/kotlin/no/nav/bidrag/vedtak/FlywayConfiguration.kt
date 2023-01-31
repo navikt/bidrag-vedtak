@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile
 import javax.sql.DataSource
 
 @Configuration
-@Profile(LIVE_PROFILE)
+@Profile("live & !lokal-nais")
 class FlywayConfiguration @Autowired constructor(@Qualifier("dataSource") dataSource: DataSource?) {
 
   init {

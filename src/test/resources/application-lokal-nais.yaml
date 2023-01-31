@@ -1,0 +1,11 @@
+spring:
+  flyway.enabled: false
+  datasource.type: com.zaxxer.hikari.HikariDataSource
+  datasource.url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+  jpa.hibernate.hbmddl-auto: create-drop
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+server.port: 8889

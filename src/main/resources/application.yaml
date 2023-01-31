@@ -12,6 +12,7 @@ management:
     web:
       exposure:
         include: "*"
+springdoc.packages-to-scan: no.nav.bidrag.vedtak.controller
 
 ---
 
@@ -22,6 +23,7 @@ management:
 # Live token-support properties.
 #
 ####################################################################
+# OIDC
 
 spring:
   kafka:
@@ -41,7 +43,7 @@ spring:
           key-serializer: org.apache.kafka.common.serialization.StringSerializer
           value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
-  config.activate.on-profile: live
+  config.activate.on-profile: "live"
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USERNAME}&password=${DB_PASSWORD}
@@ -57,12 +59,8 @@ spring:
   jpa:
     hibernate.connection.provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
     database: postgresql
-
-# OIDC
 no.nav.security.jwt:
   issuer:
     aad:
       discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
       accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
-
----

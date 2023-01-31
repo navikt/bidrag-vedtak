@@ -91,7 +91,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.type).isEqualTo(nyttVedtakRequest.type) },
 //      Det fjernes 3 desimaler fra vedtakTidspunkt etter lagring, Postgres-feature?
 //      Executable { assertThat(vedtakFunnet.vedtakTidspunkt).isEqualTo(nyttVedtakRequest.vedtakTidspunkt) },
-      Executable { assertThat(vedtakFunnet.opprettetTimestamp).isNotNull() },
+      Executable { assertThat(vedtakFunnet.opprettetTidspunkt).isNotNull() },
       Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
       Executable { assertThat(vedtakFunnet.enhetId).isEqualTo(nyttVedtakRequest.enhetId) },
       Executable { assertThat(vedtakFunnet.eksternReferanse).isEqualTo(nyttVedtakRequest.eksternReferanse) },
