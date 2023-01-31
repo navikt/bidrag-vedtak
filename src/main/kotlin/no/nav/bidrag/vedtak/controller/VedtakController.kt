@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.controller
 
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -11,7 +12,9 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakDto
 import no.nav.bidrag.vedtak.ISSUER
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.service.VedtakService
+import no.nav.security.token.support.core.api.Protected
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,7 +27,8 @@ import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 @RestController
-@ProtectedWithClaims(issuer = ISSUER)
+@Protected
+@Timed
 class VedtakController(private val vedtakService: VedtakService) {
 
   @PostMapping(OPPRETT_VEDTAK)
@@ -38,7 +42,6 @@ class VedtakController(private val vedtakService: VedtakService) {
       ApiResponse(responseCode = "503", description =  "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
     ]
   )
-
   fun opprettVedtak(@Valid @RequestBody request: OpprettVedtakRequestDto): ResponseEntity<Int>? {
     val vedtakOpprettet = vedtakService.opprettVedtak(request)
     LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")

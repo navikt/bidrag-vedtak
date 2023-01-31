@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import io.micrometer.core.annotation.Timed
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -34,10 +35,12 @@ class PersistenceService(
   val behandlingsreferanseRepository: BehandlingsreferanseRepository
 ) {
 
+  @Timed
   fun opprettVedtak(vedtak: Vedtak): Vedtak {
     return vedtakRepository.save(vedtak)
   }
 
+  @Timed
   fun hentVedtak(id: Int): Vedtak {
     return vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
   }
