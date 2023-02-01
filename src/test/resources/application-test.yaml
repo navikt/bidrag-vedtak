@@ -26,7 +26,7 @@ spring:
 no.nav.security.jwt:
   issuer:
     aad:
-      discovery_url: http://127.0.0.1:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+      discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
       accepted_audience: aud-localhost
 spring.kafka:
   properties:
