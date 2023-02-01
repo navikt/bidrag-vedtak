@@ -46,6 +46,9 @@ data class EngangsbelopBo(
 
   @Schema(description = "Angir om stønaden skal innkreves")
   val innkreving: Innkreving,
+
+  @Schema(description = "Angir om en stønad skal endres som følge av vedtaket")
+  val endring: Boolean
 )
 
 

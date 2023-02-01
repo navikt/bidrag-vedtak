@@ -96,7 +96,6 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.enhetId).isEqualTo(nyttVedtakRequest.enhetId) },
       Executable { assertThat(vedtakFunnet.eksternReferanse).isEqualTo(nyttVedtakRequest.eksternReferanse) },
       Executable { assertThat(vedtakFunnet.utsattTilDato).isEqualTo(nyttVedtakRequest.utsattTilDato) },
-      Executable { assertThat(vedtakFunnet.utsattTilDato).isEqualTo(nyttVedtakRequest.utsattTilDato) },
       Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(4) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe.size).isEqualTo(2) },
       Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
@@ -126,6 +125,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].mottakerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].indeksreguleringAar) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].innkreving).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].innkreving) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[0].endring).isEqualTo(nyttVedtakRequest.stonadsendringListe!![0].endring) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[0].periodeListe.size).isEqualTo(2) },
 
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].type).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].type) },
@@ -135,6 +135,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].mottakerId).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].mottakerId) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].indeksreguleringAar).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].indeksreguleringAar) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].innkreving).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].innkreving) },
+      Executable { assertThat(vedtakFunnet.stonadsendringListe[1].endring).isEqualTo(nyttVedtakRequest.stonadsendringListe!![1].endring) },
       Executable { assertThat(vedtakFunnet.stonadsendringListe[1].periodeListe.size).isEqualTo(2) },
 
       // Periode
@@ -208,6 +209,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].resultatkode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].resultatkode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].referanse).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].referanse) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].innkreving).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].innkreving) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[0].endring).isEqualTo(nyttVedtakRequest.engangsbelopListe!![0].endring) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
 
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].endrerId).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].endrerId) },
@@ -221,6 +223,7 @@ class VedtakServiceTest {
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].resultatkode).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].resultatkode) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].referanse).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].referanse) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].innkreving).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].innkreving) },
+      Executable { assertThat(vedtakFunnet.engangsbelopListe[1].endring).isEqualTo(nyttVedtakRequest.engangsbelopListe!![1].endring) },
       Executable { assertThat(vedtakFunnet.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
 
       // Behandlingsreferanse

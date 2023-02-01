@@ -41,7 +41,10 @@ data class Stonadsendring(
   val indeksreguleringAar: String? = "",
 
   @Column(nullable = false, name = "innkreving")
-  val innkreving: String = ""
+  val innkreving: String = "",
+
+  @Column(nullable = false, name = "endring")
+  val endring: Boolean = true
 )
 
 fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {

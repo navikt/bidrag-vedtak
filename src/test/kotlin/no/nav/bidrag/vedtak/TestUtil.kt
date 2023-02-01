@@ -121,6 +121,7 @@ class TestUtil {
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
         innkreving = Innkreving.JA,
+        endring = true,
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             fomDato = LocalDate.parse("2019-01-01"),
@@ -158,6 +159,7 @@ class TestUtil {
         mottakerId = "01018211111",
         indeksreguleringAar = "2024",
         innkreving = Innkreving.JA,
+        endring = true,
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             fomDato = LocalDate.parse("2019-06-01"),
@@ -199,6 +201,7 @@ class TestUtil {
         resultatkode = "SAERTILSKUDD BEREGNET",
         referanse = "referanse1",
         innkreving = Innkreving.JA,
+        endring = true,
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -216,6 +219,7 @@ class TestUtil {
         resultatkode = "SAERTILSKUDD BEREGNET",
         referanse = "referanse2",
         innkreving = Innkreving.JA,
+        endring = true,
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -264,7 +268,8 @@ class TestUtil {
       skyldnerId: String = "01018011111",
       kravhaverId: String = "01010511111",
       mottakerId: String = "01018211111",
-      innkreving: String = Innkreving.JA.toString()
+      innkreving: String = Innkreving.JA.toString(),
+      endring: Boolean = true,
     ) = Stonadsendring(
       id = stonadsendringId,
       type = type,
@@ -273,7 +278,8 @@ class TestUtil {
       skyldnerId = skyldnerId,
       kravhaverId = kravhaverId,
       mottakerId = mottakerId,
-      innkreving = innkreving
+      innkreving = innkreving,
+      endring = endring
     )
 
     fun byggPeriode(
@@ -345,7 +351,8 @@ class TestUtil {
       valutakode: String = "NOK",
       resultatkode: String = "SAERTILSKUDD BEREGNET",
       referanse: String = "referanse1",
-      innkreving: String = "JA"
+      innkreving: String = "JA",
+      endring: Boolean = true
       ) = Engangsbelop(
       id = engangsbelopId,
       vedtak = byggVedtak(),
@@ -360,7 +367,8 @@ class TestUtil {
       valutakode = valutakode,
       resultatkode = resultatkode,
       referanse = referanse,
-      innkreving = innkreving
+      innkreving = innkreving,
+      endring = endring
     )
 
     fun byggEngangsbelopGrunnlagBo(
