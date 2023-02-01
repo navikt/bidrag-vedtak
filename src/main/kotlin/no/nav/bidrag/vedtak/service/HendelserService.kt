@@ -3,8 +3,10 @@ package no.nav.bidrag.vedtak.service
 import no.nav.bidrag.behandling.felles.dto.vedtak.Engangsbelop
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
+import no.nav.bidrag.behandling.felles.dto.vedtak.Sporingsdata
 import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
+import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
@@ -31,7 +33,12 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       eksternReferanse = vedtakRequest.eksternReferanse,
       utsattTilDato = vedtakRequest.utsattTilDato,
       stonadsendringListe = mapStonadsendringer(vedtakRequest),
-      engangsbelopListe = mapEngangsbelop(engangsbelopBoListe)
+      engangsbelopListe = mapEngangsbelop(engangsbelopBoListe),
+      sporingsdata = Sporingsdata(
+        CorrelationId.fetchCorrelationIdForThread()
+          ?: CorrelationId.generateTimestamped(vedtakRequest.type.toString())
+            .get()
+        )
     )
     vedtakKafkaEventProducer.publish(vedtakHendelse)
     SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
@@ -63,6 +70,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
           innkreving = it.innkreving,
+          endring = it.endring,
           periodeListe = periodeListe
         )
       )
@@ -86,7 +94,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           resultatkode = it.resultatkode,
           referanse = it.referanse,
           endrerId = it.endrerId,
-          innkreving = it.innkreving
+          innkreving = it.innkreving,
+          endring = it.endring
           )
       )
     }

@@ -184,6 +184,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           mottakerId = it.mottakerId,
           indeksreguleringAar = it.indeksreguleringAar,
           innkreving = Innkreving.valueOf(it.innkreving),
+          endring = it.endring,
           periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )
@@ -239,6 +240,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           resultatkode = dto.resultatkode,
           referanse = dto.referanse,
           innkreving = Innkreving.valueOf(dto.innkreving),
+          endring = dto.endring,
           grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )

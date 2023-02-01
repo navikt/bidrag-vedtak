@@ -6,6 +6,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDt
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
+import no.nav.bidrag.behandling.felles.dto.vedtak.Sporingsdata
 import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
@@ -13,12 +14,14 @@ import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
+import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.anyOrNull
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,7 +61,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA,
+            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA, true,
             listOf("A")
           )
         ),
@@ -67,7 +70,7 @@ class HendelserServiceTest {
       engangsbelopBoListe = arrayListOf(
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-          BigDecimal.ONE, "NOK", "A", "referanse1", 1, Innkreving.JA,
+          BigDecimal.ONE, "NOK", "A", "referanse1", 1, Innkreving.JA,  true
         )
       ),
       1, LocalDateTime.now()
@@ -91,7 +94,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA, true,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -130,7 +133,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA, true,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -147,7 +150,7 @@ class HendelserServiceTest {
         engangsbelopListe = listOf(
           OpprettEngangsbelopRequestDto(
             1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA,
+            BigDecimal.ONE, "NOK", "A", "referanse1", Innkreving.JA, true,
             listOf("A")
           )
         ),
@@ -156,7 +159,7 @@ class HendelserServiceTest {
       engangsbelopBoListe = arrayListOf(
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "D", "E", "F",
-          BigDecimal.ONE, "NOK", "A", "B", 1, Innkreving.JA,
+          BigDecimal.ONE, "NOK", "A", "B", 1, Innkreving.JA, true,
         )
       ),
       1, LocalDateTime.now()
@@ -168,6 +171,7 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal opprette en hendelse med skyldner-id`() {
+    CorrelationId.existing("test")
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
         kilde = VedtakKilde.MANUELT,
@@ -180,7 +184,7 @@ class HendelserServiceTest {
         grunnlagListe = emptyList(),
         stonadsendringListe = listOf(
           OpprettStonadsendringRequestDto(
-            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA,
+            StonadType.BIDRAG, "B", "C", "D", "E", "2024", Innkreving.JA, true,
             listOf(
               OpprettVedtakPeriodeRequestDto(
                 LocalDate.now(),
@@ -221,6 +225,7 @@ class HendelserServiceTest {
             mottakerId = "E",
             indeksreguleringAar = "2024",
             innkreving = Innkreving.JA,
+            endring = true,
             listOf(
               Periode(
                 fomDato = LocalDate.now(),
@@ -233,7 +238,8 @@ class HendelserServiceTest {
             )
           )
         ),
-        engangsbelopListe = emptyList()
+        engangsbelopListe = emptyList(),
+        sporingsdata = Sporingsdata("test")
       )
     )
   }
@@ -265,6 +271,7 @@ class HendelserServiceTest {
             valutakode = "Nok",
             referanse = "referanse1",
             innkreving = Innkreving.JA,
+            endring = true,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -274,7 +281,7 @@ class HendelserServiceTest {
         EngangsbelopBo(
           2, 1, EngangsbelopType.SAERTILSKUDD, "sak01", "skyldner",
           "kravhaver", "mottaker",
-          BigDecimal.ONE, "NOK", "all is well", "referanse1", 1, Innkreving.JA,
+          BigDecimal.ONE, "NOK", "all is well", "referanse1", 1, Innkreving.JA, true,
         )
       ), 1, LocalDateTime.now()
     )
@@ -284,6 +291,7 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `skal ikke opprette hendelse når engangsbelopBoListe = null`() {
+    CorrelationId.existing("test")
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
         kilde = VedtakKilde.MANUELT,
@@ -308,6 +316,7 @@ class HendelserServiceTest {
             valutakode = "Nok",
             referanse = "referanse1",
             innkreving = Innkreving.JA,
+            endring = true,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -327,7 +336,8 @@ class HendelserServiceTest {
         opprettetAv = "ABCDEFG",
         opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         stonadsendringListe = emptyList(),
-        engangsbelopListe = emptyList()
+        engangsbelopListe = emptyList(),
+        sporingsdata = Sporingsdata("test")
       )
     )
   }
@@ -335,6 +345,7 @@ class HendelserServiceTest {
   @Test
   @Suppress("NonAsciiCharacters")
   fun `opprettet hendelse skal ha innhold fra engangsbelopBoListe, ikke engangsbelopListe, skal aldri være diff`() {
+    CorrelationId.existing("test")
     hendelserService.opprettHendelse(
       OpprettVedtakRequestDto(
         kilde = VedtakKilde.MANUELT,
@@ -359,6 +370,7 @@ class HendelserServiceTest {
             valutakode = "Nokx",
             referanse = "referanse1x",
             innkreving = Innkreving.JA,
+            endring = true,
             grunnlagReferanseListe = listOf("A")
           )
         ),
@@ -379,8 +391,9 @@ class HendelserServiceTest {
           valutakode = "Nok",
           referanse = "referanse1",
           endrerId = 1,
-          innkreving = Innkreving.JA
-        )
+          innkreving = Innkreving.JA,
+          endring = true
+          )
         ) ,
       1, LocalDateTime.parse("2021-07-06T09:31:25.007971200")
     )
@@ -410,9 +423,11 @@ class HendelserServiceTest {
               valutakode = "Nok",
               referanse = "referanse1",
               endrerId = 1,
-              innkreving = Innkreving.JA
-            )
-          )
+              innkreving = Innkreving.JA,
+              endring = true
+              )
+          ),
+        sporingsdata = Sporingsdata("test")
       )
     )
   }

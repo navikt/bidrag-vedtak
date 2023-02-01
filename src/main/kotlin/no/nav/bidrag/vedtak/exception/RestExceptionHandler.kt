@@ -26,7 +26,7 @@ class RestExceptionHandler() {
   @ResponseBody
   @ExceptionHandler(Exception::class)
   protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
-    val feilmelding = "Det skjedde en feil ${e.message}"
+    val feilmelding = "Det skjedde en feil: ${e.message}"
     LOGGER.error(feilmelding, e)
     return ResponseEntity
       .status(HttpStatus.INTERNAL_SERVER_ERROR)

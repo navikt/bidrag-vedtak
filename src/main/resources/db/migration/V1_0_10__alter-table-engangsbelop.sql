@@ -1,0 +1,1 @@
+ALTER TABLE engangsbelop ADD COLUMN endring boolean DEFAULT true NOT NULL ;

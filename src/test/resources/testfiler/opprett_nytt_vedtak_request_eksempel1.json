@@ -69,6 +69,7 @@
       "mottakerId": "01018211111",
       "indeksreguleringAar": null,
       "innkreving": "JA",
+      "endring": "true",
       "periodeListe": [
         {
           "fomDato": "2019-01-01",
@@ -110,6 +111,7 @@
       "indeksreguleringAar": null,
       "opphortFra": null,
       "innkreving": "JA",
+      "endring": "true",
       "periodeListe": [
         {
           "fomDato": "2019-06-01",

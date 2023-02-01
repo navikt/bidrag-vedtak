@@ -59,6 +59,9 @@ data class Engangsbelop(
 
   @Column(nullable = false, name = "innkreving")
   val innkreving: String = "",
+
+  @Column(nullable = false, name = "endring")
+  val endring: Boolean = true
 )
 
 fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak, lopenr: Int) = with(::Engangsbelop) {
