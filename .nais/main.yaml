@@ -11,6 +11,9 @@ azureAccessInbound:
   - application: bidrag-revurder-forskudd-data
     namespace: bidrag
     cluster: dev-gcp
+  - application: bidrag-cucumber-cloud
+    namespace: bidrag
+    cluster: dev-gcp
   - application: bisys
     namespace: bidrag
     cluster: dev-fss
