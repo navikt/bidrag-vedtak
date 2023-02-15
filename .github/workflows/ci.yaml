@@ -86,7 +86,7 @@ jobs:
           curl -H "Content-Type: application/json" -i \
                 -H "Authorization: Basic ${{ secrets.BIDRAG_CUCUMBER_CLOUD_AUTH }}" \
                --request POST \
-               --data '{"skipAuth":true, "noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
+               --data '{"noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
                    "${{ env.INGRESS_VEDTAK }}@tag:bidrag-vedtak"
                  ]}' \
                ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
