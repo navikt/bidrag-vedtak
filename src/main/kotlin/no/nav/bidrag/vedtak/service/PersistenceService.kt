@@ -87,7 +87,7 @@ class PersistenceService(
     val eksisterendeGrunnlag = grunnlagRepository.findById(periodeGrunnlagBo.grunnlagId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", periodeGrunnlagBo.grunnlagId)) }
     val nyttPeriodeGrunnlag = PeriodeGrunnlag(eksisterendePeriode, eksisterendeGrunnlag)
-    SECURE_LOGGER.info("bidrag-vedtak - nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
+//    SECURE_LOGGER.info("bidrag-vedtak - nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
     return periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)
   }
 
@@ -111,7 +111,7 @@ class PersistenceService(
     val eksisterendeGrunnlag = grunnlagRepository.findById(engangsbelopGrunnlagBo.grunnlagId)
       .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", engangsbelopGrunnlagBo.grunnlagId)) }
     val nyttEngangsbelopGrunnlag = EngangsbelopGrunnlag(eksisterendeEngangsbelop, eksisterendeGrunnlag)
-    SECURE_LOGGER.info("nyttEngangsbelopGrunnlag: $nyttEngangsbelopGrunnlag")
+//    SECURE_LOGGER.info("nyttEngangsbelopGrunnlag: $nyttEngangsbelopGrunnlag")
     return engangsbelopGrunnlagRepository.save(nyttEngangsbelopGrunnlag)
   }
 
