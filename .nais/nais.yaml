@@ -48,6 +48,7 @@ spec:
     min: {{ spec.replicas.min }}
     max: {{ spec.replicas.max }}
   ingresses:
+    - {{ ingressDeprecated }}
     - {{ ingress }}
   gcp:
     sqlInstances:
