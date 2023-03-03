@@ -1,5 +1,6 @@
 name: bidrag-vedtak-feature
-ingress: https://bidrag-vedtak-feature.dev.intern.nav.no
+ingressDeprecated: https://bidrag-vedtak-feature.dev.intern.nav.no
+ingress: https://bidrag-vedtak-feature.intern.dev.nav.no
 dbname: bidrag-vedtak-feature
 kafka:
   pool: nav-dev
