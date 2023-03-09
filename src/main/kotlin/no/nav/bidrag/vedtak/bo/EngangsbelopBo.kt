@@ -11,9 +11,6 @@ data class EngangsbelopBo(
   @Schema(description = "Generert id for engangsbeløp")
   val id: Int,
 
-  @Schema(description = "Løpenr innenfor vedtak")
-  val lopenr: Int,
-
   @Schema(description = "Beløpstype. Saertilskudd, gebyr m.m.")
   val type: EngangsbelopType,
 
@@ -38,17 +35,23 @@ data class EngangsbelopBo(
   @Schema(description = "Resultatkoden tilhørende engangsbeløpet")
   val resultatkode: String,
 
-  @Schema(description = "Referanse - beslutningslinjeId -> bidrag-regnskap")
-  val referanse: String?,
-
-  @Schema(description = "Id for eventuelt engangsbeløp som skal endres, skal være id for opprinnelig engangsbeløp")
-  val endrerId: Int?,
-
   @Schema(description = "Angir om stønaden skal innkreves")
   val innkreving: Innkreving,
 
   @Schema(description = "Angir om en stønad skal endres som følge av vedtaket")
-  val endring: Boolean
+  val endring: Boolean,
+
+  @Schema(description = "Engangsbeløpet er en endring på engangsbeløp fra vedtakId angitt her")
+  val omgjorVedtakId: String?,
+
+  @Schema(description = "Unik referanse (sammen med omgjorVedtakId) for engangsbeløp som er endret")
+  val referanse: String?,
+
+  @Schema(description = "Referanse - delytelseId/beslutningslinjeId -> bidrag-regnskap")
+  val delytelseId: String?,
+
+  @Schema(description = "Referanse som brukes i utlandssaker")
+  val eksternReferanse: String?
 )
 
 

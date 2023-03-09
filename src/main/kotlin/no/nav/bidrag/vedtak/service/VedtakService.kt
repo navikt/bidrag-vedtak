@@ -60,19 +60,19 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // Engangsbelop
     // Går via en liste med EngangsbelopBo for å kunne legge med engangsbelopId på topic
-    var lopenr = 0
+//    var lopenr = 0
     val engangsbelopBoListe: ArrayList<EngangsbelopBo>? = null
-    vedtakRequest.engangsbelopListe?.forEach {
-      lopenr++
-      val opprettetEngangsbelop = opprettEngangsbelop(it, opprettetVedtak, lopenr, grunnlagIdRefMap)
-      engangsbelopBoListe?.add(opprettetEngangsbelop.toEngangsbelopBo())
+    vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap)
+//      lopenr++
+//      val opprettetEngangsbelop = opprettEngangsbelop(it, opprettetVedtak, lopenr, grunnlagIdRefMap)
+//      engangsbelopBoListe?.add(opprettetEngangsbelop.toEngangsbelopBo())
     }
 
     // Behandlingsreferanse
     vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
     if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || engangsbelopBoListe?.isNotEmpty() == true) {
-      hendelserService.opprettHendelse(vedtakRequest, engangsbelopBoListe, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
+      hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
     }
 
     return opprettetVedtak.id
@@ -92,9 +92,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
   }
 
   // Opprett Engangsbelop
-  private fun opprettEngangsbelop(
-    engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, lopenr: Int, grunnlagIdRefMap: Map<String, Int>) : Engangsbelop {
-    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak, lopenr))
+  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) : Engangsbelop {
+    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak))
 
     // EngangsbelopGrunnlag
     engangsbelopRequest.grunnlagReferanseListe.forEach {
@@ -162,7 +161,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       vedtakTidspunkt = vedtak.vedtakTidspunkt,
       enhetId = vedtak.enhetId,
       opprettetTidspunkt = vedtak.opprettetTimestamp,
-      eksternReferanse = vedtak.eksternReferanse,
       utsattTilDato = vedtak.utsattTilDato,
       grunnlagListe = grunnlagDtoListe,
       stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
@@ -185,6 +183,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           indeksreguleringAar = it.indeksreguleringAar,
           innkreving = Innkreving.valueOf(it.innkreving),
           endring = it.endring,
+          omgjorVedtakId = it.omgjorVedtakId,
+          eksternReferanse = it.eksternReferanse,
           periodeListe = hentPerioderTilVedtak(periodeListe)
         )
       )
@@ -208,7 +208,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           belop = dto.belop,
           valutakode = dto.valutakode?.trimEnd(),
           resultatkode = dto.resultatkode,
-          referanse = dto.referanse,
+          delytelseId = dto.delytelseId,
           grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )
@@ -227,9 +227,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
       }
       engangsbelopResponseListe.add(
         EngangsbelopDto(
-          id = dto.id,
-          lopenr = dto.lopenr,
-          endrerId = dto.endrerId,
           type = EngangsbelopType.valueOf(dto.type),
           sakId = dto.sakId,
           skyldnerId = dto.skyldnerId,
@@ -238,9 +235,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
           belop = dto.belop,
           valutakode = dto.valutakode,
           resultatkode = dto.resultatkode,
-          referanse = dto.referanse,
           innkreving = Innkreving.valueOf(dto.innkreving),
           endring = dto.endring,
+          omgjorVedtakId = dto.omgjorVedtakId,
+          referanse = dto.referanse,
+          delytelseId = dto.delytelseId,
+          eksternReferanse = dto.eksternReferanse,
           grunnlagReferanseListe = grunnlagReferanseResponseListe
         )
       )

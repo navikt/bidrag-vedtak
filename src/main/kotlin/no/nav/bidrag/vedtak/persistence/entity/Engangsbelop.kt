@@ -24,17 +24,11 @@ data class Engangsbelop(
   @JoinColumn(name = "vedtak_id")
   val vedtak: Vedtak = Vedtak(),
 
-  @Column(nullable = false, name = "lopenr")
-  val lopenr: Int = 0,
+  @Column(nullable = false, name = "type")
+  val type: String = "",
 
   @Column(nullable = false, name = "sak_id")
   val sakId: String = "",
-
-  @Column(nullable = true, name = "endrer_engangsbelop_id")
-  val endrerId: Int? = 0,
-
-  @Column(nullable = false, name = "type")
-  val type: String = "",
 
   @Column(nullable = false, name = "skyldner_id")
   val skyldnerId: String = "",
@@ -54,23 +48,31 @@ data class Engangsbelop(
   @Column(nullable = false, name = "resultatkode")
   val resultatkode: String = "",
 
-  @Column(nullable = true, name = "referanse")
-  val referanse: String? = "",
-
   @Column(nullable = false, name = "innkreving")
   val innkreving: String = "",
 
   @Column(nullable = false, name = "endring")
-  val endring: Boolean = true
+  val endring: Boolean = true,
+
+  @Column(nullable = true, name = "omgjor_vedtak_id")
+  val omgjorVedtakId: Int? = 0,
+
+  @Column(nullable = true, name = "referanse")
+  val referanse: String? = "",
+
+  @Column(nullable = true, name = "delytelse_id")
+  val delytelseId: String? = "",
+
+  @Column(nullable = true, name = "ekstern_referanse")
+  val eksternReferanse: String? = ""
 )
 
-fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak, lopenr: Int) = with(::Engangsbelop) {
+fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak) = with(::Engangsbelop) {
   val propertiesByName = OpprettEngangsbelopRequestDto::class.memberProperties.associateBy { it.name }
   callBy(parameters.associateWith { parameter ->
     when (parameter.name) {
       Engangsbelop::id.name -> 0
       Engangsbelop::vedtak.name -> eksisterendeVedtak
-      Engangsbelop::lopenr.name -> lopenr
       Engangsbelop::type.name -> type.toString()
       Engangsbelop::innkreving.name -> innkreving.toString()
       else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)

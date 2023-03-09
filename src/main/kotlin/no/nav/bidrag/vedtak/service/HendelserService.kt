@@ -8,7 +8,6 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.vedtak.SECURE_LOGGER
-import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,9 +17,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
   fun opprettHendelse(
     vedtakRequest: OpprettVedtakRequestDto,
-    engangsbelopBoListe: ArrayList<EngangsbelopBo>?,
     vedtakId: Int,
-    opprettetTimestamp: LocalDateTime
+    opprettetTidspunkt: LocalDateTime
   ) {
     val vedtakHendelse = VedtakHendelse(
       kilde = vedtakRequest.kilde,
@@ -29,16 +27,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
       vedtakTidspunkt = vedtakRequest.vedtakTidspunkt,
       enhetId = vedtakRequest.enhetId,
       opprettetAv = vedtakRequest.opprettetAv,
-      opprettetTidspunkt = opprettetTimestamp,
-      eksternReferanse = vedtakRequest.eksternReferanse,
+      opprettetTidspunkt = opprettetTidspunkt,
       utsattTilDato = vedtakRequest.utsattTilDato,
       stonadsendringListe = mapStonadsendringer(vedtakRequest),
-      engangsbelopListe = mapEngangsbelop(engangsbelopBoListe),
+      engangsbelopListe = mapEngangsbelop(vedtakRequest),
       sporingsdata = Sporingsdata(
         CorrelationId.fetchCorrelationIdForThread()
           ?: CorrelationId.generateTimestamped(vedtakRequest.type.toString())
             .get()
-        )
+      )
     )
     vedtakKafkaEventProducer.publish(vedtakHendelse)
     SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
@@ -56,7 +53,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             belop = periode.belop,
             valutakode = periode.valutakode,
             resultatkode = periode.resultatkode,
-            referanse = periode.referanse
+            delytelseId = periode.delytelseId
           )
         )
       }
@@ -71,6 +68,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           indeksreguleringAar = it.indeksreguleringAar,
           innkreving = it.innkreving,
           endring = it.endring,
+          omgjorVedtakId = it.omgjorVedtakId,
+          eksternReferanse = it.eksternReferanse,
           periodeListe = periodeListe
         )
       )
@@ -78,12 +77,11 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     return stonadsendringListe
   }
 
-  private fun mapEngangsbelop(engangsbelopBoListe: ArrayList<EngangsbelopBo>?): List<Engangsbelop> {
+  private fun mapEngangsbelop(vedtakRequest: OpprettVedtakRequestDto): List<Engangsbelop> {
     val engangsbelopListe = mutableListOf<Engangsbelop>()
-    engangsbelopBoListe?.forEach {
+    vedtakRequest.engangsbelopListe?.forEach {
       engangsbelopListe.add(
         Engangsbelop(
-          id = it.id,
           type = it.type,
           sakId = it.sakId,
           skyldnerId = it.skyldnerId,
@@ -92,11 +90,13 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
           belop = it.belop,
           valutakode = it.valutakode,
           resultatkode = it.resultatkode,
-          referanse = it.referanse,
-          endrerId = it.endrerId,
           innkreving = it.innkreving,
-          endring = it.endring
-          )
+          endring = it.endring,
+          omgjorVedtakId = it.omgjorVedtakId,
+          referanse = it.referanse,
+          delytelseId = it.delytelseId,
+          eksternReferanse = it.eksternReferanse
+        )
       )
     }
     return engangsbelopListe
