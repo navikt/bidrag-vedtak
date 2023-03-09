@@ -44,7 +44,14 @@ data class Stonadsendring(
   val innkreving: String = "",
 
   @Column(nullable = false, name = "endring")
-  val endring: Boolean = true
+  val endring: Boolean = true,
+
+  @Column(nullable = true, name = "omgjor_vedtak_id")
+  val omgjorVedtakId: Int? = 0,
+
+  @Column(nullable = true, name = "ekstern_referanse")
+  val eksternReferanse: String? = ""
+
 )
 
 fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {

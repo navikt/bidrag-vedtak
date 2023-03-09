@@ -36,9 +36,6 @@ data class Vedtak(
   @Column(nullable = false, name = "opprettet_timestamp")
   val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 
-  @Column(nullable = true, name = "ekstern_referanse")
-  val eksternReferanse: String? = "",
-
   @Column(nullable = true, name = "utsatt_til_dato")
   val utsattTilDato: LocalDate? = LocalDate.now()
 )

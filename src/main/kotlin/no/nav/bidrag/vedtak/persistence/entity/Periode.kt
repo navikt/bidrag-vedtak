@@ -39,8 +39,8 @@ data class Periode(
   @Column(nullable = false, name = "resultatkode")
   val resultatkode: String = "",
 
-  @Column(nullable = true, name = "referanse")
-  val referanse: String? = ""
+  @Column(nullable = true, name = "delytelse_id")
+  val delytelseId: String? = ""
 )
 
 fun OpprettVedtakPeriodeRequestDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {

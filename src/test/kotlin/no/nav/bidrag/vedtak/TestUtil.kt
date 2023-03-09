@@ -38,7 +38,6 @@ class TestUtil {
       opprettetAv = "X123456",
       vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
       enhetId = "4812",
-      eksternReferanse = "eksternReferanse1",
       utsattTilDato = LocalDate.now(),
       grunnlagListe = byggGrunnlagListe(),
       stonadsendringListe = byggStonadsendringListe(),
@@ -122,6 +121,8 @@ class TestUtil {
         indeksreguleringAar = "2024",
         innkreving = Innkreving.JA,
         endring = true,
+        omgjorVedtakId = 123,
+        eksternReferanse = "eksternRef1",
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             fomDato = LocalDate.parse("2019-01-01"),
@@ -129,20 +130,19 @@ class TestUtil {
             belop = BigDecimal.valueOf(3490),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
-            referanse = "referanse1",
+            delytelseId = "delytelseId1",
             grunnlagReferanseListe = listOf(
                 "BM-LIGS-19",
                 "BM-LIGN-19",
                "SJAB-REF001")
-          )
-          ,
+          ),
           OpprettVedtakPeriodeRequestDto(
             fomDato = LocalDate.parse("2019-07-01"),
             tilDato = LocalDate.parse("2020-01-01"),
             belop = BigDecimal.valueOf(3520),
             valutakode = "NOK",
             resultatkode = "KOSTNADSBEREGNET_BIDRAG",
-            referanse = "referanse2",
+            delytelseId = "delytelseId2",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "BM-LIGN-19",
@@ -160,6 +160,8 @@ class TestUtil {
         indeksreguleringAar = "2024",
         innkreving = Innkreving.JA,
         endring = true,
+        omgjorVedtakId = 200,
+        eksternReferanse = "eksterRef3",
         periodeListe = listOf(
           OpprettVedtakPeriodeRequestDto(
             fomDato = LocalDate.parse("2019-06-01"),
@@ -167,7 +169,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(4240),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
-            referanse = "referanse3",
+            delytelseId = "delytelseId3",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "SJAB-REF001")
@@ -179,7 +181,7 @@ class TestUtil {
             belop = BigDecimal.valueOf(3410),
             valutakode = "NOK",
             resultatkode = "SAERTILSKUDD_INNVILGET",
-            referanse = "referanse4",
+            delytelseId = "delytelseId4",
             grunnlagReferanseListe = listOf(
               "BM-LIGS-19",
               "SJAB-REF001")
@@ -190,7 +192,6 @@ class TestUtil {
 
     private fun byggEngangsbelopListe() = listOf(
       OpprettEngangsbelopRequestDto(
-        endrerId = null,
         type = EngangsbelopType.SAERTILSKUDD,
         sakId = "SAK-101",
         skyldnerId = "01018011111",
@@ -199,16 +200,18 @@ class TestUtil {
         belop = BigDecimal.valueOf(3490),
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
-        referanse = "referanse1",
         innkreving = Innkreving.JA,
         endring = true,
+        omgjorVedtakId = 400,
+        referanse = "referanse1",
+        delytelseId = "delytelseId1",
+        eksternReferanse = "EksternRef1",
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
           "SJAB-REF001")
       ),
       OpprettEngangsbelopRequestDto(
-        endrerId = 1,
         type = EngangsbelopType.SAERTILSKUDD,
         sakId = "SAK-101",
         skyldnerId = "01018011111",
@@ -217,9 +220,12 @@ class TestUtil {
         belop = BigDecimal.valueOf(2990),
         valutakode = "NOK",
         resultatkode = "SAERTILSKUDD BEREGNET",
-        referanse = "referanse2",
         innkreving = Innkreving.JA,
         endring = true,
+        omgjorVedtakId = 400,
+        referanse = "referanse2",
+        delytelseId = "delytelseId2",
+        eksternReferanse = "EksternRef2",
         grunnlagReferanseListe = listOf(
           "BM-LIGS-19",
           "BM-LIGN-19",
@@ -247,7 +253,6 @@ class TestUtil {
       vedtakTidspunkt: LocalDateTime = LocalDateTime.now(),
       opprettetAv: String = "X123456",
       opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-      eksternReferanse: String = "eksternReferanse1",
       utsattTilDato: LocalDate = LocalDate.now()
     ) = Vedtak(
       id = vedtakId,
@@ -257,7 +262,6 @@ class TestUtil {
       vedtakTidspunkt = vedtakTidspunkt,
       opprettetAv = opprettetAv,
       opprettetTimestamp = opprettetTimestamp,
-      eksternReferanse = eksternReferanse,
       utsattTilDato = utsattTilDato,
     )
 
@@ -270,6 +274,7 @@ class TestUtil {
       mottakerId: String = "01018211111",
       innkreving: String = Innkreving.JA.toString(),
       endring: Boolean = true,
+      eksternReferanse: String = "eksternRef1",
     ) = Stonadsendring(
       id = stonadsendringId,
       type = type,
@@ -279,7 +284,8 @@ class TestUtil {
       kravhaverId = kravhaverId,
       mottakerId = mottakerId,
       innkreving = innkreving,
-      endring = endring
+      endring = endring,
+      eksternReferanse = eksternReferanse
     )
 
     fun byggPeriode(
@@ -289,7 +295,7 @@ class TestUtil {
       belop: BigDecimal = BigDecimal.valueOf(3520),
       valutakode: String = "NOK",
       resultatkode: String = "KOSTNADSBEREGNET_BIDRAG",
-      referanse: String = "referanse1",
+      delytelseId: String = "delytelseId1",
       ) = Periode(
       id = periodeId,
       fomDato = fomDato,
@@ -298,7 +304,7 @@ class TestUtil {
       belop = belop,
       valutakode = valutakode,
       resultatkode = resultatkode,
-      referanse = referanse
+      delytelseId = delytelseId
     )
 
     fun byggGrunnlag(
@@ -340,8 +346,6 @@ class TestUtil {
 
     fun byggEngangsbelop(
       engangsbelopId: Int = (1..100).random(),
-      lopenr: Int = (1..100).random(),
-      endrerId: Int? = null,
       type: String = "SAERTILSKUDD",
       sakId: String = "SAK-101",
       skyldnerId: String = "01018011111",
@@ -350,14 +354,15 @@ class TestUtil {
       belop: BigDecimal = BigDecimal.valueOf(3490),
       valutakode: String = "NOK",
       resultatkode: String = "SAERTILSKUDD BEREGNET",
-      referanse: String = "referanse1",
       innkreving: String = "JA",
-      endring: Boolean = true
+      endring: Boolean = true,
+      omgjorVedtakId: Int = 123,
+      referanse: String = "referanse5",
+      delytelseId: String = "delytelseId5",
+      eksternReferanse: String = "eksternReferanse5"
       ) = Engangsbelop(
       id = engangsbelopId,
       vedtak = byggVedtak(),
-      lopenr = lopenr,
-      endrerId = endrerId,
       type = type,
       sakId = sakId,
       skyldnerId = skyldnerId,
@@ -366,9 +371,12 @@ class TestUtil {
       belop = belop,
       valutakode = valutakode,
       resultatkode = resultatkode,
-      referanse = referanse,
       innkreving = innkreving,
-      endring = endring
+      endring = endring,
+      omgjorVedtakId = omgjorVedtakId,
+      referanse = referanse,
+      delytelseId = delytelseId,
+      eksternReferanse = eksternReferanse
     )
 
     fun byggEngangsbelopGrunnlagBo(
