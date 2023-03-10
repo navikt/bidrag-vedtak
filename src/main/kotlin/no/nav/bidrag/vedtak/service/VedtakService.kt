@@ -18,7 +18,6 @@ import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
-import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
@@ -26,7 +25,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
-import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopBo
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopEntity
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
@@ -59,19 +57,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
     // Engangsbelop
-    // Går via en liste med EngangsbelopBo for å kunne legge med engangsbelopId på topic
-//    var lopenr = 0
-    val engangsbelopBoListe: ArrayList<EngangsbelopBo>? = null
-    vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap)
-//      lopenr++
-//      val opprettetEngangsbelop = opprettEngangsbelop(it, opprettetVedtak, lopenr, grunnlagIdRefMap)
-//      engangsbelopBoListe?.add(opprettetEngangsbelop.toEngangsbelopBo())
-    }
+
+    vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap) }
 
     // Behandlingsreferanse
     vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
-    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || engangsbelopBoListe?.isNotEmpty() == true) {
+    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
       hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
     }
 
