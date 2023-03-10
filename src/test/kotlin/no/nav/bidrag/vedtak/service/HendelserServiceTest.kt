@@ -16,7 +16,6 @@ import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
 import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.vedtak.BidragVedtakTest
-import no.nav.bidrag.vedtak.bo.EngangsbelopBo
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.DisplayName
