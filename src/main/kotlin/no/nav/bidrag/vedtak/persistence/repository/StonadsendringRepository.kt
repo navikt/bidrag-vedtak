@@ -4,10 +4,10 @@ import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
-interface StonadsendringRepository : CrudRepository<Stonadsendring, Int?>{
+interface StonadsendringRepository : CrudRepository<Stonadsendring, Int?> {
 
-  @Query(
-    "select st from Stonadsendring st where st.vedtak.id = :vedtakId order by st.id"
-  )
-  fun hentAlleStonadsendringerForVedtak(vedtakId: Int): List<Stonadsendring>
+    @Query(
+        "select st from Stonadsendring st where st.vedtak.id = :vedtakId order by st.id"
+    )
+    fun hentAlleStonadsendringerForVedtak(vedtakId: Int): List<Stonadsendring>
 }

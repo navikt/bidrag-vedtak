@@ -23,36 +23,35 @@ private val LOGGER = LoggerFactory.getLogger(BidragVedtakTestConfig::class.java)
 
 @Configuration
 @OpenAPIDefinition(
-  info = Info(title = "bidrag-vedtak", version = "v1"),
-  security = [SecurityRequirement(name = "bearer-key")]
+    info = Info(title = "bidrag-vedtak", version = "v1"),
+    security = [SecurityRequirement(name = "bearer-key")]
 )
-
 @Profile(TEST_PROFILE, LOCAL_PROFILE)
 class BidragVedtakTestConfig {
 
-  @Autowired
-  private lateinit var mockOAuth2Server: MockOAuth2Server
+    @Autowired
+    private lateinit var mockOAuth2Server: MockOAuth2Server
 
-  @Bean
-  fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {
-    val httpHeaderTestRestTemplate = HttpHeaderTestRestTemplate(testRestTemplate)
-    httpHeaderTestRestTemplate.add(HttpHeaders.AUTHORIZATION) { generateTestToken() }
-    return httpHeaderTestRestTemplate
-  }
+    @Bean
+    fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {
+        val httpHeaderTestRestTemplate = HttpHeaderTestRestTemplate(testRestTemplate)
+        httpHeaderTestRestTemplate.add(HttpHeaders.AUTHORIZATION) { generateTestToken() }
+        return httpHeaderTestRestTemplate
+    }
 
-  private fun generateTestToken(): String {
-    val iss = mockOAuth2Server.issuerUrl(ISSUER);
-    val newIssuer = iss.newBuilder().host("localhost").build();
-    val token = mockOAuth2Server.issueToken(ISSUER, "aud-localhost", DefaultOAuth2TokenCallback(ISSUER, "aud-localhost", JOSEObjectType.JWT.type, listOf("aud-localhost"), mapOf("iss" to newIssuer.toString()), 3600))
-    return "Bearer " + token.serialize()
-  }
+    private fun generateTestToken(): String {
+        val iss = mockOAuth2Server.issuerUrl(ISSUER)
+        val newIssuer = iss.newBuilder().host("localhost").build()
+        val token = mockOAuth2Server.issueToken(ISSUER, "aud-localhost", DefaultOAuth2TokenCallback(ISSUER, "aud-localhost", JOSEObjectType.JWT.type, listOf("aud-localhost"), mapOf("iss" to newIssuer.toString()), 3600))
+        return "Bearer " + token.serialize()
+    }
 
-  @Bean
-  fun vedtakKafkaEventProducer() = TestVedtakKafkaEventProducer()
+    @Bean
+    fun vedtakKafkaEventProducer() = TestVedtakKafkaEventProducer()
 }
 
-class TestVedtakKafkaEventProducer: VedtakKafkaEventProducer{
-  override fun publish(vedtakHendelse: VedtakHendelse) {
-    SECURE_LOGGER.info("Test Kafka: $vedtakHendelse")
-  }
+class TestVedtakKafkaEventProducer : VedtakKafkaEventProducer {
+    override fun publish(vedtakHendelse: VedtakHendelse) {
+        SECURE_LOGGER.info("Test Kafka: $vedtakHendelse")
+    }
 }

@@ -15,27 +15,29 @@ import kotlin.reflect.full.memberProperties
 @Table(name = "periodegrunnlag")
 data class PeriodeGrunnlag(
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "periode_id")
-  val periode: Periode = Periode(),
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "periode_id")
+    val periode: Periode = Periode(),
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "grunnlag_id")
-  val grunnlag: Grunnlag = Grunnlag()
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "grunnlag_id")
+    val grunnlag: Grunnlag = Grunnlag()
 
 )
 
 fun OpprettVedtakPeriodeGrunnlagRequestDto.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
-  val propertiesByName = OpprettVedtakPeriodeGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
-  callBy(parameters.associateWith { parameter ->
-    when (parameter.name) {
-      PeriodeGrunnlag::periode.name -> eksisterendePeriode
-      PeriodeGrunnlag::grunnlag.name -> eksisterendeGrunnlag
-      else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagEntity)
-    }
-  })
+    val propertiesByName = OpprettVedtakPeriodeGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
+    callBy(
+        parameters.associateWith { parameter ->
+            when (parameter.name) {
+                PeriodeGrunnlag::periode.name -> eksisterendePeriode
+                PeriodeGrunnlag::grunnlag.name -> eksisterendeGrunnlag
+                else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagEntity)
+            }
+        }
+    )
 }
 
 class PeriodeGrunnlagPK(val periode: Int = 0, val grunnlag: Int = 0) : Serializable

@@ -13,15 +13,15 @@ import javax.persistence.Table
 @Table(name = "engangsbelopgrunnlag")
 data class EngangsbelopGrunnlag(
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "engangsbelop_id")
-  val engangsbelop: Engangsbelop = Engangsbelop(),
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "engangsbelop_id")
+    val engangsbelop: Engangsbelop = Engangsbelop(),
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "grunnlag_id")
-  val grunnlag: Grunnlag = Grunnlag()
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "grunnlag_id")
+    val grunnlag: Grunnlag = Grunnlag()
 
 )
 
