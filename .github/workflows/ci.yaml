@@ -74,13 +74,13 @@ jobs:
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
-      INGRESS_VEDTAK: https://bidrag-vedtak.dev.intern.nav.no
+      INGRESS_VEDTAK: https://bidrag-vedtak.intern.dev.nav.no
 
     steps:
       - name: feature ingresses
         if: github.ref != 'refs/heads/main'
         run: |
-          echo "INGRESS_VEDTAK=https://bidrag-vedtak-feature.dev.intern.nav.no" >> $GITHUB_ENV
+          echo "INGRESS_VEDTAK=https://bidrag-vedtak-feature.intern.dev.nav.no" >> $GITHUB_ENV
           echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
       - run: |
           curl -H "Content-Type: application/json" -i \
