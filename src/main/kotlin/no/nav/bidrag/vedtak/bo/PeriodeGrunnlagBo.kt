@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema
 data class PeriodeGrunnlagBo(
 
-  @Schema(description = "Periode-id")
-  val periodeId: Int,
+    @Schema(description = "Periode-id")
+    val periodeId: Int,
 
-  @Schema(description = "Grunnlag-id")
-  val grunnlagId: Int
+    @Schema(description = "Grunnlag-id")
+    val grunnlagId: Int
 
 )

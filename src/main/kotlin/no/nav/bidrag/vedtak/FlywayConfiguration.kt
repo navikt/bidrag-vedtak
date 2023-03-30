@@ -1,6 +1,6 @@
 package no.nav.bidrag.vedtak
 
-//import no.nav.bidrag.vedtak.BidragVedtakConfig.Companion.LIVE_PROFILE
+// import no.nav.bidrag.vedtak.BidragVedtakConfig.Companion.LIVE_PROFILE
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -12,8 +12,8 @@ import javax.sql.DataSource
 @Profile("live & !lokal-nais")
 class FlywayConfiguration @Autowired constructor(@Qualifier("dataSource") dataSource: DataSource?) {
 
-  init {
-    Thread.sleep(30000)
-    Flyway.configure().dataSource(dataSource).load().migrate()
-  }
+    init {
+        Thread.sleep(30000)
+        Flyway.configure().dataSource(dataSource).load().migrate()
+    }
 }

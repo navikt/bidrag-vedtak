@@ -39,208 +39,206 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
 
-  // Opprett vedtak (alle tabeller)
-  fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
+    // Opprett vedtak (alle tabeller)
+    fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
+        // Opprett vedtak
+        val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity())
 
-    // Opprett vedtak
-    val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity())
+        val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
-    val grunnlagIdRefMap = mutableMapOf<String, Int>()
+        // Grunnlag
+        vedtakRequest.grunnlagListe.forEach {
+            val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtak)
+            grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
+        }
 
-    // Grunnlag
-    vedtakRequest.grunnlagListe.forEach {
-      val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtak)
-      grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
+        // Stønadsendring
+        vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
+
+        // Engangsbelop
+
+        vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap) }
+
+        // Behandlingsreferanse
+        vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
+
+        if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
+            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
+        }
+
+        return opprettetVedtak.id
     }
 
-    // Stønadsendring
-    vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
+    // Opprett grunnlag
+    private fun opprettGrunnlag(grunnlagRequest: OpprettGrunnlagRequestDto, vedtak: Vedtak) =
+        persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagEntity(vedtak))
 
-    // Engangsbelop
+    // Opprett stønadsendring
+    private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) {
+        val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringEntity(vedtak))
 
-    vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap) }
-
-    // Behandlingsreferanse
-    vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
-
-    if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
-      hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
+        // Periode
+        stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring, grunnlagIdRefMap) }
     }
 
-    return opprettetVedtak.id
-  }
+    // Opprett Engangsbelop
+    private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>): Engangsbelop {
+        val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak))
 
-  // Opprett grunnlag
-  private fun opprettGrunnlag(grunnlagRequest: OpprettGrunnlagRequestDto, vedtak: Vedtak) =
-    persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagEntity(vedtak))
-
-
-  // Opprett stønadsendring
-  private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) {
-    val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringEntity(vedtak))
-
-    // Periode
-    stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring, grunnlagIdRefMap) }
-  }
-
-  // Opprett Engangsbelop
-  private fun opprettEngangsbelop(engangsbelopRequest: OpprettEngangsbelopRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) : Engangsbelop {
-    val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak))
-
-    // EngangsbelopGrunnlag
-    engangsbelopRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
-      if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
-        LOGGER.error(feilmelding)
-        throw IllegalArgumentException(feilmelding)
-      } else {
-        persistenceService.opprettEngangsbelopGrunnlag(EngangsbelopGrunnlagBo(opprettetEngangsbelop.id, grunnlagId))
-      }
+        // EngangsbelopGrunnlag
+        engangsbelopRequest.grunnlagReferanseListe.forEach {
+            val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
+            if (grunnlagId == 0) {
+                val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
+                LOGGER.error(feilmelding)
+                throw IllegalArgumentException(feilmelding)
+            } else {
+                persistenceService.opprettEngangsbelopGrunnlag(EngangsbelopGrunnlagBo(opprettetEngangsbelop.id, grunnlagId))
+            }
+        }
+        return opprettetEngangsbelop
     }
-    return opprettetEngangsbelop
-  }
 
-  // Opprett periode
-  private fun opprettPeriode(periodeRequest: OpprettVedtakPeriodeRequestDto, stonadsendring: Stonadsendring, grunnlagIdRefMap: Map<String, Int>) {
-    val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeEntity(stonadsendring))
+    // Opprett periode
+    private fun opprettPeriode(periodeRequest: OpprettVedtakPeriodeRequestDto, stonadsendring: Stonadsendring, grunnlagIdRefMap: Map<String, Int>) {
+        val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeEntity(stonadsendring))
 
-    // PeriodeGrunnlag
-    periodeRequest.grunnlagReferanseListe.forEach {
-      val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
-      if (grunnlagId == 0) {
-        val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
-        LOGGER.error(feilmelding)
-        throw IllegalArgumentException(feilmelding)
-      } else {
-        val periodeGrunnlagBo = PeriodeGrunnlagBo(
-          periodeId = opprettetPeriode.id,
-          grunnlagId = grunnlagId
+        // PeriodeGrunnlag
+        periodeRequest.grunnlagReferanseListe.forEach {
+            val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
+            if (grunnlagId == 0) {
+                val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
+                LOGGER.error(feilmelding)
+                throw IllegalArgumentException(feilmelding)
+            } else {
+                val periodeGrunnlagBo = PeriodeGrunnlagBo(
+                    periodeId = opprettetPeriode.id,
+                    grunnlagId = grunnlagId
+                )
+                persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
+            }
+        }
+    }
+
+    // Opprett behandlingsreferanse
+    private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequestDto, vedtak: Vedtak) =
+        persistenceService.opprettBehandlingsreferanse(
+            behandlingsreferanseRequest.toBehandlingsreferanseEntity(vedtak)
         )
-        persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
-      }
-    }
-  }
 
-  // Opprett behandlingsreferanse
-  private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequestDto, vedtak: Vedtak) =
-    persistenceService.opprettBehandlingsreferanse(behandlingsreferanseRequest.toBehandlingsreferanseEntity(vedtak)
-    )
+    // Hent vedtaksdata
+    fun hentVedtak(vedtakId: Int): VedtakDto {
+        val vedtak = persistenceService.hentVedtak(vedtakId)
+        val grunnlagDtoListe = ArrayList<GrunnlagDto>()
+        val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(vedtak.id)
+        grunnlagListe.forEach {
+            grunnlagDtoListe.add(it.toGrunnlagDto())
+        }
+        val stonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtak.id)
+        val engangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtak.id)
+        val behandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id)
+        val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
+        behandlingsreferanseListe.forEach {
+            behandlingsreferanseResponseListe.add(
+                BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
+            )
+        }
 
-
-  // Hent vedtaksdata
-  fun hentVedtak(vedtakId: Int): VedtakDto {
-    val vedtak = persistenceService.hentVedtak(vedtakId)
-    val grunnlagDtoListe = ArrayList<GrunnlagDto>()
-    val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(vedtak.id)
-    grunnlagListe.forEach {
-      grunnlagDtoListe.add(it.toGrunnlagDto())
-    }
-    val stonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtak.id)
-    val engangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtak.id)
-    val behandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id)
-    val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
-    behandlingsreferanseListe.forEach {
-      behandlingsreferanseResponseListe.add(
-        BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
-      )
-    }
-
-    return VedtakDto(
-      kilde= VedtakKilde.valueOf(vedtak.kilde),
-      type= VedtakType.valueOf(vedtak.type),
-      opprettetAv = vedtak.opprettetAv,
-      vedtakTidspunkt = vedtak.vedtakTidspunkt,
-      enhetId = vedtak.enhetId,
-      opprettetTidspunkt = vedtak.opprettetTimestamp,
-      utsattTilDato = vedtak.utsattTilDato,
-      grunnlagListe = grunnlagDtoListe,
-      stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
-      engangsbelopListe = hentEngangsbelopTilVedtak(engangsbelopListe),
-      behandlingsreferanseListe = behandlingsreferanseResponseListe
-    )
-  }
-
-  private fun hentStonadsendringerTilVedtak(stonadsendringListe: List<Stonadsendring>): List<StonadsendringDto> {
-    val stonadsendringDtoListe = ArrayList<StonadsendringDto>()
-    stonadsendringListe.forEach {
-      val periodeListe = persistenceService.hentAllePerioderForStonadsendring(it.id)
-      stonadsendringDtoListe.add(
-        StonadsendringDto(
-          type = StonadType.valueOf(it.type),
-          sakId = it.sakId,
-          skyldnerId = it.skyldnerId,
-          kravhaverId = it.kravhaverId,
-          mottakerId = it.mottakerId,
-          indeksreguleringAar = it.indeksreguleringAar,
-          innkreving = Innkreving.valueOf(it.innkreving),
-          endring = it.endring,
-          omgjorVedtakId = it.omgjorVedtakId,
-          eksternReferanse = it.eksternReferanse,
-          periodeListe = hentPerioderTilVedtak(periodeListe)
+        return VedtakDto(
+            kilde = VedtakKilde.valueOf(vedtak.kilde),
+            type = VedtakType.valueOf(vedtak.type),
+            opprettetAv = vedtak.opprettetAv,
+            vedtakTidspunkt = vedtak.vedtakTidspunkt,
+            enhetId = vedtak.enhetId,
+            opprettetTidspunkt = vedtak.opprettetTimestamp,
+            utsattTilDato = vedtak.utsattTilDato,
+            grunnlagListe = grunnlagDtoListe,
+            stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
+            engangsbelopListe = hentEngangsbelopTilVedtak(engangsbelopListe),
+            behandlingsreferanseListe = behandlingsreferanseResponseListe
         )
-      )
     }
-    return stonadsendringDtoListe
-  }
 
-  private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
-    val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
-    periodeListe.forEach { dto ->
-      val grunnlagReferanseResponseListe = ArrayList<String>()
-      val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.id)
-      periodeGrunnlagListe.forEach {
-        val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
-        grunnlagReferanseResponseListe.add(grunnlag.referanse)
-      }
-      periodeResponseListe.add(
-        VedtakPeriodeDto(
-          fomDato = dto.fomDato,
-          tilDato = dto.tilDato,
-          belop = dto.belop,
-          valutakode = dto.valutakode?.trimEnd(),
-          resultatkode = dto.resultatkode,
-          delytelseId = dto.delytelseId,
-          grunnlagReferanseListe = grunnlagReferanseResponseListe
-        )
-      )
+    private fun hentStonadsendringerTilVedtak(stonadsendringListe: List<Stonadsendring>): List<StonadsendringDto> {
+        val stonadsendringDtoListe = ArrayList<StonadsendringDto>()
+        stonadsendringListe.forEach {
+            val periodeListe = persistenceService.hentAllePerioderForStonadsendring(it.id)
+            stonadsendringDtoListe.add(
+                StonadsendringDto(
+                    type = StonadType.valueOf(it.type),
+                    sakId = it.sakId,
+                    skyldnerId = it.skyldnerId,
+                    kravhaverId = it.kravhaverId,
+                    mottakerId = it.mottakerId,
+                    indeksreguleringAar = it.indeksreguleringAar,
+                    innkreving = Innkreving.valueOf(it.innkreving),
+                    endring = it.endring,
+                    omgjorVedtakId = it.omgjorVedtakId,
+                    eksternReferanse = it.eksternReferanse,
+                    periodeListe = hentPerioderTilVedtak(periodeListe)
+                )
+            )
+        }
+        return stonadsendringDtoListe
     }
-    return periodeResponseListe
-  }
 
-  private fun hentEngangsbelopTilVedtak(engangsbelopListe: List<Engangsbelop>): List<EngangsbelopDto> {
-    val engangsbelopResponseListe = ArrayList<EngangsbelopDto>()
-    engangsbelopListe.forEach { dto ->
-      val grunnlagReferanseResponseListe = ArrayList<String>()
-      val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.id)
-      engangsbelopGrunnlagListe.forEach {
-        val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
-        grunnlagReferanseResponseListe.add(grunnlag.referanse)
-      }
-      engangsbelopResponseListe.add(
-        EngangsbelopDto(
-          type = EngangsbelopType.valueOf(dto.type),
-          sakId = dto.sakId,
-          skyldnerId = dto.skyldnerId,
-          kravhaverId = dto.kravhaverId,
-          mottakerId = dto.mottakerId,
-          belop = dto.belop,
-          valutakode = dto.valutakode,
-          resultatkode = dto.resultatkode,
-          innkreving = Innkreving.valueOf(dto.innkreving),
-          endring = dto.endring,
-          omgjorVedtakId = dto.omgjorVedtakId,
-          referanse = dto.referanse,
-          delytelseId = dto.delytelseId,
-          eksternReferanse = dto.eksternReferanse,
-          grunnlagReferanseListe = grunnlagReferanseResponseListe
-        )
-      )
+    private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
+        val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
+        periodeListe.forEach { dto ->
+            val grunnlagReferanseResponseListe = ArrayList<String>()
+            val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.id)
+            periodeGrunnlagListe.forEach {
+                val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+                grunnlagReferanseResponseListe.add(grunnlag.referanse)
+            }
+            periodeResponseListe.add(
+                VedtakPeriodeDto(
+                    fomDato = dto.fomDato,
+                    tilDato = dto.tilDato,
+                    belop = dto.belop,
+                    valutakode = dto.valutakode?.trimEnd(),
+                    resultatkode = dto.resultatkode,
+                    delytelseId = dto.delytelseId,
+                    grunnlagReferanseListe = grunnlagReferanseResponseListe
+                )
+            )
+        }
+        return periodeResponseListe
     }
-    return engangsbelopResponseListe
-  }
 
-  companion object {
-    private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)
-  }
+    private fun hentEngangsbelopTilVedtak(engangsbelopListe: List<Engangsbelop>): List<EngangsbelopDto> {
+        val engangsbelopResponseListe = ArrayList<EngangsbelopDto>()
+        engangsbelopListe.forEach { dto ->
+            val grunnlagReferanseResponseListe = ArrayList<String>()
+            val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.id)
+            engangsbelopGrunnlagListe.forEach {
+                val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+                grunnlagReferanseResponseListe.add(grunnlag.referanse)
+            }
+            engangsbelopResponseListe.add(
+                EngangsbelopDto(
+                    type = EngangsbelopType.valueOf(dto.type),
+                    sakId = dto.sakId,
+                    skyldnerId = dto.skyldnerId,
+                    kravhaverId = dto.kravhaverId,
+                    mottakerId = dto.mottakerId,
+                    belop = dto.belop,
+                    valutakode = dto.valutakode,
+                    resultatkode = dto.resultatkode,
+                    innkreving = Innkreving.valueOf(dto.innkreving),
+                    endring = dto.endring,
+                    omgjorVedtakId = dto.omgjorVedtakId,
+                    referanse = dto.referanse,
+                    delytelseId = dto.delytelseId,
+                    eksternReferanse = dto.eksternReferanse,
+                    grunnlagReferanseListe = grunnlagReferanseResponseListe
+                )
+            )
+        }
+        return engangsbelopResponseListe
+    }
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)
+    }
 }
