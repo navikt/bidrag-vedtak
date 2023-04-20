@@ -2,6 +2,7 @@
   "kilde": "MANUELT",
   "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
+  "opprettetAvNavn": "Saksbehandler1",
   "vedtakTidspunkt": "2020-01-01T23:34:55.869121094",
   "enhetId": "4812",
   "grunnlagListe": [
@@ -145,6 +146,7 @@
       "valutakode": "NOK",
       "resultatkode": "SAERTISLKUDD BEREGNET",
       "referanse": "referanse1",
+      "delytelsesId": "delytelsesId1",
       "innkreving": "JA",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
@@ -165,6 +167,7 @@
       "valutakode": "NOK",
       "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
       "referanse": "referanse2",
+      "delytelsesId": "delytelsesId2",
       "innkreving": "JA",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",

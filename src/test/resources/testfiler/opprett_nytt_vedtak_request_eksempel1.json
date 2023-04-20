@@ -2,6 +2,7 @@
   "kilde": "MANUELT",
   "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
+  "opprettetAvNavn": "Saksbehandler1",
   "vedtakTidspunkt": "2020-01-01T23:34:55.869121094",
   "enhetId": "4812",
   "grunnlagListe": [

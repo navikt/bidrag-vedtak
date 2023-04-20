@@ -56,8 +56,8 @@ data class Engangsbelop(
     @Column(nullable = true, name = "omgjor_vedtak_id")
     val omgjorVedtakId: Int? = 0,
 
-    @Column(nullable = true, name = "referanse")
-    val referanse: String? = "",
+    @Column(nullable = false, name = "referanse")
+    val referanse: String = "",
 
     @Column(nullable = true, name = "delytelse_id")
     val delytelseId: String? = "",

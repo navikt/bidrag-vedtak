@@ -148,6 +148,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             kilde = VedtakKilde.valueOf(vedtak.kilde),
             type = VedtakType.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
+            opprettetAvNavn = vedtak.opprettetAvNavn,
             vedtakTidspunkt = vedtak.vedtakTidspunkt,
             enhetId = vedtak.enhetId,
             opprettetTidspunkt = vedtak.opprettetTimestamp,

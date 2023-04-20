@@ -50,6 +50,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.now(),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -59,7 +60,7 @@ class HendelserServiceTest {
                     OpprettEngangsbelopRequestDto(
                         type = EngangsbelopType.SAERTILSKUDD, sakId = "sak01", skyldnerId = "D", kravhaverId = "E",
                         mottakerId = "F", belop = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkreving.JA,
-                        endring = true, omgjorVedtakId = null, referanse = null, delytelseId = null, eksternReferanse = null,
+                        endring = true, omgjorVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
                         listOf("A")
                     )
                 ),
@@ -80,6 +81,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.now(),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -120,6 +122,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.now(),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -146,7 +149,7 @@ class HendelserServiceTest {
                     OpprettEngangsbelopRequestDto(
                         type = EngangsbelopType.SAERTILSKUDD, sakId = "sak01", skyldnerId = "D", kravhaverId = "E", mottakerId = "F",
                         belop = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkreving.JA,
-                        endring = true, omgjorVedtakId = null, referanse = null, delytelseId = null, eksternReferanse = null,
+                        endring = true, omgjorVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
                         listOf("A")
                     )
                 ),
@@ -168,6 +171,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -206,6 +210,7 @@ class HendelserServiceTest {
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
                 listOf(
                     Stonadsendring(
@@ -245,6 +250,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.now(),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -263,7 +269,7 @@ class HendelserServiceTest {
                         innkreving = Innkreving.JA,
                         endring = true,
                         omgjorVedtakId = null,
-                        referanse = null,
+                        referanse = "referanse1",
                         delytelseId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = listOf("A")
@@ -286,6 +292,7 @@ class HendelserServiceTest {
                 kilde = VedtakKilde.MANUELT,
                 type = VedtakType.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
@@ -304,7 +311,7 @@ class HendelserServiceTest {
                         innkreving = Innkreving.JA,
                         endring = true,
                         omgjorVedtakId = null,
-                        referanse = null,
+                        referanse = "referanse1",
                         delytelseId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = listOf("A")
@@ -324,6 +331,7 @@ class HendelserServiceTest {
                 enhetId = "ABCD",
                 utsattTilDato = LocalDate.now(),
                 opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "Saksbehandler1",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
                 stonadsendringListe = emptyList(),
                 engangsbelopListe =
@@ -340,7 +348,7 @@ class HendelserServiceTest {
                         innkreving = Innkreving.JA,
                         endring = true,
                         omgjorVedtakId = null,
-                        referanse = null,
+                        referanse = "referanse1",
                         delytelseId = null,
                         eksternReferanse = null
                     )

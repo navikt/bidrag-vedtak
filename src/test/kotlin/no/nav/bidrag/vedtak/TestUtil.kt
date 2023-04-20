@@ -36,6 +36,7 @@ class TestUtil {
             kilde = VedtakKilde.MANUELT,
             type = VedtakType.ALDERSJUSTERING,
             opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
             vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetId = "4812",
             utsattTilDato = LocalDate.now(),
@@ -163,7 +164,7 @@ class TestUtil {
                 innkreving = Innkreving.JA,
                 endring = true,
                 omgjorVedtakId = 200,
-                eksternReferanse = "eksterRef3",
+                eksternReferanse = "eksternRef3",
                 periodeListe = listOf(
                     OpprettVedtakPeriodeRequestDto(
                         fomDato = LocalDate.parse("2019-06-01"),
@@ -256,6 +257,7 @@ class TestUtil {
             enhetId: String = "4812",
             vedtakTidspunkt: LocalDateTime = LocalDateTime.now(),
             opprettetAv: String = "X123456",
+            opprettetAvNavn: String = "Saksbehandler1",
             opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
             utsattTilDato: LocalDate = LocalDate.now()
         ) = Vedtak(
@@ -265,6 +267,7 @@ class TestUtil {
             enhetId = enhetId,
             vedtakTidspunkt = vedtakTidspunkt,
             opprettetAv = opprettetAv,
+            opprettetAvNavn = opprettetAvNavn,
             opprettetTimestamp = opprettetTimestamp,
             utsattTilDato = utsattTilDato
         )
