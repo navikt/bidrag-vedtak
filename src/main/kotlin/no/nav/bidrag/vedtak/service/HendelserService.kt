@@ -27,6 +27,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             vedtakTidspunkt = vedtakRequest.vedtakTidspunkt,
             enhetId = vedtakRequest.enhetId,
             opprettetAv = vedtakRequest.opprettetAv,
+            opprettetAvNavn = vedtakRequest.opprettetAvNavn,
             opprettetTidspunkt = opprettetTidspunkt,
             utsattTilDato = vedtakRequest.utsattTilDato,
             stonadsendringListe = mapStonadsendringer(vedtakRequest),

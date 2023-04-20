@@ -33,6 +33,9 @@ data class Vedtak(
     @Column(nullable = false, name = "opprettet_av")
     val opprettetAv: String = "",
 
+    @Column(nullable = true, name = "opprettet_av_navn")
+    val opprettetAvNavn: String? = "",
+
     @Column(nullable = false, name = "opprettet_timestamp")
     val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 

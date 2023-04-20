@@ -92,6 +92,7 @@ class VedtakServiceTest {
 //      Executable { assertThat(vedtakFunnet.vedtakTidspunkt).isEqualTo(nyttVedtakRequest.vedtakTidspunkt) },
             Executable { assertThat(vedtakFunnet.opprettetTidspunkt).isNotNull() },
             Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
+            Executable { assertThat(vedtakFunnet.opprettetAvNavn).isEqualTo(nyttVedtakRequest.opprettetAvNavn) },
             Executable { assertThat(vedtakFunnet.enhetId).isEqualTo(nyttVedtakRequest.enhetId) },
             Executable { assertThat(vedtakFunnet.utsattTilDato).isEqualTo(nyttVedtakRequest.utsattTilDato) },
             Executable { assertThat(vedtakFunnet.grunnlagListe.size).isEqualTo(4) },
