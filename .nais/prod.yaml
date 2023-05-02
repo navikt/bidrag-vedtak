@@ -17,6 +17,12 @@ azureAccessInbound:
   - application: bisys
     namespace: bidrag
     cluster: prod-fss
+  - application: bidrag-dokument-bestilling
+    namespace: bidrag
+    cluster: prod-gcp
+  - application: bidrag-dokument-forsendelse
+    namespace: bidrag
+    cluster: prod-gcp
 spec:
   replicas:
     min: 2
