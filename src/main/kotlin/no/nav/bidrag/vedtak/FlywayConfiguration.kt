@@ -9,7 +9,7 @@ import javax.sql.DataSource
 
 @Configuration
 @Profile("live & !lokal-nais")
-class FlywayConfiguration @Autowired constructor(@Qualifier("dataSource") dataSource: DataSource?) {
+class FlywayConfiguration @Autowired constructor(@Qualifier("dataSource") dataSource: DataSource) {
 
     init {
         Thread.sleep(30000)
