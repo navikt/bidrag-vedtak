@@ -32,7 +32,7 @@ import java.time.LocalDateTime
 
 @DisplayName("HendelserServiceTest")
 @ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
-@SpringBootTest(classes = [BidragVedtakTest::class])
+@SpringBootTest(classes = [BidragVedtakTest::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableMockOAuth2Server
 class HendelserServiceTest {
 
