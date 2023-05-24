@@ -33,7 +33,7 @@ class BidragVedtakTestConfig {
     private lateinit var mockOAuth2Server: MockOAuth2Server
 
     @Bean
-    fun securedTestRestTemplate(testRestTemplate: TestRestTemplate?): HttpHeaderTestRestTemplate? {
+    fun securedTestRestTemplate(testRestTemplate: TestRestTemplate): HttpHeaderTestRestTemplate {
         val httpHeaderTestRestTemplate = HttpHeaderTestRestTemplate(testRestTemplate)
         httpHeaderTestRestTemplate.add(HttpHeaders.AUTHORIZATION) { generateTestToken() }
         return httpHeaderTestRestTemplate

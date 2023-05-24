@@ -27,7 +27,7 @@ import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -110,8 +110,8 @@ class VedtakControllerTest {
 
         assertAll(
             Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response?.body).isNotNull() }
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(response.body).isNotNull() }
         )
     }
 
@@ -131,8 +131,8 @@ class VedtakControllerTest {
 
         assertAll(
             Executable { assertThat(opprettResponse).isNotNull() },
-            Executable { assertThat(opprettResponse?.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse?.body).isNotNull() }
+            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(opprettResponse.body).isNotNull() }
         )
     }
 
@@ -142,17 +142,12 @@ class VedtakControllerTest {
         val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
 
         // Henter forekomster
-        val response = securedTestRestTemplate.exchange(
-            "/vedtak/$opprettetVedtakId",
-            HttpMethod.GET,
-            null,
-            VedtakDto::class.java
-        )
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
 
         assertAll(
             Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response?.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response?.body).isNotNull() }
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(response.body).isNotNull() }
         )
     }
 
@@ -172,8 +167,8 @@ class VedtakControllerTest {
 
         assertAll(
             Executable { assertThat(opprettResponse).isNotNull() },
-            Executable { assertThat(opprettResponse?.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse?.body).isNotNull() }
+            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(opprettResponse.body).isNotNull() }
         )
     }
 
