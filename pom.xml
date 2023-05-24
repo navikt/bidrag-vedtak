@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.0.6</version>
+    <version>3.0.7</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -22,7 +22,7 @@
     <!-- build/language -->
     <kotlin.version>1.8.0</kotlin.version>
     <build-helper-maven.version>3.2.0</build-helper-maven.version>
-    <token-support.version>3.1.0</token-support.version>
+    <token-support.version>3.0.7</token-support.version>
 
     <!-- dependencies -->
     <bidrag-commons.version>20230516121246_1e60457</bidrag-commons.version>
@@ -54,6 +54,11 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.5.14</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>3.4.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
