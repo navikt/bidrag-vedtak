@@ -59,6 +59,8 @@ spring:
   jpa:
     hibernate.connection.provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
     database: postgresql
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 no.nav.security.jwt:
   issuer:
     aad:
