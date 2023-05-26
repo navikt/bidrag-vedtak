@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
+import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
 import no.nav.bidrag.commons.web.UserMdcFilter
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
@@ -28,6 +29,7 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     info = Info(title = "bidrag-vedtak", version = "v1"),
     security = [SecurityRequirement(name = "bearer-key")]
 )
+
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @SecurityScheme(
     bearerFormat = "JWT",
@@ -35,12 +37,18 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     scheme = "bearer",
     type = SecuritySchemeType.HTTP
 )
+
 @EnableAspectJAutoProxy
 @Import(CorrelationIdFilter::class, UserMdcFilter::class)
 class BidragVedtakConfig {
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect {
         return TimedAspect(registry)
+    }
+
+    @Bean
+    fun exceptionLogger(): ExceptionLogger {
+        return ExceptionLogger(BidragVedtak::class.java.simpleName)
     }
 
     @Bean
