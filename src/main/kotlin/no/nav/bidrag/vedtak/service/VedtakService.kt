@@ -18,11 +18,14 @@ import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
 import no.nav.bidrag.behandling.felles.enums.VedtakKilde
 import no.nav.bidrag.behandling.felles.enums.VedtakType
+import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
 import no.nav.bidrag.vedtak.persistence.entity.Periode
+import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
@@ -39,6 +42,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
+
+    // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
+    val periodeIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
+    val engangsbelopIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
@@ -57,7 +64,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
         // Engangsbelop
-
         vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap) }
 
         // Behandlingsreferanse
@@ -243,17 +249,23 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     fun oppdaterVedtak(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Int {
 //        val eksisterendeVedtak = hentVedtak(vedtakId)
 
+        if (vedtakRequest.grunnlagListe.isEmpty()) {
+            val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
+            LOGGER.error(feilmelding)
+            SECURE_LOGGER.error("$feilmelding $vedtakRequest")
+            throw GrunnlagsdataManglerException(feilmelding)
+        }
+
         if (alleVedtaksdataMatcher(vedtakId, vedtakRequest)) {
+            slettEventueltEksisterendeGrunnlag(vedtakId)
+            oppdaterGrunnlag(vedtakId, vedtakRequest)
 
 
-        } else
-            throw VedtaksdataMatcherIkkeException("Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtak. VedtakId: $vedtakId")
-
-
-
-        val vedtaksdataMatcher = true
-
-        if (!vedtaksdataMatcher) {
+        } else {
+            val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
+            LOGGER.error(feilmelding)
+            SECURE_LOGGER.error("$feilmelding $vedtakRequest")
+            throw VedtaksdataMatcherIkkeException(feilmelding)
         }
 
         return vedtakId
@@ -292,6 +304,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Sjekker om det er lagret like mange stønadsendringer som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.stonadsendringListe?.size != eksisterendeStonadsendringListe.size) {
+            SECURE_LOGGER.error("Det er ulikt antall stønadsendringer i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
             return false
         }
 
@@ -313,6 +326,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     }
                 }
         if (matchendeElementer.size != eksisterendeStonadsendringListe.size) {
+            SECURE_LOGGER.error("Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak $vedtakId")
             return false
         }
 
@@ -322,6 +336,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         for ((i, stonadsendring) in eksisterendeStonadsendringListe.withIndex()) {
             if (!perioderMatcher(stonadsendring.id, sortertStonadsendringRequestListe[i])) {
+                SECURE_LOGGER.error("Det er mismatch på minst én periode ved forsøk på å oppdatere vedtak $vedtakId, stønadsendring: ${stonadsendring.id}")
                 return false
             }
         }
@@ -342,6 +357,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     periodeRequest.delytelseId == it.delytelseId
                 } }
 
+        if (matchendeElementer.size == eksisterendePeriodeListe.size) {
+            eksisterendePeriodeListe.forEach {
+                periodeIdGrunnlagSkalSlettesListe.add(it.id)
+            }
+        }
+
         return matchendeElementer.size == eksisterendePeriodeListe.size
     }
 
@@ -358,6 +379,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Sjekker om det er lagret like mange engangsbeløp som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.engangsbelopListe?.size != eksisterendeEngangsbelopListe.size) {
+            SECURE_LOGGER.error("Det er ulikt antall engangsbeløp i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
             return false
         }
 
@@ -382,6 +404,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                                 engangsbelopRequest.eksternReferanse == it.eksternReferanse
                     }
                 }
+
+        if (matchendeElementer.size == eksisterendeEngangsbelopListe.size) {
+            eksisterendeEngangsbelopListe.forEach {
+                engangsbelopIdGrunnlagSkalSlettesListe.add(it.id)
+            }
+        }
+
         return matchendeElementer.size == eksisterendeEngangsbelopListe.size
     }
 
@@ -397,6 +426,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Sjekker om det er lagret like mange behandlinmgsreferanser som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.behandlingsreferanseListe?.size != eksisterendeBehandlingsreferanseListe.size) {
+            SECURE_LOGGER.error("Det er ulikt antall behandlingsreferanser i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
             return false
         }
 
@@ -410,6 +440,54 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     }
                 }
         return matchendeElementer.size == eksisterendeBehandlingsreferanseListe.size
+
+    }
+
+    fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
+
+        // slett fra PeriodeGrunnlag
+        if (periodeIdGrunnlagSkalSlettesListe.isNotEmpty()) {
+            periodeIdGrunnlagSkalSlettesListe.forEach { periodeId ->
+                val periodeGrunnlag = persistenceService.hentAlleGrunnlagForPeriode(periodeId)
+                periodeGrunnlag.forEach {
+                    persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(periodeId, it.grunnlag.id))
+                }
+            }
+        }
+
+        // slett fra EngangsbelopGrunnlag
+        if (engangsbelopIdGrunnlagSkalSlettesListe.isNotEmpty()) {
+            engangsbelopIdGrunnlagSkalSlettesListe.forEach { engangsbelopId ->
+                val engangsbelopGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
+                engangsbelopGrunnlag.forEach {
+                    persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(engangsbelopId, it.grunnlag.id))
+                }
+            }
+        }
+
+        // slett fra Grunnlag
+        val grunnlagListe = persistenceService.grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
+        grunnlagListe.forEach {
+            persistenceService.grunnlagRepository.deleteById(it.id)
+        }
+
+        // Initialiserer lister
+        periodeIdGrunnlagSkalSlettesListe.clear()
+        engangsbelopIdGrunnlagSkalSlettesListe.clear()
+    }
+
+    fun oppdaterGrunnlag(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto) {
+        val vedtak = persistenceService.hentVedtak(vedtakId)
+
+        val grunnlagIdRefMap = mutableMapOf<String, Int>()
+
+        // Grunnlag
+        vedtakRequest.grunnlagListe.forEach {
+            val opprettetGrunnlagId = opprettGrunnlag(it, vedtak)
+            grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
+        }
+
+
 
     }
 
