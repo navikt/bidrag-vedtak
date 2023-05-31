@@ -1,8 +1,14 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.vedtak.BidragVedtakTest
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchPeriode
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchStonadsendring
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchVedtak
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
+import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
+import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
@@ -13,6 +19,7 @@ import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -277,7 +284,7 @@ class VedtakServiceTest {
 
     @Test
     @Suppress("NonAsciiCharacters")
-    fun `skal opprette og så oppdatere vedtak`() {
+    fun `skal opprette vedtak uten grunnlag og så oppdatere vedtak med grunnlag`() {
         // Oppretter nytt vedtak
         val oopdaterVedtakUtenGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
         val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest)
@@ -395,5 +402,76 @@ class VedtakServiceTest {
             Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) }
 
         )
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at oppdatering av vedtak med mismatch på vedtak feiler`() {
+        // Oppretter nytt vedtak
+        val vedtak = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtak)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchVedtak()
+
+        assertThatExceptionOfType(VedtaksdataMatcherIkkeException::class.java).isThrownBy {
+            vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+        }
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at oppdatering av vedtak med mismatch på stonadsendring feiler`() {
+        // Oppretter nytt vedtak
+        val vedtak = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtak)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchStonadsendring()
+
+        assertThatExceptionOfType(VedtaksdataMatcherIkkeException::class.java).isThrownBy {
+            vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+        }
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at oppdatering av vedtak med mismatch på periode feiler`() {
+        // Oppretter nytt vedtak
+        val vedtak = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtak)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchPeriode()
+
+        assertThatExceptionOfType(VedtaksdataMatcherIkkeException::class.java).isThrownBy {
+            vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+        }
+    }
+
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at oppdatering av vedtak med mismatch på engangsbeløp feiler`() {
+        // Oppretter nytt vedtak
+        val vedtak = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtak)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchEngangsbeløp()
+
+        assertThatExceptionOfType(VedtaksdataMatcherIkkeException::class.java).isThrownBy {
+            vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+        }
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at oppdatering av vedtak feiler hvis grunnlag mangler i request`() {
+        // Oppretter nytt vedtak
+        val vedtak = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtak)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
+
+        assertThatExceptionOfType(GrunnlagsdataManglerException::class.java).isThrownBy {
+            vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+        }
     }
 }
