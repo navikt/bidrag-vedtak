@@ -263,8 +263,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         if (alleVedtaksdataMatcher(vedtakId, vedtakRequest)) {
             slettEventueltEksisterendeGrunnlag(vedtakId)
             oppdaterGrunnlag(vedtakId, vedtakRequest)
-
-
         } else {
             val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
             LOGGER.error(feilmelding)
@@ -274,7 +272,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         return vedtakId
     }
-
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
         return vedtakMatcher(vedtakId, vedtakRequest) &&
@@ -300,7 +297,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun stonadsendringerOgPerioderMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
-
         // Sorterer begge listene likt
         val eksisterendeStonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakId)
             .sortedWith(compareBy({ it.type }, { it.skyldnerId }, { it.kravhaverId }, { it.sakId }))
@@ -353,7 +349,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun perioderMatcher(stonadsendringId: Int, stonadsendringRequest: OpprettStonadsendringRequestDto): Boolean {
-
         val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStonadsendring(stonadsendringId)
 
         val matchendeElementer = stonadsendringRequest.periodeListe
@@ -377,9 +372,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return matchendeElementer.size == eksisterendePeriodeListe.size
     }
 
-
     private fun engangsbelopMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
-
         val eksisterendeEngangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakId)
 
         // vedtakRequest.engangsbelopListe kan være null, eksisterendeEngangsbelopListe kan ikke være null,
@@ -426,7 +419,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun behandlingsreferanserMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
-
         val eksisterendeBehandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtakId)
 
         // vedtakRequest.engangsbelopListe kan være null, eksisterendeEngangsbelopListe kan ikke være null,
@@ -451,11 +443,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 }
             }
         return matchendeElementer.size == eksisterendeBehandlingsreferanseListe.size
-
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
-
         // slett fra PeriodeGrunnlag
         if (periodeIdGrunnlagSkalSlettesListe.isNotEmpty()) {
             periodeIdGrunnlagSkalSlettesListe.forEach { periodeId ->
@@ -520,16 +510,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             // matcher mot eksisterende engangsbeløp for å finne engangsbeløpId for igjen å oppdatere EngangsbelopGrunnlag
             val engangsbelopId = finnTilhørendeEngangsbelopId(engangsbelop, eksisterendeEngangsbelopListe)
             oppdaterEngangsbelopGrunnlag(engangsbelop, engangsbelopId, grunnlagIdRefMap)
-
         }
     }
-
 
     private fun finnEksisterendeStonadsendringId(
         stonadsendringrequest: OpprettStonadsendringRequestDto,
         eksisterendeStonadsendringListe: List<Stonadsendring>
     ): Int {
-
         val matchendeEksisterendeStonadsendring = eksisterendeStonadsendringListe
             .filter { stonadsendring ->
                 eksisterendeStonadsendringListe.any {
@@ -546,7 +533,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 }
             }
 
-
         if (matchendeEksisterendeStonadsendring.size != 1) {
             SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer $stonadsendringrequest")
             throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer $stonadsendringrequest")
@@ -555,7 +541,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun finnEksisterendePeriodeId(periodeRequest: OpprettVedtakPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
-
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
@@ -575,10 +560,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return matchendeEksisterendePeriode.first().id
     }
 
-
     // Oppdater periode
     private fun oppdaterPeriodeGrunnlag(periodeRequest: OpprettVedtakPeriodeRequestDto, periodeId: Int, grunnlagIdRefMap: Map<String, Int>) {
-
         // PeriodeGrunnlag
         periodeRequest.grunnlagReferanseListe.forEach {
             val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
@@ -601,7 +584,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         engangsbelopRequest: OpprettEngangsbelopRequestDto,
         eksisterendeEngangsbelopListe: List<Engangsbelop>
     ): Int {
-
         val matchendeEksisterendeEngangsbelop = eksisterendeEngangsbelopListe
             .filter { engangsbelop ->
                 eksisterendeEngangsbelopListe.any {
@@ -628,14 +610,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return matchendeEksisterendeEngangsbelop.first().id
     }
 
-
     // Opprett EngangsbelopGrunnlag
     private fun oppdaterEngangsbelopGrunnlag(
         engangsbelopRequest: OpprettEngangsbelopRequestDto,
         engangsbelopId: Int,
         grunnlagIdRefMap: Map<String, Int>
     ) {
-
         // EngangsbelopGrunnlag
         engangsbelopRequest.grunnlagReferanseListe.forEach {
             val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
@@ -652,9 +632,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             }
         }
     }
-
-
-
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)

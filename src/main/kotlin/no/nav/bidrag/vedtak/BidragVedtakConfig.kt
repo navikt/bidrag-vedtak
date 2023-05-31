@@ -39,16 +39,14 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
 )
 
 @EnableAspectJAutoProxy
-@Import(CorrelationIdFilter::class, UserMdcFilter::class)
+@Import(
+    CorrelationIdFilter::class,
+    UserMdcFilter::class
+)
 class BidragVedtakConfig {
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect {
         return TimedAspect(registry)
-    }
-
-    @Bean
-    fun exceptionLogger(): ExceptionLogger {
-        return ExceptionLogger(BidragVedtak::class.java.simpleName)
     }
 
     @Bean
@@ -62,4 +60,9 @@ class BidragVedtakConfig {
         objectMapper,
         topic
     )
+
+    @Bean
+    fun exceptionLogger(): ExceptionLogger {
+        return ExceptionLogger(BidragVedtak::class.java.simpleName)
+    }
 }

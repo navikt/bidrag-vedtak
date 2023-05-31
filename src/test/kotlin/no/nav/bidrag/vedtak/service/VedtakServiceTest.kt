@@ -294,107 +294,106 @@ class VedtakServiceTest {
 
         assertAll(
 
-                // Grunnlag
-                Executable { assertThat(vedtakUtenGrunnlag.grunnlagListe).isEmpty() },
+            // Grunnlag
+            Executable { assertThat(vedtakUtenGrunnlag.grunnlagListe).isEmpty() },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].referanse) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].type) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].innhold) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].referanse) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].type) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[0].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[0].innhold) },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].referanse) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].type) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].innhold) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].referanse) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].type) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[1].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[1].innhold) },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].referanse) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].type) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].innhold) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].referanse) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].type) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[2].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[2].innhold) },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].referanse) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].type) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].innhold) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].referanse).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].referanse) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].type).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].type) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe[3].innhold).isEqualTo(oopdaterVedtakMedGrunnlagRequest.grunnlagListe[3].innhold) },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe.size).isEqualTo(4) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe.size).isEqualTo(2) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.behandlingsreferanseListe.size).isEqualTo(2) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe.size).isEqualTo(4) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe.size).isEqualTo(2) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.behandlingsreferanseListe.size).isEqualTo(2) },
 
-                // Periode
-                Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe).isEmpty() },
-                Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe).isEmpty() },
-                Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe).isEmpty() },
-                Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe).isEmpty() },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(4) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(2) },
+            // Periode
+            Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(vedtakUtenGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(4) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(2) },
 
-                // GrunnlagReferanse
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3]
-                    )
-                },
+            // GrunnlagReferanse
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3]
+                )
+            },
 
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0]
-                    )
-                },
-                Executable {
-                    assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                            oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1]
-                    )
-                },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
+                    oopdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1]
+                )
+            },
 
-                // Engangsbeløp
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe.size).isEqualTo(2) },
+            // Engangsbeløp
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe.size).isEqualTo(2) },
 
-                Executable { assertThat(vedtakUtenGrunnlag.engangsbelopListe[0].grunnlagReferanseListe).isEmpty() },
-                Executable { assertThat(vedtakUtenGrunnlag.engangsbelopListe[1].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(vedtakUtenGrunnlag.engangsbelopListe[0].grunnlagReferanseListe).isEmpty() },
+            Executable { assertThat(vedtakUtenGrunnlag.engangsbelopListe[1].grunnlagReferanseListe).isEmpty() },
 
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
-                Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) }
 
         )
     }
-
 }

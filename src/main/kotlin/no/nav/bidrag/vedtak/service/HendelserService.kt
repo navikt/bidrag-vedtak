@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.Behandlingsreferanse
 import no.nav.bidrag.behandling.felles.dto.vedtak.Engangsbelop
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
@@ -32,6 +33,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             utsattTilDato = vedtakRequest.utsattTilDato,
             stonadsendringListe = mapStonadsendringer(vedtakRequest),
             engangsbelopListe = mapEngangsbelop(vedtakRequest),
+            behandlingsreferanseListe = mapBehandlingsreferanser(vedtakRequest),
             sporingsdata = Sporingsdata(
                 CorrelationId.fetchCorrelationIdForThread()
                     ?: CorrelationId.generateTimestamped(vedtakRequest.type.toString())
@@ -101,5 +103,17 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             )
         }
         return engangsbelopListe
+    }
+
+    private fun mapBehandlingsreferanser(vedtakRequest: OpprettVedtakRequestDto): List<Behandlingsreferanse> {
+        val behandlingsreferanseListe = mutableListOf<Behandlingsreferanse>()
+        vedtakRequest.behandlingsreferanseListe?.forEach {
+            behandlingsreferanseListe.add(
+                Behandlingsreferanse(
+                    kilde = it.kilde.toString(),
+                    referanse = it.referanse)
+            )
+        }
+        return behandlingsreferanseListe
     }
 }
