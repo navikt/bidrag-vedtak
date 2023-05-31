@@ -237,6 +237,7 @@ class HendelserServiceTest {
                     )
                 ),
                 engangsbelopListe = emptyList(),
+                behandlingsreferanseListe = emptyList(),
                 sporingsdata = Sporingsdata("test")
             )
         )
@@ -353,6 +354,7 @@ class HendelserServiceTest {
                         eksternReferanse = null
                     )
                 ),
+                behandlingsreferanseListe = emptyList(),
                 sporingsdata = Sporingsdata("test")
             )
         )

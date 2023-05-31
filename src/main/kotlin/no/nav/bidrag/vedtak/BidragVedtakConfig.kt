@@ -29,7 +29,6 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     info = Info(title = "bidrag-vedtak", version = "v1"),
     security = [SecurityRequirement(name = "bearer-key")]
 )
-
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @SecurityScheme(
     bearerFormat = "JWT",
@@ -37,12 +36,8 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     scheme = "bearer",
     type = SecuritySchemeType.HTTP
 )
-
 @EnableAspectJAutoProxy
-@Import(
-    CorrelationIdFilter::class,
-    UserMdcFilter::class
-)
+@Import(CorrelationIdFilter::class, UserMdcFilter::class)
 class BidragVedtakConfig {
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect {

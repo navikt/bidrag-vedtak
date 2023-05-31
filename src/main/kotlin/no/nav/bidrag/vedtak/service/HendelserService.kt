@@ -111,7 +111,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             behandlingsreferanseListe.add(
                 Behandlingsreferanse(
                     kilde = it.kilde.toString(),
-                    referanse = it.referanse)
+                    referanse = it.referanse
+                )
             )
         }
         return behandlingsreferanseListe
