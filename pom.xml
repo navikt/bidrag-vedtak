@@ -22,7 +22,7 @@
     <!-- build/language -->
     <kotlin.version>1.8.0</kotlin.version>
     <build-helper-maven.version>3.2.0</build-helper-maven.version>
-    <token-support.version>3.0.7</token-support.version>
+    <token-support.version>3.0.11</token-support.version>
 
     <!-- dependencies -->
     <bidrag-commons.version>20230516121246_1e60457</bidrag-commons.version>
@@ -286,8 +286,7 @@
             <phase>verify</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath"
-                  classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                   <arg value="src/**/*.kt"/>
                 </java>
               </target>
@@ -301,8 +300,7 @@
             <phase>validate</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath"
-                  classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                   <jvmarg value="--add-opens"/>
                   <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
                   <arg value="-F"/>
