@@ -464,6 +464,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 engangsbelopGrunnlag.forEach {
                     persistenceService.engangsbelopGrunnlagRepository.deleteById(EngangsbelopGrunnlagPK(engangsbelopId, it.grunnlag.id))
                 }
+                // tester på github feiler uten denne, ikke spør...
+                val eg = persistenceService.engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
             }
         }
 

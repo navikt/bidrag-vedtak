@@ -17,5 +17,5 @@ interface GrunnlagRepository : JpaRepository<Grunnlag, Int?> {
     @Query(
         "delete from Grunnlag gr where gr.vedtak.id = :vedtakId"
     )
-    fun slettAlleGrunnlagForVedtak(@Param("vedtakId") vedtakId: Int):Int
+    fun slettAlleGrunnlagForVedtak(@Param("vedtakId") vedtakId: Int): Int
 }
