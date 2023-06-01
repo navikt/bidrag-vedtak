@@ -1,6 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.behandling.felles.dto.vedtak.Behandlingsreferanse
 import no.nav.bidrag.behandling.felles.dto.vedtak.Engangsbelop
+import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettStonadsendringRequestDto
 import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeRequestDto
@@ -9,6 +11,7 @@ import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
 import no.nav.bidrag.behandling.felles.dto.vedtak.Sporingsdata
 import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
 import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
+import no.nav.bidrag.behandling.felles.enums.BehandlingsrefKilde
 import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
 import no.nav.bidrag.behandling.felles.enums.Innkreving
 import no.nav.bidrag.behandling.felles.enums.StonadType
@@ -195,7 +198,12 @@ class HendelserServiceTest {
                     )
                 ),
                 engangsbelopListe = emptyList(),
-                behandlingsreferanseListe = emptyList()
+                behandlingsreferanseListe = listOf(
+                    OpprettBehandlingsreferanseRequestDto(
+                        kilde = BehandlingsrefKilde.BISYS_SOKNAD,
+                        referanse = "referanse1"
+                    )
+                )
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200")
@@ -237,7 +245,12 @@ class HendelserServiceTest {
                     )
                 ),
                 engangsbelopListe = emptyList(),
-                behandlingsreferanseListe = emptyList(),
+                behandlingsreferanseListe = listOf(
+                    Behandlingsreferanse(
+                        kilde = BehandlingsrefKilde.BISYS_SOKNAD.toString(),
+                        referanse = "referanse1"
+                    )
+                ),
                 sporingsdata = Sporingsdata("test")
             )
         )
