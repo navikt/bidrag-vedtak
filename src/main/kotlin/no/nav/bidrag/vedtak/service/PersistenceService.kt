@@ -80,6 +80,10 @@ class PersistenceService(
         return grunnlagRepository.hentAlleGrunnlagForVedtak(id)
     }
 
+    fun slettAlleGrunnlagForVedtak(vedtakId: Int): Int {
+        return grunnlagRepository.slettAlleGrunnlagForVedtak(vedtakId)
+    }
+
     fun opprettPeriodeGrunnlag(periodeGrunnlagBo: PeriodeGrunnlagBo): PeriodeGrunnlag {
         val eksisterendePeriode = periodeRepository.findById(periodeGrunnlagBo.periodeId)
             .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", periodeGrunnlagBo.periodeId)) }

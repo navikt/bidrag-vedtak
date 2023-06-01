@@ -24,6 +24,7 @@ import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
+import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
@@ -453,6 +454,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 periodeGrunnlag.forEach {
                     persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(periodeId, it.grunnlag.id))
                 }
+
+                val pg = persistenceService.periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
+
             }
         }
 
@@ -461,16 +465,24 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             engangsbelopIdGrunnlagSkalSlettesListe.forEach { engangsbelopId ->
                 val engangsbelopGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
                 engangsbelopGrunnlag.forEach {
-                    persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(engangsbelopId, it.grunnlag.id))
+                    persistenceService.engangsbelopGrunnlagRepository.deleteById(EngangsbelopGrunnlagPK(engangsbelopId, it.grunnlag.id))
                 }
+                val eg = persistenceService.engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
+
             }
         }
 
+
         // slett fra Grunnlag
+
         val grunnlagListe = persistenceService.grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
-        grunnlagListe.forEach {
-            persistenceService.grunnlagRepository.deleteById(it.id)
-        }
+
+        persistenceService.slettAlleGrunnlagForVedtak(vedtakId)
+
+//        grunnlagListe.forEach { grunnlag ->
+//            persistenceService.grunnlagRepository.deleteById(grunnlag.id)
+//        }
+        val gr = persistenceService.grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
 
         // Initialiserer lister
         periodeIdGrunnlagSkalSlettesListe.clear()

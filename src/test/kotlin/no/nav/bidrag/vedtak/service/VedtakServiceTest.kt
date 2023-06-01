@@ -406,6 +406,109 @@ class VedtakServiceTest {
 
     @Test
     @Suppress("NonAsciiCharacters")
+    fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
+        // Oppretter nytt vedtak
+        val vedtakRequest = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtakRequest)
+
+        // Henter vedtak uten grunnlag
+        val vedtak = vedtakService.hentVedtak(vedtakId)
+
+        val oppdaterVedtakMedGrunnlagRequest = byggVedtakRequest()
+
+        vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
+
+        // Henter oppdatert vedtak
+        val oppdatertVedtakMedGrunnlag = vedtakService.hentVedtak(vedtakId)
+
+        assertAll(
+
+            // Grunnlag
+            Executable { assertThat(vedtak.grunnlagListe.size).isEqualTo(4) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe.size).isEqualTo(4) },
+
+            // Periode
+            Executable { assertThat(vedtak.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(vedtak.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(4) },
+            Executable { assertThat(vedtak.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
+            Executable { assertThat(vedtak.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(2) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(4) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(2) },
+
+            // GrunnlagReferanse
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3]
+                )
+            },
+
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0]
+                )
+            },
+            Executable {
+                assertThat(oppdatertVedtakMedGrunnlag.stonadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagRequest.stonadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1]
+                )
+            },
+
+            // Engangsbeløp
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe.size).isEqualTo(2) },
+
+            Executable { assertThat(vedtak.engangsbelopListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(vedtak.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
+
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            Executable { assertThat(oppdatertVedtakMedGrunnlag.engangsbelopListe[1].grunnlagReferanseListe.size).isEqualTo(3) }
+
+        )
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
     fun `test at oppdatering av vedtak med mismatch på vedtak feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
