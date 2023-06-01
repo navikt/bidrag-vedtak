@@ -383,7 +383,6 @@ class TestUtil {
             behandlingsreferanseListe = byggBehandlingsreferanseListe()
         )
 
-
         fun byggOppdaterVedtakMedMismatchStonadsendring() = OpprettVedtakRequestDto(
             kilde = VedtakKilde.MANUELT,
             type = VedtakType.ALDERSJUSTERING,
@@ -397,7 +396,6 @@ class TestUtil {
             engangsbelopListe = byggEngangsbelopListe(),
             behandlingsreferanseListe = byggBehandlingsreferanseListe()
         )
-
 
         private fun byggStonadsendringMedMismatchListe() = listOf(
             OpprettStonadsendringRequestDto(
@@ -443,7 +441,6 @@ class TestUtil {
             )
         )
 
-
         fun byggOppdaterVedtakMedMismatchPeriode() = OpprettVedtakRequestDto(
             kilde = VedtakKilde.MANUELT,
             type = VedtakType.ALDERSJUSTERING,
@@ -457,7 +454,6 @@ class TestUtil {
             engangsbelopListe = byggEngangsbelopListe(),
             behandlingsreferanseListe = byggBehandlingsreferanseListe()
         )
-
 
         private fun byggStonadsendringMedMismatchPeriodeListe() = listOf(
             OpprettStonadsendringRequestDto(
@@ -585,8 +581,6 @@ class TestUtil {
                 )
             )
         )
-
-
 
         fun byggVedtak(
             vedtakId: Int = (1..100).random(),

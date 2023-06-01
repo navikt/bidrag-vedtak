@@ -549,7 +549,6 @@ class VedtakServiceTest {
         }
     }
 
-
     @Test
     @Suppress("NonAsciiCharacters")
     fun `test at oppdatering av vedtak med mismatch på engangsbeløp feiler`() {
