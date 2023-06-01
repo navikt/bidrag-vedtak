@@ -454,9 +454,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 periodeGrunnlag.forEach {
                     persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(periodeId, it.grunnlag.id))
                 }
-
-                val pg = persistenceService.periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
-
             }
         }
 
@@ -467,22 +464,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 engangsbelopGrunnlag.forEach {
                     persistenceService.engangsbelopGrunnlagRepository.deleteById(EngangsbelopGrunnlagPK(engangsbelopId, it.grunnlag.id))
                 }
-                val eg = persistenceService.engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
-
             }
         }
 
-
         // slett fra Grunnlag
-
-        val grunnlagListe = persistenceService.grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
-
         persistenceService.slettAlleGrunnlagForVedtak(vedtakId)
-
-//        grunnlagListe.forEach { grunnlag ->
-//            persistenceService.grunnlagRepository.deleteById(grunnlag.id)
-//        }
-        val gr = persistenceService.grunnlagRepository.hentAlleGrunnlagForVedtak(vedtakId)
 
         // Initialiserer lister
         periodeIdGrunnlagSkalSlettesListe.clear()
