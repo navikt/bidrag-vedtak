@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
+import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
 import no.nav.bidrag.commons.web.UserMdcFilter
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
@@ -54,4 +55,9 @@ class BidragVedtakConfig {
         objectMapper,
         topic
     )
+
+    @Bean
+    fun exceptionLogger(): ExceptionLogger {
+        return ExceptionLogger(BidragVedtak::class.java.simpleName)
+    }
 }

@@ -250,6 +250,344 @@ class TestUtil {
             )
         )
 
+        fun byggVedtakRequestUtenGrunnlag() = OpprettVedtakRequestDto(
+            kilde = VedtakKilde.MANUELT,
+            type = VedtakType.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
+            vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetId = "4812",
+            utsattTilDato = LocalDate.now(),
+            grunnlagListe = emptyList(),
+            stonadsendringListe = byggStonadsendringUtenGrunnlagListe(),
+            engangsbelopListe = byggEngangsbelopUtenGrunnlagListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+        )
+
+        private fun byggStonadsendringUtenGrunnlagListe() = listOf(
+            OpprettStonadsendringRequestDto(
+                type = StonadType.BIDRAG,
+                sakId = "SAK-001",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                indeksreguleringAar = "2024",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 123,
+                eksternReferanse = "eksternRef1",
+                periodeListe = listOf(
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-01-01"),
+                        tilDato = LocalDate.parse("2019-07-01"),
+                        belop = BigDecimal.valueOf(3490),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId1",
+                        grunnlagReferanseListe = emptyList()
+                    ),
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-07-01"),
+                        tilDato = LocalDate.parse("2020-01-01"),
+                        belop = BigDecimal.valueOf(3520),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId2",
+                        grunnlagReferanseListe = emptyList()
+
+                    )
+                )
+            ),
+            OpprettStonadsendringRequestDto(
+                type = StonadType.BIDRAG,
+                sakId = "SAK-001",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                indeksreguleringAar = "2024",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 200,
+                eksternReferanse = "eksternRef3",
+                periodeListe = listOf(
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-06-01"),
+                        tilDato = LocalDate.parse("2019-07-01"),
+                        belop = BigDecimal.valueOf(4240),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId3",
+                        grunnlagReferanseListe = emptyList()
+                    ),
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-08-01"),
+                        tilDato = LocalDate.parse("2019-09-01"),
+                        belop = BigDecimal.valueOf(3410),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId4",
+                        grunnlagReferanseListe = emptyList()
+                    )
+                )
+            )
+        )
+
+        private fun byggEngangsbelopUtenGrunnlagListe() = listOf(
+            OpprettEngangsbelopRequestDto(
+                type = EngangsbelopType.SAERTILSKUDD,
+                sakId = "SAK-101",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                belop = BigDecimal.valueOf(3490),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 400,
+                referanse = "referanse1",
+                delytelseId = "delytelseId1",
+                eksternReferanse = "EksternRef1",
+                grunnlagReferanseListe = emptyList()
+            ),
+            OpprettEngangsbelopRequestDto(
+                type = EngangsbelopType.SAERTILSKUDD,
+                sakId = "SAK-101",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                belop = BigDecimal.valueOf(2990),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 400,
+                referanse = "referanse2",
+                delytelseId = "delytelseId2",
+                eksternReferanse = "EksternRef2",
+                grunnlagReferanseListe = emptyList()
+            )
+        )
+
+        fun byggOppdaterVedtakMedMismatchVedtak() = OpprettVedtakRequestDto(
+            kilde = VedtakKilde.MANUELT,
+            type = VedtakType.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler2",
+            vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetId = "4812",
+            utsattTilDato = LocalDate.now(),
+            grunnlagListe = byggGrunnlagListe(),
+            stonadsendringListe = byggStonadsendringListe(),
+            engangsbelopListe = byggEngangsbelopListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+        )
+
+
+        fun byggOppdaterVedtakMedMismatchStonadsendring() = OpprettVedtakRequestDto(
+            kilde = VedtakKilde.MANUELT,
+            type = VedtakType.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
+            vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetId = "4812",
+            utsattTilDato = LocalDate.now(),
+            grunnlagListe = byggGrunnlagListe(),
+            stonadsendringListe = byggStonadsendringMedMismatchListe(),
+            engangsbelopListe = byggEngangsbelopListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+        )
+
+
+        private fun byggStonadsendringMedMismatchListe() = listOf(
+            OpprettStonadsendringRequestDto(
+                type = StonadType.BIDRAG,
+                sakId = "SAK-001",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                indeksreguleringAar = "2024",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 123,
+                eksternReferanse = "eksternRef1",
+                periodeListe = listOf(
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-01-01"),
+                        tilDato = LocalDate.parse("2019-07-01"),
+                        belop = BigDecimal.valueOf(3491),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId1",
+                        grunnlagReferanseListe = listOf(
+                            "BM-LIGS-19",
+                            "BM-LIGN-19",
+                            "SJAB-REF001"
+                        )
+                    ),
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-07-01"),
+                        tilDato = LocalDate.parse("2020-01-01"),
+                        belop = BigDecimal.valueOf(3520),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId2",
+                        grunnlagReferanseListe = listOf(
+                            "BM-LIGS-19",
+                            "BM-LIGN-19",
+                            "BP-SKATTEKLASSE-19",
+                            "SJAB-REF001"
+                        )
+                    )
+                )
+            )
+        )
+
+
+        fun byggOppdaterVedtakMedMismatchPeriode() = OpprettVedtakRequestDto(
+            kilde = VedtakKilde.MANUELT,
+            type = VedtakType.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
+            vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetId = "4812",
+            utsattTilDato = LocalDate.now(),
+            grunnlagListe = byggGrunnlagListe(),
+            stonadsendringListe = byggStonadsendringMedMismatchPeriodeListe(),
+            engangsbelopListe = byggEngangsbelopListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+        )
+
+
+        private fun byggStonadsendringMedMismatchPeriodeListe() = listOf(
+            OpprettStonadsendringRequestDto(
+                type = StonadType.BIDRAG,
+                sakId = "SAK-001",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                indeksreguleringAar = "2024",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 123,
+                eksternReferanse = "eksternRef1",
+                periodeListe = listOf(
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-01-01"),
+                        tilDato = LocalDate.parse("2019-07-02"),
+                        belop = BigDecimal.valueOf(3490),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId1",
+                        grunnlagReferanseListe = emptyList()
+                    ),
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-07-01"),
+                        tilDato = LocalDate.parse("2020-01-01"),
+                        belop = BigDecimal.valueOf(3520),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId2",
+                        grunnlagReferanseListe = emptyList()
+
+                    )
+                )
+            ),
+            OpprettStonadsendringRequestDto(
+                type = StonadType.BIDRAG,
+                sakId = "SAK-001",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                indeksreguleringAar = "2024",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 200,
+                eksternReferanse = "eksternRef3",
+                periodeListe = listOf(
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-06-01"),
+                        tilDato = LocalDate.parse("2019-07-01"),
+                        belop = BigDecimal.valueOf(4240),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId3",
+                        grunnlagReferanseListe = emptyList()
+                    ),
+                    OpprettVedtakPeriodeRequestDto(
+                        fomDato = LocalDate.parse("2019-08-01"),
+                        tilDato = LocalDate.parse("2019-09-01"),
+                        belop = BigDecimal.valueOf(3410),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId4",
+                        grunnlagReferanseListe = emptyList()
+                    )
+                )
+            )
+        )
+
+        fun byggOppdaterVedtakMedMismatchEngangsbeløp() = OpprettVedtakRequestDto(
+            kilde = VedtakKilde.MANUELT,
+            type = VedtakType.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
+            vedtakTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetId = "4812",
+            utsattTilDato = LocalDate.now(),
+            grunnlagListe = byggGrunnlagListe(),
+            stonadsendringListe = byggStonadsendringListe(),
+            engangsbelopListe = byggEngangsbelopMedFeilListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+        )
+
+        private fun byggEngangsbelopMedFeilListe() = listOf(
+            OpprettEngangsbelopRequestDto(
+                type = EngangsbelopType.SAERTILSKUDD,
+                sakId = "SAK-101",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                belop = BigDecimal.valueOf(3491),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 400,
+                referanse = "referanse1",
+                delytelseId = "delytelseId1",
+                eksternReferanse = "EksternRef1",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001"
+                )
+            ),
+            OpprettEngangsbelopRequestDto(
+                type = EngangsbelopType.SAERTILSKUDD,
+                sakId = "SAK-101",
+                skyldnerId = "01018011111",
+                kravhaverId = "01010511111",
+                mottakerId = "01018211111",
+                belop = BigDecimal.valueOf(2990),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkreving.JA,
+                endring = true,
+                omgjorVedtakId = 400,
+                referanse = "referanse2",
+                delytelseId = "delytelseId2",
+                eksternReferanse = "EksternRef2",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001"
+                )
+            )
+        )
+
+
+
         fun byggVedtak(
             vedtakId: Int = (1..100).random(),
             kilde: String = VedtakKilde.MANUELT.toString(),
