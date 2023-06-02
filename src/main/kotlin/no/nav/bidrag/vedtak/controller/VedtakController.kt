@@ -74,7 +74,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppdaterer grunnlag på et eksisterende vedtak")
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Vedtak opprettet"),
+            ApiResponse(responseCode = "200", description = "Vedtak oppdatert"),
             ApiResponse(responseCode = "400", description = "Data i innsendt vedtak matcher ikke lagrede vedtaksopplysninger", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
