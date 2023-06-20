@@ -4,8 +4,8 @@ import com.nimbusds.jose.JOSEObjectType
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
+import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.LOCAL_PROFILE
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer

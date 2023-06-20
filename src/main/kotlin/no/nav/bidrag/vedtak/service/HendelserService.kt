@@ -1,13 +1,13 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.behandling.felles.dto.vedtak.Behandlingsreferanse
-import no.nav.bidrag.behandling.felles.dto.vedtak.Engangsbelop
-import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakRequestDto
-import no.nav.bidrag.behandling.felles.dto.vedtak.Periode
-import no.nav.bidrag.behandling.felles.dto.vedtak.Sporingsdata
-import no.nav.bidrag.behandling.felles.dto.vedtak.Stonadsendring
-import no.nav.bidrag.behandling.felles.dto.vedtak.VedtakHendelse
 import no.nav.bidrag.commons.CorrelationId
+import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
+import no.nav.bidrag.transport.behandling.vedtak.Engangsbelop
+import no.nav.bidrag.transport.behandling.vedtak.Periode
+import no.nav.bidrag.transport.behandling.vedtak.Sporingsdata
+import no.nav.bidrag.transport.behandling.vedtak.Stonadsendring
+import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import org.springframework.stereotype.Service

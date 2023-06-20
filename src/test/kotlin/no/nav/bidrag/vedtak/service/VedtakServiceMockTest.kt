@@ -1,8 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
-import no.nav.bidrag.behandling.felles.enums.EngangsbelopType
-import no.nav.bidrag.behandling.felles.enums.VedtakKilde
-import no.nav.bidrag.behandling.felles.enums.VedtakType
+import no.nav.bidrag.domain.enums.EngangsbelopType
+import no.nav.bidrag.domain.enums.VedtakKilde
+import no.nav.bidrag.domain.enums.VedtakType
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanse
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelop
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbelopGrunnlag
