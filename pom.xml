@@ -34,8 +34,8 @@
     <com.squareup.okhttp3.version>4.11.0</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.15.1</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>2.1.0</springdoc-openapi-ui.version>
-    <bidrag-behandling-felles.version>0.0.84</bidrag-behandling-felles.version>
-    <bidrag-behandling-felles-dto.version>0.0.90</bidrag-behandling-felles-dto.version>
+    <bidrag-behandling-felles.version>0.0.85</bidrag-behandling-felles.version>
+    <bidrag-behandling-felles-dto.version>0.0.92</bidrag-behandling-felles-dto.version>
   </properties>
 
   <dependencyManagement>
