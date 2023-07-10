@@ -9,9 +9,9 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.behandling.felles.dto.vedtak.GrunnlagDto
-import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettGrunnlagRequestDto
-import no.nav.bidrag.behandling.felles.enums.GrunnlagType
+import no.nav.bidrag.domain.enums.GrunnlagType
+import no.nav.bidrag.transport.behandling.vedtak.reponse.GrunnlagDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import kotlin.reflect.full.memberProperties
 
 @Entity

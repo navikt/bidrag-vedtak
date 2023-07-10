@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbelopRequestDto
 import java.math.BigDecimal
 import kotlin.reflect.full.memberProperties
 

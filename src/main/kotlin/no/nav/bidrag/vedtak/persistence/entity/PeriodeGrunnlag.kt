@@ -6,7 +6,7 @@ import jakarta.persistence.IdClass
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import no.nav.bidrag.behandling.felles.dto.vedtak.OpprettVedtakPeriodeGrunnlagRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakPeriodeGrunnlagRequestDto
 import kotlin.reflect.full.memberProperties
 
 @IdClass(PeriodeGrunnlagPK::class)

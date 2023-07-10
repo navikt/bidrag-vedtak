@@ -27,6 +27,7 @@
     <!-- dependencies -->
     <bidrag-commons.version>20230516121246_1e60457</bidrag-commons.version>
     <bidrag-commons-test.version>1.20230511093912_dc35d81</bidrag-commons-test.version>
+    <bidrag-transport.version>20230620084134_9b2f4b6</bidrag-transport.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.1.0</mockito-kotlin.version>
     <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
@@ -34,8 +35,6 @@
     <com.squareup.okhttp3.version>4.11.0</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.15.2</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>2.1.0</springdoc-openapi-ui.version>
-    <bidrag-behandling-felles.version>0.0.85</bidrag-behandling-felles.version>
-    <bidrag-behandling-felles-dto.version>0.0.92</bidrag-behandling-felles-dto.version>
   </properties>
 
   <dependencyManagement>
@@ -107,13 +106,8 @@
     <!-- nav -->
     <dependency>
       <groupId>no.nav.bidrag</groupId>
-      <artifactId>bidrag-behandling-felles</artifactId>
-      <version>${bidrag-behandling-felles.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>no.nav.bidrag</groupId>
-      <artifactId>bidrag-behandling-felles-dto</artifactId>
-      <version>${bidrag-behandling-felles-dto.version}</version>
+      <artifactId>bidrag-transport</artifactId>
+      <version>${bidrag-transport.version}</version>
     </dependency>
     <dependency>
       <groupId>com.nimbusds</groupId>
@@ -286,7 +280,8 @@
             <phase>verify</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath"
+                  classname="com.pinterest.ktlint.Main">
                   <arg value="src/**/*.kt"/>
                 </java>
               </target>
@@ -300,7 +295,8 @@
             <phase>validate</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath"
+                  classname="com.pinterest.ktlint.Main">
                   <jvmarg value="--add-opens"/>
                   <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
                   <arg value="-F"/>
