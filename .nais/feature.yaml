@@ -25,6 +25,9 @@ azureAccessInbound:
   - application: bidrag-dokument-forsendelse-feature
     namespace: bidrag
     cluster: dev-gcp
+  - application: bidrag-simuler-beregning-feature
+    namespace: bidrag
+    cluster: dev-gcp
 spec:
   replicas:
     min: 1
