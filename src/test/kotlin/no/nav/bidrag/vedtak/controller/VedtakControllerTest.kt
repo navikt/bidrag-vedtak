@@ -1,7 +1,7 @@
 package no.nav.bidrag.vedtak.controller
 
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
-import no.nav.bidrag.transport.behandling.vedtak.reponse.VedtakDto
+import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
