@@ -91,6 +91,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/feature.yaml
+          IMAGE: ${{ needs.build.outputs.image }}
 
   run_cucumber_tests:
     runs-on: ubuntu-latest
