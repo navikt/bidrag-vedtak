@@ -97,7 +97,7 @@ jobs:
   run_cucumber_tests:
     runs-on: ubuntu-latest
     name: Run cucumber tests
-    needs: deploy
+    needs: [deploy-feature, deploy-main, deploy-syntetisk]
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
