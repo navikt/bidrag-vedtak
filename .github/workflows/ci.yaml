@@ -40,7 +40,7 @@ jobs:
 
   deploy-main:
     runs-on: ubuntu-latest
-    name: Deploy docker image to main
+    name: Deploy main
     if: github.ref != 'refs/heads/release'
     needs: build
     steps:
@@ -58,7 +58,7 @@ jobs:
 
   deploy-syntetisk:
     runs-on: ubuntu-latest
-    name: Deploy bidrag-vedtak syntetisk
+    name: Deploy syntetisk
     if: github.ref != 'refs/heads/release'
     needs: build
     steps:
@@ -76,7 +76,7 @@ jobs:
 
   deploy-feature:
     runs-on: ubuntu-latest
-    name: Deploy docker image to dev
+    name: Deploy feature
     needs: build
 
     steps:
