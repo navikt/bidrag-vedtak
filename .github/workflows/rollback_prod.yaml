@@ -42,7 +42,7 @@ jobs:
           echo "Not NULL"; 
           echo "DEPLOY_TAG=$(git tag -l | sort -V | tail -2 | head -1)" >> $GITHUB_OUTPUT
          fi
-         echo "IMAGE=${{ steps.login.outputs.registry }}/${REPO_NAME}:${DEPLOY_TAG}
+         echo IMAGE=${{ steps.login.outputs.registry }}/${REPO_NAME}:${DEPLOY_TAG}
     outputs:
       image: ${{ steps.deploy_version.outputs.IMAGE }}
       version: ${{ steps.deploy_version.outputs.DEPLOY_TAG }}
