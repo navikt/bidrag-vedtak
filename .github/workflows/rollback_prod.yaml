@@ -33,7 +33,7 @@ jobs:
       - id: deploy_version
         name: Find deploy version
         run: |
-         echo ${github.event_name}
+         echo ${GITHUB_EVENT_NAME}
          REPO_NAME=${GITHUB_REPOSITORY}
          DEPLOY_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
