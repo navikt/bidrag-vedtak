@@ -2,7 +2,7 @@ name: Deploy to dev
 on:
   push:
     branches:
-      - '**'
+      - 'test'
 
 env:
   GITHUB_USERNAME: x-access-token
@@ -33,7 +33,7 @@ jobs:
           distribution: 'temurin'
       - uses: actions/cache@v3
         with:
-          path: ~/.m2
+          path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
@@ -103,9 +103,6 @@ jobs:
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/syntetisk.yaml
           IMAGE: ${{ needs.build.outputs.image }}
-    outputs:
-      image: ${{ needs.build.outputs.image }}
-      version: ${{ needs.build.outputs.tag }}
 
   deploy-feature:
     runs-on: ubuntu-latest
@@ -125,28 +122,6 @@ jobs:
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/feature.yaml
           IMAGE: ${{ needs.build.outputs.image }}
-
-  tag:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          echo ${{ needs.build.outputs.tag }}
-      - name: Push latest image as tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ needs.build.outputs.tag }}
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
 
   run_cucumber_tests-main:
     runs-on: ubuntu-latest
