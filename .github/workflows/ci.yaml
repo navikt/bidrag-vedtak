@@ -1,9 +1,8 @@
-name: Deploy bidrag-vedtak
+name: Deploy to dev
 on:
   push:
     branches:
       - '**'
-      - '!release'
 
 env:
   GITHUB_USERNAME: x-access-token
@@ -28,7 +27,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - run: mvn -B -e --settings .m2/maven-settings.xml clean install
+      - run: mvn -dskipTests -B -e --settings .m2/maven-settings.xml clean install
       - uses: nais/docker-build-push@v0
         id: docker-push
         with:
@@ -37,11 +36,32 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
+      version: ${{ steps.docker-push.outputs.new_version }}
+
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Deploy main
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: deploy
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mvn -B -e --settings .m2/maven-settings.xml clean install
 
   deploy-main:
     runs-on: ubuntu-latest
     name: Deploy main
-    if: github.ref != 'refs/heads/release'
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -59,7 +79,7 @@ jobs:
   deploy-syntetisk:
     runs-on: ubuntu-latest
     name: Deploy syntetisk
-    if: github.ref != 'refs/heads/release'
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -77,6 +97,7 @@ jobs:
   deploy-feature:
     runs-on: ubuntu-latest
     name: Deploy feature
+    if: github.ref == 'refs/heads/main' || github.event_name != 'pull_request' || github.event.pull_request.draft == true
     needs: build
 
     steps:
@@ -84,7 +105,6 @@ jobs:
         with:
           path: deploy
       - name: Deploy to dev-gcp for feature.yaml
-        if: github.ref != 'refs/heads/release'
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -93,21 +113,33 @@ jobs:
           VARS: deploy/.nais/feature.yaml
           IMAGE: ${{ needs.build.outputs.image }}
 
-  run_cucumber_tests:
+  tag:
     runs-on: ubuntu-latest
-    name: Run cucumber tests
-    needs: [deploy-feature, deploy-main, deploy-syntetisk]
+    needs: deploy-syntetisk
+    steps:
+      - uses: actions/checkout@v3
+      - name: Push latest image as tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.deploy-syntetisk.outputs.version }}
+          name: Release test ${{ needs.deploy-syntetisk.outputs.version }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
+  run_cucumber_tests-main:
+    runs-on: ubuntu-latest
+    name: Run cucumber tests main
+    needs: deploy-main
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
       INGRESS_VEDTAK: https://bidrag-vedtak.intern.dev.nav.no
 
     steps:
-      - name: feature ingresses
-        if: github.ref != 'refs/heads/main'
-        run: |
-          echo "INGRESS_VEDTAK=https://bidrag-vedtak-feature.intern.dev.nav.no" >> $GITHUB_ENV
-          echo "INGRESS_CUCUMBER=https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no" >> $GITHUB_ENV
       - run: |
           curl -H "Content-Type: application/json" -i \
                 -H "Authorization: Basic ${{ secrets.BIDRAG_CUCUMBER_CLOUD_AUTH }}" \
@@ -118,12 +150,23 @@ jobs:
                ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
           cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
 
-  bump_dev_version:
+
+  run_cucumber_tests-feature:
     runs-on: ubuntu-latest
-    name: Bump SNAPSHOT version
-    if: github.ref == 'refs/heads/main'
-    needs: run_cucumber_tests
+    name: Run cucumber tests feature
+    needs: deploy-feature
+
+    env:
+      INGRESS_CUCUMBER: https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no
+      INGRESS_VEDTAK: https://bidrag-vedtak-feature.intern.dev.nav.no
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: navikt/bidrag-git/tag-snap@v1-tag-snap
+      - run: |
+          curl -H "Content-Type: application/json" -i \
+                -H "Authorization: Basic ${{ secrets.BIDRAG_CUCUMBER_CLOUD_AUTH }}" \
+               --request POST \
+               --data '{"noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
+                   "${{ env.INGRESS_VEDTAK }}@tag:bidrag-vedtak"
+                 ]}' \
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
