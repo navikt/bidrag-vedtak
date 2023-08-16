@@ -133,6 +133,8 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v3
+        run: |
+          echo ${{ needs.build.outputs.version }}
       - name: Push latest image as tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
