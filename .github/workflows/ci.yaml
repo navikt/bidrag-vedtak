@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: deploy-syntetisk
+    needs: deploy
     steps:
       - uses: actions/checkout@v3
       - name: Push latest image as tag
@@ -138,11 +138,12 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ needs.deploy.outputs.version }}
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ needs.deploy-syntetisk.outputs.version }}
-          name: Release test ${{ needs.deploy-syntetisk.outputs.version }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
   run_cucumber_tests-main:
