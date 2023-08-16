@@ -33,14 +33,16 @@ jobs:
       - id: deploy_version
         name: Find deploy version
         run: |
+         echo ${github.event_name}
          REPO_NAME=${GITHUB_REPOSITORY}
          DEPLOY_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
           echo "NULL";
           echo $(git tag -l | sort -V | tail -2 | head -1)
+          echo $(git tag -l | sort -V | tail -2)
           DEPLOY_TAG=$(git tag -l | sort -V | tail -2 | head -1)
          fi
-         echo "IMAGE=${{ steps.login.outputs.registry }}/${REPO_NAME}:${DEPLOY_TAG}" >> $GITHUB_OUTPUT
+         echo "IMAGE=${{ steps.login.outputs.registry }}/$REPO_NAME:$DEPLOY_TAG" >> $GITHUB_OUTPUT
          echo "DEPLOY_TAG=$DEPLOY_TAG" >> $GITHUB_OUTPUT
     outputs:
       image: ${{ steps.deploy_version.outputs.IMAGE }}
