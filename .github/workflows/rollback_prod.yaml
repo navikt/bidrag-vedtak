@@ -33,6 +33,7 @@ jobs:
       - id: deploy_version
         name: Find deploy version
         run: |
+         git fetch --all --tags
          echo ${GITHUB_EVENT_NAME}
          REPO_NAME=${GITHUB_REPOSITORY}
          DEPLOY_TAG=${{ github.event.inputs.deploy_tag }}
