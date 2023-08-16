@@ -39,7 +39,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy docker image to prod
+    name: Deploy to prod
     needs: build
 
     steps:
@@ -59,9 +59,10 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
+    name: Tag release
     permissions:
       contents: write
-    needs: build
+    needs: deploy
     steps:
       - uses: actions/checkout@v3
       - name: Push latest image tag as github tag

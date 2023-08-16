@@ -1,14 +1,11 @@
 name: Rollback prod to previous version
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      deploy_tag:
-#        description: 'Deploy tag'
-#        required: false
 on:
-  push:
-    branches:
-      - '**'
+  workflow_dispatch:
+    inputs:
+      deploy_tag:
+        description: 'Deploy tag'
+        required: false
+
 env:
   GITHUB_USERNAME: x-access-token
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -19,7 +16,7 @@ jobs:
       contents: "read"
       id-token: "write"
     runs-on: ubuntu-latest
-    name: Find version to deploy
+    name: Find tag to deploy
 
     steps:
       - uses: actions/checkout@v3
@@ -54,17 +51,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          path: deploy
-      - id: bash
-        name: BASH
-        run: |
-          echo ${{ needs.prepare_deploy.outputs.image }}
-          echo ${{ needs.prepare_deploy.outputs.version }}
-#      - uses: nais/deploy/actions/deploy@v1
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-#          CLUSTER: dev-gcp
-#          RESOURCE: deploy/.nais/nais.yaml
-#          VARS: deploy/.nais/main.yaml
-#          IMAGE: ${{ needs.prepare_deploy.outputs.image }}
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: deploy/.nais/nais.yaml
+          VARS: deploy/.nais/main.yaml
+          IMAGE: ${{ needs.prepare_deploy.outputs.image }}
