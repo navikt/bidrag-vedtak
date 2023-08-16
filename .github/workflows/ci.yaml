@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: deploy
+    needs: build
     steps:
       - uses: actions/checkout@v3
       - name: Push latest image as tag
@@ -138,7 +138,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ needs.deploy.outputs.version }}
+          custom_tag: ${{ needs.build.outputs.version }}
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
