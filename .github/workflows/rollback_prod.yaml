@@ -37,10 +37,10 @@ jobs:
          INPUT_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
           echo "NULL";
-          echo "DEPLOY_TAG=$INPUT_TAG" >> $GITHUB_OUTPUT
+          echo "DEPLOY_TAG=$(git tag -l | sort -V | tail -2 | head -1)" >> $GITHUB_OUTPUT          
          else 
           echo "Not NULL"; 
-          echo "DEPLOY_TAG=$(git tag -l | sort -V | tail -2 | head -1)" >> $GITHUB_OUTPUT
+          echo "DEPLOY_TAG=$INPUT_TAG" >> $GITHUB_OUTPUT
          fi
          echo IMAGE=${{ steps.login.outputs.registry }}/${REPO_NAME}:${DEPLOY_TAG}
     outputs:
