@@ -35,7 +35,7 @@ jobs:
         run: |
          git fetch --all --tags
          echo ${GITHUB_EVENT_NAME}
-         REPO_NAME=${GITHUB_REPOSITORY}
+         REPO_NAME=${GITHUB_REPOSITORY/$GITHUB_REPOSITORY_OWNER\//}
          DEPLOY_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
           echo "NULL";
@@ -67,4 +67,4 @@ jobs:
 #          CLUSTER: dev-gcp
 #          RESOURCE: deploy/.nais/nais.yaml
 #          VARS: deploy/.nais/main.yaml
-#          IMAGE: ${{ needs.build.outputs.image }}
+#          IMAGE: ${{ needs.prepare_deploy.outputs.image }}

@@ -2,7 +2,7 @@ name: Deploy to dev
 on:
   push:
     branches:
-      - 'test'
+      - '**'
 
 env:
   GITHUB_USERNAME: x-access-token
@@ -17,6 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+        with:
+          filterOutClosed: true
+          filterOutDraft: true
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: DRAFT_PR
+        with:
+          filterOutClosed: true
+          filterOutDraft: false
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -37,6 +47,8 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       version: ${{ steps.docker-push.outputs.new_version }}
+      is_open_PR: ${{ steps.PR.outputs.number }} != 'null'
+      is_draft_PR: ${{ steps.DRAFT_PR.outputs.number }} != 'null'
 
   run-tests:
     runs-on: ubuntu-latest
@@ -61,7 +73,7 @@ jobs:
   deploy-main:
     runs-on: ubuntu-latest
     name: Deploy main
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    if: needs.build.outputs.is_open_PR || github.ref == 'refs/heads/main'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -79,7 +91,7 @@ jobs:
   deploy-syntetisk:
     runs-on: ubuntu-latest
     name: Deploy syntetisk
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    if: needs.build.outputs.is_open_PR || github.ref == 'refs/heads/main'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -97,7 +109,7 @@ jobs:
   deploy-feature:
     runs-on: ubuntu-latest
     name: Deploy feature
-    if: github.ref == 'refs/heads/main' || github.event_name != 'pull_request' || github.event.pull_request.draft == true
+    if: github.ref == 'refs/heads/main' || needs.build.outputs.is_open_PR == false && needs.build.outputs.is_draft_PR
     needs: build
 
     steps:
