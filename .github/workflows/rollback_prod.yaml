@@ -47,7 +47,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy docker image to prod
-    needs: prepare
+    needs: prepare_deploy
 
     steps:
       - uses: actions/checkout@v3
