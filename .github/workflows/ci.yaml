@@ -103,6 +103,9 @@ jobs:
           RESOURCE: deploy/.nais/nais.yaml
           VARS: deploy/.nais/syntetisk.yaml
           IMAGE: ${{ needs.build.outputs.image }}
+    outputs:
+      image: ${{ needs.build.outputs.image }}
+      version: ${{ needs.build.outputs.version }}
 
   deploy-feature:
     runs-on: ubuntu-latest
@@ -127,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [build, deploy-syntetisk]
+    needs: deploy-syntetisk
     steps:
       - uses: actions/checkout@v3
       - name: Push latest image as tag
@@ -138,8 +141,8 @@ jobs:
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ needs.build.outputs.version }}
-          name: Release test ${{ needs.build.outputs.version }}
+          tag: ${{ needs.deploy-syntetisk.outputs.version }}
+          name: Release test ${{ needs.deploy-syntetisk.outputs.version }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
   run_cucumber_tests-main:
