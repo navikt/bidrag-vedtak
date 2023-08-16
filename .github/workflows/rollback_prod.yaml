@@ -34,7 +34,7 @@ jobs:
         name: Find deploy version
         run: |
          REPO_NAME=${GITHUB_REPOSITORY}
-         INPUT_TAG = ${{ github.event.inputs.deploy_tag }}
+         INPUT_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
           echo "NULL";
           echo "DEPLOY_TAG=$INPUT_TAG" >> $GITHUB_OUTPUT
