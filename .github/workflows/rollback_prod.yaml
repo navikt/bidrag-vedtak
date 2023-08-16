@@ -39,8 +39,6 @@ jobs:
          DEPLOY_TAG=${{ github.event.inputs.deploy_tag }}
          if [ -z "$INPUT_TAG" ]; then 
           echo "NULL";
-          echo $(git tag -l | sort -V | tail -2 | head -1)
-          echo $(git tag -l | sort -V | tail -2)
           DEPLOY_TAG=$(git tag -l | sort -V | tail -2 | head -1)
          fi
          echo "IMAGE=${{ steps.login.outputs.registry }}/$REPO_NAME:$DEPLOY_TAG" >> $GITHUB_OUTPUT
@@ -61,8 +59,8 @@ jobs:
       - id: bash
         name: BASH
         run: |
-          echo ${{ needs.prepare.outputs.image }}
-          echo ${{ needs.prepare.outputs.version }}
+          echo ${{ needs.prepare_deploy.outputs.image }}
+          echo ${{ needs.prepare_deploy.outputs.version }}
 #      - uses: nais/deploy/actions/deploy@v1
 #        env:
 #          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
