@@ -47,7 +47,11 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       - run: |
           echo PR ${{ steps.PR.outputs.number }}
+          echo PR ${{ steps.PR.outputs.number }} == 'null'
+          echo PR ${{ steps.PR.outputs.number }} == ''
           echo PR ${{ steps.DRAFT_PR.outputs.number }}
+          echo PR ${{ steps.DRAFT_PR.outputs.number }} == 'null'
+          echo PR ${{ steps.DRAFT_PR.outputs.number }} == ''
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
