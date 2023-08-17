@@ -50,6 +50,10 @@ jobs:
           echo ${{ steps.DRAFT_PR.outputs.number !='' }}
           echo ${{ steps.PR.outputs.number != 'null' }}
           echo ${{ steps.DRAFT_PR.outputs.number != 'null' }}
+          echo ${{ steps.PR.outputs.number == '0' }}
+          echo ${{ steps.DRAFT_PR.outputs.number == '0' }}
+          echo ${{ steps.PR.outputs.number}}
+          echo ${{ steps.DRAFT_PR.outputs.number }}
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
