@@ -45,6 +45,11 @@ jobs:
 #          team: bidrag
 #          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 #          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      - run: |
+          echo ${{ steps.PR.outputs.number !='' }}
+          echo ${{ steps.DRAFT_PR.outputs.number !='' }}
+          echo ${{ steps.PR.outputs.number != 'null' }}
+          echo ${{ steps.DRAFT_PR.outputs.number != 'null' }}
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
