@@ -45,6 +45,9 @@ jobs:
           team: bidrag
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      - run: |
+          echo PR ${{ steps.PR.outputs.number }}
+          echo PR ${{ steps.DRAFT_PR.outputs.number }}
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
@@ -72,7 +75,7 @@ jobs:
   deploy-main:
     runs-on: ubuntu-latest
     name: Deploy main
-    if: needs.build.outputs.is_open_PR || github.ref == 'refs/heads/main'
+    if: needs.build.outputs.is_open_PR
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -90,7 +93,7 @@ jobs:
   deploy-syntetisk:
     runs-on: ubuntu-latest
     name: Deploy syntetisk
-    if: needs.build.outputs.is_open_PR || github.ref == 'refs/heads/main'
+    if: needs.build.outputs.is_open_PR
     needs: build
     steps:
       - uses: actions/checkout@v3
