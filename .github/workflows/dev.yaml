@@ -57,8 +57,8 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
-      is_open_PR: ${{ steps.PR.outputs.number !='' }}
-      is_draft_PR: ${{ steps.DRAFT_PR.outputs.number !='' }}
+      is_open_PR: ${{ steps.PR.outputs.number != '0' }}
+      is_draft_PR: ${{ steps.DRAFT_PR.outputs.number != '0' }}
   run-tests:
     runs-on: ubuntu-latest
     name: Run tests
