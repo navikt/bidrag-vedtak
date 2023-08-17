@@ -2,7 +2,7 @@ name: Deploy to dev
 on:
   push:
     branches:
-      - '**'
+      - '!main'
 
 env:
   GITHUB_USERNAME: x-access-token
