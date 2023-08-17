@@ -28,30 +28,30 @@ jobs:
         with:
           filterOutClosed: true
           filterOutDraft: false
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - run: mvn -Dmaven.test.skip=true -B -e --settings .m2/maven-settings.xml clean install
-      - uses: nais/docker-build-push@v0
-        id: docker-push
-        with:
-          team: bidrag
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+#      - uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#      - uses: actions/cache@v3
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
+#      - run: mvn -Dmaven.test.skip=true -B -e --settings .m2/maven-settings.xml clean install
+#      - uses: nais/docker-build-push@v0
+#        id: docker-push
+#        with:
+#          team: bidrag
+#          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+#          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       - run: |
           echo PR ${{ steps.PR.outputs.number }}
-          echo PR $(${{ steps.PR.outputs.number }} == 'null')
-          echo PR $(${{ steps.PR.outputs.number }} == '')
+          echo PR $(${{ steps.PR.outputs.number }}=='null')
+          echo PR $(${{ steps.PR.outputs.number }}=='')
           echo PR $(${{ steps.DRAFT_PR.outputs.number }})
-          echo PR $(${{ steps.DRAFT_PR.outputs.number }} == 'null')
-          echo PR $(${{ steps.DRAFT_PR.outputs.number }} == '')
+          echo PR $(${{ steps.DRAFT_PR.outputs.number }}=='null')
+          echo PR $(${{ steps.DRAFT_PR.outputs.number }}=='')
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
