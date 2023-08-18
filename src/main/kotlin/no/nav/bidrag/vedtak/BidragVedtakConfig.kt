@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
+import no.nav.bidrag.commons.web.DefaultCorsFilter
 import no.nav.bidrag.commons.web.UserMdcFilter
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
@@ -37,7 +38,7 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     type = SecuritySchemeType.HTTP
 )
 @EnableAspectJAutoProxy
-@Import(CorrelationIdFilter::class, UserMdcFilter::class)
+@Import(CorrelationIdFilter::class, UserMdcFilter::class, DefaultCorsFilter::class)
 class BidragVedtakConfig {
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect {
