@@ -34,6 +34,9 @@ azureAccessInbound:
   - application: bidrag-simuler-beregning
     namespace: bidrag
     cluster: dev-gcp
+  - application: bidrag-ui
+    namespace: bidrag
+    cluster: dev-fss
 spec:
   replicas:
     min: 2
