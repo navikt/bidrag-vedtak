@@ -1,9 +1,9 @@
 name: Deploy to dev
 on:
+  pull_request:
   push:
     branches:
-      - '!main'
-      - '**'
+      - 'main'
 
 env:
   GITHUB_USERNAME: x-access-token
@@ -14,21 +14,10 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-      pull-requests: "read"
     name: Build with maven and docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: 8BitJonny/gh-get-current-pr@2.2.0
-        id: PR
-        with:
-          filterOutClosed: true
-          filterOutDraft: true
-      - uses: 8BitJonny/gh-get-current-pr@2.2.0
-        id: DRAFT_PR
-        with:
-          filterOutClosed: true
-          filterOutDraft: false
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -49,8 +38,6 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
       tag: ${{ steps.docker-push.outputs.tag }}
-      is_open_PR: ${{ steps.PR.outputs.number != '0' }}
-      is_draft_PR: ${{ steps.DRAFT_PR.outputs.number != '0' }}
 
   run-tests:
     runs-on: ubuntu-latest
@@ -73,7 +60,6 @@ jobs:
   deploy-main:
     runs-on: ubuntu-latest
     name: Deploy main
-    if: needs.build.outputs.is_open_PR == 'true'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -91,7 +77,6 @@ jobs:
   deploy-syntetisk:
     runs-on: ubuntu-latest
     name: Deploy syntetisk
-    if: needs.build.outputs.is_open_PR == 'true'
     needs: build
     steps:
       - uses: actions/checkout@v3
@@ -106,25 +91,6 @@ jobs:
           VARS: deploy/.nais/syntetisk.yaml
           IMAGE: ${{ needs.build.outputs.image }}
 
-  deploy-feature:
-    runs-on: ubuntu-latest
-    name: Deploy feature
-#    if: github.ref == 'refs/heads/main' || needs.build.outputs.is_open_PR == false && needs.build.outputs.is_draft_PR
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          path: deploy
-      - name: Deploy to dev-gcp for feature.yaml
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: deploy/.nais/nais.yaml
-          VARS: deploy/.nais/feature.yaml
-          IMAGE: ${{ needs.build.outputs.image }}
-
   run_cucumber_tests-main:
     runs-on: ubuntu-latest
     name: Run cucumber tests main
@@ -133,27 +99,6 @@ jobs:
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
       INGRESS_VEDTAK: https://bidrag-vedtak.intern.dev.nav.no
-
-    steps:
-      - run: |
-          curl -H "Content-Type: application/json" -i \
-                -H "Authorization: Basic ${{ secrets.BIDRAG_CUCUMBER_CLOUD_AUTH }}" \
-               --request POST \
-               --data '{"noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
-                   "${{ env.INGRESS_VEDTAK }}@tag:bidrag-vedtak"
-                 ]}' \
-               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
-          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)
-
-
-  run_cucumber_tests-feature:
-    runs-on: ubuntu-latest
-    name: Run cucumber tests feature
-    needs: deploy-feature
-
-    env:
-      INGRESS_CUCUMBER: https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no
-      INGRESS_VEDTAK: https://bidrag-vedtak-feature.intern.dev.nav.no
 
     steps:
       - run: |
