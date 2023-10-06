@@ -1,5 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.MeterRegistry
+import no.nav.bidrag.commons.security.utils.TokenUtils
 import no.nav.bidrag.domain.enums.BehandlingsrefKilde
 import no.nav.bidrag.domain.enums.EngangsbelopType
 import no.nav.bidrag.domain.enums.Innkreving
@@ -40,10 +43,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
-@Transactional
-class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService) {
 
+@Service
+
+@Transactional
+class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
+
+    private val OPPRETT_VEDTAK_COUNTER_NAME = "opprett_vedtak"
+    private val OPPDATER_VEDTAK_COUNTER_NAME = "oppdater_vedtak"
     // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
     val periodeIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
     val engangsbelopIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
@@ -74,6 +81,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
         }
 
+        measureVedtak(OPPRETT_VEDTAK_COUNTER_NAME, vedtakRequest)
         return opprettetVedtak.id
     }
 
@@ -270,6 +278,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             SECURE_LOGGER.error("$feilmelding $vedtakRequest")
             throw VedtaksdataMatcherIkkeException(feilmelding)
         }
+        measureVedtak(OPPDATER_VEDTAK_COUNTER_NAME, vedtakRequest)
 
         return vedtakId
     }
@@ -631,6 +640,30 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 persistenceService.opprettEngangsbelopGrunnlag(engangsbelopGrunnlagBo)
             }
         }
+    }
+
+    fun measureVedtak(metrikkNavn: String, enhetId: String, vedtakType: VedtakType, stonadType: StonadType?, engangsbelopType: EngangsbelopType?){
+        Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløp type")
+            .tag("enhet", enhetId).tag("vedtak_type", vedtakType.name)
+            .tag("opprettet_av_app", TokenUtils.hentApplikasjonsnavn() ?: "UKJENT")
+            .tag("stonad_type", stonadType?.name ?: "NONE")
+            .tag("engangsbelop_type", engangsbelopType?.name ?: "NONE")
+            .register(meterRegistry).increment()
+    }
+    fun measureVedtak(navn: String, vedtakRequest: OpprettVedtakRequestDto) {
+        try {
+            val enhetId = vedtakRequest.enhetId
+            val vedtakType = vedtakRequest.type
+            vedtakRequest.stonadsendringListe?.forEach {
+                measureVedtak(navn, enhetId, vedtakType, it.type, null)
+            }
+            vedtakRequest.engangsbelopListe?.forEach {
+                measureVedtak(navn, enhetId, vedtakType, null, it.type)
+            }
+        } catch (e: Exception){
+            LOGGER.error("Det skjedde en feil ved telling av metrikker", e)
+        }
+
     }
 
     companion object {
