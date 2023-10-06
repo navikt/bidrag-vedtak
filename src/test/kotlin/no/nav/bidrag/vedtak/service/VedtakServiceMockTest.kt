@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.bidrag.domain.enums.EngangsbelopType
 import no.nav.bidrag.domain.enums.VedtakKilde
 import no.nav.bidrag.domain.enums.VedtakType
@@ -43,6 +44,9 @@ class VedtakServiceMockTest {
 
     @Mock
     private lateinit var hendelserService: HendelserService
+
+    @Mock
+    private lateinit var meterRegistry: MeterRegistry
 
     @Mock
     private lateinit var persistenceServiceMock: PersistenceService
