@@ -9,18 +9,18 @@ import no.nav.bidrag.domain.enums.Innkreving
 import no.nav.bidrag.domain.enums.StonadType
 import no.nav.bidrag.domain.enums.VedtakKilde
 import no.nav.bidrag.domain.enums.VedtakType
-import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
-import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbelopDto
-import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
-import no.nav.bidrag.transport.behandling.vedtak.response.StonadsendringDto
-import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
-import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbelopRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStonadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
+import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbelopDto
+import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
+import no.nav.bidrag.transport.behandling.vedtak.response.StonadsendringDto
+import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
+import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -43,14 +43,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-
 @Service
-
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
 
     private val OPPRETT_VEDTAK_COUNTER_NAME = "opprett_vedtak"
     private val OPPDATER_VEDTAK_COUNTER_NAME = "oppdater_vedtak"
+
     // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
     val periodeIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
     val engangsbelopIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
@@ -642,7 +641,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
     }
 
-    fun measureVedtak(metrikkNavn: String, enhetId: String, vedtakType: VedtakType, stonadType: StonadType?, engangsbelopType: EngangsbelopType?){
+    fun measureVedtak(metrikkNavn: String, enhetId: String, vedtakType: VedtakType, stonadType: StonadType?, engangsbelopType: EngangsbelopType?) {
         Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløp type")
             .tag("enhet", enhetId).tag("vedtak_type", vedtakType.name)
             .tag("opprettet_av_app", TokenUtils.hentApplikasjonsnavn() ?: "UKJENT")
@@ -660,10 +659,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             vedtakRequest.engangsbelopListe?.forEach {
                 measureVedtak(navn, enhetId, vedtakType, null, it.type)
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             LOGGER.error("Det skjedde en feil ved telling av metrikker", e)
         }
-
     }
 
     companion object {
