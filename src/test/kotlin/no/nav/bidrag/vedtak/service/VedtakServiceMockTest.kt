@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.service
 
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.bidrag.domain.enums.EngangsbelopType
 import no.nav.bidrag.domain.enums.VedtakKilde
 import no.nav.bidrag.domain.enums.VedtakType
@@ -27,11 +28,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.Executable
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
 
@@ -45,8 +42,8 @@ class VedtakServiceMockTest {
     @Mock
     private lateinit var hendelserService: HendelserService
 
-    @Mock
-    private lateinit var meterRegistry: MeterRegistry
+    @Spy
+    private var meterRegistry: MeterRegistry = SimpleMeterRegistry()
 
     @Mock
     private lateinit var persistenceServiceMock: PersistenceService
