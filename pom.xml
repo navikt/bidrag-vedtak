@@ -27,14 +27,14 @@
     <!-- dependencies -->
     <bidrag-commons.version>20230516121246_1e60457</bidrag-commons.version>
     <bidrag-commons-test.version>1.20230511093912_dc35d81</bidrag-commons-test.version>
-    <bidrag-transport.version>20230817151136_a3b59e5</bidrag-transport.version>
+    <bidrag-transport.version>20230921123916_f67a438</bidrag-transport.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>4.1.0</mockito-kotlin.version>
     <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
     <springframework-cloud.version>4.0.2</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.11.0</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.15.2</jackson-datatype-jsr310.version>
-    <springdoc-openapi-ui.version>2.1.0</springdoc-openapi-ui.version>
+    <springdoc-openapi-ui.version>2.2.0</springdoc-openapi-ui.version>
   </properties>
 
   <dependencyManagement>

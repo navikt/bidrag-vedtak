@@ -1,7 +1,6 @@
 name: bidrag-vedtak
 ingresses:
   - https://bidrag-vedtak.intern.dev.nav.no
-  - https://bidrag-vedtak.dev.intern.nav.no
 dbname: bidrag-vedtak-main
 kafka:
   pool: nav-dev
