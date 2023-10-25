@@ -28,6 +28,7 @@ jobs:
             ${{ runner.os }}-maven-
       - run: mvn -Dmaven.test.skip=true -B -e clean install
       - uses: nais/docker-build-push@v0
+        if: ${{ github.actor != 'dependabot[bot]' }}
         id: docker-push
         with:
           team: bidrag
