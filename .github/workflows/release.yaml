@@ -10,7 +10,7 @@ jobs:
   build-deploy:
     name: "Build and deploy to prod"
     permissions:
-      contents: "read"
+      contents: "write"
       id-token: "write"
     uses: navikt/bidrag-workflow/.github/workflows/release.yaml@main
     secrets: inherit
