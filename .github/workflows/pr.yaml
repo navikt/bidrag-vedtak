@@ -8,20 +8,37 @@ env:
 
 jobs:
   build-deploy:
-    name: "Build and deploy to main"
+    name: "Build and deploy"
     permissions:
       contents: "read"
       id-token: "write"
     uses: navikt/bidrag-workflow/.github/workflows/deploy.yaml@main
     secrets: inherit
     with:
-      nais_variabler_filnavn: main.yaml
+      nais_variabler_filnavn: syntetisk.yaml
+
+  deploy_main:
+    runs-on: ubuntu-latest
+    name: Deploy main
+    if: github.actor != 'dependabot[bot]'
+    needs: build-deploy
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to dev-gcp
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais.yaml
+          VARS: .nais/main.yaml
+          IMAGE: ${{ needs.build_and_deploy.outputs.image }}
 
   run_cucumber_tests-main:
     runs-on: ubuntu-latest
     name: Run cucumber tests main
     needs: build-deploy
-    if: ${{ always() && needs.build_and_deploy.outputs.deploy_suksess == 'true' }}
+    if: ${{ always() && needs.build-deploy.outputs.deploy_suksess == 'true' }}
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
