@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Run cucumber tests main
     needs: build-deploy
+    if: ${{ always() && needs.build-deploy.outputs.deploy_success == 'true' }}
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
