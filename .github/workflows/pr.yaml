@@ -15,13 +15,13 @@ jobs:
     uses: navikt/bidrag-workflow/.github/workflows/deploy.yaml@main
     secrets: inherit
     with:
-      nais_vars_file_name: main
+      nais_variabler_filnavn: main.yaml
 
   run_cucumber_tests-main:
     runs-on: ubuntu-latest
     name: Run cucumber tests main
     needs: build-deploy
-    if: ${{ always() && needs.build-deploy.outputs.deploy_success == 'true' }}
+    if: ${{ always() && needs.build_and_deploy.outputs.deploy_suksess == 'true' }}
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
