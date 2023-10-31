@@ -42,7 +42,7 @@ jobs:
 
     env:
       INGRESS_CUCUMBER: https://bidrag-cucumber-cloud.ekstern.dev.nav.no
-      INGRESS_VEDTAK: https://bidrag-vedtak.intern.dev.nav.no
+      INGRESS_VEDTAK: https://bidrag-vedtak-syntetisk.intern.dev.nav.no
 
     steps:
       - run: |
