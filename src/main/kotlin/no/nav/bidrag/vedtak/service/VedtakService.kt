@@ -3,45 +3,51 @@ package no.nav.bidrag.vedtak.service
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.bidrag.commons.security.utils.TokenUtils
-import no.nav.bidrag.domain.enums.BehandlingsrefKilde
-import no.nav.bidrag.domain.enums.EngangsbelopType
-import no.nav.bidrag.domain.enums.Innkreving
-import no.nav.bidrag.domain.enums.StonadType
-import no.nav.bidrag.domain.enums.VedtakKilde
-import no.nav.bidrag.domain.enums.VedtakType
+import no.nav.bidrag.domene.enums.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.Beslutningstype
+import no.nav.bidrag.domene.enums.Engangsbeløptype
+import no.nav.bidrag.domene.enums.Innkrevingstype
+import no.nav.bidrag.domene.enums.Stønadstype
+import no.nav.bidrag.domene.enums.Vedtakskilde
+import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.ident.Personident
+import no.nav.bidrag.domene.streng.Enhetsnummer
+import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStonadsendringRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakPeriodeRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
-import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbelopDto
+import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
-import no.nav.bidrag.transport.behandling.vedtak.response.StonadsendringDto
+import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
-import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
+import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
-import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
-import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlagPK
+import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
+import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
-import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
+import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
-import no.nav.bidrag.vedtak.persistence.entity.toEngangsbelopEntity
+import no.nav.bidrag.vedtak.persistence.entity.toEngangsbeløpEntity
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagDto
 import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeEntity
-import no.nav.bidrag.vedtak.persistence.entity.toStonadsendringEntity
+import no.nav.bidrag.vedtak.persistence.entity.toStønadsendringEntity
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakEntity
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 @Transactional
@@ -52,7 +58,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
     val periodeIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
-    val engangsbelopIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
+    val engangsbeløpIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
@@ -68,15 +74,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         // Stønadsendring
-        vedtakRequest.stonadsendringListe?.forEach { opprettStonadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
+        vedtakRequest.stønadsendringListe?.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
-        // Engangsbelop
-        vedtakRequest.engangsbelopListe?.forEach { opprettEngangsbelop(it, opprettetVedtak, grunnlagIdRefMap) }
+        // Engangsbeløp
+        vedtakRequest.engangsbeløpListe?.forEach { opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap) }
 
         // Behandlingsreferanse
         vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
-        if (vedtakRequest.stonadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbelopListe?.isNotEmpty() == true) {
+        if (vedtakRequest.stønadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbeløpListe?.isNotEmpty() == true) {
             hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
         }
 
@@ -89,38 +95,38 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         persistenceService.opprettGrunnlag(grunnlagRequest.toGrunnlagEntity(vedtak))
 
     // Opprett stønadsendring
-    private fun opprettStonadsendring(stonadsendringRequest: OpprettStonadsendringRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) {
-        val opprettetStonadsendring = persistenceService.opprettStonadsendring(stonadsendringRequest.toStonadsendringEntity(vedtak))
+    private fun opprettStønadsendring(stønadsendringRequest: OpprettStønadsendringRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) {
+        val opprettetStønadsendring = persistenceService.opprettStønadsendring(stønadsendringRequest.toStønadsendringEntity(vedtak))
 
         // Periode
-        stonadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStonadsendring, grunnlagIdRefMap) }
+        stønadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStønadsendring, grunnlagIdRefMap) }
     }
 
-    // Opprett Engangsbelop
-    private fun opprettEngangsbelop(
-        engangsbelopRequest: OpprettEngangsbelopRequestDto,
+    // Opprett Engangsbeløp
+    private fun opprettEngangsbeløp(
+        engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
         vedtak: Vedtak,
         grunnlagIdRefMap: Map<String, Int>
-    ): Engangsbelop {
-        val opprettetEngangsbelop = persistenceService.opprettEngangsbelop(engangsbelopRequest.toEngangsbelopEntity(vedtak))
+    ): Engangsbeløp {
+        val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak))
 
-        // EngangsbelopGrunnlag
-        engangsbelopRequest.grunnlagReferanseListe.forEach {
+        // EngangsbeløpGrunnlag
+        engangsbeløpRequest.grunnlagReferanseListe.forEach {
             val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
             if (grunnlagId == 0) {
                 val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
                 LOGGER.error(feilmelding)
                 throw IllegalArgumentException(feilmelding)
             } else {
-                persistenceService.opprettEngangsbelopGrunnlag(EngangsbelopGrunnlagBo(opprettetEngangsbelop.id, grunnlagId))
+                persistenceService.opprettEngangsbeløpGrunnlag(EngangsbeløpGrunnlagBo(opprettetEngangsbeløp.id, grunnlagId))
             }
         }
-        return opprettetEngangsbelop
+        return opprettetEngangsbeløp
     }
 
     // Opprett periode
-    private fun opprettPeriode(periodeRequest: OpprettVedtakPeriodeRequestDto, stonadsendring: Stonadsendring, grunnlagIdRefMap: Map<String, Int>) {
-        val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeEntity(stonadsendring))
+    private fun opprettPeriode(periodeRequest: OpprettPeriodeRequestDto, stønadsendring: Stønadsendring, grunnlagIdRefMap: Map<String, Int>) {
+        val opprettetPeriode = persistenceService.opprettPeriode(periodeRequest.toPeriodeEntity(stønadsendring))
 
         // PeriodeGrunnlag
         periodeRequest.grunnlagReferanseListe.forEach {
@@ -153,8 +159,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         grunnlagListe.forEach {
             grunnlagDtoListe.add(it.toGrunnlagDto())
         }
-        val stonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtak.id)
-        val engangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtak.id)
+        val stønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id)
+        val engangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtak.id)
         val behandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id)
         val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
         behandlingsreferanseListe.forEach {
@@ -164,42 +170,50 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         return VedtakDto(
-            kilde = VedtakKilde.valueOf(vedtak.kilde),
-            type = VedtakType.valueOf(vedtak.type),
+            kilde = Vedtakskilde.valueOf(vedtak.kilde),
+            type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
             opprettetAvNavn = vedtak.opprettetAvNavn,
-            vedtakTidspunkt = vedtak.vedtakTidspunkt,
-            enhetId = vedtak.enhetId,
+            vedtakstidspunkt = vedtak.vedtakstidspunkt,
+            enhetsnummer = Enhetsnummer(vedtak.enhetsnummer),
             opprettetTidspunkt = vedtak.opprettetTimestamp,
-            utsattTilDato = vedtak.utsattTilDato,
+            innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
+            fastsattILand = vedtak.fastsattILand,
             grunnlagListe = grunnlagDtoListe,
-            stonadsendringListe = hentStonadsendringerTilVedtak(stonadsendringListe),
-            engangsbelopListe = hentEngangsbelopTilVedtak(engangsbelopListe),
+            stønadsendringListe = hentStønadsendringerTilVedtak(stønadsendringListe),
+            engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
             behandlingsreferanseListe = behandlingsreferanseResponseListe
         )
     }
 
-    private fun hentStonadsendringerTilVedtak(stonadsendringListe: List<Stonadsendring>): List<StonadsendringDto> {
-        val stonadsendringDtoListe = ArrayList<StonadsendringDto>()
-        stonadsendringListe.forEach {
-            val periodeListe = persistenceService.hentAllePerioderForStonadsendring(it.id)
-            stonadsendringDtoListe.add(
-                StonadsendringDto(
-                    type = StonadType.valueOf(it.type),
-                    sakId = it.sakId,
-                    skyldnerId = it.skyldnerId,
-                    kravhaverId = it.kravhaverId,
-                    mottakerId = it.mottakerId,
-                    indeksreguleringAar = it.indeksreguleringAar,
-                    innkreving = Innkreving.valueOf(it.innkreving),
-                    endring = it.endring,
-                    omgjorVedtakId = it.omgjorVedtakId,
+    private fun hentStønadsendringerTilVedtak(stønadsendringListe: List<Stønadsendring>): List<StønadsendringDto> {
+        val stønadsendringDtoListe = ArrayList<StønadsendringDto>()
+        stønadsendringListe.forEach {
+            val grunnlagReferanseResponseListe = ArrayList<String>()
+            val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(it.id)
+            stønadsendringGrunnlagListe.forEach {
+                val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+                grunnlagReferanseResponseListe.add(grunnlag.referanse)
+            }
+            val periodeListe = persistenceService.hentAllePerioderForStønadsendring(it.id)
+            stønadsendringDtoListe.add(
+                StønadsendringDto(
+                    type = Stønadstype.valueOf(it.type),
+                    sak = Saksnummer(it.sak),
+                    skyldner = Personident(it.skyldner),
+                    kravhaver = Personident(it.kravhaver),
+                    mottaker = Personident(it.mottaker),
+                    førsteIndeksreguleringsår = it.førsteIndeksreguleringsår,
+                    innkreving = Innkrevingstype.valueOf(it.innkreving),
+                    beslutning = Beslutningstype.valueOf(it.beslutning),
+                    omgjørVedtakId = it.omgjørVedtakId,
                     eksternReferanse = it.eksternReferanse,
+                    grunnlagReferanseListe = grunnlagReferanseResponseListe,
                     periodeListe = hentPerioderTilVedtak(periodeListe)
                 )
             )
         }
-        return stonadsendringDtoListe
+        return stønadsendringDtoListe
     }
 
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
@@ -213,9 +227,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             }
             periodeResponseListe.add(
                 VedtakPeriodeDto(
-                    fomDato = dto.fomDato,
-                    tilDato = dto.tilDato,
-                    belop = dto.belop,
+                    periode = ÅrMånedsperiode(dto.fomDato, dto.tilDato),
+                    beløp = dto.beløp,
                     valutakode = dto.valutakode?.trimEnd(),
                     resultatkode = dto.resultatkode,
                     delytelseId = dto.delytelseId,
@@ -226,28 +239,28 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return periodeResponseListe
     }
 
-    private fun hentEngangsbelopTilVedtak(engangsbelopListe: List<Engangsbelop>): List<EngangsbelopDto> {
-        val engangsbelopResponseListe = ArrayList<EngangsbelopDto>()
-        engangsbelopListe.forEach { dto ->
+    private fun hentEngangsbeløpTilVedtak(engangsbeløpListe: List<Engangsbeløp>): List<EngangsbeløpDto> {
+        val engangsbeløpResponseListe = ArrayList<EngangsbeløpDto>()
+        engangsbeløpListe.forEach { dto ->
             val grunnlagReferanseResponseListe = ArrayList<String>()
-            val engangsbelopGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbelop(dto.id)
-            engangsbelopGrunnlagListe.forEach {
+            val engangsbeløpGrunnlagListe = persistenceService.hentAlleGrunnlagForEngangsbeløp(dto.id)
+            engangsbeløpGrunnlagListe.forEach {
                 val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
                 grunnlagReferanseResponseListe.add(grunnlag.referanse)
             }
-            engangsbelopResponseListe.add(
-                EngangsbelopDto(
-                    type = EngangsbelopType.valueOf(dto.type),
-                    sakId = dto.sakId,
-                    skyldnerId = dto.skyldnerId,
-                    kravhaverId = dto.kravhaverId,
-                    mottakerId = dto.mottakerId,
-                    belop = dto.belop,
+            engangsbeløpResponseListe.add(
+                EngangsbeløpDto(
+                    type = Engangsbeløptype.valueOf(dto.type),
+                    sak = Saksnummer(dto.sak),
+                    skyldner = Personident(dto.skyldner),
+                    kravhaver = Personident(dto.kravhaver),
+                    mottaker = Personident(dto.mottaker),
+                    beløp = dto.beløp,
                     valutakode = dto.valutakode,
                     resultatkode = dto.resultatkode,
-                    innkreving = Innkreving.valueOf(dto.innkreving),
-                    endring = dto.endring,
-                    omgjorVedtakId = dto.omgjorVedtakId,
+                    innkreving = Innkrevingstype.valueOf(dto.innkreving),
+                    beslutning = Beslutningstype.valueOf(dto.beslutning),
+                    omgjørVedtakId = dto.omgjørVedtakId,
                     referanse = dto.referanse,
                     delytelseId = dto.delytelseId,
                     eksternReferanse = dto.eksternReferanse,
@@ -255,7 +268,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 )
             )
         }
-        return engangsbelopResponseListe
+        return engangsbeløpResponseListe
     }
 
     fun oppdaterVedtak(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Int {
@@ -284,8 +297,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
         return vedtakMatcher(vedtakId, vedtakRequest) &&
-            stonadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
-            engangsbelopMatcher(vedtakId, vedtakRequest) &&
+            stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
+            engangsbeløpMatcher(vedtakId, vedtakRequest) &&
             behandlingsreferanserMatcher(vedtakId, vedtakRequest)
     }
 
@@ -295,77 +308,78 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
             vedtakRequest.opprettetAvNavn == eksisterendeVedtak.opprettetAvNavn &&
-            vedtakRequest.vedtakTidspunkt.year == eksisterendeVedtak.vedtakTidspunkt.year &&
-            vedtakRequest.vedtakTidspunkt.month == eksisterendeVedtak.vedtakTidspunkt.month &&
-            vedtakRequest.vedtakTidspunkt.dayOfMonth == eksisterendeVedtak.vedtakTidspunkt.dayOfMonth &&
-            vedtakRequest.vedtakTidspunkt.hour == eksisterendeVedtak.vedtakTidspunkt.hour &&
-            vedtakRequest.vedtakTidspunkt.minute == eksisterendeVedtak.vedtakTidspunkt.minute &&
-            vedtakRequest.vedtakTidspunkt.second == eksisterendeVedtak.vedtakTidspunkt.second &&
-            vedtakRequest.enhetId == eksisterendeVedtak.enhetId &&
-            vedtakRequest.utsattTilDato == eksisterendeVedtak.utsattTilDato
+            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
+            vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
+            vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
+            vedtakRequest.vedtakstidspunkt.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
+            vedtakRequest.vedtakstidspunkt.minute == eksisterendeVedtak.vedtakstidspunkt.minute &&
+            vedtakRequest.vedtakstidspunkt.second == eksisterendeVedtak.vedtakstidspunkt.second &&
+            vedtakRequest.enhetsnummer.toString() == eksisterendeVedtak.enhetsnummer &&
+            vedtakRequest.innkrevingUtsattTilDato == eksisterendeVedtak.innkrevingUtsattTilDato &&
+            vedtakRequest.fastsattILand == eksisterendeVedtak.fastsattILand
     }
 
-    private fun stonadsendringerOgPerioderMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
+    private fun stønadsendringerOgPerioderMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
         // Sorterer begge listene likt
-        val eksisterendeStonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakId)
-            .sortedWith(compareBy({ it.type }, { it.skyldnerId }, { it.kravhaverId }, { it.sakId }))
+        val eksisterendeStønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtakId)
+            .sortedWith(compareBy({ it.type }, { it.skyldner }, { it.kravhaver }, { it.sak }))
 
-        // vedtakRequest.stonadsendringListe kan være null, eksisterendeStonadsendringListe kan ikke være null,
+        // vedtakRequest.stønadsendringListe kan være null, eksisterendeStønadsendringListe kan ikke være null,
         // bare emptyList
-        if (vedtakRequest.stonadsendringListe.isNullOrEmpty()) {
-            return eksisterendeStonadsendringListe.isEmpty()
+        if (vedtakRequest.stønadsendringListe.isNullOrEmpty()) {
+            return eksisterendeStønadsendringListe.isEmpty()
         }
 
         // Sjekker om det er lagret like mange stønadsendringer som det ligger i oppdaterVedtak-requesten
-        if (vedtakRequest.stonadsendringListe?.size != eksisterendeStonadsendringListe.size) {
+        if (vedtakRequest.stønadsendringListe?.size != eksisterendeStønadsendringListe.size) {
             SECURE_LOGGER.error("Det er ulikt antall stønadsendringer i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
             return false
         }
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall stønadsendringer
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.stonadsendringListe!!
-            .filter { stonadsendringRequest ->
-                eksisterendeStonadsendringListe.any {
-                    stonadsendringRequest.type.toString() == it.type &&
-                        stonadsendringRequest.sakId == it.sakId &&
-                        stonadsendringRequest.skyldnerId == it.skyldnerId &&
-                        stonadsendringRequest.kravhaverId == it.kravhaverId &&
-                        stonadsendringRequest.mottakerId == it.mottakerId &&
-                        stonadsendringRequest.indeksreguleringAar == it.indeksreguleringAar &&
-                        stonadsendringRequest.innkreving.toString() == it.innkreving &&
-                        stonadsendringRequest.endring == it.endring &&
-                        stonadsendringRequest.omgjorVedtakId == it.omgjorVedtakId &&
-                        stonadsendringRequest.eksternReferanse == it.eksternReferanse
+        val matchendeElementer = vedtakRequest.stønadsendringListe!!
+            .filter { stønadsendringRequest ->
+                eksisterendeStønadsendringListe.any {
+                    stønadsendringRequest.type.toString() == it.type &&
+                        stønadsendringRequest.sak.toString() == it.sak &&
+                        stønadsendringRequest.skyldner.toString() == it.skyldner &&
+                        stønadsendringRequest.kravhaver.toString() == it.kravhaver &&
+                        stønadsendringRequest.mottaker.toString() == it.mottaker &&
+                        stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
+                        stønadsendringRequest.innkreving.toString() == it.innkreving &&
+                        stønadsendringRequest.beslutning.toString() == it.beslutning &&
+                        stønadsendringRequest.omgjørVedtakId == it.omgjørVedtakId &&
+                        stønadsendringRequest.eksternReferanse == it.eksternReferanse
                 }
             }
-        if (matchendeElementer.size != eksisterendeStonadsendringListe.size) {
+        if (matchendeElementer.size != eksisterendeStønadsendringListe.size) {
             SECURE_LOGGER.error("Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak $vedtakId")
             return false
         }
 
         // Sorterer listene likt for å kunne sammenligne perioder
-        val sortertStonadsendringRequestListe = vedtakRequest.stonadsendringListe!!
-            .sortedWith(compareBy({ it.type }, { it.skyldnerId }, { it.kravhaverId }, { it.sakId }))
+        val sortertStønadsendringRequestListe = vedtakRequest.stønadsendringListe!!
+            .sortedWith(compareBy({ it.type }, { it.skyldner }, { it.kravhaver }, { it.sak }))
 
-        for ((i, stonadsendring) in eksisterendeStonadsendringListe.withIndex()) {
-            if (!perioderMatcher(stonadsendring.id, sortertStonadsendringRequestListe[i])) {
-                SECURE_LOGGER.error("Det er mismatch på minst én periode ved forsøk på å oppdatere vedtak $vedtakId, stønadsendring: ${stonadsendring.id}")
+        for ((i, stønadsendring) in eksisterendeStønadsendringListe.withIndex()) {
+            if (!perioderMatcher(stønadsendring.id, sortertStønadsendringRequestListe[i])) {
+                SECURE_LOGGER.error("Det er mismatch på minst én periode ved forsøk på å oppdatere vedtak $vedtakId, stønadsendring: ${stønadsendring.id}")
                 return false
             }
         }
         return true
     }
 
-    private fun perioderMatcher(stonadsendringId: Int, stonadsendringRequest: OpprettStonadsendringRequestDto): Boolean {
-        val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStonadsendring(stonadsendringId)
+    private fun perioderMatcher(stønadsendringId: Int, stønadsendringRequest: OpprettStønadsendringRequestDto): Boolean {
+        val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringId)
 
-        val matchendeElementer = stonadsendringRequest.periodeListe
+        val matchendeElementer = stønadsendringRequest.periodeListe
             .filter { periodeRequest ->
                 eksisterendePeriodeListe.any {
-                    periodeRequest.fomDato == it.fomDato &&
-                        periodeRequest.tilDato == it.tilDato &&
-                        periodeRequest.belop?.toInt() == it.belop?.toInt() &&
+                    LocalDate.parse(periodeRequest.periode.fomDato.toString()) == it.fomDato &&
+                        LocalDate.parse(periodeRequest.periode.tilDato.toString()) == it.tilDato &&
+                        periodeRequest.beløp?.toInt() == it.beløp?.toInt() &&
                         periodeRequest.valutakode == it.valutakode &&
                         periodeRequest.resultatkode == it.resultatkode &&
                         periodeRequest.delytelseId == it.delytelseId
@@ -381,56 +395,56 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return matchendeElementer.size == eksisterendePeriodeListe.size
     }
 
-    private fun engangsbelopMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
-        val eksisterendeEngangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakId)
+    private fun engangsbeløpMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
+        val eksisterendeEngangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtakId)
 
-        // vedtakRequest.engangsbelopListe kan være null, eksisterendeEngangsbelopListe kan ikke være null,
+        // vedtakRequest.engangsbeløpListe kan være null, eksisterendeEngangsbeløpListe kan ikke være null,
         // bare emptyList
-        if (vedtakRequest.engangsbelopListe.isNullOrEmpty()) {
-            return eksisterendeEngangsbelopListe.isEmpty()
+        if (vedtakRequest.engangsbeløpListe.isNullOrEmpty()) {
+            return eksisterendeEngangsbeløpListe.isEmpty()
         }
 
         // Sjekker om det er lagret like mange engangsbeløp som det ligger i oppdaterVedtak-requesten
-        if (vedtakRequest.engangsbelopListe?.size != eksisterendeEngangsbelopListe.size) {
+        if (vedtakRequest.engangsbeløpListe?.size != eksisterendeEngangsbeløpListe.size) {
             SECURE_LOGGER.error("Det er ulikt antall engangsbeløp i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
             return false
         }
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall engangsbeløp
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.engangsbelopListe!!
-            .filter { engangsbelopRequest ->
-                eksisterendeEngangsbelopListe.any {
-                    engangsbelopRequest.type.toString() == it.type &&
-                        engangsbelopRequest.sakId == it.sakId &&
-                        engangsbelopRequest.skyldnerId == it.skyldnerId &&
-                        engangsbelopRequest.kravhaverId == it.kravhaverId &&
-                        engangsbelopRequest.mottakerId == it.mottakerId &&
-                        engangsbelopRequest.belop?.toInt() == it.belop?.toInt() &&
-                        engangsbelopRequest.valutakode == it.valutakode &&
-                        engangsbelopRequest.resultatkode == it.resultatkode &&
-                        engangsbelopRequest.innkreving.toString() == it.innkreving &&
-                        engangsbelopRequest.endring == it.endring &&
-                        engangsbelopRequest.omgjorVedtakId == it.omgjorVedtakId &&
-                        engangsbelopRequest.referanse == it.referanse &&
-                        engangsbelopRequest.delytelseId == it.delytelseId &&
-                        engangsbelopRequest.eksternReferanse == it.eksternReferanse
+        val matchendeElementer = vedtakRequest.engangsbeløpListe!!
+            .filter { engangsbeløpRequest ->
+                eksisterendeEngangsbeløpListe.any {
+                    engangsbeløpRequest.type.toString() == it.type &&
+                        engangsbeløpRequest.sak.toString() == it.sak &&
+                        engangsbeløpRequest.skyldner.toString() == it.skyldner &&
+                        engangsbeløpRequest.kravhaver.toString() == it.kravhaver &&
+                        engangsbeløpRequest.mottaker.toString() == it.mottaker &&
+                        engangsbeløpRequest.beløp?.toInt() == it.beløp?.toInt() &&
+                        engangsbeløpRequest.valutakode == it.valutakode &&
+                        engangsbeløpRequest.resultatkode == it.resultatkode &&
+                        engangsbeløpRequest.innkreving.toString() == it.innkreving &&
+                        engangsbeløpRequest.beslutning.toString() == it.beslutning &&
+                        engangsbeløpRequest.omgjørVedtakId == it.omgjørVedtakId &&
+                        engangsbeløpRequest.referanse == it.referanse &&
+                        engangsbeløpRequest.delytelseId == it.delytelseId &&
+                        engangsbeløpRequest.eksternReferanse == it.eksternReferanse
                 }
             }
 
-        if (matchendeElementer.size == eksisterendeEngangsbelopListe.size) {
-            eksisterendeEngangsbelopListe.forEach {
-                engangsbelopIdGrunnlagSkalSlettesListe.add(it.id)
+        if (matchendeElementer.size == eksisterendeEngangsbeløpListe.size) {
+            eksisterendeEngangsbeløpListe.forEach {
+                engangsbeløpIdGrunnlagSkalSlettesListe.add(it.id)
             }
         }
 
-        return matchendeElementer.size == eksisterendeEngangsbelopListe.size
+        return matchendeElementer.size == eksisterendeEngangsbeløpListe.size
     }
 
     private fun behandlingsreferanserMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
         val eksisterendeBehandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtakId)
 
-        // vedtakRequest.engangsbelopListe kan være null, eksisterendeEngangsbelopListe kan ikke være null,
+        // vedtakRequest.engangsbeløpListe kan være null, eksisterendeEngangsbeløpListe kan ikke være null,
         // bare emptyList
         if (vedtakRequest.behandlingsreferanseListe.isNullOrEmpty()) {
             return eksisterendeBehandlingsreferanseListe.isEmpty()
@@ -465,15 +479,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             }
         }
 
-        // slett fra EngangsbelopGrunnlag
-        if (engangsbelopIdGrunnlagSkalSlettesListe.isNotEmpty()) {
-            engangsbelopIdGrunnlagSkalSlettesListe.forEach { engangsbelopId ->
-                val engangsbelopGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
-                engangsbelopGrunnlag.forEach {
-                    persistenceService.engangsbelopGrunnlagRepository.deleteById(EngangsbelopGrunnlagPK(engangsbelopId, it.grunnlag.id))
+        // slett fra EngangsbeløpGrunnlag
+        if (engangsbeløpIdGrunnlagSkalSlettesListe.isNotEmpty()) {
+            engangsbeløpIdGrunnlagSkalSlettesListe.forEach { engangsbeløpId ->
+                val engangsbeløpGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
+                engangsbeløpGrunnlag.forEach {
+                    persistenceService.engangsbeløpGrunnlagRepository.deleteById(EngangsbeløpGrunnlagPK(engangsbeløpId, it.grunnlag.id))
                 }
                 // tester på github feiler uten denne, ikke spør...
-                val eg = persistenceService.engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
+                val eg = persistenceService.engangsbeløpGrunnlagRepository.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
             }
         }
 
@@ -482,7 +496,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Initialiserer lister
         periodeIdGrunnlagSkalSlettesListe.clear()
-        engangsbelopIdGrunnlagSkalSlettesListe.clear()
+        engangsbeløpIdGrunnlagSkalSlettesListe.clear()
     }
 
     private fun oppdaterGrunnlag(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto) {
@@ -497,64 +511,64 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         // oppdaterer PeriodeGrunnlag
-        val eksisterendeStonadsendringListe = persistenceService.hentAlleStonadsendringerForVedtak(vedtakId)
+        val eksisterendeStønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtakId)
 
-        vedtakRequest.stonadsendringListe?.forEach { stonadsendringRequest ->
-            // matcher mot eksisterende stønadsendringer for å finne stonadsendringId for igjen å finne perioder som skal brukes
+        vedtakRequest.stønadsendringListe?.forEach { stønadsendringRequest ->
+            // matcher mot eksisterende stønadsendringer for å finne stønadsendringId for igjen å finne perioder som skal brukes
             // til å oppdatere PeriodeGrunnlag
-            val stonadsendringId = finnEksisterendeStonadsendringId(stonadsendringRequest, eksisterendeStonadsendringListe)
-            val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStonadsendring(stonadsendringId)
+            val stønadsendringId = finnEksisterendeStønadsendringId(stønadsendringRequest, eksisterendeStønadsendringListe)
+            val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringId)
 
-            stonadsendringRequest.periodeListe.forEach { periode ->
+            stønadsendringRequest.periodeListe.forEach { periode ->
                 // matcher mot eksisterende perioder for å finne periodeId for å oppdatere PeriodeGrunnlag
                 val periodeId = finnEksisterendePeriodeId(periode, eksisterendePeriodeListe)
                 oppdaterPeriodeGrunnlag(periode, periodeId, grunnlagIdRefMap)
             }
         }
 
-        // oppdaterer EngangsbelopGrunnlag
-        val eksisterendeEngangsbelopListe = persistenceService.hentAlleEngangsbelopForVedtak(vedtakId)
-        vedtakRequest.engangsbelopListe?.forEach { engangsbelop ->
-            // matcher mot eksisterende engangsbeløp for å finne engangsbeløpId for igjen å oppdatere EngangsbelopGrunnlag
-            val engangsbelopId = finnTilhørendeEngangsbelopId(engangsbelop, eksisterendeEngangsbelopListe)
-            oppdaterEngangsbelopGrunnlag(engangsbelop, engangsbelopId, grunnlagIdRefMap)
+        // oppdaterer EngangsbeløpGrunnlag
+        val eksisterendeEngangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtakId)
+        vedtakRequest.engangsbeløpListe?.forEach { engangsbeløp ->
+            // matcher mot eksisterende engangsbeløp for å finne engangsbeløpId for igjen å oppdatere EngangsbeløpGrunnlag
+            val engangsbeløpId = finnTilhørendeEngangsbeløpId(engangsbeløp, eksisterendeEngangsbeløpListe)
+            oppdaterEngangsbeløpGrunnlag(engangsbeløp, engangsbeløpId, grunnlagIdRefMap)
         }
     }
 
-    private fun finnEksisterendeStonadsendringId(
-        stonadsendringrequest: OpprettStonadsendringRequestDto,
-        eksisterendeStonadsendringListe: List<Stonadsendring>
+    private fun finnEksisterendeStønadsendringId(
+        stønadsendringrequest: OpprettStønadsendringRequestDto,
+        eksisterendeStønadsendringListe: List<Stønadsendring>
     ): Int {
-        val matchendeEksisterendeStonadsendring = eksisterendeStonadsendringListe
-            .filter { stonadsendring ->
-                eksisterendeStonadsendringListe.any {
-                    stonadsendring.type == stonadsendringrequest.type.toString() &&
-                        stonadsendring.sakId == stonadsendringrequest.sakId &&
-                        stonadsendring.skyldnerId == stonadsendringrequest.skyldnerId &&
-                        stonadsendring.kravhaverId == stonadsendringrequest.kravhaverId &&
-                        stonadsendring.mottakerId == stonadsendringrequest.mottakerId &&
-                        stonadsendring.indeksreguleringAar == stonadsendringrequest.indeksreguleringAar &&
-                        stonadsendring.innkreving == stonadsendringrequest.innkreving.toString() &&
-                        stonadsendring.endring == stonadsendringrequest.endring &&
-                        stonadsendring.omgjorVedtakId == stonadsendringrequest.omgjorVedtakId &&
-                        stonadsendring.eksternReferanse == stonadsendringrequest.eksternReferanse
+        val matchendeEksisterendeStønadsendring = eksisterendeStønadsendringListe
+            .filter { stønadsendring ->
+                eksisterendeStønadsendringListe.any {
+                    stønadsendring.type == stønadsendringrequest.type.toString() &&
+                        stønadsendring.sak == stønadsendringrequest.sak.toString() &&
+                        stønadsendring.skyldner == stønadsendringrequest.skyldner.toString() &&
+                        stønadsendring.kravhaver == stønadsendringrequest.kravhaver.toString() &&
+                        stønadsendring.mottaker == stønadsendringrequest.mottaker.toString() &&
+                        stønadsendring.førsteIndeksreguleringsår == stønadsendringrequest.førsteIndeksreguleringsår &&
+                        stønadsendring.innkreving == stønadsendringrequest.innkreving.toString() &&
+                        stønadsendring.beslutning == stønadsendringrequest.beslutning.toString() &&
+                        stønadsendring.omgjørVedtakId == stønadsendringrequest.omgjørVedtakId &&
+                        stønadsendring.eksternReferanse == stønadsendringrequest.eksternReferanse
                 }
             }
 
-        if (matchendeEksisterendeStonadsendring.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer $stonadsendringrequest")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer $stonadsendringrequest")
+        if (matchendeEksisterendeStønadsendring.size != 1) {
+            SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer $stønadsendringrequest")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer $stønadsendringrequest")
         }
-        return matchendeEksisterendeStonadsendring.first().id
+        return matchendeEksisterendeStønadsendring.first().id
     }
 
-    private fun finnEksisterendePeriodeId(periodeRequest: OpprettVedtakPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
+    private fun finnEksisterendePeriodeId(periodeRequest: OpprettPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
-                    eksisterendePeriode.fomDato == periodeRequest.fomDato &&
-                        eksisterendePeriode.tilDato == periodeRequest.tilDato &&
-                        eksisterendePeriode.belop?.toInt() == periodeRequest.belop?.toInt() &&
+                    eksisterendePeriode.fomDato == LocalDate.parse(periodeRequest.periode.fomDato.toString()) &&
+                        eksisterendePeriode.tilDato == LocalDate.parse(periodeRequest.periode.tilDato.toString()) &&
+                        eksisterendePeriode.beløp?.toInt() == periodeRequest.beløp?.toInt() &&
                         eksisterendePeriode.valutakode == periodeRequest.valutakode &&
                         eksisterendePeriode.resultatkode == periodeRequest.resultatkode &&
                         eksisterendePeriode.delytelseId == periodeRequest.delytelseId
@@ -569,7 +583,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Oppdater periode
-    private fun oppdaterPeriodeGrunnlag(periodeRequest: OpprettVedtakPeriodeRequestDto, periodeId: Int, grunnlagIdRefMap: Map<String, Int>) {
+    private fun oppdaterPeriodeGrunnlag(periodeRequest: OpprettPeriodeRequestDto, periodeId: Int, grunnlagIdRefMap: Map<String, Int>) {
         // PeriodeGrunnlag
         periodeRequest.grunnlagReferanseListe.forEach {
             val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
@@ -588,76 +602,76 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Finner generert db-id for eksisterende stønadsendring
-    private fun finnTilhørendeEngangsbelopId(
-        engangsbelopRequest: OpprettEngangsbelopRequestDto,
-        eksisterendeEngangsbelopListe: List<Engangsbelop>
+    private fun finnTilhørendeEngangsbeløpId(
+        engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
+        eksisterendeEngangsbeløpListe: List<Engangsbeløp>
     ): Int {
-        val matchendeEksisterendeEngangsbelop = eksisterendeEngangsbelopListe
-            .filter { engangsbelop ->
-                eksisterendeEngangsbelopListe.any {
-                    engangsbelop.type == engangsbelopRequest.type.toString() &&
-                        engangsbelop.sakId == engangsbelopRequest.sakId &&
-                        engangsbelop.skyldnerId == engangsbelopRequest.skyldnerId &&
-                        engangsbelop.kravhaverId == engangsbelopRequest.kravhaverId &&
-                        engangsbelop.mottakerId == engangsbelopRequest.mottakerId &&
-                        engangsbelop.belop?.toInt() == engangsbelopRequest.belop?.toInt() &&
-                        engangsbelop.valutakode == engangsbelopRequest.valutakode &&
-                        engangsbelop.resultatkode == engangsbelopRequest.resultatkode &&
-                        engangsbelop.innkreving == engangsbelopRequest.innkreving.toString() &&
-                        engangsbelop.endring == engangsbelopRequest.endring &&
-                        engangsbelop.omgjorVedtakId == engangsbelopRequest.omgjorVedtakId &&
-                        engangsbelop.referanse == engangsbelopRequest.referanse &&
-                        engangsbelop.delytelseId == engangsbelopRequest.delytelseId &&
-                        engangsbelop.eksternReferanse == engangsbelopRequest.eksternReferanse
+        val matchendeEksisterendeEngangsbeløp = eksisterendeEngangsbeløpListe
+            .filter { engangsbeløp ->
+                eksisterendeEngangsbeløpListe.any {
+                    engangsbeløp.type == engangsbeløpRequest.type.toString() &&
+                        engangsbeløp.sak == engangsbeløpRequest.sak.toString() &&
+                        engangsbeløp.skyldner == engangsbeløpRequest.skyldner.toString() &&
+                        engangsbeløp.kravhaver == engangsbeløpRequest.kravhaver.toString() &&
+                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.toString() &&
+                        engangsbeløp.beløp?.toInt() == engangsbeløpRequest.beløp?.toInt() &&
+                        engangsbeløp.valutakode == engangsbeløpRequest.valutakode &&
+                        engangsbeløp.resultatkode == engangsbeløpRequest.resultatkode &&
+                        engangsbeløp.innkreving == engangsbeløpRequest.innkreving.toString() &&
+                        engangsbeløp.beslutning == engangsbeløpRequest.beslutning.toString() &&
+                        engangsbeløp.omgjørVedtakId == engangsbeløpRequest.omgjørVedtakId &&
+                        engangsbeløp.referanse == engangsbeløpRequest.referanse &&
+                        engangsbeløp.delytelseId == engangsbeløpRequest.delytelseId &&
+                        engangsbeløp.eksternReferanse == engangsbeløpRequest.eksternReferanse
                 }
             }
-        if (matchendeEksisterendeEngangsbelop.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende engangsbeløp $engangsbelopRequest")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende engangsbeløp $engangsbelopRequest")
+        if (matchendeEksisterendeEngangsbeløp.size != 1) {
+            SECURE_LOGGER.error("Det er mismatch på antall matchende engangsbeløp $engangsbeløpRequest")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende engangsbeløp $engangsbeløpRequest")
         }
-        return matchendeEksisterendeEngangsbelop.first().id
+        return matchendeEksisterendeEngangsbeløp.first().id
     }
 
-    // Opprett EngangsbelopGrunnlag
-    private fun oppdaterEngangsbelopGrunnlag(
-        engangsbelopRequest: OpprettEngangsbelopRequestDto,
-        engangsbelopId: Int,
+    // Opprett EngangsbeløpGrunnlag
+    private fun oppdaterEngangsbeløpGrunnlag(
+        engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
+        engangsbeløpId: Int,
         grunnlagIdRefMap: Map<String, Int>
     ) {
-        // EngangsbelopGrunnlag
-        engangsbelopRequest.grunnlagReferanseListe.forEach {
+        // EngangsbeløpGrunnlag
+        engangsbeløpRequest.grunnlagReferanseListe.forEach {
             val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
             if (grunnlagId == 0) {
                 val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
                 LOGGER.error(feilmelding)
                 throw IllegalArgumentException(feilmelding)
             } else {
-                val engangsbelopGrunnlagBo = EngangsbelopGrunnlagBo(
-                    engangsbelopId = engangsbelopId,
+                val engangsbeløpGrunnlagBo = EngangsbeløpGrunnlagBo(
+                    engangsbeløpId = engangsbeløpId,
                     grunnlagId = grunnlagId
                 )
-                persistenceService.opprettEngangsbelopGrunnlag(engangsbelopGrunnlagBo)
+                persistenceService.opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo)
             }
         }
     }
 
-    fun measureVedtak(metrikkNavn: String, enhetId: String, vedtakType: VedtakType, stonadType: StonadType?, engangsbelopType: EngangsbelopType?) {
-        Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløp type")
-            .tag("enhet", enhetId).tag("vedtak_type", vedtakType.name)
+    fun measureVedtak(metrikkNavn: String, enhetsnummer: Enhetsnummer, vedtakType: Vedtakstype, stonadType: Stønadstype?, engangsbeløpType: Engangsbeløptype?) {
+        Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløptype")
+            .tag("enhet", enhetsnummer.toString()).tag("vedtak_type", vedtakType.name)
             .tag("opprettet_av_app", TokenUtils.hentApplikasjonsnavn() ?: "UKJENT")
             .tag("stonad_type", stonadType?.name ?: "NONE")
-            .tag("engangsbelop_type", engangsbelopType?.name ?: "NONE")
+            .tag("engangsbeløp_type", engangsbeløpType?.name ?: "NONE")
             .register(meterRegistry).increment()
     }
     fun measureVedtak(navn: String, vedtakRequest: OpprettVedtakRequestDto) {
         try {
-            val enhetId = vedtakRequest.enhetId
-            val vedtakType = vedtakRequest.type
-            vedtakRequest.stonadsendringListe?.forEach {
-                measureVedtak(navn, enhetId, vedtakType, it.type, null)
+            val enhetsnummer = vedtakRequest.enhetsnummer
+            val vedtakstype = vedtakRequest.type
+            vedtakRequest.stønadsendringListe?.forEach {
+                measureVedtak(navn, enhetsnummer, vedtakstype, it.type, null)
             }
-            vedtakRequest.engangsbelopListe?.forEach {
-                measureVedtak(navn, enhetId, vedtakType, null, it.type)
+            vedtakRequest.engangsbeløpListe?.forEach {
+                measureVedtak(navn, enhetsnummer, vedtakstype, null, it.type)
             }
         } catch (e: Exception) {
             LOGGER.error("Det skjedde en feil ved telling av metrikker", e)

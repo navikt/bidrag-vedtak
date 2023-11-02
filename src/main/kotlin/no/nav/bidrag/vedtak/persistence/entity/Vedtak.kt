@@ -25,10 +25,10 @@ data class Vedtak(
     val type: String = "",
 
     @Column(nullable = false, name = "enhet_id")
-    val enhetId: String = "",
+    val enhetsnummer: String = "",
 
     @Column(nullable = false, name = "vedtak_tidspunkt")
-    val vedtakTidspunkt: LocalDateTime = LocalDateTime.now(),
+    val vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = false, name = "opprettet_av")
     val opprettetAv: String = "",
@@ -40,7 +40,10 @@ data class Vedtak(
     val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = true, name = "utsatt_til_dato")
-    val utsattTilDato: LocalDate? = LocalDate.now()
+    val innkrevingUtsattTilDato: LocalDate? = LocalDate.now(),
+
+    @Column(nullable = true, name = "fastsatt_i_land")
+    val fastsattILand: String? = "",
 )
 
 fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {

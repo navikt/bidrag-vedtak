@@ -1,25 +1,25 @@
--- Table: engangsbelopgrunnlag
+-- Table: engangsbeløpgrunnlag
 
--- DROP TABLE engangsbelopgrunnlag;
+-- DROP TABLE engangsbeløpgrunnlag;
 
-CREATE TABLE IF NOT EXISTS engangsbelopgrunnlag
+CREATE TABLE IF NOT EXISTS engangsbeløpgrunnlag
 (
-    engangsbelop_id integer NOT NULL,
+    engangsbeløp_id integer NOT NULL,
     grunnlag_id integer NOT NULL,
-    CONSTRAINT engangsbelopgrunnlag_pkey PRIMARY KEY (engangsbelop_id, grunnlag_id),
-    CONSTRAINT engangsbelopgrunnlag_id_fk FOREIGN KEY (engangsbelop_id)
-        REFERENCES engangsbelop (engangsbelop_id) MATCH SIMPLE
+    CONSTRAINT engangsbeløpgrunnlag_pkey PRIMARY KEY (engangsbeløp_id, grunnlag_id),
+    CONSTRAINT engangsbeløpgrunnlag_id_fk FOREIGN KEY (engangsbeløp_id)
+        REFERENCES engangsbeløp (engangsbeløp_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT fk_grunnlag_id FOREIGN KEY (grunnlag_id)
         REFERENCES grunnlag (grunnlag_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-    UNIQUE (engangsbelop_id, grunnlag_id)
+    UNIQUE (engangsbeløp_id, grunnlag_id)
 )
 
     TABLESPACE pg_default;
 
-CREATE INDEX idx_engangsbelopgrunnlag_1 ON engangsbelopgrunnlag(engangsbelop_id);
+CREATE INDEX idx_engangsbeløpgrunnlag_1 ON engangsbeløpgrunnlag(engangsbeløp_id);
 
-CREATE INDEX idx_engangsbelopgrunnlag_2 ON engangsbelopgrunnlag(engangsbelop_id, grunnlag_id);
+CREATE INDEX idx_engangsbeløpgrunnlag_2 ON engangsbeløpgrunnlag(engangsbeløp_id, grunnlag_id);
