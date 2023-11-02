@@ -7,15 +7,16 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStonadsendringRequestDto
+import no.nav.bidrag.domene.enums.Beslutningstype
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import kotlin.reflect.full.memberProperties
 
 @Entity
-data class Stonadsendring(
+data class Stønadsendring(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stonadsendring_id")
+    @Column(name = "stønadsendring_id")
     val id: Int = 0,
 
     @Column(nullable = false, name = "type")
@@ -26,44 +27,44 @@ data class Stonadsendring(
     val vedtak: Vedtak = Vedtak(),
 
     @Column(nullable = false, name = "sak_id")
-    val sakId: String = "",
+    val sak: String = "",
 
     @Column(nullable = false, name = "skyldner_id")
-    val skyldnerId: String = "",
+    val skyldner: String = "",
 
     @Column(nullable = false, name = "kravhaver_id")
-    val kravhaverId: String = "",
+    val kravhaver: String = "",
 
     @Column(nullable = false, name = "mottaker_id")
-    val mottakerId: String = "",
+    val mottaker: String = "",
 
     @Column(nullable = true, name = "indeksregulering_aar")
-    val indeksreguleringAar: String? = "",
+    val førsteIndeksreguleringsår: Int? = 0,
 
     @Column(nullable = false, name = "innkreving")
     val innkreving: String = "",
 
-    @Column(nullable = false, name = "endring")
-    val endring: Boolean = true,
+    @Column(nullable = false, name = "beslutning")
+    val beslutning: String = "",
 
-    @Column(nullable = true, name = "omgjor_vedtak_id")
-    val omgjorVedtakId: Int? = 0,
+    @Column(nullable = true, name = "omgjør_vedtak_id")
+    val omgjørVedtakId: Int? = 0,
 
     @Column(nullable = true, name = "ekstern_referanse")
     val eksternReferanse: String? = ""
 
 )
 
-fun OpprettStonadsendringRequestDto.toStonadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stonadsendring) {
-    val propertiesByName = OpprettStonadsendringRequestDto::class.memberProperties.associateBy { it.name }
+fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stønadsendring) {
+    val propertiesByName = OpprettStønadsendringRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
-                Stonadsendring::id.name -> 0
-                Stonadsendring::type.name -> type.toString()
-                Stonadsendring::vedtak.name -> eksisterendeVedtak
-                Stonadsendring::innkreving.name -> innkreving.toString()
-                else -> propertiesByName[parameter.name]?.get(this@toStonadsendringEntity)
+                Stønadsendring::id.name -> 0
+                Stønadsendring::type.name -> type.toString()
+                Stønadsendring::vedtak.name -> eksisterendeVedtak
+                Stønadsendring::innkreving.name -> innkreving.toString()
+                else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
             }
         }
     )

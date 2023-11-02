@@ -7,16 +7,16 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbelopRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import java.math.BigDecimal
 import kotlin.reflect.full.memberProperties
 
 @Entity
-data class Engangsbelop(
+data class Engangsbeløp(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "engangsbelop_id")
+    @Column(name = "engangsbeløp_id")
     val id: Int = 0,
 
     @ManyToOne
@@ -27,19 +27,19 @@ data class Engangsbelop(
     val type: String = "",
 
     @Column(nullable = false, name = "sak_id")
-    val sakId: String = "",
+    val sak: String = "",
 
     @Column(nullable = false, name = "skyldner_id")
-    val skyldnerId: String = "",
+    val skyldner: String = "",
 
     @Column(nullable = false, name = "kravhaver_id")
-    val kravhaverId: String = "",
+    val kravhaver: String = "",
 
     @Column(nullable = false, name = "mottaker_id")
-    val mottakerId: String = "",
+    val mottaker: String = "",
 
-    @Column(nullable = true, name = "belop")
-    val belop: BigDecimal? = BigDecimal.ZERO,
+    @Column(nullable = true, name = "beløp")
+    val beløp: BigDecimal? = BigDecimal.ZERO,
 
     @Column(nullable = true, name = "valutakode")
     val valutakode: String? = "",
@@ -50,11 +50,11 @@ data class Engangsbelop(
     @Column(nullable = false, name = "innkreving")
     val innkreving: String = "",
 
-    @Column(nullable = false, name = "endring")
-    val endring: Boolean = true,
+    @Column(nullable = false, name = "beslutning")
+    val beslutning: String = "",
 
-    @Column(nullable = true, name = "omgjor_vedtak_id")
-    val omgjorVedtakId: Int? = 0,
+    @Column(nullable = true, name = "omgjør_vedtak_id")
+    val omgjørVedtakId: Int? = 0,
 
     @Column(nullable = false, name = "referanse")
     val referanse: String = "",
@@ -66,16 +66,16 @@ data class Engangsbelop(
     val eksternReferanse: String? = ""
 )
 
-fun OpprettEngangsbelopRequestDto.toEngangsbelopEntity(eksisterendeVedtak: Vedtak) = with(::Engangsbelop) {
-    val propertiesByName = OpprettEngangsbelopRequestDto::class.memberProperties.associateBy { it.name }
+fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Vedtak) = with(::Engangsbeløp) {
+    val propertiesByName = OpprettEngangsbeløpRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
-                Engangsbelop::id.name -> 0
-                Engangsbelop::vedtak.name -> eksisterendeVedtak
-                Engangsbelop::type.name -> type.toString()
-                Engangsbelop::innkreving.name -> innkreving.toString()
-                else -> propertiesByName[parameter.name]?.get(this@toEngangsbelopEntity)
+                Engangsbeløp::id.name -> 0
+                Engangsbeløp::vedtak.name -> eksisterendeVedtak
+                Engangsbeløp::type.name -> type.toString()
+                Engangsbeløp::innkreving.name -> innkreving.toString()
+                else -> propertiesByName[parameter.name]?.get(this@toEngangsbeløpEntity)
             }
         }
     )

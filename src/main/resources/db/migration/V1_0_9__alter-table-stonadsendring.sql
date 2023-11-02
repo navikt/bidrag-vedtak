@@ -1,1 +1,1 @@
-ALTER TABLE stonadsendring ADD COLUMN endring boolean DEFAULT true NOT NULL ;
+ALTER TABLE stønadsendring ADD COLUMN endring boolean DEFAULT true NOT NULL ;

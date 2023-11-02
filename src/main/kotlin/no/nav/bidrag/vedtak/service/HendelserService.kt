@@ -2,10 +2,10 @@ package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.commons.CorrelationId
 import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
-import no.nav.bidrag.transport.behandling.vedtak.Engangsbelop
+import no.nav.bidrag.transport.behandling.vedtak.Engangsbeløp
 import no.nav.bidrag.transport.behandling.vedtak.Periode
 import no.nav.bidrag.transport.behandling.vedtak.Sporingsdata
-import no.nav.bidrag.transport.behandling.vedtak.Stonadsendring
+import no.nav.bidrag.transport.behandling.vedtak.Stønadsendring
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
@@ -25,14 +25,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             kilde = vedtakRequest.kilde,
             type = vedtakRequest.type,
             id = vedtakId,
-            vedtakTidspunkt = vedtakRequest.vedtakTidspunkt,
-            enhetId = vedtakRequest.enhetId,
+            vedtakstidspunkt = vedtakRequest.vedtakstidspunkt,
+            enhetsnummer = vedtakRequest.enhetsnummer,
             opprettetAv = vedtakRequest.opprettetAv,
             opprettetAvNavn = vedtakRequest.opprettetAvNavn,
             opprettetTidspunkt = opprettetTidspunkt,
-            utsattTilDato = vedtakRequest.utsattTilDato,
-            stonadsendringListe = mapStonadsendringer(vedtakRequest),
-            engangsbelopListe = mapEngangsbelop(vedtakRequest),
+            innkrevingUtsattTilDato = vedtakRequest.innkrevingUtsattTilDato,
+            fastsattILand = vedtakRequest.fastsattILand,
+            stønadsendringListe = mapStønadsendringer(vedtakRequest),
+            engangsbeløpListe = mapEngangsbeløp(vedtakRequest),
             behandlingsreferanseListe = mapBehandlingsreferanser(vedtakRequest),
             sporingsdata = Sporingsdata(
                 CorrelationId.fetchCorrelationIdForThread()
@@ -44,16 +45,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
         SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
     }
 
-    private fun mapStonadsendringer(vedtakRequest: OpprettVedtakRequestDto): List<Stonadsendring> {
-        val stonadsendringListe = mutableListOf<Stonadsendring>()
-        vedtakRequest.stonadsendringListe?.forEach {
+    private fun mapStønadsendringer(vedtakRequest: OpprettVedtakRequestDto): List<Stønadsendring> {
+        val stønadsendringListe = mutableListOf<Stønadsendring>()
+        vedtakRequest.stønadsendringListe?.forEach {
             val periodeListe = mutableListOf<Periode>()
             it.periodeListe.forEach { periode ->
                 periodeListe.add(
                     Periode(
-                        fomDato = periode.fomDato,
-                        tilDato = periode.tilDato,
-                        belop = periode.belop,
+                        periode = periode.periode,
+                        beløp = periode.beløp,
                         valutakode = periode.valutakode,
                         resultatkode = periode.resultatkode,
                         delytelseId = periode.delytelseId
@@ -61,48 +61,48 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                 )
             }
 
-            stonadsendringListe.add(
-                Stonadsendring(
+            stønadsendringListe.add(
+                Stønadsendring(
                     type = it.type,
-                    sakId = it.sakId,
-                    skyldnerId = it.skyldnerId,
-                    kravhaverId = it.kravhaverId,
-                    mottakerId = it.mottakerId,
-                    indeksreguleringAar = it.indeksreguleringAar,
+                    sak = it.sak,
+                    skyldner = it.skyldner,
+                    kravhaver = it.kravhaver,
+                    mottaker = it.mottaker,
+                    førsteIndeksreguleringsår = it.førsteIndeksreguleringsår,
                     innkreving = it.innkreving,
-                    endring = it.endring,
-                    omgjorVedtakId = it.omgjorVedtakId,
+                    beslutning = it.beslutning,
+                    omgjørVedtakId = it.omgjørVedtakId,
                     eksternReferanse = it.eksternReferanse,
                     periodeListe = periodeListe
                 )
             )
         }
-        return stonadsendringListe
+        return stønadsendringListe
     }
 
-    private fun mapEngangsbelop(vedtakRequest: OpprettVedtakRequestDto): List<Engangsbelop> {
-        val engangsbelopListe = mutableListOf<Engangsbelop>()
-        vedtakRequest.engangsbelopListe?.forEach {
-            engangsbelopListe.add(
-                Engangsbelop(
+    private fun mapEngangsbeløp(vedtakRequest: OpprettVedtakRequestDto): List<Engangsbeløp> {
+        val engangsbeløpListe = mutableListOf<Engangsbeløp>()
+        vedtakRequest.engangsbeløpListe?.forEach {
+            engangsbeløpListe.add(
+                Engangsbeløp(
                     type = it.type,
-                    sakId = it.sakId,
-                    skyldnerId = it.skyldnerId,
-                    kravhaverId = it.kravhaverId,
-                    mottakerId = it.mottakerId,
-                    belop = it.belop,
+                    sak = it.sak,
+                    skyldner = it.skyldner,
+                    kravhaver = it.kravhaver,
+                    mottaker = it.mottaker,
+                    beløp = it.beløp,
                     valutakode = it.valutakode,
                     resultatkode = it.resultatkode,
                     innkreving = it.innkreving,
-                    endring = it.endring,
-                    omgjorVedtakId = it.omgjorVedtakId,
+                    beslutning = it.beslutning,
+                    omgjørVedtakId = it.omgjørVedtakId,
                     referanse = it.referanse,
                     delytelseId = it.delytelseId,
                     eksternReferanse = it.eksternReferanse
                 )
             )
         }
-        return engangsbelopListe
+        return engangsbeløpListe
     }
 
     private fun mapBehandlingsreferanser(vedtakRequest: OpprettVedtakRequestDto): List<Behandlingsreferanse> {

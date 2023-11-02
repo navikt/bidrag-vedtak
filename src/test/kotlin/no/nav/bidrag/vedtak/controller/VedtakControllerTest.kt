@@ -7,12 +7,12 @@ import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
-import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
-import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
-import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
+import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import no.nav.bidrag.vedtak.service.VedtakService
@@ -51,10 +51,10 @@ class VedtakControllerTest {
     private lateinit var behandlingsreferanseRepository: BehandlingsreferanseRepository
 
     @Autowired
-    private lateinit var engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository
+    private lateinit var engangsbeløpGrunnlagRepository: EngangsbeløpGrunnlagRepository
 
     @Autowired
-    private lateinit var engangsbelopRepository: EngangsbelopRepository
+    private lateinit var engangsbeløpRepository: EngangsbeløpRepository
 
     @Autowired
     private lateinit var periodeGrunnlagRepository: PeriodeGrunnlagRepository
@@ -66,7 +66,7 @@ class VedtakControllerTest {
     private lateinit var periodeRepository: PeriodeRepository
 
     @Autowired
-    private lateinit var stonadsendringRepository: StonadsendringRepository
+    private lateinit var stønadsendringRepository: StønadsendringRepository
 
     @Autowired
     private lateinit var vedtakRepository: VedtakRepository
@@ -84,12 +84,12 @@ class VedtakControllerTest {
     fun `init`() {
         // Sletter alle forekomster
         behandlingsreferanseRepository.deleteAll()
-        engangsbelopGrunnlagRepository.deleteAll()
-        engangsbelopRepository.deleteAll()
+        engangsbeløpGrunnlagRepository.deleteAll()
+        engangsbeløpRepository.deleteAll()
         periodeGrunnlagRepository.deleteAll()
         grunnlagRepository.deleteAll()
         periodeRepository.deleteAll()
-        stonadsendringRepository.deleteAll()
+        stønadsendringRepository.deleteAll()
         vedtakRepository.deleteAll()
     }
 
@@ -152,9 +152,9 @@ class VedtakControllerTest {
     }
 
     @Test
-    fun `skal opprette nytt vedtak med engangsbelop med input fra fil`() {
+    fun `skal opprette nytt vedtak med engangsbeløp med input fra fil`() {
         // Bygger request
-        val filnavn = "/testfiler/opprett_nytt_vedtak_request_med_engangsbelop.json"
+        val filnavn = "/testfiler/opprett_nytt_vedtak_request_med_engangsbeløp.json"
         val request = lesFilOgByggRequest(filnavn)
 
         // Oppretter ny forekomst

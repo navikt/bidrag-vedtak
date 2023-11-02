@@ -1,23 +1,25 @@
 package no.nav.bidrag.vedtak.service
 
 import io.micrometer.core.annotation.Timed
-import no.nav.bidrag.vedtak.bo.EngangsbelopGrunnlagBo
+import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
-import no.nav.bidrag.vedtak.persistence.entity.Engangsbelop
-import no.nav.bidrag.vedtak.persistence.entity.EngangsbelopGrunnlag
+import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
+import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
-import no.nav.bidrag.vedtak.persistence.entity.Stonadsendring
+import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
+import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
-import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopGrunnlagRepository
-import no.nav.bidrag.vedtak.persistence.repository.EngangsbelopRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
-import no.nav.bidrag.vedtak.persistence.repository.StonadsendringRepository
+import no.nav.bidrag.vedtak.persistence.repository.StønadsendringGrunnlagRepository
+import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,12 +27,13 @@ import org.springframework.stereotype.Service
 @Service
 class PersistenceService(
     val vedtakRepository: VedtakRepository,
-    val stonadsendringRepository: StonadsendringRepository,
+    val stønadsendringRepository: StønadsendringRepository,
+    val stønadsendringGrunnlagRepository: StønadsendringGrunnlagRepository,
     val periodeRepository: PeriodeRepository,
     val grunnlagRepository: GrunnlagRepository,
     val periodeGrunnlagRepository: PeriodeGrunnlagRepository,
-    val engangsbelopRepository: EngangsbelopRepository,
-    val engangsbelopGrunnlagRepository: EngangsbelopGrunnlagRepository,
+    val engangsbeløpRepository: EngangsbeløpRepository,
+    val engangsbeløpGrunnlagRepository: EngangsbeløpGrunnlagRepository,
     val behandlingsreferanseRepository: BehandlingsreferanseRepository
 ) {
 
@@ -44,24 +47,28 @@ class PersistenceService(
         return vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
     }
 
-    fun opprettStonadsendring(stonadsendring: Stonadsendring): Stonadsendring {
-        vedtakRepository.findById(stonadsendring.vedtak.id)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", stonadsendring.vedtak.id)) }
-        return stonadsendringRepository.save(stonadsendring)
+    fun opprettStønadsendring(stønadsendring: Stønadsendring): Stønadsendring {
+        vedtakRepository.findById(stønadsendring.vedtak.id)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", stønadsendring.vedtak.id)) }
+        return stønadsendringRepository.save(stønadsendring)
     }
 
-    fun hentAlleStonadsendringerForVedtak(id: Int): List<Stonadsendring> {
-        return stonadsendringRepository.hentAlleStonadsendringerForVedtak(id)
+    fun hentAlleStønadsendringerForVedtak(id: Int): List<Stønadsendring> {
+        return stønadsendringRepository.hentAlleStønadsendringerForVedtak(id)
     }
 
     fun opprettPeriode(periode: Periode): Periode {
-        stonadsendringRepository.findById(periode.stonadsendring.id)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", periode.stonadsendring.id)) }
+        stønadsendringRepository.findById(periode.stønadsendring.id)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", periode.stønadsendring.id)) }
         return periodeRepository.save(periode)
     }
 
-    fun hentAllePerioderForStonadsendring(id: Int): List<Periode> {
-        return periodeRepository.hentAllePerioderForStonadsendring(id)
+    fun hentAllePerioderForStønadsendring(id: Int): List<Periode> {
+        return periodeRepository.hentAllePerioderForStønadsendring(id)
+    }
+
+    fun hentAlleGrunnlagForStønadsendring(stønadsendringId: Int): List<StønadsendringGrunnlag> {
+        return stønadsendringGrunnlagRepository.hentAlleGrunnlagForStønadsendring(stønadsendringId)
     }
 
     fun opprettGrunnlag(grunnlag: Grunnlag): Grunnlag {
@@ -98,28 +105,28 @@ class PersistenceService(
         return periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
     }
 
-    fun opprettEngangsbelop(engangsbelop: Engangsbelop): Engangsbelop {
-        vedtakRepository.findById(engangsbelop.vedtak.id)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", engangsbelop.vedtak.id)) }
-        return engangsbelopRepository.save(engangsbelop)
+    fun opprettEngangsbeløp(engangsbeløp: Engangsbeløp): Engangsbeløp {
+        vedtakRepository.findById(engangsbeløp.vedtak.id)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", engangsbeløp.vedtak.id)) }
+        return engangsbeløpRepository.save(engangsbeløp)
     }
 
-    fun hentAlleEngangsbelopForVedtak(id: Int): List<Engangsbelop> {
-        return engangsbelopRepository.hentAlleEngangsbelopForVedtak(id)
+    fun hentAlleEngangsbeløpForVedtak(id: Int): List<Engangsbeløp> {
+        return engangsbeløpRepository.hentAlleEngangsbeløpForVedtak(id)
     }
 
-    fun opprettEngangsbelopGrunnlag(engangsbelopGrunnlagBo: EngangsbelopGrunnlagBo): EngangsbelopGrunnlag {
-        val eksisterendeEngangsbelop = engangsbelopRepository.findById(engangsbelopGrunnlagBo.engangsbelopId)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbelop med id %d i databasen", engangsbelopGrunnlagBo.engangsbelopId)) }
-        val eksisterendeGrunnlag = grunnlagRepository.findById(engangsbelopGrunnlagBo.grunnlagId)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", engangsbelopGrunnlagBo.grunnlagId)) }
-        val nyttEngangsbelopGrunnlag = EngangsbelopGrunnlag(eksisterendeEngangsbelop, eksisterendeGrunnlag)
-//    SECURE_LOGGER.info("nyttEngangsbelopGrunnlag: $nyttEngangsbelopGrunnlag")
-        return engangsbelopGrunnlagRepository.save(nyttEngangsbelopGrunnlag)
+    fun opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo: EngangsbeløpGrunnlagBo): EngangsbeløpGrunnlag {
+        val eksisterendeEngangsbeløp = engangsbeløpRepository.findById(engangsbeløpGrunnlagBo.engangsbeløpId)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbeløp med id %d i databasen", engangsbeløpGrunnlagBo.engangsbeløpId)) }
+        val eksisterendeGrunnlag = grunnlagRepository.findById(engangsbeløpGrunnlagBo.grunnlagId)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", engangsbeløpGrunnlagBo.grunnlagId)) }
+        val nyttEngangsbeløpGrunnlag = EngangsbeløpGrunnlag(eksisterendeEngangsbeløp, eksisterendeGrunnlag)
+//    SECURE_LOGGER.info("nyttEngangsbeløpGrunnlag: $nyttEngangsbeløpGrunnlag")
+        return engangsbeløpGrunnlagRepository.save(nyttEngangsbeløpGrunnlag)
     }
 
-    fun hentAlleGrunnlagForEngangsbelop(engangsbelopId: Int): List<EngangsbelopGrunnlag> {
-        return engangsbelopGrunnlagRepository.hentAlleGrunnlagForEngangsbelop(engangsbelopId)
+    fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpId: Int): List<EngangsbeløpGrunnlag> {
+        return engangsbeløpGrunnlagRepository.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
     }
 
     fun opprettBehandlingsreferanse(behandlingsreferanse: Behandlingsreferanse): Behandlingsreferanse {

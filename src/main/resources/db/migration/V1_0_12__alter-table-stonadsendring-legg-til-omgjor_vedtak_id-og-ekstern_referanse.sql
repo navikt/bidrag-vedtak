@@ -1,4 +1,4 @@
-ALTER TABLE stonadsendring
+ALTER TABLE stønadsendring
     ADD COLUMN ekstern_referanse varchar(20);
-ALTER TABLE stonadsendring
+ALTER TABLE stønadsendring
     ADD COLUMN omgjor_vedtak_id integer;
