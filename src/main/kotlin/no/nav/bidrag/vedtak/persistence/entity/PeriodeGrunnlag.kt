@@ -16,12 +16,12 @@ data class PeriodeGrunnlag(
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "periode_id")
+    @JoinColumn(name = "periodeid")
     val periode: Periode = Periode(),
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "grunnlag_id")
+    @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag()
 
 )

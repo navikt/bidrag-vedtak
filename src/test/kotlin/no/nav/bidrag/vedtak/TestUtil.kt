@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.bidrag.domene.enums.BehandlingsrefKilde
 import no.nav.bidrag.domene.enums.Beslutningstype
 import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.GrunnlagType
+import no.nav.bidrag.domene.enums.Grunnlagstype
 import no.nav.bidrag.domene.enums.Innkrevingstype
 import no.nav.bidrag.domene.enums.Stønadstype
 import no.nav.bidrag.domene.enums.Vedtakskilde
@@ -12,13 +12,12 @@ import no.nav.bidrag.domene.enums.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
 import no.nav.bidrag.domene.streng.Enhetsnummer
 import no.nav.bidrag.domene.streng.Saksnummer
-import no.nav.bidrag.domene.tid.Datoperiode
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -29,6 +28,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
+import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -46,7 +46,7 @@ class TestUtil {
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
-            fastsattILand = null,
+            fastsattILand = "NO",
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringListe(),
             engangsbeløpListe = byggEngangsbeløpListe(),
@@ -56,7 +56,7 @@ class TestUtil {
         private fun byggGrunnlagListe() = listOf(
             OpprettGrunnlagRequestDto(
                 referanse = "BM-LIGS-19",
-                type = GrunnlagType.INNTEKT,
+                type = Grunnlagstype.INNTEKT,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -71,7 +71,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "BM-LIGN-19",
-                type = GrunnlagType.INNTEKT,
+                type = Grunnlagstype.INNTEKT,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -86,7 +86,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "BP-SKATTEKLASSE-19",
-                type = GrunnlagType.SKATTEKLASSE,
+                type = Grunnlagstype.SKATTEKLASSE,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -100,7 +100,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "SJAB-REF001",
-                type = GrunnlagType.SJABLON,
+                type = Grunnlagstype.SJABLON,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -116,6 +116,46 @@ class TestUtil {
             ]
           }"""
                 )
+            ),
+            OpprettGrunnlagRequestDto(
+                referanse = "VIRKNINGSDATO-1",
+                type = Grunnlagstype.VIRKNINGSDATO,
+                innhold = ObjectMapper().readTree(
+                    """
+          {
+            "virkningsdato": "2023-11-03"
+          }"""
+                )
+            ),
+            OpprettGrunnlagRequestDto(
+                referanse = "NOTAT-1",
+                type = Grunnlagstype.NOTAT,
+                innhold = ObjectMapper().readTree(
+                    """
+          {
+            "notat": "Dette er et saksbehandlingsnotat"
+          }"""
+                )
+            ),
+            OpprettGrunnlagRequestDto(
+                referanse = "VIRKNINGSDATO-2",
+                type = Grunnlagstype.VIRKNINGSDATO,
+                innhold = ObjectMapper().readTree(
+                    """
+          {
+            "virkningsdato": "2023-12-03"
+          }"""
+                )
+            ),
+            OpprettGrunnlagRequestDto(
+                referanse = "NOTAT-2",
+                type = Grunnlagstype.NOTAT,
+                innhold = ObjectMapper().readTree(
+                    """
+          {
+            "notat": "Dette er enda et saksbehandlingsnotat"
+          }"""
+                )
             )
         )
 
@@ -128,10 +168,13 @@ class TestUtil {
                 mottaker = Personident("01018211111"),
                 førsteIndeksreguleringsår = 2024,
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 123,
                 eksternReferanse = "eksternRef1",
-                grunnlagReferanseListe = emptyList(),
+                grunnlagReferanseListe = listOf(
+                    "VIRKNINGSDATO-1",
+                    "NOTAT-1"
+                ),
                 periodeListe = listOf(
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-01-01"), LocalDate.parse("2019-07-01")),
@@ -168,10 +211,13 @@ class TestUtil {
                 mottaker = Personident("01018211111"),
                 førsteIndeksreguleringsår = 2024,
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 200,
                 eksternReferanse = "eksternRef3",
-                grunnlagReferanseListe = emptyList(),
+                grunnlagReferanseListe = listOf(
+                    "VIRKNINGSDATO-2",
+                    "NOTAT-2"
+                ),
                 periodeListe = listOf(
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-06-01"), LocalDate.parse("2019-07-01")),
@@ -210,7 +256,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse1",
                 delytelseId = "delytelseId1",
@@ -231,7 +277,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse2",
                 delytelseId = "delytelseId2",
@@ -263,7 +309,7 @@ class TestUtil {
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
-            fastsattILand = null,
+            fastsattILand = "NO",
             grunnlagListe = emptyList(),
             stønadsendringListe = byggStønadsendringUtenGrunnlagListe(),
             engangsbeløpListe = byggEngangsbeløpUtenGrunnlagListe(),
@@ -347,7 +393,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse1",
                 delytelseId = "delytelseId1",
@@ -364,7 +410,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse2",
                 delytelseId = "delytelseId2",
@@ -412,7 +458,7 @@ class TestUtil {
                 mottaker = Personident("01018211111"),
                 førsteIndeksreguleringsår = 2024,
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 123,
                 eksternReferanse = "eksternRef1",
                 grunnlagReferanseListe = emptyList(),
@@ -470,7 +516,7 @@ class TestUtil {
                 mottaker = Personident("01018211111"),
                 førsteIndeksreguleringsår = 2024,
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 123,
                 eksternReferanse = "eksternRef1",
                 grunnlagReferanseListe = emptyList(),
@@ -502,7 +548,7 @@ class TestUtil {
                 mottaker = Personident("01018211111"),
                 førsteIndeksreguleringsår = 2024,
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 200,
                 eksternReferanse = "eksternRef3",
                 grunnlagReferanseListe = emptyList(),
@@ -553,7 +599,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse1",
                 delytelseId = "delytelseId1",
@@ -574,7 +620,7 @@ class TestUtil {
                 valutakode = "NOK",
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
-                Beslutningstype.ENDRING,
+                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
                 referanse = "referanse2",
                 delytelseId = "delytelseId2",
@@ -588,39 +634,39 @@ class TestUtil {
         )
 
         fun byggVedtak(
-            vedtakId: Int = (1..100).random(),
+            vedtaksid: Int = (1..100).random(),
             kilde: String = Vedtakskilde.MANUELT.toString(),
             type: String = Vedtakstype.ALDERSJUSTERING.toString(),
-            enhetsnummer: String = "4812",
+            enhetsnummer: String = Enhetsnummer("4812").toString(),
             vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
             opprettetAv: String = "X123456",
             opprettetAvNavn: String = "Saksbehandler1",
             opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
             innkrevingUtsattTilDato: LocalDate = LocalDate.now()
         ) = Vedtak(
-            id = vedtakId,
+            id = vedtaksid,
             kilde = kilde,
             type = type,
             enhetsnummer = enhetsnummer,
             vedtakstidspunkt = vedtakstidspunkt,
             opprettetAv = opprettetAv,
             opprettetAvNavn = opprettetAvNavn,
-            opprettetTimestamp = opprettetTimestamp,
+            opprettetTidspunkt = opprettetTimestamp,
             innkrevingUtsattTilDato = innkrevingUtsattTilDato
         )
 
         fun byggStønadsendring(
-            stønadsendringId: Int = (1..100).random(),
+            stønadsendringsid: Int = (1..100).random(),
             type: String = Stønadstype.BIDRAG.toString(),
-            sak: String = "SAK-001",
+            sak: String = Saksnummer("SAK-001").toString(),
             skyldner: String = "01018011111",
             kravhaver: String = "01010511111",
             mottaker: String = "01018211111",
             innkreving: String = Innkrevingstype.MED_INNKREVING.toString(),
-            beslutning: Beslutningstype = Beslutningstype.ENDRING,
+            beslutning: String = Beslutningstype.ENDRING.toString(),
             eksternReferanse: String = "eksternRef1"
         ) = Stønadsendring(
-            id = stønadsendringId,
+            id = stønadsendringsid,
             type = type,
             vedtak = byggVedtak(),
             sak = sak,
@@ -628,12 +674,12 @@ class TestUtil {
             kravhaver = kravhaver,
             mottaker = mottaker,
             innkreving = innkreving,
-            beslutning = beslutning.toString(),
+            beslutning = beslutning,
             eksternReferanse = eksternReferanse
         )
 
         fun byggPeriode(
-            periodeId: Int = (1..100).random(),
+            periodeid: Int = (1..100).random(),
             fomDato: LocalDate = LocalDate.parse("2019-07-01"),
             tilDato: LocalDate? = LocalDate.parse("2020-01-01"),
             beløp: BigDecimal = BigDecimal.valueOf(3520),
@@ -641,9 +687,9 @@ class TestUtil {
             resultatkode: String = "KOSTNADSBEREGNET_BIDRAG",
             delytelseId: String = "delytelseId1"
         ) = Periode(
-            id = periodeId,
-            fomDato = fomDato,
-            tilDato = tilDato,
+            id = periodeid,
+            fom = fomDato,
+            til = tilDato,
             stønadsendring = byggStønadsendring(),
             beløp = beløp,
             valutakode = valutakode,
@@ -652,10 +698,10 @@ class TestUtil {
         )
 
         fun byggGrunnlag(
-            grunnlagId: Int = (1..100).random(),
+            grunnlagsid: Int = (1..100).random(),
             grunnlagReferanse: String = "BM-LIGN-19",
             vedtak: Vedtak = byggVedtak(),
-            type: String = GrunnlagType.INNTEKT.toString(),
+            type: String = Grunnlagstype.INNTEKT.toString(),
             innhold: String =
                 """{
           "rolle": "BIDRAGSMOTTAKER",
@@ -665,7 +711,7 @@ class TestUtil {
         }"""
 
         ) = Grunnlag(
-            id = grunnlagId,
+            id = grunnlagsid,
             referanse = grunnlagReferanse,
             vedtak = vedtak,
             type = type,
@@ -673,11 +719,11 @@ class TestUtil {
         )
 
         fun byggPeriodeGrunnlagBo(
-            periodeId: Int = byggPeriode().id,
-            grunnlagId: Int = byggGrunnlag().id
+            periodeid: Int = byggPeriode().id,
+            grunnlagsid: Int = byggGrunnlag().id
         ) = PeriodeGrunnlagBo(
-            periodeId = periodeId,
-            grunnlagId = grunnlagId
+            periodeid = periodeid,
+            grunnlagsid = grunnlagsid
         )
 
         fun byggPeriodeGrunnlag(
@@ -685,6 +731,14 @@ class TestUtil {
             grunnlag: Grunnlag = byggGrunnlag()
         ) = PeriodeGrunnlag(
             periode = periode,
+            grunnlag = grunnlag
+        )
+
+        fun byggStønadsendringGrunnlag(
+            stønadsendring: Stønadsendring = byggStønadsendring(),
+            grunnlag: Grunnlag = byggGrunnlag()
+        ) = StønadsendringGrunnlag(
+            stønadsendring = stønadsendring,
             grunnlag = grunnlag
         )
 
@@ -698,7 +752,7 @@ class TestUtil {
             beløp: BigDecimal = BigDecimal.valueOf(3490),
             valutakode: String = "NOK",
             resultatkode: String = "SAERTILSKUDD BEREGNET",
-            innkreving: String = "JA",
+            innkreving: Innkrevingstype = Innkrevingstype.MED_INNKREVING,
             beslutning: Beslutningstype = Beslutningstype.ENDRING,
             omgjørVedtakId: Int = 123,
             referanse: String = "referanse5",
@@ -715,7 +769,7 @@ class TestUtil {
             beløp = beløp,
             valutakode = valutakode,
             resultatkode = resultatkode,
-            innkreving = innkreving,
+            innkreving = innkreving.toString(),
             beslutning = beslutning.toString(),
             omgjørVedtakId = omgjørVedtakId,
             referanse = referanse,

@@ -15,7 +15,7 @@ data class Vedtak(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vedtak_id")
+    @Column(name = "vedtaksid")
     val id: Int = 0,
 
     @Column(nullable = false, name = "kilde")
@@ -24,26 +24,27 @@ data class Vedtak(
     @Column(nullable = false, name = "type")
     val type: String = "",
 
-    @Column(nullable = false, name = "enhet_id")
-    val enhetsnummer: String = "",
-
-    @Column(nullable = false, name = "vedtak_tidspunkt")
-    val vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
-
     @Column(nullable = false, name = "opprettet_av")
     val opprettetAv: String = "",
 
     @Column(nullable = true, name = "opprettet_av_navn")
     val opprettetAvNavn: String? = "",
 
-    @Column(nullable = false, name = "opprettet_timestamp")
-    val opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
+    @Column(nullable = false, name = "vedtakstidspunkt")
+    val vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(nullable = false, name = "enhet_id")
+    val enhetsnummer: String = "",
 
     @Column(nullable = true, name = "utsatt_til_dato")
     val innkrevingUtsattTilDato: LocalDate? = LocalDate.now(),
 
     @Column(nullable = true, name = "fastsatt_i_land")
     val fastsattILand: String? = "",
+
+    @Column(nullable = false, name = "opprettet_tidspunkt")
+    val opprettetTidspunkt: LocalDateTime = LocalDateTime.now()
+
 )
 
 fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
@@ -54,7 +55,8 @@ fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
                 Vedtak::id.name -> 0
                 Vedtak::kilde.name -> kilde.toString()
                 Vedtak::type.name -> type.toString()
-                Vedtak::opprettetTimestamp.name -> LocalDateTime.now()
+                Vedtak::opprettetTidspunkt.name -> LocalDateTime.now()
+                Vedtak::enhetsnummer.name -> enhetsnummer.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
             }
         }

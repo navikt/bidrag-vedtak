@@ -17,8 +17,8 @@ import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
@@ -29,6 +29,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
@@ -36,6 +37,7 @@ import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
+import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbeløpEntity
@@ -57,8 +59,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     private val OPPDATER_VEDTAK_COUNTER_NAME = "oppdater_vedtak"
 
     // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
-    val periodeIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
-    val engangsbeløpIdGrunnlagSkalSlettesListe = mutableListOf<Int>()
+    val stønadsendringsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
+    val periodeidGrunnlagSkalSlettesListe = mutableListOf<Int>()
+    val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
@@ -83,7 +86,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
         if (vedtakRequest.stønadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbeløpListe?.isNotEmpty() == true) {
-            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTimestamp)
+            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTidspunkt)
         }
 
         measureVedtak(OPPRETT_VEDTAK_COUNTER_NAME, vedtakRequest)
@@ -97,6 +100,18 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Opprett stønadsendring
     private fun opprettStønadsendring(stønadsendringRequest: OpprettStønadsendringRequestDto, vedtak: Vedtak, grunnlagIdRefMap: Map<String, Int>) {
         val opprettetStønadsendring = persistenceService.opprettStønadsendring(stønadsendringRequest.toStønadsendringEntity(vedtak))
+
+        // StønadsendringGrunnlag
+        stønadsendringRequest.grunnlagReferanseListe.forEach {
+            val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
+            if (grunnlagId == 0) {
+                val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
+                LOGGER.error(feilmelding)
+                throw IllegalArgumentException(feilmelding)
+            } else {
+                persistenceService.opprettStønadsendringGrunnlag(StønadsendringGrunnlagBo(opprettetStønadsendring.id, grunnlagId))
+            }
+        }
 
         // Periode
         stønadsendringRequest.periodeListe.forEach { opprettPeriode(it, opprettetStønadsendring, grunnlagIdRefMap) }
@@ -137,8 +152,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 throw IllegalArgumentException(feilmelding)
             } else {
                 val periodeGrunnlagBo = PeriodeGrunnlagBo(
-                    periodeId = opprettetPeriode.id,
-                    grunnlagId = grunnlagId
+                    periodeid = opprettetPeriode.id,
+                    grunnlagsid = grunnlagId
                 )
                 persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
             }
@@ -176,7 +191,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             opprettetAvNavn = vedtak.opprettetAvNavn,
             vedtakstidspunkt = vedtak.vedtakstidspunkt,
             enhetsnummer = Enhetsnummer(vedtak.enhetsnummer),
-            opprettetTidspunkt = vedtak.opprettetTimestamp,
+            opprettetTidspunkt = vedtak.opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
             fastsattILand = vedtak.fastsattILand,
             grunnlagListe = grunnlagDtoListe,
@@ -227,7 +242,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             }
             periodeResponseListe.add(
                 VedtakPeriodeDto(
-                    periode = ÅrMånedsperiode(dto.fomDato, dto.tilDato),
+                    periode = ÅrMånedsperiode(dto.fom, dto.til),
                     beløp = dto.beløp,
                     valutakode = dto.valutakode?.trimEnd(),
                     resultatkode = dto.resultatkode,
@@ -272,8 +287,6 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     fun oppdaterVedtak(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Int {
-//        val eksisterendeVedtak = hentVedtak(vedtakId)
-
         if (vedtakRequest.grunnlagListe.isEmpty()) {
             val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
             LOGGER.error(feilmelding)
@@ -358,6 +371,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             return false
         }
 
+        eksisterendeStønadsendringListe.forEach {
+            stønadsendringsidGrunnlagSkalSlettesListe.add(it.id)
+        }
+
         // Sorterer listene likt for å kunne sammenligne perioder
         val sortertStønadsendringRequestListe = vedtakRequest.stønadsendringListe!!
             .sortedWith(compareBy({ it.type }, { it.skyldner }, { it.kravhaver }, { it.sak }))
@@ -377,8 +394,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val matchendeElementer = stønadsendringRequest.periodeListe
             .filter { periodeRequest ->
                 eksisterendePeriodeListe.any {
-                    LocalDate.parse(periodeRequest.periode.fomDato.toString()) == it.fomDato &&
-                        LocalDate.parse(periodeRequest.periode.tilDato.toString()) == it.tilDato &&
+                    LocalDate.parse(periodeRequest.periode.fomDato.toString()) == it.fom &&
+                        LocalDate.parse(periodeRequest.periode.tilDato.toString()) == it.til &&
                         periodeRequest.beløp?.toInt() == it.beløp?.toInt() &&
                         periodeRequest.valutakode == it.valutakode &&
                         periodeRequest.resultatkode == it.resultatkode &&
@@ -388,7 +405,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         if (matchendeElementer.size == eksisterendePeriodeListe.size) {
             eksisterendePeriodeListe.forEach {
-                periodeIdGrunnlagSkalSlettesListe.add(it.id)
+                periodeidGrunnlagSkalSlettesListe.add(it.id)
             }
         }
 
@@ -434,7 +451,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         if (matchendeElementer.size == eksisterendeEngangsbeløpListe.size) {
             eksisterendeEngangsbeløpListe.forEach {
-                engangsbeløpIdGrunnlagSkalSlettesListe.add(it.id)
+                engangsbeløpsidGrunnlagSkalSlettesListe.add(it.id)
             }
         }
 
@@ -469,9 +486,19 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
+        // slett fra StønadsendringGrunnlag
+        if (stønadsendringsidGrunnlagSkalSlettesListe.isNotEmpty()) {
+            stønadsendringsidGrunnlagSkalSlettesListe.forEach { stønadsendringsid ->
+                val stønadsendringGrunnlag = persistenceService.hentAlleGrunnlagForStønadsendring(stønadsendringsid)
+                stønadsendringGrunnlag.forEach {
+                    persistenceService.stønadsendringGrunnlagRepository.deleteById(StønadsendringGrunnlagPK(stønadsendringsid, it.grunnlag.id))
+                }
+            }
+        }
+
         // slett fra PeriodeGrunnlag
-        if (periodeIdGrunnlagSkalSlettesListe.isNotEmpty()) {
-            periodeIdGrunnlagSkalSlettesListe.forEach { periodeId ->
+        if (periodeidGrunnlagSkalSlettesListe.isNotEmpty()) {
+            periodeidGrunnlagSkalSlettesListe.forEach { periodeId ->
                 val periodeGrunnlag = persistenceService.hentAlleGrunnlagForPeriode(periodeId)
                 periodeGrunnlag.forEach {
                     persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(periodeId, it.grunnlag.id))
@@ -480,8 +507,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         // slett fra EngangsbeløpGrunnlag
-        if (engangsbeløpIdGrunnlagSkalSlettesListe.isNotEmpty()) {
-            engangsbeløpIdGrunnlagSkalSlettesListe.forEach { engangsbeløpId ->
+        if (engangsbeløpsidGrunnlagSkalSlettesListe.isNotEmpty()) {
+            engangsbeløpsidGrunnlagSkalSlettesListe.forEach { engangsbeløpId ->
                 val engangsbeløpGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
                 engangsbeløpGrunnlag.forEach {
                     persistenceService.engangsbeløpGrunnlagRepository.deleteById(EngangsbeløpGrunnlagPK(engangsbeløpId, it.grunnlag.id))
@@ -495,8 +522,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         persistenceService.slettAlleGrunnlagForVedtak(vedtakId)
 
         // Initialiserer lister
-        periodeIdGrunnlagSkalSlettesListe.clear()
-        engangsbeløpIdGrunnlagSkalSlettesListe.clear()
+        periodeidGrunnlagSkalSlettesListe.clear()
+        engangsbeløpsidGrunnlagSkalSlettesListe.clear()
     }
 
     private fun oppdaterGrunnlag(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto) {
@@ -566,8 +593,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
-                    eksisterendePeriode.fomDato == LocalDate.parse(periodeRequest.periode.fomDato.toString()) &&
-                        eksisterendePeriode.tilDato == LocalDate.parse(periodeRequest.periode.tilDato.toString()) &&
+                    eksisterendePeriode.fom == LocalDate.parse(periodeRequest.periode.fomDato.toString()) &&
+                        eksisterendePeriode.til == LocalDate.parse(periodeRequest.periode.tilDato.toString()) &&
                         eksisterendePeriode.beløp?.toInt() == periodeRequest.beløp?.toInt() &&
                         eksisterendePeriode.valutakode == periodeRequest.valutakode &&
                         eksisterendePeriode.resultatkode == periodeRequest.resultatkode &&
@@ -593,8 +620,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 throw IllegalArgumentException(feilmelding)
             } else {
                 val periodeGrunnlagBo = PeriodeGrunnlagBo(
-                    periodeId = periodeId,
-                    grunnlagId = grunnlagId
+                    periodeid = periodeId,
+                    grunnlagsid = grunnlagId
                 )
                 persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
             }
@@ -655,7 +682,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
     }
 
-    fun measureVedtak(metrikkNavn: String, enhetsnummer: Enhetsnummer, vedtakType: Vedtakstype, stonadType: Stønadstype?, engangsbeløpType: Engangsbeløptype?) {
+    fun measureVedtak(
+        metrikkNavn: String,
+        enhetsnummer: Enhetsnummer,
+        vedtakType: Vedtakstype,
+        stonadType: Stønadstype?,
+        engangsbeløpType: Engangsbeløptype?
+    ) {
         Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløptype")
             .tag("enhet", enhetsnummer.toString()).tag("vedtak_type", vedtakType.name)
             .tag("opprettet_av_app", TokenUtils.hentApplikasjonsnavn() ?: "UKJENT")
@@ -663,6 +696,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             .tag("engangsbeløp_type", engangsbeløpType?.name ?: "NONE")
             .register(meterRegistry).increment()
     }
+
     fun measureVedtak(navn: String, vedtakRequest: OpprettVedtakRequestDto) {
         try {
             val enhetsnummer = vedtakRequest.enhetsnummer

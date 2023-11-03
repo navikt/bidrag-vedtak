@@ -15,11 +15,11 @@ data class Behandlingsreferanse(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "behandlingsreferanse_id")
+    @Column(name = "behandlingsreferanseid")
     val id: Int = 0,
 
     @ManyToOne
-    @JoinColumn(name = "vedtak_id")
+    @JoinColumn(name = "vedtaksid")
     val vedtak: Vedtak = Vedtak(),
 
     @Column(nullable = false, name = "kilde")

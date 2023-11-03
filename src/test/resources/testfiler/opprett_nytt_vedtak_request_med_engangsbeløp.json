@@ -66,11 +66,15 @@
       "kravhaver": "01010511111",
       "mottaker": "01018211111",
       "førsteIndeksreguleringsår": null,
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-01-01",
-          "tilDato": "2019-07-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -82,8 +86,10 @@
           ]
         },
         {
-          "fomDato": "2019-07-01",
-          "tilDato": "2020-01-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -104,11 +110,15 @@
       "kravhaver": "01010511111",
       "mottaker": "01018211111",
       "førsteIndeksreguleringsår": null,
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-06-01",
-          "tilDato": "2019-07-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
@@ -119,8 +129,10 @@
           ]
         },
         {
-          "fomDato": "2019-08-01",
-          "tilDato": "2019-09-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
@@ -135,7 +147,6 @@
   ],
   "engangsbeløpListe": [
     {
-      "lopenr": 1,
       "endrerId": null,
       "type": "SAERTILSKUDD",
       "sak": "SAK1",
@@ -147,7 +158,8 @@
       "resultatkode": "SAERTISLKUDD BEREGNET",
       "referanse": "referanse1",
       "delytelsesId": "delytelsesId1",
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",
@@ -156,7 +168,6 @@
       ]
     },
     {
-      "lopenr": 2,
       "endrerId": 1,
       "type": "SAERTILSKUDD",
       "sak": "SAK2",
@@ -168,7 +179,8 @@
       "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
       "referanse": "referanse2",
       "delytelsesId": "delytelsesId2",
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",

@@ -69,12 +69,15 @@
       "kravhaver": "01010511111",
       "mottaker": "01018211111",
       "førsteIndeksreguleringsår": null,
-      "innkreving": "JA",
-      "endring": "true",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-01-01",
-          "tilDato": "2019-07-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "stønadsendringId": 1,
           "beløp": 3490,
           "valutakode": "NOK",
@@ -87,8 +90,10 @@
           ]
         },
         {
-          "fomDato": "2019-07-01",
-          "tilDato": "2020-01-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "stønadsendringId": 1,
           "beløp": 3520,
           "valutakode": "NOK",
@@ -111,12 +116,15 @@
       "mottaker": "01018211111",
       "førsteIndeksreguleringsår": null,
       "opphortFra": null,
-      "innkreving": "JA",
-      "endring": "true",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-06-01",
-          "tilDato": "2019-07-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
@@ -127,8 +135,10 @@
           ]
         },
         {
-          "fomDato": "2019-08-01",
-          "tilDato": "2019-09-01",
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
           "beløp": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",

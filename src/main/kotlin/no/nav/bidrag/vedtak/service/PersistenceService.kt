@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.service
 import io.micrometer.core.annotation.Timed
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
@@ -91,11 +92,21 @@ class PersistenceService(
         return grunnlagRepository.slettAlleGrunnlagForVedtak(vedtakId)
     }
 
+    fun opprettStønadsendringGrunnlag(stønadsendringGrunnlagBo: StønadsendringGrunnlagBo): StønadsendringGrunnlag {
+        val eksisterendeStønadsendring = stønadsendringRepository.findById(stønadsendringGrunnlagBo.stønadsendringId)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", stønadsendringGrunnlagBo.stønadsendringId)) }
+        val eksisterendeGrunnlag = grunnlagRepository.findById(stønadsendringGrunnlagBo.grunnlagId)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", stønadsendringGrunnlagBo.grunnlagId)) }
+        val nyStønadsendringGrunnlag = StønadsendringGrunnlag(eksisterendeStønadsendring, eksisterendeGrunnlag)
+//    SECURE_LOGGER.info("bidrag-vedtak - nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
+        return stønadsendringGrunnlagRepository.save(nyStønadsendringGrunnlag)
+    }
+
     fun opprettPeriodeGrunnlag(periodeGrunnlagBo: PeriodeGrunnlagBo): PeriodeGrunnlag {
-        val eksisterendePeriode = periodeRepository.findById(periodeGrunnlagBo.periodeId)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", periodeGrunnlagBo.periodeId)) }
-        val eksisterendeGrunnlag = grunnlagRepository.findById(periodeGrunnlagBo.grunnlagId)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", periodeGrunnlagBo.grunnlagId)) }
+        val eksisterendePeriode = periodeRepository.findById(periodeGrunnlagBo.periodeid)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke periode med id %d i databasen", periodeGrunnlagBo.periodeid)) }
+        val eksisterendeGrunnlag = grunnlagRepository.findById(periodeGrunnlagBo.grunnlagsid)
+            .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", periodeGrunnlagBo.grunnlagsid)) }
         val nyttPeriodeGrunnlag = PeriodeGrunnlag(eksisterendePeriode, eksisterendeGrunnlag)
 //    SECURE_LOGGER.info("bidrag-vedtak - nyttPeriodeGrunnlag: $nyttPeriodeGrunnlag")
         return periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)

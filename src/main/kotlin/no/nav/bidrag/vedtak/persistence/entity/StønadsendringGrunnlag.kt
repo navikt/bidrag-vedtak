@@ -7,7 +7,6 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringGrunnlagRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import kotlin.reflect.full.memberProperties
 
 @IdClass(StønadsendringGrunnlagPK::class)
@@ -17,12 +16,12 @@ data class StønadsendringGrunnlag(
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "stønadsendring_id")
+    @JoinColumn(name = "stønadsendringsid")
     val stønadsendring: Stønadsendring = Stønadsendring(),
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "grunnlag_id")
+    @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag()
 
 )
