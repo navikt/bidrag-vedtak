@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.domene.enums.Beslutningstype
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import kotlin.reflect.full.memberProperties
 
@@ -16,29 +15,29 @@ data class Stønadsendring(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stønadsendring_id")
+    @Column(name = "stønadsendringsid")
     val id: Int = 0,
-
-    @Column(nullable = false, name = "type")
-    val type: String = "",
 
     @ManyToOne
     @JoinColumn(name = "vedtak_id")
     val vedtak: Vedtak = Vedtak(),
 
-    @Column(nullable = false, name = "sak_id")
+    @Column(nullable = false, name = "type")
+    val type: String = "",
+
+    @Column(nullable = false, name = "sak")
     val sak: String = "",
 
-    @Column(nullable = false, name = "skyldner_id")
+    @Column(nullable = false, name = "skyldner")
     val skyldner: String = "",
 
-    @Column(nullable = false, name = "kravhaver_id")
+    @Column(nullable = false, name = "kravhaver")
     val kravhaver: String = "",
 
-    @Column(nullable = false, name = "mottaker_id")
+    @Column(nullable = false, name = "mottaker")
     val mottaker: String = "",
 
-    @Column(nullable = true, name = "indeksregulering_aar")
+    @Column(nullable = true, name = "første_indeksreguleringsår")
     val førsteIndeksreguleringsår: Int? = 0,
 
     @Column(nullable = false, name = "innkreving")
@@ -61,9 +60,14 @@ fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak:
         parameters.associateWith { parameter ->
             when (parameter.name) {
                 Stønadsendring::id.name -> 0
-                Stønadsendring::type.name -> type.toString()
                 Stønadsendring::vedtak.name -> eksisterendeVedtak
+                Stønadsendring::type.name -> type.toString()
+                Stønadsendring::sak.name -> sak.toString()
+                Stønadsendring::skyldner.name -> skyldner.toString()
+                Stønadsendring::kravhaver.name -> kravhaver.toString()
+                Stønadsendring::mottaker.name -> mottaker.toString()
                 Stønadsendring::innkreving.name -> innkreving.toString()
+                Stønadsendring::beslutning.name -> beslutning.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
             }
         }

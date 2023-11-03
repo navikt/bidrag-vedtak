@@ -17,18 +17,18 @@ data class Periode(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "periode_id")
+    @Column(name = "periodeid")
     val id: Int = 0,
 
-    @Column(nullable = false, name = "fom_dato")
-    val fomDato: LocalDate = LocalDate.now(),
-
-    @Column(nullable = true, name = "til_dato")
-    val tilDato: LocalDate? = null,
-
     @ManyToOne
-    @JoinColumn(name = "stønadsendring_id")
+    @JoinColumn(name = "stønadsendringsid")
     val stønadsendring: Stønadsendring = Stønadsendring(),
+
+    @Column(nullable = false, name = "fom")
+    val fom: LocalDate = LocalDate.now(),
+
+    @Column(nullable = true, name = "til")
+    val til: LocalDate? = null,
 
     @Column(nullable = true, name = "beløp")
     val beløp: BigDecimal? = BigDecimal.ZERO,
@@ -50,6 +50,8 @@ fun OpprettPeriodeRequestDto.toPeriodeEntity(eksisterendeStønadsendring: Støna
             when (parameter.name) {
                 Periode::id.name -> 0
                 Periode::stønadsendring.name -> eksisterendeStønadsendring
+                Periode::fom.name -> periode.fomDato.verdi
+                Periode::til.name -> periode.tilDato?.verdi
                 else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
             }
         }

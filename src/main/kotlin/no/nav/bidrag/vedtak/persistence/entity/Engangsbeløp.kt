@@ -16,26 +16,26 @@ data class Engangsbeløp(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "engangsbeløp_id")
+    @Column(name = "engangsbeløpsid")
     val id: Int = 0,
 
     @ManyToOne
-    @JoinColumn(name = "vedtak_id")
+    @JoinColumn(name = "vedtaksid")
     val vedtak: Vedtak = Vedtak(),
 
     @Column(nullable = false, name = "type")
     val type: String = "",
 
-    @Column(nullable = false, name = "sak_id")
+    @Column(nullable = false, name = "sak")
     val sak: String = "",
 
-    @Column(nullable = false, name = "skyldner_id")
+    @Column(nullable = false, name = "skyldner")
     val skyldner: String = "",
 
-    @Column(nullable = false, name = "kravhaver_id")
+    @Column(nullable = false, name = "kravhaver")
     val kravhaver: String = "",
 
-    @Column(nullable = false, name = "mottaker_id")
+    @Column(nullable = false, name = "mottaker")
     val mottaker: String = "",
 
     @Column(nullable = true, name = "beløp")
@@ -74,7 +74,12 @@ fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Ved
                 Engangsbeløp::id.name -> 0
                 Engangsbeløp::vedtak.name -> eksisterendeVedtak
                 Engangsbeløp::type.name -> type.toString()
+                Engangsbeløp::sak.name -> sak.toString()
+                Stønadsendring::skyldner.name -> skyldner.toString()
+                Stønadsendring::kravhaver.name -> kravhaver.toString()
+                Stønadsendring::mottaker.name -> mottaker.toString()
                 Engangsbeløp::innkreving.name -> innkreving.toString()
+                Stønadsendring::beslutning.name -> beslutning.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toEngangsbeløpEntity)
             }
         }

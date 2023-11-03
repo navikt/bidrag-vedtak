@@ -12,6 +12,7 @@ import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpRepository
 import no.nav.bidrag.vedtak.persistence.repository.GrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.PeriodeRepository
+import no.nav.bidrag.vedtak.persistence.repository.StønadsendringGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
@@ -66,6 +67,9 @@ class VedtakControllerTest {
     private lateinit var periodeRepository: PeriodeRepository
 
     @Autowired
+    private lateinit var stønadsendringGrunnlagRepository: StønadsendringGrunnlagRepository
+
+    @Autowired
     private lateinit var stønadsendringRepository: StønadsendringRepository
 
     @Autowired
@@ -87,6 +91,7 @@ class VedtakControllerTest {
         engangsbeløpGrunnlagRepository.deleteAll()
         engangsbeløpRepository.deleteAll()
         periodeGrunnlagRepository.deleteAll()
+        stønadsendringGrunnlagRepository.deleteAll()
         grunnlagRepository.deleteAll()
         periodeRepository.deleteAll()
         stønadsendringRepository.deleteAll()

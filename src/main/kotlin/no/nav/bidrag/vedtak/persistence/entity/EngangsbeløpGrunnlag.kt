@@ -15,12 +15,12 @@ data class EngangsbeløpGrunnlag(
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "engangsbeløp_id")
+    @JoinColumn(name = "engangsbeløpsid")
     val engangsbeløp: Engangsbeløp = Engangsbeløp(),
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "grunnlag_id")
+    @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag()
 
 )

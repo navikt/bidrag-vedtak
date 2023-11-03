@@ -8,13 +8,13 @@ import org.springframework.data.repository.CrudRepository
 interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrunnlag, StønadsendringGrunnlagPK?> {
 
     @Query(
-        "select pg from StønadsendringGrunnlag pg " +
-            "where pg.stønadsendring.id = :stønadsendringId and pg.grunnlag.id = :grunnlagId"
+        "select sg from StønadsendringGrunnlag sg " +
+            "where sg.stønadsendring.id = :stønadsendringId and sg.grunnlag.id = :grunnlagId"
     )
     fun hentStønadsendringGrunnlag(stønadsendringId: Int, grunnlagId: Int): StønadsendringGrunnlag
 
     @Query(
-        "select pg from StønadsendringGrunnlag pg where pg.stønadsendring.id = :stønadsendringId order by pg.grunnlag.id"
+        "select sg from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringId order by sg.grunnlag.id"
     )
     fun hentAlleGrunnlagForStønadsendring(stønadsendringId: Int): List<StønadsendringGrunnlag>
 }
