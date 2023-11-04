@@ -33,10 +33,10 @@ data class Vedtak(
     @Column(nullable = false, name = "vedtakstidspunkt")
     val vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
 
-    @Column(nullable = false, name = "enhet_id")
+    @Column(nullable = false, name = "enhetsnummer")
     val enhetsnummer: String = "",
 
-    @Column(nullable = true, name = "utsatt_til_dato")
+    @Column(nullable = true, name = "innkreving_utsatt_til_dato")
     val innkrevingUtsattTilDato: LocalDate? = LocalDate.now(),
 
     @Column(nullable = true, name = "fastsatt_i_land")

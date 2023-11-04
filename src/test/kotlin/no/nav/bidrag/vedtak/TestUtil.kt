@@ -704,11 +704,11 @@ class TestUtil {
             type: String = Grunnlagstype.INNTEKT.toString(),
             innhold: String =
                 """{
-          "rolle": "BIDRAGSMOTTAKER",
-          "datoFom": "2021-01-01",
+            "rolle": "BIDRAGSMOTTAKER",
+            "datoFom": "2021-01-01",
             "datoTil": null,
-         "sivilstandKode": "sivilstandkode1"
-        }"""
+            "sivilstandKode": "sivilstandkode1"
+                }"""
 
         ) = Grunnlag(
             id = grunnlagsid,
@@ -781,8 +781,8 @@ class TestUtil {
             engangsbeløpId: Int = (1..100).random(),
             grunnlagId: Int = (1..100).random()
         ) = EngangsbeløpGrunnlagBo(
-            engangsbeløpId = engangsbeløpId,
-            grunnlagId = grunnlagId
+            engangsbeløpsid = engangsbeløpId,
+            grunnlagsid = grunnlagId
         )
 
         fun byggEngangsbeløpGrunnlag(
@@ -794,12 +794,12 @@ class TestUtil {
         )
 
         fun byggBehandlingsreferanse(
-            behandlingsreferanseId: Int = (1..100).random(),
+            behandlingsreferanseid: Int = (1..100).random(),
             vedtak: Vedtak = byggVedtak(),
             kilde: String = "BISYS_SOKNAD",
             referanse: String = "Bisysreferanse01"
         ) = Behandlingsreferanse(
-            id = behandlingsreferanseId,
+            id = behandlingsreferanseid,
             vedtak = vedtak,
             kilde = kilde,
             referanse = referanse

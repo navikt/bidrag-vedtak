@@ -8,7 +8,7 @@ env:
 
 jobs:
   build-deploy:
-    name: "Build and deploy"
+    name: "Build and deploy syntetisk"
     permissions:
       contents: "read"
       id-token: "write"
@@ -32,7 +32,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yaml
           VARS: .nais/main.yaml
-          IMAGE: ${{ needs.build_and_deploy.outputs.image }}
+          IMAGE: ${{ needs.build-deploy.outputs.image }}
 
   run_cucumber_tests-main:
     runs-on: ubuntu-latest

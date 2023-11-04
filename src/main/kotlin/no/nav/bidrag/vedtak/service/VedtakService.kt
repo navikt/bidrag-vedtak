@@ -674,8 +674,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 throw IllegalArgumentException(feilmelding)
             } else {
                 val engangsbeløpGrunnlagBo = EngangsbeløpGrunnlagBo(
-                    engangsbeløpId = engangsbeløpId,
-                    grunnlagId = grunnlagId
+                    engangsbeløpsid = engangsbeløpId,
+                    grunnlagsid = grunnlagId
                 )
                 persistenceService.opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo)
             }

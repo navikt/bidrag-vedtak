@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema
 data class EngangsbeløpGrunnlagBo(
 
-    @Schema(description = "Engangsbeløp-id")
-    val engangsbeløpId: Int,
+    @Schema(description = "Engangsbeløpsid")
+    val engangsbeløpsid: Int,
 
-    @Schema(description = "Grunnlag-id")
-    val grunnlagId: Int
+    @Schema(description = "Grunnlagsid")
+    val grunnlagsid: Int
 
 )

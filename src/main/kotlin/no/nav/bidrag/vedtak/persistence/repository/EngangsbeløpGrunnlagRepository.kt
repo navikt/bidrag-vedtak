@@ -9,12 +9,12 @@ interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag
 
     @Query(
         "select ebg from EngangsbeløpGrunnlag ebg " +
-            "where ebg.engangsbeløp.id = :engangsbeløpId and ebg.grunnlag.id = :grunnlagId"
+            "where ebg.engangsbeløp.id = :engangsbeløpsid and ebg.grunnlag.id = :grunnlagsid"
     )
-    fun hentEngangsbeløpGrunnlag(engangsbeløpId: Int, grunnlagId: Int): EngangsbeløpGrunnlag
+    fun hentEngangsbeløpGrunnlag(engangsbeløpsid: Int, grunnlagsid: Int): EngangsbeløpGrunnlag
 
     @Query(
-        "select ebg from EngangsbeløpGrunnlag ebg where ebg.engangsbeløp.id = :engangsbeløpId order by ebg.grunnlag.id"
+        "select ebg from EngangsbeløpGrunnlag ebg where ebg.engangsbeløp.id = :engangsbeløpsid order by ebg.grunnlag.id"
     )
-    fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpId: Int): List<EngangsbeløpGrunnlag>
+    fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpsid: Int): List<EngangsbeløpGrunnlag>
 }

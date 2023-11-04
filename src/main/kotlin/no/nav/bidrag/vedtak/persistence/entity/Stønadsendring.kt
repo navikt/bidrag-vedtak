@@ -19,7 +19,7 @@ data class Stønadsendring(
     val id: Int = 0,
 
     @ManyToOne
-    @JoinColumn(name = "vedtak_id")
+    @JoinColumn(name = "vedtaksid")
     val vedtak: Vedtak = Vedtak(),
 
     @Column(nullable = false, name = "type")

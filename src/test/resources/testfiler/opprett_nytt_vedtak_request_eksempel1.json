@@ -8,7 +8,7 @@
   "grunnlagListe": [
     {
       "referanse": "BM-LIGS-19",
-      "vedtakId": 1,
+      "vedtaksid": 1,
       "type": "INNTEKT",
       "innhold": {
         "inntektDatoFraTil": {
@@ -21,7 +21,7 @@
     },
     {
       "referanse": "BM-LIGN-19",
-      "vedtakId": 1,
+      "vedtaksid": 1,
       "type": "INNTEKT",
       "innhold": {
         "inntektDatoFraTil": {
@@ -63,7 +63,7 @@
   "stønadsendringListe": [
     {
       "type": "BIDRAG",
-      "vedtakId": 1,
+      "vedtaksid": 1,
       "sak": "SAK-001",
       "skyldner": "01018011111",
       "kravhaver": "01010511111",
@@ -78,7 +78,7 @@
             "fom": "2019-01",
             "til": "2019-07"
           },
-          "stønadsendringId": 1,
+          "stønadsendringsid": 1,
           "beløp": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -94,7 +94,7 @@
             "fom": "2019-01",
             "til": "2019-07"
           },
-          "stønadsendringId": 1,
+          "stønadsendringsid": 1,
           "beløp": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
@@ -115,7 +115,6 @@
       "kravhaver": "01010511111",
       "mottaker": "01018211111",
       "førsteIndeksreguleringsår": null,
-      "opphortFra": null,
       "innkreving": "MED_INNKREVING",
       "beslutning": "ENDRING",
       "grunnlagReferanseListe": [],

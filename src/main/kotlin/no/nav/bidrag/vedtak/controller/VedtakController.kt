@@ -62,10 +62,10 @@ class VedtakController(private val vedtakService: VedtakService) {
     )
     fun hentVedtak(
         @PathVariable @NotNull
-        vedtakId: Int
+        vedtaksid: Int
     ): ResponseEntity<VedtakDto> {
-        val vedtakFunnet = vedtakService.hentVedtak(vedtakId)
-        LOGGER.info("Følgende vedtak ble hentet: $vedtakId")
+        val vedtakFunnet = vedtakService.hentVedtak(vedtaksid)
+        LOGGER.info("Følgende vedtak ble hentet: $vedtaksid")
         SECURE_LOGGER.info("Følgende vedtak ble hentet: $vedtakFunnet")
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
@@ -84,11 +84,11 @@ class VedtakController(private val vedtakService: VedtakService) {
     )
     fun oppdaterVedtak(
         @PathVariable @NotNull
-        vedtakId: Int,
+        vedtaksid: Int,
         @Valid @RequestBody
         request: OpprettVedtakRequestDto
     ): ResponseEntity<Int>? {
-        val vedtakOppdatert = vedtakService.oppdaterVedtak(vedtakId, request)
+        val vedtakOppdatert = vedtakService.oppdaterVedtak(vedtaksid, request)
         LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert")
         SECURE_LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert basert på request: $request")
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
@@ -96,8 +96,8 @@ class VedtakController(private val vedtakService: VedtakService) {
 
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
-        const val HENT_VEDTAK = "/vedtak/{vedtakId}"
-        const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtakId}"
+        const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
+        const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }

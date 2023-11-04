@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository
 interface EngangsbeløpRepository : CrudRepository<Engangsbeløp, Int?> {
 
     @Query(
-        "select eb from Engangsbeløp eb where eb.vedtak.id = :vedtakId order by eb.id"
+        "select eb from Engangsbeløp eb where eb.vedtak.id = :vedtaksid order by eb.id"
     )
-    fun hentAlleEngangsbeløpForVedtak(vedtakId: Int): List<Engangsbeløp>
+    fun hentAlleEngangsbeløpForVedtak(vedtaksid: Int): List<Engangsbeløp>
 }
