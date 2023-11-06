@@ -12,6 +12,9 @@ import jakarta.persistence.ManyToOne
 import no.nav.bidrag.domene.enums.Grunnlagstype
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.annotations.Type
+import org.hibernate.type.SqlTypes
 import kotlin.reflect.full.memberProperties
 
 @Entity
@@ -32,13 +35,15 @@ data class Grunnlag(
     @Column(nullable = false, name = "type")
     val type: String = "",
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false, name = "innhold")
-    val innhold: String = ""
+    val innhold: String = "",
 
 )
 
 fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag) {
     val propertiesByName = OpprettGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
+    val konverter = ObjectMapper()
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
@@ -58,7 +63,7 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
         parameters.associateWith { parameter ->
             when (parameter.name) {
                 GrunnlagDto::type.name -> Grunnlagstype.valueOf(type)
-                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
+                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold.toString())
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
             }
         }
