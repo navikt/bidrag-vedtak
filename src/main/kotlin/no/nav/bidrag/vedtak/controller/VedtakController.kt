@@ -45,7 +45,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ): ResponseEntity<Int>? {
         val vedtakOpprettet = vedtakService.opprettVedtak(request)
         LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
-        SECURE_LOGGER.info("Følgende request for å opprettete vedtak mottatt: $request")
+        SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: $request")
         return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
     }
 
