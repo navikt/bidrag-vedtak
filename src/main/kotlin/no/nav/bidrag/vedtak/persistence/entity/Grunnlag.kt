@@ -13,7 +13,6 @@ import no.nav.bidrag.domene.enums.Grunnlagstype
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
 import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.annotations.Type
 import org.hibernate.type.SqlTypes
 import kotlin.reflect.full.memberProperties
 
@@ -37,7 +36,7 @@ data class Grunnlag(
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false, name = "innhold")
-    val innhold: String = "",
+    val innhold: String = ""
 
 )
 
