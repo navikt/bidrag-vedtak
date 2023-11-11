@@ -63,9 +63,9 @@ fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak:
                 Stønadsendring::vedtak.name -> eksisterendeVedtak
                 Stønadsendring::type.name -> type.toString()
                 Stønadsendring::sak.name -> sak.toString()
-                Stønadsendring::skyldner.name -> skyldner.toString()
-                Stønadsendring::kravhaver.name -> kravhaver.toString()
-                Stønadsendring::mottaker.name -> mottaker.toString()
+                Stønadsendring::skyldner.name -> skyldner.verdi
+                Stønadsendring::kravhaver.name -> kravhaver.verdi
+                Stønadsendring::mottaker.name -> mottaker.verdi
                 Stønadsendring::innkreving.name -> innkreving.toString()
                 Stønadsendring::beslutning.name -> beslutning.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
