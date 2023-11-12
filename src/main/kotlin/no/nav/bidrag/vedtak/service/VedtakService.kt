@@ -355,10 +355,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             .filter { stønadsendringRequest ->
                 eksisterendeStønadsendringListe.any {
                     stønadsendringRequest.type.toString() == it.type &&
-                        stønadsendringRequest.sak.toString() == it.sak &&
-                        stønadsendringRequest.skyldner.toString() == it.skyldner &&
-                        stønadsendringRequest.kravhaver.toString() == it.kravhaver &&
-                        stønadsendringRequest.mottaker.toString() == it.mottaker &&
+                        stønadsendringRequest.sak.verdi == it.sak &&
+                        stønadsendringRequest.skyldner.verdi == it.skyldner &&
+                        stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
+                        stønadsendringRequest.mottaker.verdi == it.mottaker &&
                         stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
                         stønadsendringRequest.innkreving.toString() == it.innkreving &&
                         stønadsendringRequest.beslutning.toString() == it.beslutning &&

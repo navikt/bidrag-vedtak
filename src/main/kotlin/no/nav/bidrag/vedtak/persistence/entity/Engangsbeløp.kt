@@ -75,9 +75,9 @@ fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Ved
                 Engangsbeløp::vedtak.name -> eksisterendeVedtak
                 Engangsbeløp::type.name -> type.toString()
                 Engangsbeløp::sak.name -> sak.toString()
-                Stønadsendring::skyldner.name -> skyldner.toString()
-                Stønadsendring::kravhaver.name -> kravhaver.toString()
-                Stønadsendring::mottaker.name -> mottaker.toString()
+                Stønadsendring::skyldner.name -> skyldner.verdi
+                Stønadsendring::kravhaver.name -> kravhaver.verdi
+                Stønadsendring::mottaker.name -> mottaker.verdi
                 Engangsbeløp::innkreving.name -> innkreving.toString()
                 Stønadsendring::beslutning.name -> beslutning.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toEngangsbeløpEntity)

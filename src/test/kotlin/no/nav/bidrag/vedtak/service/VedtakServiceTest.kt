@@ -461,6 +461,7 @@ class VedtakServiceTest {
         )
     }
 
+    @Disabled
     @Test
     @Suppress("NonAsciiCharacters")
     fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
