@@ -8,21 +8,21 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.io.Serializable
 
-@IdClass(EngangsbelopGrunnlagPK::class)
+@IdClass(EngangsbeløpGrunnlagPK::class)
 @Entity
-@Table(name = "engangsbelopgrunnlag")
-data class EngangsbelopGrunnlag(
+@Table(name = "engangsbeløpgrunnlag")
+data class EngangsbeløpGrunnlag(
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "engangsbelop_id")
-    val engangsbelop: Engangsbelop = Engangsbelop(),
+    @JoinColumn(name = "engangsbeløpsid")
+    val engangsbeløp: Engangsbeløp = Engangsbeløp(),
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "grunnlag_id")
+    @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag()
 
 )
 
-data class EngangsbelopGrunnlagPK(val engangsbelop: Int = 0, val grunnlag: Int = 0) : Serializable
+data class EngangsbeløpGrunnlagPK(val engangsbeløp: Int = 0, val grunnlag: Int = 0) : Serializable

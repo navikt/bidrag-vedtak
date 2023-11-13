@@ -3,8 +3,8 @@
   "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
   "opprettetAvNavn": "Saksbehandler1",
-  "vedtakTidspunkt": "2020-01-01T23:34:55.869121094",
-  "enhetId": "4812",
+  "vedtakstidspunkt": "2020-01-01T23:34:55.869121094",
+  "enhetsnummer": "4812",
   "grunnlagListe": [
     {
       "referanse": "BM-LIGS-19",
@@ -58,20 +58,24 @@
       }
     }
   ],
-  "stonadsendringListe": [
+  "stønadsendringListe": [
     {
       "type": "BIDRAG",
-      "sakId": "SAK-001",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "indeksreguleringAar": null,
-      "innkreving": "JA",
+      "sak": "SAK-001",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "førsteIndeksreguleringsår": null,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-01-01",
-          "tilDato": "2019-07-01",
-          "belop": 3490,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "beløp": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "referanse": "referanse1",
@@ -82,9 +86,11 @@
           ]
         },
         {
-          "fomDato": "2019-07-01",
-          "tilDato": "2020-01-01",
-          "belop": 3520,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "beløp": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "referanse": "referanse2",
@@ -99,17 +105,21 @@
     },
     {
       "type": "FORSKUDD",
-      "sakId": "SAK-001",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "indeksreguleringAar": null,
-      "innkreving": "JA",
+      "sak": "SAK-001",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "førsteIndeksreguleringsår": null,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-06-01",
-          "tilDato": "2019-07-01",
-          "belop": 4240,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "beløp": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
           "referanse": "referanse3",
@@ -119,9 +129,11 @@
           ]
         },
         {
-          "fomDato": "2019-08-01",
-          "tilDato": "2019-09-01",
-          "belop": 3410,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "beløp": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_BEREGNET",
           "referanse": "referanse4",
@@ -133,21 +145,21 @@
       ]
     }
   ],
-  "engangsbelopListe": [
+  "engangsbeløpListe": [
     {
-      "lopenr": 1,
       "endrerId": null,
       "type": "SAERTILSKUDD",
-      "sakId": "SAK1",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "belop": 3490,
+      "sak": "SAK1",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "beløp": 3490,
       "valutakode": "NOK",
       "resultatkode": "SAERTISLKUDD BEREGNET",
       "referanse": "referanse1",
       "delytelsesId": "delytelsesId1",
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",
@@ -156,19 +168,19 @@
       ]
     },
     {
-      "lopenr": 2,
       "endrerId": 1,
       "type": "SAERTILSKUDD",
-      "sakId": "SAK2",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "belop": 1700,
+      "sak": "SAK2",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "beløp": 1700,
       "valutakode": "NOK",
       "resultatkode": "BELOP_SAERTILSKUDD_ENDRET_ETTER_KLAGE",
       "referanse": "referanse2",
       "delytelsesId": "delytelsesId2",
-      "innkreving": "JA",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
       "grunnlagReferanseListe": [
         "BM-LIGS-19",
         "BM-LIGN-19",

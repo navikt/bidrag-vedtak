@@ -9,9 +9,11 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.domain.enums.GrunnlagType
+import no.nav.bidrag.domene.enums.Grunnlagstype
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import kotlin.reflect.full.memberProperties
 
 @Entity
@@ -19,19 +21,20 @@ data class Grunnlag(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "grunnlag_id")
+    @Column(name = "grunnlagsid")
     val id: Int = 0,
 
     @Column(nullable = false, name = "referanse")
     val referanse: String = "",
 
     @ManyToOne
-    @JoinColumn(name = "vedtak_id")
+    @JoinColumn(name = "vedtaksid")
     val vedtak: Vedtak = Vedtak(),
 
     @Column(nullable = false, name = "type")
     val type: String = "",
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false, name = "innhold")
     val innhold: String = ""
 
@@ -39,6 +42,7 @@ data class Grunnlag(
 
 fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag) {
     val propertiesByName = OpprettGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
+    val konverter = ObjectMapper()
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
@@ -57,8 +61,8 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
-                GrunnlagDto::type.name -> GrunnlagType.valueOf(type)
-                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
+                GrunnlagDto::type.name -> Grunnlagstype.valueOf(type)
+                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold.toString())
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
             }
         }

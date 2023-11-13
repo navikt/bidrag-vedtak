@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository
 interface PeriodeRepository : CrudRepository<Periode, Int?> {
 
     @Query(
-        "select pe from Periode pe where pe.stonadsendring.id = :stonadsendringsId order by pe.fomDato, pe.tilDato"
+        "select pe from Periode pe where pe.stønadsendring.id = :stønadsendringsid order by pe.fom, pe.til"
     )
-    fun hentAllePerioderForStonadsendring(stonadsendringsId: Int): List<Periode>
+    fun hentAllePerioderForStønadsendring(stønadsendringsid: Int): List<Periode>
 }

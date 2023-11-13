@@ -3,12 +3,12 @@
   "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
   "opprettetAvNavn": "Saksbehandler1",
-  "vedtakTidspunkt": "2020-01-01T23:34:55.869121094",
-  "enhetId": "4812",
+  "vedtakstidspunkt": "2020-01-01T23:34:55.869121094",
+  "enhetsnummer": "4812",
   "grunnlagListe": [
     {
       "referanse": "BM-LIGS-19",
-      "vedtakId": 1,
+      "vedtaksid": 1,
       "type": "INNTEKT",
       "innhold": {
         "inntektDatoFraTil": {
@@ -21,7 +21,7 @@
     },
     {
       "referanse": "BM-LIGN-19",
-      "vedtakId": 1,
+      "vedtaksid": 1,
       "type": "INNTEKT",
       "innhold": {
         "inntektDatoFraTil": {
@@ -60,23 +60,26 @@
       }
     }
   ],
-  "stonadsendringListe": [
+  "stønadsendringListe": [
     {
       "type": "BIDRAG",
-      "vedtakId": 1,
-      "sakId": "SAK-001",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "indeksreguleringAar": null,
-      "innkreving": "JA",
-      "endring": "true",
+      "vedtaksid": 1,
+      "sak": "SAK-001",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "førsteIndeksreguleringsår": null,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-01-01",
-          "tilDato": "2019-07-01",
-          "stonadsendringId": 1,
-          "belop": 3490,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "stønadsendringsid": 1,
+          "beløp": 3490,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "referanse": "referanse1",
@@ -87,10 +90,12 @@
           ]
         },
         {
-          "fomDato": "2019-07-01",
-          "tilDato": "2020-01-01",
-          "stonadsendringId": 1,
-          "belop": 3520,
+          "periode": {
+            "fom": "2019-07",
+            "til": "2019-08"
+          },
+          "stønadsendringsid": 1,
+          "beløp": 3520,
           "valutakode": "NOK",
           "resultatkode": "KOSTNADSBEREGNET_BIDRAG",
           "referanse": "referanse2",
@@ -105,19 +110,21 @@
     },
     {
       "type": "FORSKUDD",
-      "sakId": "SAK-001",
-      "skyldnerId": "01018011111",
-      "kravhaverId": "01010511111",
-      "mottakerId": "01018211111",
-      "indeksreguleringAar": null,
-      "opphortFra": null,
-      "innkreving": "JA",
-      "endring": "true",
+      "sak": "SAK-001",
+      "skyldner": "01018011111",
+      "kravhaver": "01010511111",
+      "mottaker": "01018211111",
+      "førsteIndeksreguleringsår": null,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "grunnlagReferanseListe": [],
       "periodeListe": [
         {
-          "fomDato": "2019-06-01",
-          "tilDato": "2019-07-01",
-          "belop": 4240,
+          "periode": {
+            "fom": "2019-01",
+            "til": "2019-07"
+          },
+          "beløp": 4240,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
           "referanse": "referanse1",
@@ -127,9 +134,11 @@
           ]
         },
         {
-          "fomDato": "2019-08-01",
-          "tilDato": "2019-09-01",
-          "belop": 3410,
+          "periode": {
+            "fom": "2019-07",
+            "til": "2019-08"
+          },
+          "beløp": 3410,
           "valutakode": "NOK",
           "resultatkode": "FORSKUDD_INNVILGET",
           "referanse": "referanse2",

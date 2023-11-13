@@ -34,9 +34,9 @@ jobs:
           VARS: .nais/main.yaml
           IMAGE: ${{ needs.build-deploy.outputs.image }}
 
-  run_cucumber_tests-main:
+  run_cucumber_tests-syntetisk:
     runs-on: ubuntu-latest
-    name: Run cucumber tests main
+    name: Run cucumber tests syntetisk
     needs: build-deploy
     if: ${{ always() && needs.build-deploy.outputs.deploy_suksess == 'true' }}
 

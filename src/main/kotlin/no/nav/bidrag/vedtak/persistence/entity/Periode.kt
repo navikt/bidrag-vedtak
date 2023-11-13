@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakPeriodeRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.reflect.full.memberProperties
@@ -17,21 +17,21 @@ data class Periode(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "periode_id")
+    @Column(name = "periodeid")
     val id: Int = 0,
 
-    @Column(nullable = false, name = "fom_dato")
-    val fomDato: LocalDate = LocalDate.now(),
-
-    @Column(nullable = true, name = "til_dato")
-    val tilDato: LocalDate? = null,
-
     @ManyToOne
-    @JoinColumn(name = "stonadsendring_id")
-    val stonadsendring: Stonadsendring = Stonadsendring(),
+    @JoinColumn(name = "stønadsendringsid")
+    val stønadsendring: Stønadsendring = Stønadsendring(),
 
-    @Column(nullable = true, name = "belop")
-    val belop: BigDecimal? = BigDecimal.ZERO,
+    @Column(nullable = false, name = "fom")
+    val fom: LocalDate = LocalDate.now(),
+
+    @Column(nullable = true, name = "til")
+    val til: LocalDate? = null,
+
+    @Column(nullable = true, name = "beløp")
+    val beløp: BigDecimal? = BigDecimal.ZERO,
 
     @Column(nullable = true, name = "valutakode")
     val valutakode: String? = "",
@@ -43,13 +43,15 @@ data class Periode(
     val delytelseId: String? = ""
 )
 
-fun OpprettVedtakPeriodeRequestDto.toPeriodeEntity(eksisterendeStonadsendring: Stonadsendring) = with(::Periode) {
-    val propertiesByName = OpprettVedtakPeriodeRequestDto::class.memberProperties.associateBy { it.name }
+fun OpprettPeriodeRequestDto.toPeriodeEntity(eksisterendeStønadsendring: Stønadsendring) = with(::Periode) {
+    val propertiesByName = OpprettPeriodeRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
                 Periode::id.name -> 0
-                Periode::stonadsendring.name -> eksisterendeStonadsendring
+                Periode::stønadsendring.name -> eksisterendeStønadsendring
+                Periode::fom.name -> periode.fomDato.verdi
+                Periode::til.name -> periode.tilDato?.verdi
                 else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
             }
         }

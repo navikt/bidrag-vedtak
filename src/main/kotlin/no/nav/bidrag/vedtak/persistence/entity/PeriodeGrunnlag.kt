@@ -6,7 +6,7 @@ import jakarta.persistence.IdClass
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakPeriodeGrunnlagRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeGrunnlagRequestDto
 import kotlin.reflect.full.memberProperties
 
 @IdClass(PeriodeGrunnlagPK::class)
@@ -16,18 +16,18 @@ data class PeriodeGrunnlag(
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "periode_id")
+    @JoinColumn(name = "periodeid")
     val periode: Periode = Periode(),
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "grunnlag_id")
+    @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag()
 
 )
 
-fun OpprettVedtakPeriodeGrunnlagRequestDto.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
-    val propertiesByName = OpprettVedtakPeriodeGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
+fun OpprettPeriodeGrunnlagRequestDto.toPeriodeGrunnlagEntity(eksisterendePeriode: Periode, eksisterendeGrunnlag: Grunnlag) = with(::PeriodeGrunnlag) {
+    val propertiesByName = OpprettPeriodeGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
