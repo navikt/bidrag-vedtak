@@ -355,7 +355,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             .filter { stønadsendringRequest ->
                 eksisterendeStønadsendringListe.any {
                     stønadsendringRequest.type.toString() == it.type &&
-                        stønadsendringRequest.sak.verdi == it.sak &&
+                        stønadsendringRequest.sak.toString() == it.sak &&
                         stønadsendringRequest.skyldner.verdi == it.skyldner &&
                         stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
                         stønadsendringRequest.mottaker.verdi == it.mottaker &&
@@ -377,7 +377,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Sorterer listene likt for å kunne sammenligne perioder
         val sortertStønadsendringRequestListe = vedtakRequest.stønadsendringListe!!
-            .sortedWith(compareBy({ it.type }, { it.skyldner }, { it.kravhaver }, { it.sak }))
+            .sortedWith(compareBy({ it.type.toString() }, { it.skyldner.verdi }, { it.kravhaver.verdi }, { it.sak.toString() }))
 
         for ((i, stønadsendring) in eksisterendeStønadsendringListe.withIndex()) {
             if (!perioderMatcher(stønadsendring.id, sortertStønadsendringRequestListe[i])) {

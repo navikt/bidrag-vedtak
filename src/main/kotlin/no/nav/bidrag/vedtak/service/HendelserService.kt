@@ -96,7 +96,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                     innkreving = it.innkreving,
                     beslutning = it.beslutning,
                     omgjørVedtakId = it.omgjørVedtakId,
-                    referanse = it.referanse,
+                    referanse = it.referanse ?: "",
                     delytelseId = it.delytelseId,
                     eksternReferanse = it.eksternReferanse
                 )
