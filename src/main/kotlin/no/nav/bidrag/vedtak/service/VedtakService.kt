@@ -125,11 +125,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtak: Vedtak,
         grunnlagIdRefMap: Map<String, Int>
     ): Engangsbeløp {
-        var referanse = engangsbeløpRequest.referanse ?: genererUnikReferanse()
-        while (!persistenceService.referanseErUnik(referanse)) {
-            referanse = genererUnikReferanse()
-        }
-
+        // Hvis referanse ikke er angitt så blir det generert en referanse. Den må være unik innenfor vedtaket.
+        val referanse = engangsbeløpRequest.referanse ?: genererUnikReferanse(vedtak.id)
         val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak, referanse))
 
         // EngangsbeløpGrunnlag
@@ -719,8 +716,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
     }
 
-    private fun genererUnikReferanse(): String {
-        return UUID.randomUUID().toString()
+    private fun genererUnikReferanse(vedtaksid: Int): String {
+        var referanse = UUID.randomUUID().toString()
+        while (!persistenceService.referanseErUnik(vedtaksid, referanse)) {
+            referanse = genererUnikReferanse(vedtaksid)
+        }
+        return referanse
     }
 
     companion object {

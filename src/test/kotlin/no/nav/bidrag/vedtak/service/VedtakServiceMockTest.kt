@@ -41,6 +41,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import java.math.BigDecimal
 
 @DisplayName("VedtakServiceMockTest")
@@ -86,9 +87,6 @@ class VedtakServiceMockTest {
     @Captor
     private lateinit var behandlingsreferanseCaptor: ArgumentCaptor<Behandlingsreferanse>
 
-    @Captor
-    private lateinit var referanseCaptor: ArgumentCaptor<String>
-
     @Test
     fun `skal opprette nytt vedtak`() {
         Mockito.`when`(persistenceServiceMock.opprettVedtak(MockitoHelper.capture(vedtakCaptor)))
@@ -109,7 +107,6 @@ class VedtakServiceMockTest {
             .thenReturn(byggEngangsbeløpGrunnlag())
         Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
             .thenReturn(byggBehandlingsreferanse())
-        Mockito.`when`(persistenceServiceMock.referanseErUnik(MockitoHelper.capture(referanseCaptor))).thenReturn(true)
 
         val opprettVedtakRequestDto = byggVedtakRequest()
         val nyttVedtakOpprettet = vedtakService.opprettVedtak(opprettVedtakRequestDto)

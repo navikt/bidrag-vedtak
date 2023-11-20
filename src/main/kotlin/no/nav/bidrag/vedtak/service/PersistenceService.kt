@@ -150,9 +150,8 @@ class PersistenceService(
         return behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
     }
 
-    fun referanseErUnik(referanse: String): Boolean {
-        return engangsbeløpRepository.sjekkReferanse(referanse).isNullOrBlank()
-//        return true
+    fun referanseErUnik(vedtaksid: Int, referanse: String): Boolean {
+        return engangsbeløpRepository.sjekkReferanse(vedtaksid, referanse).isNullOrBlank()
     }
 
     companion object {
