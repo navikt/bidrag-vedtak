@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 @Transactional
@@ -123,7 +125,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtak: Vedtak,
         grunnlagIdRefMap: Map<String, Int>
     ): Engangsbeløp {
-        val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak))
+        var referanse = engangsbeløpRequest.referanse ?: genererUnikReferanse()
+        while (!persistenceService.referanseErUnik(referanse)) {
+            referanse = genererUnikReferanse()
+        }
+
+        val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak, referanse))
 
         // EngangsbeløpGrunnlag
         engangsbeløpRequest.grunnlagReferanseListe.forEach {
@@ -710,6 +717,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         } catch (e: Exception) {
             LOGGER.error("Det skjedde en feil ved telling av metrikker", e)
         }
+    }
+
+    private fun genererUnikReferanse(): String {
+        return UUID.randomUUID().toString()
     }
 
     companion object {

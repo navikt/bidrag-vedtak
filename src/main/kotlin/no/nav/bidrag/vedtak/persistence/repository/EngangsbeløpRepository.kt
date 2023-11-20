@@ -10,4 +10,9 @@ interface EngangsbeløpRepository : CrudRepository<Engangsbeløp, Int?> {
         "select eb from Engangsbeløp eb where eb.vedtak.id = :vedtaksid order by eb.id"
     )
     fun hentAlleEngangsbeløpForVedtak(vedtaksid: Int): List<Engangsbeløp>
+
+    @Query(
+        "select eb.referanse from Engangsbeløp eb where eb.referanse = :referanse"
+    )
+    fun sjekkReferanse(referanse: String): String?
 }

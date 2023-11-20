@@ -150,6 +150,10 @@ class PersistenceService(
         return behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
     }
 
+    fun referanseErUnik(referanse: String): Boolean {
+        return engangsbeløpRepository.sjekkReferanse(referanse).isNullOrBlank()
+    }
+
     companion object {
         private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
     }

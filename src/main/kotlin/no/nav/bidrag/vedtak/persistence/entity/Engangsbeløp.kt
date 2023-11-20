@@ -66,7 +66,7 @@ data class Engangsbeløp(
     val eksternReferanse: String? = ""
 )
 
-fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Vedtak) = with(::Engangsbeløp) {
+fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Vedtak, referanse: String) = with(::Engangsbeløp) {
     val propertiesByName = OpprettEngangsbeløpRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
@@ -75,11 +75,12 @@ fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Ved
                 Engangsbeløp::vedtak.name -> eksisterendeVedtak
                 Engangsbeløp::type.name -> type.toString()
                 Engangsbeløp::sak.name -> sak.toString()
-                Stønadsendring::skyldner.name -> skyldner.verdi
-                Stønadsendring::kravhaver.name -> kravhaver.verdi
-                Stønadsendring::mottaker.name -> mottaker.verdi
+                Engangsbeløp::skyldner.name -> skyldner.verdi
+                Engangsbeløp::kravhaver.name -> kravhaver.verdi
+                Engangsbeløp::mottaker.name -> mottaker.verdi
                 Engangsbeløp::innkreving.name -> innkreving.toString()
-                Stønadsendring::beslutning.name -> beslutning.toString()
+                Engangsbeløp::beslutning.name -> beslutning.toString()
+                Engangsbeløp::referanse.name -> referanse
                 else -> propertiesByName[parameter.name]?.get(this@toEngangsbeløpEntity)
             }
         }
