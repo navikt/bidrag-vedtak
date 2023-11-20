@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 @Transactional
@@ -121,9 +123,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     private fun opprettEngangsbeløp(
         engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
         vedtak: Vedtak,
-        grunnlagIdRefMap: Map<String, Int>
+        grunnlagIdRefMap: Map<String, Int>,
     ): Engangsbeløp {
-        val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak))
+        // Hvis referanse ikke er angitt så blir det generert en referanse. Den må være unik innenfor vedtaket.
+        val referanse = engangsbeløpRequest.referanse ?: genererUnikReferanse(vedtak.id)
+        val opprettetEngangsbeløp = persistenceService.opprettEngangsbeløp(engangsbeløpRequest.toEngangsbeløpEntity(vedtak, referanse))
 
         // EngangsbeløpGrunnlag
         engangsbeløpRequest.grunnlagReferanseListe.forEach {
@@ -153,7 +157,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             } else {
                 val periodeGrunnlagBo = PeriodeGrunnlagBo(
                     periodeid = opprettetPeriode.id,
-                    grunnlagsid = grunnlagId
+                    grunnlagsid = grunnlagId,
                 )
                 persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
             }
@@ -163,7 +167,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Opprett behandlingsreferanse
     private fun opprettBehandlingsreferanse(behandlingsreferanseRequest: OpprettBehandlingsreferanseRequestDto, vedtak: Vedtak) =
         persistenceService.opprettBehandlingsreferanse(
-            behandlingsreferanseRequest.toBehandlingsreferanseEntity(vedtak)
+            behandlingsreferanseRequest.toBehandlingsreferanseEntity(vedtak),
         )
 
     // Hent vedtaksdata
@@ -180,7 +184,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
         behandlingsreferanseListe.forEach {
             behandlingsreferanseResponseListe.add(
-                BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
+                BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse),
             )
         }
 
@@ -197,7 +201,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             grunnlagListe = grunnlagDtoListe,
             stønadsendringListe = hentStønadsendringerTilVedtak(stønadsendringListe),
             engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
-            behandlingsreferanseListe = behandlingsreferanseResponseListe
+            behandlingsreferanseListe = behandlingsreferanseResponseListe,
         )
     }
 
@@ -224,8 +228,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     omgjørVedtakId = it.omgjørVedtakId,
                     eksternReferanse = it.eksternReferanse,
                     grunnlagReferanseListe = grunnlagReferanseResponseListe,
-                    periodeListe = hentPerioderTilVedtak(periodeListe)
-                )
+                    periodeListe = hentPerioderTilVedtak(periodeListe),
+                ),
             )
         }
         return stønadsendringDtoListe
@@ -247,8 +251,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     valutakode = dto.valutakode?.trimEnd(),
                     resultatkode = dto.resultatkode,
                     delytelseId = dto.delytelseId,
-                    grunnlagReferanseListe = grunnlagReferanseResponseListe
-                )
+                    grunnlagReferanseListe = grunnlagReferanseResponseListe,
+                ),
             )
         }
         return periodeResponseListe
@@ -279,8 +283,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     referanse = dto.referanse,
                     delytelseId = dto.delytelseId,
                     eksternReferanse = dto.eksternReferanse,
-                    grunnlagReferanseListe = grunnlagReferanseResponseListe
-                )
+                    grunnlagReferanseListe = grunnlagReferanseResponseListe,
+                ),
             )
         }
         return engangsbeløpResponseListe
@@ -564,7 +568,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     private fun finnEksisterendeStønadsendringId(
         stønadsendringrequest: OpprettStønadsendringRequestDto,
-        eksisterendeStønadsendringListe: List<Stønadsendring>
+        eksisterendeStønadsendringListe: List<Stønadsendring>,
     ): Int {
         val matchendeEksisterendeStønadsendring = eksisterendeStønadsendringListe
             .filter { stønadsendring ->
@@ -621,7 +625,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             } else {
                 val periodeGrunnlagBo = PeriodeGrunnlagBo(
                     periodeid = periodeId,
-                    grunnlagsid = grunnlagId
+                    grunnlagsid = grunnlagId,
                 )
                 persistenceService.opprettPeriodeGrunnlag(periodeGrunnlagBo)
             }
@@ -631,7 +635,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Finner generert db-id for eksisterende stønadsendring
     private fun finnTilhørendeEngangsbeløpId(
         engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
-        eksisterendeEngangsbeløpListe: List<Engangsbeløp>
+        eksisterendeEngangsbeløpListe: List<Engangsbeløp>,
     ): Int {
         val matchendeEksisterendeEngangsbeløp = eksisterendeEngangsbeløpListe
             .filter { engangsbeløp ->
@@ -663,7 +667,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     private fun oppdaterEngangsbeløpGrunnlag(
         engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
         engangsbeløpId: Int,
-        grunnlagIdRefMap: Map<String, Int>
+        grunnlagIdRefMap: Map<String, Int>,
     ) {
         // EngangsbeløpGrunnlag
         engangsbeløpRequest.grunnlagReferanseListe.forEach {
@@ -675,7 +679,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             } else {
                 val engangsbeløpGrunnlagBo = EngangsbeløpGrunnlagBo(
                     engangsbeløpsid = engangsbeløpId,
-                    grunnlagsid = grunnlagId
+                    grunnlagsid = grunnlagId,
                 )
                 persistenceService.opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo)
             }
@@ -687,7 +691,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         enhetsnummer: Enhetsnummer,
         vedtakType: Vedtakstype,
         stonadType: Stønadstype?,
-        engangsbeløpType: Engangsbeløptype?
+        engangsbeløpType: Engangsbeløptype?,
     ) {
         Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløptype")
             .tag("enhet", enhetsnummer.toString()).tag("vedtak_type", vedtakType.name)
@@ -710,6 +714,14 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         } catch (e: Exception) {
             LOGGER.error("Det skjedde en feil ved telling av metrikker", e)
         }
+    }
+
+    private fun genererUnikReferanse(vedtaksid: Int): String {
+        var referanse = UUID.randomUUID().toString()
+        while (!persistenceService.referanseErUnik(vedtaksid, referanse)) {
+            referanse = genererUnikReferanse(vedtaksid)
+        }
+        return referanse
     }
 
     companion object {

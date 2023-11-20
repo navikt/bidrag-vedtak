@@ -9,12 +9,12 @@ interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrun
 
     @Query(
         "select sg from StønadsendringGrunnlag sg " +
-            "where sg.stønadsendring.id = :stønadsendringsid and sg.grunnlag.id = :grunnlagsid"
+            "where sg.stønadsendring.id = :stønadsendringsid and sg.grunnlag.id = :grunnlagsid",
     )
     fun hentStønadsendringGrunnlag(stønadsendringsid: Int, grunnlagsid: Int): StønadsendringGrunnlag
 
     @Query(
-        "select sg from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringsid order by sg.grunnlag.id"
+        "select sg from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringsid order by sg.grunnlag.id",
     )
     fun hentAlleGrunnlagForStønadsendring(stønadsendringsid: Int): List<StønadsendringGrunnlag>
 }

@@ -70,13 +70,13 @@ class HendelserServiceTest {
                         type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"),
                         mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A")
-                    )
+                        listOf("A"),
+                    ),
                 ),
-                behandlingsreferanseListe = null
+                behandlingsreferanseListe = null,
             ),
             vedtakId = 1,
-            opprettetTidspunkt = LocalDateTime.now()
+            opprettetTidspunkt = LocalDateTime.now(),
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -109,16 +109,16 @@ class HendelserServiceTest {
                                 valutakode = "NOK",
                                 resultatkode = "A",
                                 delytelseId = null,
-                                listOf("A")
-                            )
-                        )
-                    )
+                                listOf("A"),
+                            ),
+                        ),
+                    ),
                 ),
                 engangsbeløpListe = emptyList(),
-                behandlingsreferanseListe = emptyList()
+                behandlingsreferanseListe = emptyList(),
             ),
             vedtakId = 1,
-            opprettetTidspunkt = LocalDateTime.now()
+            opprettetTidspunkt = LocalDateTime.now(),
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -152,23 +152,23 @@ class HendelserServiceTest {
                                 valutakode = "NOK",
                                 resultatkode = "A",
                                 delytelseId = null,
-                                listOf("A")
-                            )
-                        )
-                    )
+                                listOf("A"),
+                            ),
+                        ),
+                    ),
                 ),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
                         type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"), mottaker = Personident("F"),
                         beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A")
-                    )
+                        listOf("A"),
+                    ),
                 ),
-                behandlingsreferanseListe = null
+                behandlingsreferanseListe = null,
             ),
             1,
-            LocalDateTime.now()
+            LocalDateTime.now(),
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -205,21 +205,21 @@ class HendelserServiceTest {
                                 "NOK",
                                 "A",
                                 "delytelseId1",
-                                listOf("A")
-                            )
-                        )
-                    )
+                                listOf("A"),
+                            ),
+                        ),
+                    ),
                 ),
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     OpprettBehandlingsreferanseRequestDto(
                         kilde = BehandlingsrefKilde.BISYS_SOKNAD,
-                        referanse = "referanse1"
-                    )
-                )
+                        referanse = "referanse1",
+                    ),
+                ),
             ),
             vedtakId = 1,
-            opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200")
+            opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         )
 
         verify(vedtakEventProducerMock).publish(
@@ -252,20 +252,20 @@ class HendelserServiceTest {
                                 beløp = BigDecimal.valueOf(1),
                                 valutakode = "NOK",
                                 resultatkode = "A",
-                                delytelseId = "delytelseId1"
-                            )
-                        )
-                    )
+                                delytelseId = "delytelseId1",
+                            ),
+                        ),
+                    ),
                 ),
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     Behandlingsreferanse(
                         kilde = BehandlingsrefKilde.BISYS_SOKNAD.toString(),
-                        referanse = "referanse1"
-                    )
+                        referanse = "referanse1",
+                    ),
                 ),
-                sporingsdata = Sporingsdata("test")
-            )
+                sporingsdata = Sporingsdata("test"),
+            ),
         )
     }
 
@@ -300,13 +300,13 @@ class HendelserServiceTest {
                         referanse = "referanse1",
                         delytelseId = null,
                         eksternReferanse = null,
-                        grunnlagReferanseListe = listOf("A")
-                    )
+                        grunnlagReferanseListe = listOf("A"),
+                    ),
                 ),
-                behandlingsreferanseListe = emptyList()
+                behandlingsreferanseListe = emptyList(),
             ),
             vedtakId = 1,
-            opprettetTidspunkt = LocalDateTime.now()
+            opprettetTidspunkt = LocalDateTime.now(),
         )
         verify(vedtakEventProducerMock).publish(anyOrNull())
     }
@@ -343,13 +343,13 @@ class HendelserServiceTest {
                         referanse = "referanse1",
                         delytelseId = null,
                         eksternReferanse = null,
-                        grunnlagReferanseListe = listOf("A")
-                    )
+                        grunnlagReferanseListe = listOf("A"),
+                    ),
                 ),
-                behandlingsreferanseListe = emptyList()
+                behandlingsreferanseListe = emptyList(),
             ),
             vedtakId = 1,
-            opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200")
+            opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
         )
         verify(vedtakEventProducerMock).publish(
             VedtakHendelse(
@@ -380,12 +380,12 @@ class HendelserServiceTest {
                         omgjørVedtakId = null,
                         referanse = "referanse1",
                         delytelseId = null,
-                        eksternReferanse = null
-                    )
+                        eksternReferanse = null,
+                    ),
                 ),
                 behandlingsreferanseListe = emptyList(),
-                sporingsdata = Sporingsdata("test")
-            )
+                sporingsdata = Sporingsdata("test"),
+            ),
         )
     }
 }

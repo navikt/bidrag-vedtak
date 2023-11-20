@@ -43,7 +43,7 @@ data class Vedtak(
     val fastsattILand: String? = "",
 
     @Column(nullable = false, name = "opprettet_tidspunkt")
-    val opprettetTidspunkt: LocalDateTime = LocalDateTime.now()
+    val opprettetTidspunkt: LocalDateTime = LocalDateTime.now(),
 
 )
 
@@ -59,6 +59,6 @@ fun OpprettVedtakRequestDto.toVedtakEntity() = with(::Vedtak) {
                 Vedtak::enhetsnummer.name -> enhetsnummer.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
             }
-        }
+        },
     )
 }

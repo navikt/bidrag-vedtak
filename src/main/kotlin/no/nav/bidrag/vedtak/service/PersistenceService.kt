@@ -35,7 +35,7 @@ class PersistenceService(
     val periodeGrunnlagRepository: PeriodeGrunnlagRepository,
     val engangsbeløpRepository: EngangsbeløpRepository,
     val engangsbeløpGrunnlagRepository: EngangsbeløpGrunnlagRepository,
-    val behandlingsreferanseRepository: BehandlingsreferanseRepository
+    val behandlingsreferanseRepository: BehandlingsreferanseRepository,
 ) {
 
     @Timed
@@ -148,6 +148,10 @@ class PersistenceService(
 
     fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<Behandlingsreferanse> {
         return behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
+    }
+
+    fun referanseErUnik(vedtaksid: Int, referanse: String): Boolean {
+        return engangsbeløpRepository.sjekkReferanse(vedtaksid, referanse).isNullOrBlank()
     }
 
     companion object {

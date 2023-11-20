@@ -41,6 +41,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import java.math.BigDecimal
 
 @DisplayName("VedtakServiceMockTest")
@@ -252,7 +253,7 @@ class VedtakServiceMockTest {
 
             // Sjekk BehandlingsreferanseDto
             Executable { assertThat(behandlingsreferanseListe).isNotNull() },
-            Executable { assertThat(behandlingsreferanseListe.size).isEqualTo(2) }
+            Executable { assertThat(behandlingsreferanseListe.size).isEqualTo(2) },
 
         )
     }
@@ -265,14 +266,14 @@ class VedtakServiceMockTest {
             .thenReturn(
                 listOf(
                     byggGrunnlag(grunnlagsid = 1, vedtak = byggVedtak(), grunnlagReferanse = "REF1"),
-                    byggGrunnlag(grunnlagsid = 2, vedtak = byggVedtak(), grunnlagReferanse = "REF2")
-                )
+                    byggGrunnlag(grunnlagsid = 2, vedtak = byggVedtak(), grunnlagReferanse = "REF2"),
+                ),
             )
         Mockito.`when`(persistenceServiceMock.hentAlleStønadsendringerForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
             listOf(
                 byggStønadsendring(stønadsendringsid = 1),
-                byggStønadsendring(stønadsendringsid = 2)
-            )
+                byggStønadsendring(stønadsendringsid = 2),
+            ),
         )
         Mockito.`when`(persistenceServiceMock.hentAlleEngangsbeløpForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
             listOf(
@@ -280,37 +281,37 @@ class VedtakServiceMockTest {
                     engangsbeløpId = 1, type = "SAERTILSKUDD", sak = Saksnummer("SAK-101").toString(), skyldner = Personident("01018011111").toString(),
                     kravhaver = Personident("01010511111").toString(), mottaker = Personident("01018211111").toString(), beløp = BigDecimal.valueOf(3490), valutakode = "NOK",
                     resultatkode = "SAERTILSKUDD BEREGNET", Innkrevingstype.MED_INNKREVING, Beslutningstype.ENDRING, omgjørVedtakId = 123, referanse = "Referanse1",
-                    delytelseId = "delytelseId1", eksternReferanse = "EksternRef1"
-                )
-            )
+                    delytelseId = "delytelseId1", eksternReferanse = "EksternRef1",
+                ),
+            ),
         )
         Mockito.`when`(persistenceServiceMock.hentAllePerioderForStønadsendring(MockitoHelper.any(Int::class.java)))
             .thenReturn(
                 listOf(
                     byggPeriode(periodeid = 1, beløp = BigDecimal.valueOf(100)),
-                    byggPeriode(periodeid = 2, beløp = BigDecimal.valueOf(200))
-                )
+                    byggPeriode(periodeid = 2, beløp = BigDecimal.valueOf(200)),
+                ),
             )
         Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForPeriode(MockitoHelper.any(Int::class.java))).thenReturn(
             listOf(
                 byggPeriodeGrunnlag(periode = byggPeriode(periodeid = 1), grunnlag = byggGrunnlag(grunnlagsid = 1)),
-                byggPeriodeGrunnlag(periode = byggPeriode(periodeid = 2), grunnlag = byggGrunnlag(grunnlagsid = 2))
-            )
+                byggPeriodeGrunnlag(periode = byggPeriode(periodeid = 2), grunnlag = byggGrunnlag(grunnlagsid = 2)),
+            ),
         )
         Mockito.`when`(persistenceServiceMock.hentGrunnlag(MockitoHelper.any(Int::class.java))).thenReturn(
-            byggGrunnlag(grunnlagsid = 1, vedtak = byggVedtak(), grunnlagReferanse = "REF1")
+            byggGrunnlag(grunnlagsid = 1, vedtak = byggVedtak(), grunnlagReferanse = "REF1"),
         )
         Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForEngangsbeløp(MockitoHelper.any(Int::class.java))).thenReturn(
             listOf(
                 byggEngangsbeløpGrunnlag(engangsbeløp = byggEngangsbeløp(engangsbeløpId = 1), grunnlag = byggGrunnlag(grunnlagsid = 1)),
-                byggEngangsbeløpGrunnlag(engangsbeløp = byggEngangsbeløp(engangsbeløpId = 2), grunnlag = byggGrunnlag(grunnlagsid = 2))
-            )
+                byggEngangsbeløpGrunnlag(engangsbeløp = byggEngangsbeløp(engangsbeløpId = 2), grunnlag = byggGrunnlag(grunnlagsid = 2)),
+            ),
         )
         Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.any(Int::class.java))).thenReturn(
             listOf(
                 byggBehandlingsreferanse(kilde = "BISYS_SOKNAD", referanse = "Bisys-01"),
-                byggBehandlingsreferanse(kilde = "BISYS_SOKNAD", referanse = "Bisys-02")
-            )
+                byggBehandlingsreferanse(kilde = "BISYS_SOKNAD", referanse = "Bisys-02"),
+            ),
         )
 
         val vedtakFunnet = vedtakService.hentVedtak(1)
@@ -329,7 +330,7 @@ class VedtakServiceMockTest {
             Executable { assertThat(vedtakFunnet.engangsbeløpListe.size).isEqualTo(1) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(Engangsbeløptype.SAERTILSKUDD) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].sak.toString()).isEqualTo("SAK-101") },
-            Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) }
+            Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
         )
     }
 

@@ -12,7 +12,7 @@ interface VedtakKafkaEventProducer {
 class DefaultVedtakKafkaEventProducer(
     private val kafkaTemplate: KafkaTemplate<String?, String?>?,
     private val objectMapper: ObjectMapper,
-    private val topic: String
+    private val topic: String,
 ) : VedtakKafkaEventProducer {
 
     override fun publish(vedtakHendelse: VedtakHendelse) {
@@ -20,7 +20,7 @@ class DefaultVedtakKafkaEventProducer(
             kafkaTemplate?.send(
                 topic,
                 vedtakHendelse.id.toString(),
-                objectMapper.writeValueAsString(vedtakHendelse)
+                objectMapper.writeValueAsString(vedtakHendelse),
             )
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e.message, e)

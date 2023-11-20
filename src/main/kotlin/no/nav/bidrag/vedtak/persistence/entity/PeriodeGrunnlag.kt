@@ -22,7 +22,7 @@ data class PeriodeGrunnlag(
     @Id
     @ManyToOne
     @JoinColumn(name = "grunnlagsid")
-    val grunnlag: Grunnlag = Grunnlag()
+    val grunnlag: Grunnlag = Grunnlag(),
 
 )
 
@@ -35,7 +35,7 @@ fun OpprettPeriodeGrunnlagRequestDto.toPeriodeGrunnlagEntity(eksisterendePeriode
                 PeriodeGrunnlag::grunnlag.name -> eksisterendeGrunnlag
                 else -> propertiesByName[parameter.name]?.get(this@toPeriodeGrunnlagEntity)
             }
-        }
+        },
     )
 }
 

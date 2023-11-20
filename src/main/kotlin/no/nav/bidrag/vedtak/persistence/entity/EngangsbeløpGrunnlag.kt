@@ -21,7 +21,7 @@ data class EngangsbeløpGrunnlag(
     @Id
     @ManyToOne
     @JoinColumn(name = "grunnlagsid")
-    val grunnlag: Grunnlag = Grunnlag()
+    val grunnlag: Grunnlag = Grunnlag(),
 
 )
 

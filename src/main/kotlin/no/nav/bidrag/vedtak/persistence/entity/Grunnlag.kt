@@ -36,7 +36,7 @@ data class Grunnlag(
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false, name = "innhold")
-    val innhold: String = ""
+    val innhold: String = "",
 
 )
 
@@ -52,7 +52,7 @@ fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag
                 Grunnlag::innhold.name -> innhold.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
             }
-        }
+        },
     )
 }
 
@@ -65,7 +65,7 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
                 GrunnlagDto::innhold.name -> stringTilJsonNode(innhold.toString())
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
             }
-        }
+        },
     )
 }
 

@@ -9,6 +9,6 @@ data class StønadsendringGrunnlagBo(
     val stønadsendringsid: Int,
 
     @Schema(description = "Grunnlagsid")
-    val grunnlagsid: Int
+    val grunnlagsid: Int,
 
 )
