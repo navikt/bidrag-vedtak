@@ -9,6 +9,6 @@ data class PeriodeGrunnlagBo(
     val periodeid: Int,
 
     @Schema(description = "Grunnlag-id")
-    val grunnlagsid: Int
+    val grunnlagsid: Int,
 
 )

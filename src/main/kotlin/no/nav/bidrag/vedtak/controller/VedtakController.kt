@@ -36,12 +36,12 @@ class VedtakController(private val vedtakService: VedtakService) {
             ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-        ]
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
     )
     fun opprettVedtak(
         @Valid @RequestBody
-        request: OpprettVedtakRequestDto
+        request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int>? {
         val vedtakOpprettet = vedtakService.opprettVedtak(request)
         LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
@@ -58,12 +58,12 @@ class VedtakController(private val vedtakService: VedtakService) {
             ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-        ]
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
     )
     fun hentVedtak(
         @PathVariable @NotNull
-        vedtaksid: Int
+        vedtaksid: Int,
     ): ResponseEntity<VedtakDto> {
         val vedtakFunnet = vedtakService.hentVedtak(vedtaksid)
         LOGGER.info("Følgende vedtak ble hentet: $vedtaksid")
@@ -80,14 +80,14 @@ class VedtakController(private val vedtakService: VedtakService) {
             ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))])
-        ]
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
     )
     fun oppdaterVedtak(
         @PathVariable @NotNull
         vedtaksid: Int,
         @Valid @RequestBody
-        request: OpprettVedtakRequestDto
+        request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int>? {
         val vedtakOppdatert = vedtakService.oppdaterVedtak(vedtaksid, request)
         LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert")

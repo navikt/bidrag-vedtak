@@ -63,7 +63,7 @@ data class Engangsbeløp(
     val delytelseId: String? = "",
 
     @Column(nullable = true, name = "ekstern_referanse")
-    val eksternReferanse: String? = ""
+    val eksternReferanse: String? = "",
 )
 
 fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Vedtak, referanse: String) = with(::Engangsbeløp) {
@@ -83,6 +83,6 @@ fun OpprettEngangsbeløpRequestDto.toEngangsbeløpEntity(eksisterendeVedtak: Ved
                 Engangsbeløp::referanse.name -> referanse
                 else -> propertiesByName[parameter.name]?.get(this@toEngangsbeløpEntity)
             }
-        }
+        },
     )
 }

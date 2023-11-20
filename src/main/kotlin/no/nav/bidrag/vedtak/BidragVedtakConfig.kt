@@ -28,14 +28,14 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
 @Configuration
 @OpenAPIDefinition(
     info = Info(title = "bidrag-vedtak", version = "v1"),
-    security = [SecurityRequirement(name = "bearer-key")]
+    security = [SecurityRequirement(name = "bearer-key")],
 )
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @SecurityScheme(
     bearerFormat = "JWT",
     name = "bearer-key",
     scheme = "bearer",
-    type = SecuritySchemeType.HTTP
+    type = SecuritySchemeType.HTTP,
 )
 @EnableAspectJAutoProxy
 @Import(CorrelationIdFilter::class, UserMdcFilter::class, DefaultCorsFilter::class)
@@ -50,11 +50,11 @@ class BidragVedtakConfig {
     fun vedtakKafkaEventProducer(
         kafkaTemplate: KafkaTemplate<String?, String?>?,
         objectMapper: ObjectMapper,
-        @Value("\${TOPIC_VEDTAK}") topic: String
+        @Value("\${TOPIC_VEDTAK}") topic: String,
     ) = DefaultVedtakKafkaEventProducer(
         kafkaTemplate,
         objectMapper,
-        topic
+        topic,
     )
 
     @Bean

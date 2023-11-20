@@ -9,13 +9,13 @@ import org.springframework.data.repository.query.Param
 interface GrunnlagRepository : JpaRepository<Grunnlag, Int?> {
 
     @Query(
-        "select gr from Grunnlag gr where gr.vedtak.id = :vedtaksid order by gr.id"
+        "select gr from Grunnlag gr where gr.vedtak.id = :vedtaksid order by gr.id",
     )
     fun hentAlleGrunnlagForVedtak(vedtaksid: Int): List<Grunnlag>
 
     @Modifying
     @Query(
-        "delete from Grunnlag gr where gr.vedtak.id = :vedtaksid"
+        "delete from Grunnlag gr where gr.vedtak.id = :vedtaksid",
     )
     fun slettAlleGrunnlagForVedtak(@Param("vedtaksid") vedtaksid: Int): Int
 }

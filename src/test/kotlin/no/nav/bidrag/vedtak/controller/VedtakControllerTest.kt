@@ -110,13 +110,13 @@ class VedtakControllerTest {
             fullUrlForNyttVedtak(),
             HttpMethod.POST,
             byggVedtakRequest(),
-            String::class.java
+            String::class.java,
         )
 
         assertAll(
             Executable { assertThat(response).isNotNull() },
             Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isNotNull() }
+            Executable { assertThat(response.body).isNotNull() },
         )
     }
 
@@ -131,13 +131,13 @@ class VedtakControllerTest {
             fullUrlForNyttVedtak(),
             HttpMethod.POST,
             request,
-            String::class.java
+            String::class.java,
         )
 
         assertAll(
             Executable { assertThat(opprettResponse).isNotNull() },
             Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse.body).isNotNull() }
+            Executable { assertThat(opprettResponse.body).isNotNull() },
         )
     }
 
@@ -152,7 +152,7 @@ class VedtakControllerTest {
         assertAll(
             Executable { assertThat(response).isNotNull() },
             Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isNotNull() }
+            Executable { assertThat(response.body).isNotNull() },
         )
     }
 
@@ -167,13 +167,13 @@ class VedtakControllerTest {
             fullUrlForNyttVedtak(),
             HttpMethod.POST,
             request,
-            String::class.java
+            String::class.java,
         )
 
         assertAll(
             Executable { assertThat(opprettResponse).isNotNull() },
             Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse.body).isNotNull() }
+            Executable { assertThat(opprettResponse.body).isNotNull() },
         )
     }
 

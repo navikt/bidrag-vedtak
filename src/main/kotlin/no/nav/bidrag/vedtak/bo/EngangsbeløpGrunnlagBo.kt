@@ -9,6 +9,6 @@ data class EngangsbeløpGrunnlagBo(
     val engangsbeløpsid: Int,
 
     @Schema(description = "Grunnlagsid")
-    val grunnlagsid: Int
+    val grunnlagsid: Int,
 
 )

@@ -19,7 +19,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     fun opprettHendelse(
         vedtakRequest: OpprettVedtakRequestDto,
         vedtakId: Int,
-        opprettetTidspunkt: LocalDateTime
+        opprettetTidspunkt: LocalDateTime,
     ) {
         val vedtakHendelse = VedtakHendelse(
             kilde = vedtakRequest.kilde,
@@ -38,8 +38,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             sporingsdata = Sporingsdata(
                 CorrelationId.fetchCorrelationIdForThread()
                     ?: CorrelationId.generateTimestamped(vedtakRequest.type.toString())
-                        .get()
-            )
+                        .get(),
+            ),
         )
         vedtakKafkaEventProducer.publish(vedtakHendelse)
         SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
@@ -56,8 +56,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                         beløp = periode.beløp,
                         valutakode = periode.valutakode,
                         resultatkode = periode.resultatkode,
-                        delytelseId = periode.delytelseId
-                    )
+                        delytelseId = periode.delytelseId,
+                    ),
                 )
             }
 
@@ -73,8 +73,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                     beslutning = it.beslutning,
                     omgjørVedtakId = it.omgjørVedtakId,
                     eksternReferanse = it.eksternReferanse,
-                    periodeListe = periodeListe
-                )
+                    periodeListe = periodeListe,
+                ),
             )
         }
         return stønadsendringListe
@@ -98,8 +98,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                     omgjørVedtakId = it.omgjørVedtakId,
                     referanse = it.referanse ?: "",
                     delytelseId = it.delytelseId,
-                    eksternReferanse = it.eksternReferanse
-                )
+                    eksternReferanse = it.eksternReferanse,
+                ),
             )
         }
         return engangsbeløpListe
@@ -111,8 +111,8 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             behandlingsreferanseListe.add(
                 Behandlingsreferanse(
                     kilde = it.kilde.toString(),
-                    referanse = it.referanse
-                )
+                    referanse = it.referanse,
+                ),
             )
         }
         return behandlingsreferanseListe

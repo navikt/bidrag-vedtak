@@ -50,7 +50,7 @@ class TestUtil {
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringListe(),
             engangsbeløpListe = byggEngangsbeløpListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         private fun byggGrunnlagListe() = listOf(
@@ -66,8 +66,8 @@ class TestUtil {
             },
             "inntektBelop": 400000,
             "inntektType": "SKATTEGRUNNLAG_SKE"
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "BM-LIGN-19",
@@ -81,8 +81,8 @@ class TestUtil {
             },
             "inntektBelop": 400000,
             "inntektType": "LIGNING_SKE"
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "BP-SKATTEKLASSE-19",
@@ -95,8 +95,8 @@ class TestUtil {
               "periodeDatoTil": "2020-01-01"
             },
             "skatteKlasseId": 1
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "SJAB-REF001",
@@ -114,8 +114,8 @@ class TestUtil {
                 "sjablonVerdi": 12977
               }
             ]
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "VIRKNINGSDATO-1",
@@ -124,8 +124,8 @@ class TestUtil {
                     """
           {
             "virkningsdato": "2023-11-03"
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "NOTAT-1",
@@ -134,8 +134,8 @@ class TestUtil {
                     """
           {
             "notat": "Dette er et saksbehandlingsnotat"
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "VIRKNINGSDATO-2",
@@ -144,8 +144,8 @@ class TestUtil {
                     """
           {
             "virkningsdato": "2023-12-03"
-          }"""
-                )
+          }""",
+                ),
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "NOTAT-2",
@@ -154,9 +154,9 @@ class TestUtil {
                     """
           {
             "notat": "Dette er enda et saksbehandlingsnotat"
-          }"""
-                )
-            )
+          }""",
+                ),
+            ),
         )
 
         private fun byggStønadsendringListe() = listOf(
@@ -173,7 +173,7 @@ class TestUtil {
                 eksternReferanse = "eksternRef1",
                 grunnlagReferanseListe = listOf(
                     "VIRKNINGSDATO-1",
-                    "NOTAT-1"
+                    "NOTAT-1",
                 ),
                 periodeListe = listOf(
                     OpprettPeriodeRequestDto(
@@ -185,8 +185,8 @@ class TestUtil {
                         grunnlagReferanseListe = listOf(
                             "BM-LIGS-19",
                             "BM-LIGN-19",
-                            "SJAB-REF001"
-                        )
+                            "SJAB-REF001",
+                        ),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
@@ -198,10 +198,10 @@ class TestUtil {
                             "BM-LIGS-19",
                             "BM-LIGN-19",
                             "BP-SKATTEKLASSE-19",
-                            "SJAB-REF001"
-                        )
-                    )
-                )
+                            "SJAB-REF001",
+                        ),
+                    ),
+                ),
             ),
             OpprettStønadsendringRequestDto(
                 type = Stønadstype.BIDRAG,
@@ -216,7 +216,7 @@ class TestUtil {
                 eksternReferanse = "eksternRef3",
                 grunnlagReferanseListe = listOf(
                     "VIRKNINGSDATO-2",
-                    "NOTAT-2"
+                    "NOTAT-2",
                 ),
                 periodeListe = listOf(
                     OpprettPeriodeRequestDto(
@@ -227,8 +227,8 @@ class TestUtil {
                         delytelseId = "delytelseId3",
                         grunnlagReferanseListe = listOf(
                             "BM-LIGS-19",
-                            "SJAB-REF001"
-                        )
+                            "SJAB-REF001",
+                        ),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-08-01"), LocalDate.parse("2019-09-01")),
@@ -238,11 +238,11 @@ class TestUtil {
                         delytelseId = "delytelseId4",
                         grunnlagReferanseListe = listOf(
                             "BM-LIGS-19",
-                            "SJAB-REF001"
-                        )
-                    )
-                )
-            )
+                            "SJAB-REF001",
+                        ),
+                    ),
+                ),
+            ),
         )
 
         private fun byggEngangsbeløpListe() = listOf(
@@ -264,8 +264,8 @@ class TestUtil {
                 grunnlagReferanseListe = listOf(
                     "BM-LIGS-19",
                     "BM-LIGN-19",
-                    "SJAB-REF001"
-                )
+                    "SJAB-REF001",
+                ),
             ),
             OpprettEngangsbeløpRequestDto(
                 type = Engangsbeløptype.SAERTILSKUDD,
@@ -285,20 +285,20 @@ class TestUtil {
                 grunnlagReferanseListe = listOf(
                     "BM-LIGS-19",
                     "BM-LIGN-19",
-                    "SJAB-REF001"
-                )
-            )
+                    "SJAB-REF001",
+                ),
+            ),
         )
 
         private fun byggBehandlingsreferanseListe() = listOf(
             OpprettBehandlingsreferanseRequestDto(
                 kilde = BehandlingsrefKilde.BISYS_SOKNAD,
-                referanse = "Bisysreferanse01"
+                referanse = "Bisysreferanse01",
             ),
             OpprettBehandlingsreferanseRequestDto(
                 kilde = BehandlingsrefKilde.BISYS_SOKNAD,
-                referanse = "Bisysreferanse02"
-            )
+                referanse = "Bisysreferanse02",
+            ),
         )
 
         fun byggVedtakRequestUtenGrunnlag() = OpprettVedtakRequestDto(
@@ -313,7 +313,7 @@ class TestUtil {
             grunnlagListe = emptyList(),
             stønadsendringListe = byggStønadsendringUtenGrunnlagListe(),
             engangsbeløpListe = byggEngangsbeløpUtenGrunnlagListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         private fun byggStønadsendringUtenGrunnlagListe() = listOf(
@@ -336,7 +336,7 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "KOSTNADSBEREGNET_BIDRAG",
                         delytelseId = "delytelseId1",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
@@ -344,10 +344,10 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "KOSTNADSBEREGNET_BIDRAG",
                         delytelseId = "delytelseId2",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
 
-                    )
-                )
+                    ),
+                ),
             ),
             OpprettStønadsendringRequestDto(
                 type = Stønadstype.BIDRAG,
@@ -368,7 +368,7 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "SAERTILSKUDD_INNVILGET",
                         delytelseId = "delytelseId3",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-08-01"), LocalDate.parse("2019-09-01")),
@@ -376,10 +376,10 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "SAERTILSKUDD_INNVILGET",
                         delytelseId = "delytelseId4",
-                        grunnlagReferanseListe = emptyList()
-                    )
-                )
-            )
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                ),
+            ),
         )
 
         private fun byggEngangsbeløpUtenGrunnlagListe() = listOf(
@@ -398,7 +398,7 @@ class TestUtil {
                 referanse = "referanse1",
                 delytelseId = "delytelseId1",
                 eksternReferanse = "EksternRef1",
-                grunnlagReferanseListe = emptyList()
+                grunnlagReferanseListe = emptyList(),
             ),
             OpprettEngangsbeløpRequestDto(
                 type = Engangsbeløptype.SAERTILSKUDD,
@@ -415,8 +415,8 @@ class TestUtil {
                 referanse = "referanse2",
                 delytelseId = "delytelseId2",
                 eksternReferanse = "EksternRef2",
-                grunnlagReferanseListe = emptyList()
-            )
+                grunnlagReferanseListe = emptyList(),
+            ),
         )
 
         fun byggOppdaterVedtakMedMismatchVedtak() = OpprettVedtakRequestDto(
@@ -431,7 +431,7 @@ class TestUtil {
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringListe(),
             engangsbeløpListe = byggEngangsbeløpListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         fun byggOppdaterVedtakMedMismatchStønadsendring() = OpprettVedtakRequestDto(
@@ -446,7 +446,7 @@ class TestUtil {
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringMedMismatchListe(),
             engangsbeløpListe = byggEngangsbeløpListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         private fun byggStønadsendringMedMismatchListe() = listOf(
@@ -472,8 +472,8 @@ class TestUtil {
                         grunnlagReferanseListe = listOf(
                             "BM-LIGS-19",
                             "BM-LIGN-19",
-                            "SJAB-REF001"
-                        )
+                            "SJAB-REF001",
+                        ),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
@@ -485,11 +485,11 @@ class TestUtil {
                             "BM-LIGS-19",
                             "BM-LIGN-19",
                             "BP-SKATTEKLASSE-19",
-                            "SJAB-REF001"
-                        )
-                    )
-                )
-            )
+                            "SJAB-REF001",
+                        ),
+                    ),
+                ),
+            ),
         )
 
         fun byggOppdaterVedtakMedMismatchPeriode() = OpprettVedtakRequestDto(
@@ -504,7 +504,7 @@ class TestUtil {
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringMedMismatchPeriodeListe(),
             engangsbeløpListe = byggEngangsbeløpListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         private fun byggStønadsendringMedMismatchPeriodeListe() = listOf(
@@ -527,7 +527,7 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "KOSTNADSBEREGNET_BIDRAG",
                         delytelseId = "delytelseId1",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
@@ -535,10 +535,10 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "KOSTNADSBEREGNET_BIDRAG",
                         delytelseId = "delytelseId2",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
 
-                    )
-                )
+                    ),
+                ),
             ),
             OpprettStønadsendringRequestDto(
                 type = Stønadstype.BIDRAG,
@@ -559,7 +559,7 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "SAERTILSKUDD_INNVILGET",
                         delytelseId = "delytelseId3",
-                        grunnlagReferanseListe = emptyList()
+                        grunnlagReferanseListe = emptyList(),
                     ),
                     OpprettPeriodeRequestDto(
                         periode = ÅrMånedsperiode(LocalDate.parse("2019-08-01"), LocalDate.parse("2019-09-01")),
@@ -567,10 +567,10 @@ class TestUtil {
                         valutakode = "NOK",
                         resultatkode = "SAERTILSKUDD_INNVILGET",
                         delytelseId = "delytelseId4",
-                        grunnlagReferanseListe = emptyList()
-                    )
-                )
-            )
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                ),
+            ),
         )
 
         fun byggOppdaterVedtakMedMismatchEngangsbeløp() = OpprettVedtakRequestDto(
@@ -585,7 +585,7 @@ class TestUtil {
             grunnlagListe = byggGrunnlagListe(),
             stønadsendringListe = byggStønadsendringListe(),
             engangsbeløpListe = byggEngangsbeløpMedFeilListe(),
-            behandlingsreferanseListe = byggBehandlingsreferanseListe()
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
         private fun byggEngangsbeløpMedFeilListe() = listOf(
@@ -607,8 +607,8 @@ class TestUtil {
                 grunnlagReferanseListe = listOf(
                     "BM-LIGS-19",
                     "BM-LIGN-19",
-                    "SJAB-REF001"
-                )
+                    "SJAB-REF001",
+                ),
             ),
             OpprettEngangsbeløpRequestDto(
                 type = Engangsbeløptype.SAERTILSKUDD,
@@ -628,9 +628,9 @@ class TestUtil {
                 grunnlagReferanseListe = listOf(
                     "BM-LIGS-19",
                     "BM-LIGN-19",
-                    "SJAB-REF001"
-                )
-            )
+                    "SJAB-REF001",
+                ),
+            ),
         )
 
         fun byggVedtak(
@@ -642,7 +642,7 @@ class TestUtil {
             opprettetAv: String = "X123456",
             opprettetAvNavn: String = "Saksbehandler1",
             opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
-            innkrevingUtsattTilDato: LocalDate = LocalDate.now()
+            innkrevingUtsattTilDato: LocalDate = LocalDate.now(),
         ) = Vedtak(
             id = vedtaksid,
             kilde = kilde,
@@ -652,7 +652,7 @@ class TestUtil {
             opprettetAv = opprettetAv,
             opprettetAvNavn = opprettetAvNavn,
             opprettetTidspunkt = opprettetTimestamp,
-            innkrevingUtsattTilDato = innkrevingUtsattTilDato
+            innkrevingUtsattTilDato = innkrevingUtsattTilDato,
         )
 
         fun byggStønadsendring(
@@ -664,7 +664,7 @@ class TestUtil {
             mottaker: String = "01018211111",
             innkreving: String = Innkrevingstype.MED_INNKREVING.toString(),
             beslutning: String = Beslutningstype.ENDRING.toString(),
-            eksternReferanse: String = "eksternRef1"
+            eksternReferanse: String = "eksternRef1",
         ) = Stønadsendring(
             id = stønadsendringsid,
             type = type,
@@ -675,7 +675,7 @@ class TestUtil {
             mottaker = mottaker,
             innkreving = innkreving,
             beslutning = beslutning,
-            eksternReferanse = eksternReferanse
+            eksternReferanse = eksternReferanse,
         )
 
         fun byggPeriode(
@@ -685,7 +685,7 @@ class TestUtil {
             beløp: BigDecimal = BigDecimal.valueOf(3520),
             valutakode: String = "NOK",
             resultatkode: String = "KOSTNADSBEREGNET_BIDRAG",
-            delytelseId: String = "delytelseId1"
+            delytelseId: String = "delytelseId1",
         ) = Periode(
             id = periodeid,
             fom = fomDato,
@@ -694,7 +694,7 @@ class TestUtil {
             beløp = beløp,
             valutakode = valutakode,
             resultatkode = resultatkode,
-            delytelseId = delytelseId
+            delytelseId = delytelseId,
         )
 
         fun byggGrunnlag(
@@ -708,38 +708,38 @@ class TestUtil {
             "datoFom": "2021-01-01",
             "datoTil": null,
             "sivilstandKode": "sivilstandkode1"
-                }"""
+                }""",
 
         ) = Grunnlag(
             id = grunnlagsid,
             referanse = grunnlagReferanse,
             vedtak = vedtak,
             type = type,
-            innhold = innhold
+            innhold = innhold,
         )
 
         fun byggPeriodeGrunnlagBo(
             periodeid: Int = byggPeriode().id,
-            grunnlagsid: Int = byggGrunnlag().id
+            grunnlagsid: Int = byggGrunnlag().id,
         ) = PeriodeGrunnlagBo(
             periodeid = periodeid,
-            grunnlagsid = grunnlagsid
+            grunnlagsid = grunnlagsid,
         )
 
         fun byggPeriodeGrunnlag(
             periode: Periode = byggPeriode(),
-            grunnlag: Grunnlag = byggGrunnlag()
+            grunnlag: Grunnlag = byggGrunnlag(),
         ) = PeriodeGrunnlag(
             periode = periode,
-            grunnlag = grunnlag
+            grunnlag = grunnlag,
         )
 
         fun byggStønadsendringGrunnlag(
             stønadsendring: Stønadsendring = byggStønadsendring(),
-            grunnlag: Grunnlag = byggGrunnlag()
+            grunnlag: Grunnlag = byggGrunnlag(),
         ) = StønadsendringGrunnlag(
             stønadsendring = stønadsendring,
-            grunnlag = grunnlag
+            grunnlag = grunnlag,
         )
 
         fun byggEngangsbeløp(
@@ -757,7 +757,7 @@ class TestUtil {
             omgjørVedtakId: Int = 123,
             referanse: String = "referanse5",
             delytelseId: String = "delytelseId5",
-            eksternReferanse: String = "eksternReferanse5"
+            eksternReferanse: String = "eksternReferanse5",
         ) = Engangsbeløp(
             id = engangsbeløpId,
             vedtak = byggVedtak(),
@@ -774,35 +774,35 @@ class TestUtil {
             omgjørVedtakId = omgjørVedtakId,
             referanse = referanse,
             delytelseId = delytelseId,
-            eksternReferanse = eksternReferanse
+            eksternReferanse = eksternReferanse,
         )
 
         fun byggEngangsbeløpGrunnlagBo(
             engangsbeløpId: Int = (1..100).random(),
-            grunnlagId: Int = (1..100).random()
+            grunnlagId: Int = (1..100).random(),
         ) = EngangsbeløpGrunnlagBo(
             engangsbeløpsid = engangsbeløpId,
-            grunnlagsid = grunnlagId
+            grunnlagsid = grunnlagId,
         )
 
         fun byggEngangsbeløpGrunnlag(
             engangsbeløp: Engangsbeløp = byggEngangsbeløp(),
-            grunnlag: Grunnlag = byggGrunnlag()
+            grunnlag: Grunnlag = byggGrunnlag(),
         ) = EngangsbeløpGrunnlag(
             engangsbeløp = engangsbeløp,
-            grunnlag = grunnlag
+            grunnlag = grunnlag,
         )
 
         fun byggBehandlingsreferanse(
             behandlingsreferanseid: Int = (1..100).random(),
             vedtak: Vedtak = byggVedtak(),
             kilde: String = "BISYS_SOKNAD",
-            referanse: String = "Bisysreferanse01"
+            referanse: String = "Bisysreferanse01",
         ) = Behandlingsreferanse(
             id = behandlingsreferanseid,
             vedtak = vedtak,
             kilde = kilde,
-            referanse = referanse
+            referanse = referanse,
         )
     }
 }

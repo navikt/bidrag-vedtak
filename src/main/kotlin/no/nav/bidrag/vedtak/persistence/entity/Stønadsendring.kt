@@ -50,7 +50,7 @@ data class Stønadsendring(
     val omgjørVedtakId: Int? = 0,
 
     @Column(nullable = true, name = "ekstern_referanse")
-    val eksternReferanse: String? = ""
+    val eksternReferanse: String? = "",
 
 )
 
@@ -70,6 +70,6 @@ fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak:
                 Stønadsendring::beslutning.name -> beslutning.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
             }
-        }
+        },
     )
 }

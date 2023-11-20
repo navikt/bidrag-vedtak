@@ -40,7 +40,7 @@ data class Periode(
     val resultatkode: String = "",
 
     @Column(nullable = true, name = "delytelse_id")
-    val delytelseId: String? = ""
+    val delytelseId: String? = "",
 )
 
 fun OpprettPeriodeRequestDto.toPeriodeEntity(eksisterendeStønadsendring: Stønadsendring) = with(::Periode) {
@@ -54,6 +54,6 @@ fun OpprettPeriodeRequestDto.toPeriodeEntity(eksisterendeStønadsendring: Støna
                 Periode::til.name -> periode.tilDato?.verdi
                 else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
             }
-        }
+        },
     )
 }

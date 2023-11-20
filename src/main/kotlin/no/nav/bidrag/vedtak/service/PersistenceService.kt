@@ -35,7 +35,7 @@ class PersistenceService(
     val periodeGrunnlagRepository: PeriodeGrunnlagRepository,
     val engangsbeløpRepository: EngangsbeløpRepository,
     val engangsbeløpGrunnlagRepository: EngangsbeløpGrunnlagRepository,
-    val behandlingsreferanseRepository: BehandlingsreferanseRepository
+    val behandlingsreferanseRepository: BehandlingsreferanseRepository,
 ) {
 
     @Timed

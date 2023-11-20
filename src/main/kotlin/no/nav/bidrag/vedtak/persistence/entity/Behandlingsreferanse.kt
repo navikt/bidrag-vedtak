@@ -26,7 +26,7 @@ data class Behandlingsreferanse(
     val kilde: String = "",
 
     @Column(nullable = false, name = "referanse")
-    val referanse: String = ""
+    val referanse: String = "",
 )
 
 fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksisterendeVedtak: Vedtak) = with(::Behandlingsreferanse) {
@@ -39,6 +39,6 @@ fun OpprettBehandlingsreferanseRequestDto.toBehandlingsreferanseEntity(eksistere
                 Behandlingsreferanse::vedtak.name -> eksisterendeVedtak
                 else -> propertiesByName[parameter.name]?.get(this@toBehandlingsreferanseEntity)
             }
-        }
+        },
     )
 }
