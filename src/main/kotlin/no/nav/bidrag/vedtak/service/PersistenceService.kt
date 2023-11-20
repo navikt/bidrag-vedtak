@@ -152,6 +152,7 @@ class PersistenceService(
 
     fun referanseErUnik(referanse: String): Boolean {
         return engangsbeløpRepository.sjekkReferanse(referanse).isNullOrBlank()
+//        return true
     }
 
     companion object {
