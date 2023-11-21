@@ -1,16 +1,16 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.commons.CorrelationId
-import no.nav.bidrag.domene.enums.BehandlingsrefKilde
-import no.nav.bidrag.domene.enums.Beslutningstype
-import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.Innkrevingstype
-import no.nav.bidrag.domene.enums.Stønadstype
-import no.nav.bidrag.domene.enums.Vedtakskilde
-import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
-import no.nav.bidrag.domene.streng.Enhetsnummer
-import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.organisasjon.Enhetsnummer
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
 import no.nav.bidrag.transport.behandling.vedtak.Engangsbeløp
@@ -67,7 +67,7 @@ class HendelserServiceTest {
                 stønadsendringListe = null,
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"),
+                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"),
                         mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
                         listOf("A"),
@@ -159,7 +159,7 @@ class HendelserServiceTest {
                 ),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"), mottaker = Personident("F"),
+                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"), mottaker = Personident("F"),
                         beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
                         listOf("A"),
@@ -213,7 +213,7 @@ class HendelserServiceTest {
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     OpprettBehandlingsreferanseRequestDto(
-                        kilde = BehandlingsrefKilde.BISYS_SOKNAD,
+                        kilde = BehandlingsrefKilde.BISYS_SØKNAD,
                         referanse = "referanse1",
                     ),
                 ),
@@ -260,7 +260,7 @@ class HendelserServiceTest {
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     Behandlingsreferanse(
-                        kilde = BehandlingsrefKilde.BISYS_SOKNAD.toString(),
+                        kilde = BehandlingsrefKilde.BISYS_SØKNAD.toString(),
                         referanse = "referanse1",
                     ),
                 ),
@@ -286,7 +286,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -329,7 +329,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -367,7 +367,7 @@ class HendelserServiceTest {
                 engangsbeløpListe =
                 listOf(
                     Engangsbeløp(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),

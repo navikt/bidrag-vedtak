@@ -152,11 +152,11 @@
   ],
   "behandlingsreferanseListe": [
     {
-      "kilde": "BISYS_SOKNAD",
+      "kilde": "BISYS_SØKNAD",
       "referanse": "Bisys-01"
     },
     {
-      "kilde": "BISYS_SOKNAD",
+      "kilde": "BISYS_SØKNAD",
       "referanse": "Bisys-02"
     }
   ]

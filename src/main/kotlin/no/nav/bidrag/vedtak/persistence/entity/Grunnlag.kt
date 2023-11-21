@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import no.nav.bidrag.domene.enums.Grunnlagstype
+import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
 import org.hibernate.annotations.JdbcTypeCode
@@ -42,7 +42,6 @@ data class Grunnlag(
 
 fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag) {
     val propertiesByName = OpprettGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
-    val konverter = ObjectMapper()
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {

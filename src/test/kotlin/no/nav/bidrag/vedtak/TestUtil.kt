@@ -1,17 +1,17 @@
 package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.bidrag.domene.enums.BehandlingsrefKilde
-import no.nav.bidrag.domene.enums.Beslutningstype
-import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.Grunnlagstype
-import no.nav.bidrag.domene.enums.Innkrevingstype
-import no.nav.bidrag.domene.enums.Stønadstype
-import no.nav.bidrag.domene.enums.Vedtakskilde
-import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
-import no.nav.bidrag.domene.streng.Enhetsnummer
-import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.organisasjon.Enhetsnummer
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
@@ -247,7 +247,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -268,7 +268,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -292,11 +292,11 @@ class TestUtil {
 
         private fun byggBehandlingsreferanseListe() = listOf(
             OpprettBehandlingsreferanseRequestDto(
-                kilde = BehandlingsrefKilde.BISYS_SOKNAD,
+                kilde = BehandlingsrefKilde.BISYS_SØKNAD,
                 referanse = "Bisysreferanse01",
             ),
             OpprettBehandlingsreferanseRequestDto(
-                kilde = BehandlingsrefKilde.BISYS_SOKNAD,
+                kilde = BehandlingsrefKilde.BISYS_SØKNAD,
                 referanse = "Bisysreferanse02",
             ),
         )
@@ -384,7 +384,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpUtenGrunnlagListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -401,7 +401,7 @@ class TestUtil {
                 grunnlagReferanseListe = emptyList(),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -590,7 +590,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpMedFeilListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -611,7 +611,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -796,7 +796,7 @@ class TestUtil {
         fun byggBehandlingsreferanse(
             behandlingsreferanseid: Int = (1..100).random(),
             vedtak: Vedtak = byggVedtak(),
-            kilde: String = "BISYS_SOKNAD",
+            kilde: String = "BISYS_SØKNAD",
             referanse: String = "Bisysreferanse01",
         ) = Behandlingsreferanse(
             id = behandlingsreferanseid,

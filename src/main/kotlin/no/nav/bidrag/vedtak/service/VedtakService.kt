@@ -3,16 +3,16 @@ package no.nav.bidrag.vedtak.service
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.bidrag.commons.security.utils.TokenUtils
-import no.nav.bidrag.domene.enums.BehandlingsrefKilde
-import no.nav.bidrag.domene.enums.Beslutningstype
-import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.Innkrevingstype
-import no.nav.bidrag.domene.enums.Stønadstype
-import no.nav.bidrag.domene.enums.Vedtakskilde
-import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
-import no.nav.bidrag.domene.streng.Enhetsnummer
-import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.organisasjon.Enhetsnummer
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
@@ -49,9 +49,7 @@ import no.nav.bidrag.vedtak.persistence.entity.toVedtakEntity
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Service
 @Transactional
@@ -398,8 +396,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val matchendeElementer = stønadsendringRequest.periodeListe
             .filter { periodeRequest ->
                 eksisterendePeriodeListe.any {
-                    LocalDate.parse(periodeRequest.periode.fomDato.toString()) == it.fom &&
-                        LocalDate.parse(periodeRequest.periode.tilDato.toString()) == it.til &&
+                    periodeRequest.periode.toDatoperiode().fom == it.fom &&
+                        periodeRequest.periode.toDatoperiode().til == it.til &&
                         periodeRequest.beløp?.toInt() == it.beløp?.toInt() &&
                         periodeRequest.valutakode == it.valutakode &&
                         periodeRequest.resultatkode == it.resultatkode &&
@@ -597,8 +595,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
-                    eksisterendePeriode.fom == LocalDate.parse(periodeRequest.periode.fomDato.toString()) &&
-                        eksisterendePeriode.til == LocalDate.parse(periodeRequest.periode.tilDato.toString()) &&
+                    eksisterendePeriode.fom == periodeRequest.periode.toDatoperiode().fom &&
+                        eksisterendePeriode.til == periodeRequest.periode.toDatoperiode().til &&
                         eksisterendePeriode.beløp?.toInt() == periodeRequest.beløp?.toInt() &&
                         eksisterendePeriode.valutakode == periodeRequest.valutakode &&
                         eksisterendePeriode.resultatkode == periodeRequest.resultatkode &&
