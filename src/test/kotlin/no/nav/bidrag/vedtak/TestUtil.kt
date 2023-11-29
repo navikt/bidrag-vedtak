@@ -21,6 +21,7 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringR
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
+//import no.nav.bidrag.vedtak.consumer.dto.SaksbehandlerInfoResponse
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
@@ -42,7 +43,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -279,7 +279,7 @@ class TestUtil {
                 innkreving = Innkrevingstype.MED_INNKREVING,
                 beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
-                referanse = "referanse2",
+                referanse = null,
                 delytelseId = "delytelseId2",
                 eksternReferanse = "EksternRef2",
                 grunnlagReferanseListe = listOf(
@@ -305,7 +305,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -346,7 +345,7 @@ class TestUtil {
                         delytelseId = "delytelseId2",
                         grunnlagReferanseListe = emptyList(),
 
-                    ),
+                        ),
                 ),
             ),
             OpprettStønadsendringRequestDto(
@@ -423,7 +422,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler2",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -438,7 +436,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -496,7 +493,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -537,7 +533,7 @@ class TestUtil {
                         delytelseId = "delytelseId2",
                         grunnlagReferanseListe = emptyList(),
 
-                    ),
+                        ),
                 ),
             ),
             OpprettStønadsendringRequestDto(
@@ -577,7 +573,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -710,7 +705,7 @@ class TestUtil {
             "sivilstandKode": "sivilstandkode1"
                 }""",
 
-        ) = Grunnlag(
+            ) = Grunnlag(
             id = grunnlagsid,
             referanse = grunnlagReferanse,
             vedtak = vedtak,
@@ -804,5 +799,10 @@ class TestUtil {
             kilde = kilde,
             referanse = referanse,
         )
+
+/*        fun byggHentSaksbehandlerInfo() = SaksbehandlerInfoResponse(
+            ident = "X1234",
+            navn = "Saksbehandler",
+        )*/
     }
 }

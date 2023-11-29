@@ -23,6 +23,7 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
@@ -30,6 +31,7 @@ import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
+//import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
@@ -53,7 +55,11 @@ import java.util.*
 
 @Service
 @Transactional
-class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
+class VedtakService(
+    val persistenceService: PersistenceService,
+    val hendelserService: HendelserService,
+//    private val bidragOrganisasjonConsumer: BidragOrganisasjonConsumer,
+    private val meterRegistry: MeterRegistry) {
 
     private val OPPRETT_VEDTAK_COUNTER_NAME = "opprett_vedtak"
     private val OPPDATER_VEDTAK_COUNTER_NAME = "oppdater_vedtak"
@@ -64,11 +70,22 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
     // Opprett vedtak (alle tabeller)
-    fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): Int {
+    fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): OpprettVedtakResponseDto {
+
+        // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
+//        val opprettetAv = TokenUtils.hentSaksbehandlerIdent()
+//        val opprettetAvNavn = if (opprettetAv != null) hentNavnPåSaksbehandler(opprettetAv) else "UKJENT"
+//        val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn()!!
+        val opprettetAv = vedtakRequest.opprettetAv!!
+        val opprettetAvNavn = ""
+        val kildeapplikasjon = ""
+
         // Opprett vedtak
-        val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity())
+        val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon))
 
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
+
+        val engangsbeløpReferanseListe = mutableListOf<String>()
 
         // Grunnlag
         vedtakRequest.grunnlagListe.forEach {
@@ -80,17 +97,19 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtakRequest.stønadsendringListe?.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
         // Engangsbeløp
-        vedtakRequest.engangsbeløpListe?.forEach { opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap) }
+        vedtakRequest.engangsbeløpListe?.forEach {
+            engangsbeløpReferanseListe.add(opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap).referanse)
+        }
 
         // Behandlingsreferanse
         vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
         if (vedtakRequest.stønadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbeløpListe?.isNotEmpty() == true) {
-            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTidspunkt)
+            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTidspunkt, opprettetAv, opprettetAvNavn, kildeapplikasjon)
         }
 
         measureVedtak(OPPRETT_VEDTAK_COUNTER_NAME, vedtakRequest)
-        return opprettetVedtak.id
+        return OpprettVedtakResponseDto(opprettetVedtak.id, engangsbeløpReferanseListe)
     }
 
     // Opprett grunnlag
@@ -191,8 +210,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
             opprettetAvNavn = vedtak.opprettetAvNavn,
+            kildeapplikasjon = vedtak.kildeapplikasjon,
             vedtakstidspunkt = vedtak.vedtakstidspunkt,
-            enhetsnummer = Enhetsnummer(vedtak.enhetsnummer),
+            enhetsnummer = if (vedtak.enhetsnummer != null) Enhetsnummer(vedtak.enhetsnummer) else null,
             opprettetTidspunkt = vedtak.opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
             fastsattILand = vedtak.fastsattILand,
@@ -322,7 +342,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
-            vedtakRequest.opprettetAvNavn == eksisterendeVedtak.opprettetAvNavn &&
+//            vedtakRequest.opprettetAvNavn == eksisterendeVedtak.opprettetAvNavn &&
             vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
             vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
             vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
@@ -686,7 +706,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     fun measureVedtak(
         metrikkNavn: String,
-        enhetsnummer: Enhetsnummer,
+        enhetsnummer: Enhetsnummer?,
         vedtakType: Vedtakstype,
         stonadType: Stønadstype?,
         engangsbeløpType: Engangsbeløptype?,
@@ -721,6 +741,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
         return referanse
     }
+
+/*    private fun hentNavnPåSaksbehandler(opprettetAv: String): String? {
+        return try {
+            bidragOrganisasjonConsumer.hentSaksbehandlernavn(opprettetAv)?.navn
+        } catch (e: Exception) {
+            SECURE_LOGGER.error("Kunne ikke hente navn på saksbehandler med ident $opprettetAv")
+            "UKJENT"
+        }
+    }*/
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)

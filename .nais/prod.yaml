@@ -34,3 +34,7 @@ spec:
     sqlInstances:
       tier: db-custom-1-3840
       diskAutoresize: true
+#azure:
+#  tenant: nav.no
+#  bidrag_organisasjon_url: https://bidrag-organisasjon.prod-fss-pub.nais.io/bidrag-organisasjon
+#  bidrag_organisasjon_scope: prod-fss.bidrag.bidrag-organisasjon

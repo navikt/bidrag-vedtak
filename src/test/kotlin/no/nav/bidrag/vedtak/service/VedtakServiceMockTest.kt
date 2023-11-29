@@ -9,6 +9,7 @@ import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
 import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
 import no.nav.bidrag.domene.sak.Saksnummer
+import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggBehandlingsreferanse
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbeløp
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggEngangsbeløpGrunnlag
@@ -22,6 +23,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
+//import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
@@ -41,14 +43,20 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
+import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 
 @DisplayName("VedtakServiceMockTest")
+@ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
 @ExtendWith(MockitoExtension::class)
 class VedtakServiceMockTest {
 
     @InjectMocks
     private lateinit var vedtakService: VedtakService
+
+/*    @InjectMocks
+    private lateinit var bidragOrganisasjonConsumer: BidragOrganisasjonConsumer*/
 
     @Mock
     private lateinit var hendelserService: HendelserService
@@ -106,6 +114,7 @@ class VedtakServiceMockTest {
             .thenReturn(byggEngangsbeløpGrunnlag())
         Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
             .thenReturn(byggBehandlingsreferanse())
+        Mockito.`when`(persistenceServiceMock.referanseErUnik(vedtaksid = any(), referanse = any())).thenReturn(true)
 
         val opprettVedtakRequestDto = byggVedtakRequest()
         val nyttVedtakOpprettet = vedtakService.opprettVedtak(opprettVedtakRequestDto)
@@ -138,7 +147,6 @@ class VedtakServiceMockTest {
             Executable { assertThat(vedtak.type).isEqualTo(opprettVedtakRequestDto.type.toString()) },
             Executable { assertThat(vedtak.enhetsnummer).isEqualTo(opprettVedtakRequestDto.enhetsnummer.toString()) },
             Executable { assertThat(vedtak.opprettetAv).isEqualTo(opprettVedtakRequestDto.opprettetAv) },
-            Executable { assertThat(vedtak.opprettetAvNavn).isEqualTo(opprettVedtakRequestDto.opprettetAvNavn) },
             Executable { assertThat(vedtak.vedtakstidspunkt).isEqualTo(opprettVedtakRequestDto.vedtakstidspunkt) },
             Executable { assertThat(vedtak.innkrevingUtsattTilDato).isEqualTo(opprettVedtakRequestDto.innkrevingUtsattTilDato) },
 
@@ -190,7 +198,7 @@ class VedtakServiceMockTest {
             Executable { assertThat(engangsbeløpListe[1].beløp).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].beløp) },
             Executable { assertThat(engangsbeløpListe[1].valutakode).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].valutakode) },
             Executable { assertThat(engangsbeløpListe[1].resultatkode).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].resultatkode) },
-            Executable { assertThat(engangsbeløpListe[1].referanse).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].referanse) },
+            Executable { assertThat(engangsbeløpListe[1].referanse).isNotNull() },
             Executable { assertThat(engangsbeløpListe[1].innkreving).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].innkreving.toString()) },
             Executable { assertThat(engangsbeløpListe[1].beslutning).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![1].beslutning.toString()) },
 

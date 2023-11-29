@@ -58,7 +58,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -77,6 +76,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -90,7 +92,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -119,6 +120,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -132,7 +136,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(), fastsattILand = null,
@@ -169,6 +172,9 @@ class HendelserServiceTest {
             ),
             1,
             LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -183,7 +189,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -193,16 +198,18 @@ class HendelserServiceTest {
                     OpprettStønadsendringRequestDto(
                         type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"),
                         kravhaver = Personident("D"),
-                        mottaker = Personident("E"), førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING,
+                        mottaker = Personident("E"),
+                        førsteIndeksreguleringsår = 2024,
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
                         listOf(
                             OpprettPeriodeRequestDto(
                                 periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
-                                BigDecimal.ONE,
-                                "NOK",
+                                beløp = BigDecimal.ONE,
+                                valutakode = "NOK",
                                 "A",
                                 "delytelseId1",
                                 listOf("A"),
@@ -220,6 +227,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(
@@ -227,14 +237,15 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 id = 1,
+                opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "",
+                kildeapplikasjon = "",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = "NO",
-                opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
-                listOf(
+                stønadsendringListe = listOf(
                     Stønadsendring(
                         type = Stønadstype.BIDRAG,
                         sak = Saksnummer("B"),
@@ -277,7 +288,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -307,6 +317,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
         verify(vedtakEventProducerMock).publish(anyOrNull())
     }
@@ -320,7 +333,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -350,6 +362,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
         verify(vedtakEventProducerMock).publish(
             VedtakHendelse(
@@ -361,7 +376,8 @@ class HendelserServiceTest {
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = "NO",
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
+                opprettetAvNavn = "",
+                kildeapplikasjon = "",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe =

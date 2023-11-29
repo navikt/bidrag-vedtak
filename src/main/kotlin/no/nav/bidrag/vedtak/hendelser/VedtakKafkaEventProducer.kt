@@ -21,7 +21,7 @@ class DefaultVedtakKafkaEventProducer(
                 topic,
                 vedtakHendelse.id.toString(),
                 objectMapper.writeValueAsString(vedtakHendelse),
-            )
+            )?.get()
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e.message, e)
         }

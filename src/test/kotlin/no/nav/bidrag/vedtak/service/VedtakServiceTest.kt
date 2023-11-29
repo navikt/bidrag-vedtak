@@ -87,7 +87,7 @@ class VedtakServiceTest {
     fun `skal opprette og hente vedtak`() {
         // Oppretter nytt vedtak
         val nyttVedtakRequest = byggVedtakRequest()
-        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest)
+        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest).vedtaksid
 
         assertAll(
             Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
@@ -106,7 +106,6 @@ class VedtakServiceTest {
 //      Executable { assertThat(vedtakFunnet.vedtakstidspunkt).isEqualTo(nyttVedtakRequest.vedtakstidspunkt) },
             Executable { assertThat(vedtakFunnet.opprettetTidspunkt).isNotNull() },
             Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
-            Executable { assertThat(vedtakFunnet.opprettetAvNavn).isEqualTo(nyttVedtakRequest.opprettetAvNavn) },
             Executable { assertThat(vedtakFunnet.enhetsnummer).isEqualTo(nyttVedtakRequest.enhetsnummer) },
             Executable { assertThat(vedtakFunnet.innkrevingUtsattTilDato).isEqualTo(nyttVedtakRequest.innkrevingUtsattTilDato) },
             Executable { assertThat(vedtakFunnet.fastsattILand).isEqualTo(nyttVedtakRequest.fastsattILand) },
@@ -289,7 +288,9 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].innkreving).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].innkreving) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].beslutning).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].beslutning) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].omgjørVedtakId).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].omgjørVedtakId) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].referanse).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].referanse) },
+            // Tester på at det genereres en referanse hvis den ikke er angitt i requesten
+            Executable { assertThat(nyttVedtakRequest.engangsbeløpListe!![1].referanse).isNull() },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].referanse).isNotNull() },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].delytelseId).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].delytelseId) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].eksternReferanse).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].eksternReferanse) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
@@ -308,7 +309,7 @@ class VedtakServiceTest {
     fun `skal opprette vedtak uten grunnlag og så oppdatere vedtak med grunnlag`() {
         // Oppretter nytt vedtak
         val oopdaterVedtakUtenGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
-        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest)
+        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest).vedtaksid
 
         // Henter vedtak uten grunnlag
         val vedtakUtenGrunnlag = vedtakService.hentVedtak(vedtakUtenGrunnlagVedtakId)
@@ -467,7 +468,7 @@ class VedtakServiceTest {
     fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
         // Oppretter nytt vedtak
         val vedtakRequest = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtakRequest)
+        val vedtakId = vedtakService.opprettVedtak(vedtakRequest).vedtaksid
 
         // Henter vedtak uten grunnlag
         val vedtak = vedtakService.hentVedtak(vedtakId)
@@ -570,7 +571,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på vedtak feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak)
+        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchVedtak()
 
@@ -584,7 +585,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på stønadsendring feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak)
+        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchStønadsendring()
 
@@ -598,7 +599,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på periode feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak)
+        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchPeriode()
 
@@ -612,7 +613,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på engangsbeløp feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak)
+        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchEngangsbeløp()
 
@@ -626,7 +627,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak feiler hvis grunnlag mangler i request`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak)
+        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
 

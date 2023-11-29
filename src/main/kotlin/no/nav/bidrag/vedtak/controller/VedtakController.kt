@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.service.VedtakService
@@ -42,7 +43,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     fun opprettVedtak(
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
-    ): ResponseEntity<Int>? {
+    ): ResponseEntity<OpprettVedtakResponseDto>? {
         val vedtakOpprettet = vedtakService.opprettVedtak(request)
         LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
         SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: $request")

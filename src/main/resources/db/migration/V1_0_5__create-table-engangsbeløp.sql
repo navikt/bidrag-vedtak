@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS engangsbeløp
     innkreving varchar(20) NOT NULL,
     beslutning varchar(50) NOT NULL,
     omgjør_vedtak_id integer,
-    referanse varchar(20),
+    referanse varchar(255),
     delytelse_id varchar(32),
     ekstern_referanse varchar(20),
     CONSTRAINT engangsbeløp_pkey PRIMARY KEY (engangsbeløpsid),
