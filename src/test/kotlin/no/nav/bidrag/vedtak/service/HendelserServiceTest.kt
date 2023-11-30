@@ -66,10 +66,13 @@ class HendelserServiceTest {
                 stønadsendringListe = null,
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"),
-                        mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A"),
+                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"),
+                        kravhaver = Personident("E"),
+                        mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A",
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null,
+                        eksternReferanse = null,
+                        grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
                 behandlingsreferanseListe = null,
@@ -99,7 +102,10 @@ class HendelserServiceTest {
                 grunnlagListe = emptyList(),
                 stønadsendringListe = listOf(
                     OpprettStønadsendringRequestDto(
-                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"), mottaker = Personident("E"),
+                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"),
+                        mottaker = Personident(
+                            "E",
+                        ),
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING, Beslutningstype.ENDRING,
                         omgjørVedtakId = null, eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
@@ -110,7 +116,7 @@ class HendelserServiceTest {
                                 valutakode = "NOK",
                                 resultatkode = "A",
                                 delytelseId = null,
-                                listOf("A"),
+                                grunnlagReferanseListe = listOf("A"),
                             ),
                         ),
                     ),
@@ -142,7 +148,10 @@ class HendelserServiceTest {
                 grunnlagListe = emptyList(),
                 stønadsendringListe = listOf(
                     OpprettStønadsendringRequestDto(
-                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"), mottaker = Personident("E"),
+                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"),
+                        mottaker = Personident(
+                            "E",
+                        ),
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
@@ -162,10 +171,21 @@ class HendelserServiceTest {
                 ),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"), mottaker = Personident("F"),
-                        beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A"),
+                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        sak = Saksnummer("sak01"),
+                        skyldner = Personident("D"),
+                        kravhaver = Personident("E"),
+                        mottaker = Personident("F"),
+                        beløp = BigDecimal.ONE,
+                        valutakode = "NOK",
+                        resultatkode = "A",
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
+                        omgjørVedtakId = null,
+                        referanse = "referanse1",
+                        delytelseId = null,
+                        eksternReferanse = null,
+                        grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
                 behandlingsreferanseListe = null,

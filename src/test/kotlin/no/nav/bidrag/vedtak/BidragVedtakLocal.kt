@@ -24,7 +24,8 @@ class BidragVedtakLocal {
     }
 }
 fun main(args: Array<String>) {
-    val wireMockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().dynamicHttpsPort()) // No-args constructor will start on port 8080, no HTTPS
+    val wireMockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().dynamicHttpsPort())
+    // No-args constructor will start on port 8080, no HTTPS
     wireMockServer.start()
 
     val profile = if (args.isEmpty()) LOCAL_PROFILE else args[0]

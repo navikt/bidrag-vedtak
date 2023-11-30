@@ -35,6 +35,7 @@
     <com.squareup.okhttp3.version>4.12.0</com.squareup.okhttp3.version>
     <jackson-datatype-jsr310.version>2.16.0</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>2.2.0</springdoc-openapi-ui.version>
+<!--    <ktlint.version>0.47.1</ktlint.version>-->
     <ktlint-cli.version>1.0.1</ktlint-cli.version>
   </properties>
 
@@ -286,7 +287,8 @@
             <phase>verify</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                  classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                   <arg value="src/**/*.kt"/>
                 </java>
               </target>
@@ -300,7 +302,8 @@
             <phase>validate</phase>
             <configuration>
               <target name="ktlint">
-                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                  classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                   <jvmarg value="--add-opens"/>
                   <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
                   <arg value="-F"/>
@@ -315,8 +318,8 @@
         </executions>
         <dependencies>
           <dependency>
-            <groupId>com.pinterest</groupId>
-            <artifactId>ktlint</artifactId>
+            <groupId>com.pinterest.ktlint</groupId>
+            <artifactId>ktlint-cli</artifactId>
             <version>${ktlint-cli.version}</version>
           </dependency>
           <!-- additional 3rd party ruleset(s) can be specified here -->

@@ -12,10 +12,8 @@ import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.web.CorrelationIdFilter
 import no.nav.bidrag.commons.web.DefaultCorsFilter
 import no.nav.bidrag.commons.web.UserMdcFilter
-//import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
-//import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,8 +21,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
-//import org.springframework.web.client.RestOperations
-//import java.net.URI
+// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
+// import org.springframework.beans.factory.annotation.Qualifier
+// import org.springframework.web.client.RestOperations
+// import java.net.URI
 
 const val LIVE_PROFILE = "live"
 const val LOKAL_NAIS_PROFILE = "lokal-nais"

@@ -50,10 +50,7 @@ data class Vedtak(
 
 )
 
-fun OpprettVedtakRequestDto.toVedtakEntity(
-    opprettetAv: String,
-    opprettetAvNavn: String?,
-    kildeapplikasjon: String) = with(::Vedtak) {
+fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn: String?, kildeapplikasjon: String) = with(::Vedtak) {
     val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->

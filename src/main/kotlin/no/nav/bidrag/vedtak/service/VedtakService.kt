@@ -31,7 +31,6 @@ import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
-//import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
@@ -52,6 +51,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 
 @Service
 @Transactional
@@ -59,10 +59,11 @@ class VedtakService(
     val persistenceService: PersistenceService,
     val hendelserService: HendelserService,
 //    private val bidragOrganisasjonConsumer: BidragOrganisasjonConsumer,
-    private val meterRegistry: MeterRegistry) {
+    private val meterRegistry: MeterRegistry,
+) {
 
-    private val OPPRETT_VEDTAK_COUNTER_NAME = "opprett_vedtak"
-    private val OPPDATER_VEDTAK_COUNTER_NAME = "oppdater_vedtak"
+    private val opprettVedtakCounterName = "opprett_vedtak"
+    private val oppdaterVedtakCounterName = "oppdater_vedtak"
 
     // Lister med generert db-id som skal brukes for å slette eventuelt eksisterende grunnlag ved oppdatering av vedtak
     val stønadsendringsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
@@ -71,7 +72,6 @@ class VedtakService(
 
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): OpprettVedtakResponseDto {
-
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
 //        val opprettetAv = TokenUtils.hentSaksbehandlerIdent()
 //        val opprettetAvNavn = if (opprettetAv != null) hentNavnPåSaksbehandler(opprettetAv) else "UKJENT"
@@ -105,10 +105,17 @@ class VedtakService(
         vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
         if (vedtakRequest.stønadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbeløpListe?.isNotEmpty() == true) {
-            hendelserService.opprettHendelse(vedtakRequest, opprettetVedtak.id, opprettetVedtak.opprettetTidspunkt, opprettetAv, opprettetAvNavn, kildeapplikasjon)
+            hendelserService.opprettHendelse(
+                vedtakRequest,
+                opprettetVedtak.id,
+                opprettetVedtak.opprettetTidspunkt,
+                opprettetAv,
+                opprettetAvNavn,
+                kildeapplikasjon,
+            )
         }
 
-        measureVedtak(OPPRETT_VEDTAK_COUNTER_NAME, vedtakRequest)
+        measureVedtak(opprettVedtakCounterName, vedtakRequest)
         return OpprettVedtakResponseDto(opprettetVedtak.id, engangsbeløpReferanseListe)
     }
 
@@ -325,7 +332,7 @@ class VedtakService(
             SECURE_LOGGER.error("$feilmelding $vedtakRequest")
             throw VedtaksdataMatcherIkkeException(feilmelding)
         }
-        measureVedtak(OPPDATER_VEDTAK_COUNTER_NAME, vedtakRequest)
+        measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
 
         return vedtakId
     }
@@ -367,7 +374,9 @@ class VedtakService(
 
         // Sjekker om det er lagret like mange stønadsendringer som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.stønadsendringListe?.size != eksisterendeStønadsendringListe.size) {
-            SECURE_LOGGER.error("Det er ulikt antall stønadsendringer i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
+            SECURE_LOGGER.error(
+                "Det er ulikt antall stønadsendringer i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
+            )
             return false
         }
 
@@ -403,7 +412,9 @@ class VedtakService(
 
         for ((i, stønadsendring) in eksisterendeStønadsendringListe.withIndex()) {
             if (!perioderMatcher(stønadsendring.id, sortertStønadsendringRequestListe[i])) {
-                SECURE_LOGGER.error("Det er mismatch på minst én periode ved forsøk på å oppdatere vedtak $vedtakId, stønadsendring: ${stønadsendring.id}")
+                SECURE_LOGGER.error(
+                    "Det er mismatch på minst én periode ved forsøk på å oppdatere vedtak $vedtakId, stønadsendring: ${stønadsendring.id}",
+                )
                 return false
             }
         }
@@ -445,7 +456,9 @@ class VedtakService(
 
         // Sjekker om det er lagret like mange engangsbeløp som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.engangsbeløpListe?.size != eksisterendeEngangsbeløpListe.size) {
-            SECURE_LOGGER.error("Det er ulikt antall engangsbeløp i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
+            SECURE_LOGGER.error(
+                "Det er ulikt antall engangsbeløp i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
+            )
             return false
         }
 
@@ -491,7 +504,10 @@ class VedtakService(
 
         // Sjekker om det er lagret like mange behandlinmgsreferanser som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.behandlingsreferanseListe?.size != eksisterendeBehandlingsreferanseListe.size) {
-            SECURE_LOGGER.error("Det er ulikt antall behandlingsreferanser i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId")
+            SECURE_LOGGER.error(
+                "Det er ulikt antall behandlingsreferanser i request for å oppdater vedtak og det som er lagret på vedtaket fra før. " +
+                    "VedtakId: $vedtakId",
+            )
             return false
         }
 
@@ -707,15 +723,15 @@ class VedtakService(
     fun measureVedtak(
         metrikkNavn: String,
         enhetsnummer: Enhetsnummer?,
-        vedtakType: Vedtakstype,
-        stonadType: Stønadstype?,
-        engangsbeløpType: Engangsbeløptype?,
+        vedtakstype: Vedtakstype,
+        stønadstype: Stønadstype?,
+        engangsbeløptype: Engangsbeløptype?,
     ) {
         Counter.builder("opprett_vedtak").description("Teller antall vedtak som er opprettet med stønad- eller engangsbeløptype")
-            .tag("enhet", enhetsnummer.toString()).tag("vedtak_type", vedtakType.name)
+            .tag("enhet", enhetsnummer.toString()).tag("vedtak_type", vedtakstype.name)
             .tag("opprettet_av_app", TokenUtils.hentApplikasjonsnavn() ?: "UKJENT")
-            .tag("stonad_type", stonadType?.name ?: "NONE")
-            .tag("engangsbeløp_type", engangsbeløpType?.name ?: "NONE")
+            .tag("stønadstype", stønadstype?.name ?: "NONE")
+            .tag("engangsbeløp_type", engangsbeløptype?.name ?: "NONE")
             .register(meterRegistry).increment()
     }
 

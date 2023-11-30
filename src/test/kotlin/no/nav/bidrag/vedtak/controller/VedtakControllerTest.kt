@@ -88,7 +88,6 @@ class VedtakControllerTest {
 
     private val bidragOrganisasjonConsumer: BidragOrganisasjonConsumer = BidragOrganisasjonConsumer(URI("url"), restTemplate)*/
 
-
     @LocalServerPort
     private val port = 0
 
@@ -113,7 +112,6 @@ class VedtakControllerTest {
 
     @Test
     fun `skal opprette nytt vedtak`() {
-
 /*        Mockito.`when`(
             restTemplate.exchange(
                 eq("/saksbehandler/info/"),

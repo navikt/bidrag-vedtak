@@ -94,7 +94,11 @@ class PersistenceService(
 
     fun opprettStønadsendringGrunnlag(stønadsendringGrunnlagBo: StønadsendringGrunnlagBo): StønadsendringGrunnlag {
         val eksisterendeStønadsendring = stønadsendringRepository.findById(stønadsendringGrunnlagBo.stønadsendringsid)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke stønadsendring med id %d i databasen", stønadsendringGrunnlagBo.stønadsendringsid)) }
+            .orElseThrow {
+                IllegalArgumentException(
+                    String.format("Fant ikke stønadsendring med id %d i databasen", stønadsendringGrunnlagBo.stønadsendringsid),
+                )
+            }
         val eksisterendeGrunnlag = grunnlagRepository.findById(stønadsendringGrunnlagBo.grunnlagsid)
             .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", stønadsendringGrunnlagBo.grunnlagsid)) }
         val nyStønadsendringGrunnlag = StønadsendringGrunnlag(eksisterendeStønadsendring, eksisterendeGrunnlag)
@@ -128,7 +132,11 @@ class PersistenceService(
 
     fun opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo: EngangsbeløpGrunnlagBo): EngangsbeløpGrunnlag {
         val eksisterendeEngangsbeløp = engangsbeløpRepository.findById(engangsbeløpGrunnlagBo.engangsbeløpsid)
-            .orElseThrow { IllegalArgumentException(String.format("Fant ikke engangsbeløp med id %d i databasen", engangsbeløpGrunnlagBo.engangsbeløpsid)) }
+            .orElseThrow {
+                IllegalArgumentException(
+                    String.format("Fant ikke engangsbeløp med id %d i databasen", engangsbeløpGrunnlagBo.engangsbeløpsid),
+                )
+            }
         val eksisterendeGrunnlag = grunnlagRepository.findById(engangsbeløpGrunnlagBo.grunnlagsid)
             .orElseThrow { IllegalArgumentException(String.format("Fant ikke grunnlag med id %d i databasen", engangsbeløpGrunnlagBo.grunnlagsid)) }
         val nyttEngangsbeløpGrunnlag = EngangsbeløpGrunnlag(eksisterendeEngangsbeløp, eksisterendeGrunnlag)

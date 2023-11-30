@@ -21,7 +21,6 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringR
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
-//import no.nav.bidrag.vedtak.consumer.dto.SaksbehandlerInfoResponse
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
@@ -34,6 +33,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+// import no.nav.bidrag.vedtak.consumer.dto.SaksbehandlerInfoResponse
 
 class TestUtil {
 
@@ -345,7 +345,7 @@ class TestUtil {
                         delytelseId = "delytelseId2",
                         grunnlagReferanseListe = emptyList(),
 
-                        ),
+                    ),
                 ),
             ),
             OpprettStønadsendringRequestDto(
@@ -533,7 +533,7 @@ class TestUtil {
                         delytelseId = "delytelseId2",
                         grunnlagReferanseListe = emptyList(),
 
-                        ),
+                    ),
                 ),
             ),
             OpprettStønadsendringRequestDto(
@@ -704,8 +704,7 @@ class TestUtil {
             "datoTil": null,
             "sivilstandKode": "sivilstandkode1"
                 }""",
-
-            ) = Grunnlag(
+        ) = Grunnlag(
             id = grunnlagsid,
             referanse = grunnlagReferanse,
             vedtak = vedtak,
@@ -713,29 +712,21 @@ class TestUtil {
             innhold = innhold,
         )
 
-        fun byggPeriodeGrunnlagBo(
-            periodeid: Int = byggPeriode().id,
-            grunnlagsid: Int = byggGrunnlag().id,
-        ) = PeriodeGrunnlagBo(
+        fun byggPeriodeGrunnlagBo(periodeid: Int = byggPeriode().id, grunnlagsid: Int = byggGrunnlag().id) = PeriodeGrunnlagBo(
             periodeid = periodeid,
             grunnlagsid = grunnlagsid,
         )
 
-        fun byggPeriodeGrunnlag(
-            periode: Periode = byggPeriode(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = PeriodeGrunnlag(
+        fun byggPeriodeGrunnlag(periode: Periode = byggPeriode(), grunnlag: Grunnlag = byggGrunnlag()) = PeriodeGrunnlag(
             periode = periode,
             grunnlag = grunnlag,
         )
 
-        fun byggStønadsendringGrunnlag(
-            stønadsendring: Stønadsendring = byggStønadsendring(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = StønadsendringGrunnlag(
-            stønadsendring = stønadsendring,
-            grunnlag = grunnlag,
-        )
+        fun byggStønadsendringGrunnlag(stønadsendring: Stønadsendring = byggStønadsendring(), grunnlag: Grunnlag = byggGrunnlag()) =
+            StønadsendringGrunnlag(
+                stønadsendring = stønadsendring,
+                grunnlag = grunnlag,
+            )
 
         fun byggEngangsbeløp(
             engangsbeløpId: Int = (1..100).random(),
@@ -772,18 +763,12 @@ class TestUtil {
             eksternReferanse = eksternReferanse,
         )
 
-        fun byggEngangsbeløpGrunnlagBo(
-            engangsbeløpId: Int = (1..100).random(),
-            grunnlagId: Int = (1..100).random(),
-        ) = EngangsbeløpGrunnlagBo(
+        fun byggEngangsbeløpGrunnlagBo(engangsbeløpId: Int = (1..100).random(), grunnlagId: Int = (1..100).random()) = EngangsbeløpGrunnlagBo(
             engangsbeløpsid = engangsbeløpId,
             grunnlagsid = grunnlagId,
         )
 
-        fun byggEngangsbeløpGrunnlag(
-            engangsbeløp: Engangsbeløp = byggEngangsbeløp(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = EngangsbeløpGrunnlag(
+        fun byggEngangsbeløpGrunnlag(engangsbeløp: Engangsbeløp = byggEngangsbeløp(), grunnlag: Grunnlag = byggGrunnlag()) = EngangsbeløpGrunnlag(
             engangsbeløp = engangsbeløp,
             grunnlag = grunnlag,
         )
