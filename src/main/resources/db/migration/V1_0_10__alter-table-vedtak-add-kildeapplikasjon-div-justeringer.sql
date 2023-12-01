@@ -1,8 +1,8 @@
 ALTER TABLE vedtak
-ADD COLUMN kildeapplikasjon TYPE varchar(255) NOT NULL;
+ADD COLUMN kildeapplikasjon text NOT NULL default '';
 
 ALTER TABLE vedtak
-ALTER COLUMN opprettet_av TYPE varchar(255) NOT NULL;
+ALTER COLUMN opprettet_av TYPE text;
 
 ALTER TABLE vedtak
-ALTER COLUMN enhetsnummer TYPE character(4);
+ALTER COLUMN enhetsnummer TYPE text;
