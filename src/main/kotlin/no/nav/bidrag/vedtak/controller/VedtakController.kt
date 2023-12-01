@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.service.VedtakService
@@ -34,7 +35,11 @@ class VedtakController(private val vedtakService: VedtakService) {
         value = [
             ApiResponse(responseCode = "200", description = "Vedtak opprettet"),
             ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "401",
+                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
         ],
@@ -42,7 +47,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     fun opprettVedtak(
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
-    ): ResponseEntity<Int>? {
+    ): ResponseEntity<OpprettVedtakResponseDto>? {
         val vedtakOpprettet = vedtakService.opprettVedtak(request)
         LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
         SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: $request")
@@ -55,7 +60,11 @@ class VedtakController(private val vedtakService: VedtakService) {
         value = [
             ApiResponse(responseCode = "200", description = "Vedtak funnet"),
             ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "403", description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
             ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
@@ -76,8 +85,16 @@ class VedtakController(private val vedtakService: VedtakService) {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "Vedtak oppdatert"),
-            ApiResponse(responseCode = "400", description = "Data i innsendt vedtak matcher ikke lagrede vedtaksopplysninger", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "401", description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "400",
+                description = "Data i innsendt vedtak matcher ikke lagrede vedtaksopplysninger",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
             ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),

@@ -32,7 +32,12 @@ class RestExceptionHandler() {
     }
 
     @ResponseBody
-    @ExceptionHandler(value = [IllegalArgumentException::class, MethodArgumentTypeMismatchException::class, ConversionFailedException::class, HttpMessageNotReadableException::class])
+    @ExceptionHandler(
+        value = [
+            IllegalArgumentException::class, MethodArgumentTypeMismatchException::class, ConversionFailedException::class,
+            HttpMessageNotReadableException::class,
+        ],
+    )
     fun handleInvalidValueExceptions(exception: Exception): ResponseEntity<*> {
         val cause = exception.cause
         val valideringsFeil = if (cause is MismatchedInputException) createMissingKotlinParameterViolation(cause) else null

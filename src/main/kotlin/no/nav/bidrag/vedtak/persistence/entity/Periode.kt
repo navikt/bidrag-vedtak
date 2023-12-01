@@ -50,8 +50,8 @@ fun OpprettPeriodeRequestDto.toPeriodeEntity(eksisterendeStønadsendring: Støna
             when (parameter.name) {
                 Periode::id.name -> 0
                 Periode::stønadsendring.name -> eksisterendeStønadsendring
-                Periode::fom.name -> periode.fomDato.verdi
-                Periode::til.name -> periode.tilDato?.verdi
+                Periode::fom.name -> periode.toDatoperiode().fom
+                Periode::til.name -> periode.toDatoperiode().til
                 else -> propertiesByName[parameter.name]?.get(this@toPeriodeEntity)
             }
         },

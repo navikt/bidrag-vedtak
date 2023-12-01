@@ -10,6 +10,10 @@ spec:
     application:
       enabled: true
       allowAllUsers: true
+      claims:
+        extra:
+          - "NAVident"
+          - "azp_name"
   accessPolicy:
     inbound:
       rules:
@@ -23,7 +27,7 @@ spec:
     pool: {{ kafka.pool }}
   liveness:
     path: /actuator/health
-    initialDelay: 70
+    initialDelay: 120
     timeout: 1
     periodSeconds: 5
     failureThreshold: 10

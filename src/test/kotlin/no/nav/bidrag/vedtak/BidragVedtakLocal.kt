@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.LOCAL_PROFILE
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
-import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.FilterType
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootApplication(exclude = [SecurityAutoConfiguration::class, ManagementWebSecurityAutoConfiguration::class])
-@EnableMockOAuth2Server
 @EnableJwtTokenValidation(ignore = ["org.springdoc", "org.springframework"])
 @ActiveProfiles(LOCAL_PROFILE)
 @ComponentScan(excludeFilters = [ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [BidragVedtak::class, BidragVedtakTest::class])])
@@ -24,7 +22,8 @@ class BidragVedtakLocal {
     }
 }
 fun main(args: Array<String>) {
-    val wireMockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().dynamicHttpsPort()) // No-args constructor will start on port 8080, no HTTPS
+    // No-args constructor will start on port 8080, no HTTPS
+    val wireMockServer = WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort().dynamicHttpsPort())
     wireMockServer.start()
 
     val profile = if (args.isEmpty()) LOCAL_PROFILE else args[0]

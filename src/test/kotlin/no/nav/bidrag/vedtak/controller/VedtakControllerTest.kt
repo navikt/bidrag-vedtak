@@ -144,7 +144,7 @@ class VedtakControllerTest {
     @Test
     fun `skal hente alle data for et vedtak`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest())
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
 
         // Henter forekomster
         val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
