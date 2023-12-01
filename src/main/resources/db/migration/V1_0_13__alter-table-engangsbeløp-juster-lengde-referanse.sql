@@ -1,3 +1,5 @@
+DROP INDEX idx_engangsbeløp_2;
+
 ALTER TABLE engangsbeløp
 ALTER COLUMN referanse TYPE text ;
 
