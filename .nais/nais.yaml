@@ -22,9 +22,6 @@ spec:
             namespace: {{this.namespace}}
             cluster: {{this.cluster}}
       {{/each}}
-#    outbound:
-#      external:
-#        - host: {{ azure.bidrag_organisasjon_url }}
   image: {{ image }}
   kafka:
     pool: {{ kafka.pool }}
@@ -70,7 +67,3 @@ spec:
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
-#    - name: BIDRAG_ORGANISASJON_URL
-#      value: https://{{ azure.bidrag_organisasjon_url }}
-#    - name: BIDRAG_ORGANISASJON_SCOPE
-#      value: https://{{ azure.bidrag_organisasjon_scope }}

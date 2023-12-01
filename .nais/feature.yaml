@@ -38,7 +38,3 @@ spec:
     sqlInstances:
       tier: db-f1-micro
       diskAutoresize: false
-#azure:
-#  tenant: trygdeetaten.no
-#  bidrag_organisasjon_url: https://bidrag-organisasjon-feature.dev-fss-pub.nais.io/bidrag-organisasjon
-#  bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon-feature
