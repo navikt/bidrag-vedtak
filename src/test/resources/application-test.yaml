@@ -6,8 +6,6 @@
 # Mocks OIDC.
 #
 ####################################################################
-#BIDRAG_ORGANISASJON_URL: http://localhost:${wiremock.server.port}/organisasjon
-NAIS_APP_NAME: bidrag-vedtak
 spring:
   config.activate.on-profile: test, local
   flyway.enabled: false
@@ -30,17 +28,6 @@ no.nav.security.jwt:
     aad:
       discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
       accepted_audience: aud-localhost
-#  client:
-#    registration:
-#      bidrag-organisasjon:
-#        resource-url: ${BIDRAG_ORGANISASJON_URL}
-#        token-endpoint-url: http://localhost:${mock-oauth2-server.port:1234}/aad/token
-#        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
-#        scope: api://123/.default
-#        authentication:
-#          client-id: 123
-#          client-secret: 123
-#          client-auth-method: client_secret_basic
 spring.kafka:
   properties:
     schema:
