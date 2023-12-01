@@ -1,7 +1,5 @@
 package no.nav.bidrag.vedtak.controller
 
-/*import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
-import no.nav.bidrag.vedtak.consumer.dto.SaksbehandlerInfoResponse*/
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
@@ -83,11 +81,6 @@ class VedtakControllerTest {
     @Autowired
     private lateinit var persistenceService: PersistenceService
 
-/*
-    private val restTemplate: RestOperations = Mockito.mock(RestOperations::class.java)
-
-    private val bidragOrganisasjonConsumer: BidragOrganisasjonConsumer = BidragOrganisasjonConsumer(URI("url"), restTemplate)*/
-
     @LocalServerPort
     private val port = 0
 
@@ -112,17 +105,6 @@ class VedtakControllerTest {
 
     @Test
     fun `skal opprette nytt vedtak`() {
-/*        Mockito.`when`(
-            restTemplate.exchange(
-                eq("/saksbehandler/info/"),
-                eq(HttpMethod.POST),
-                any(),
-                any<Class<SaksbehandlerInfoResponse>>(),
-            ),
-        )
-            .thenReturn(
-                ResponseEntity(TestUtil.byggHentSaksbehandlerInfo(), HttpStatus.OK),
-            )*/
 
         // Oppretter ny forekomst
         val response = securedTestRestTemplate.exchange(

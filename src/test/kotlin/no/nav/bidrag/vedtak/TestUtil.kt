@@ -33,7 +33,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-// import no.nav.bidrag.vedtak.consumer.dto.SaksbehandlerInfoResponse
 
 class TestUtil {
 
@@ -784,10 +783,5 @@ class TestUtil {
             kilde = kilde,
             referanse = referanse,
         )
-
-/*        fun byggHentSaksbehandlerInfo() = SaksbehandlerInfoResponse(
-            ident = "X1234",
-            navn = "Saksbehandler",
-        )*/
     }
 }

@@ -46,8 +46,6 @@ import org.mockito.kotlin.any
 import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 
-// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
-
 @DisplayName("VedtakServiceMockTest")
 @ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
 @ExtendWith(MockitoExtension::class)
@@ -55,9 +53,6 @@ class VedtakServiceMockTest {
 
     @InjectMocks
     private lateinit var vedtakService: VedtakService
-
-    /*    @InjectMocks
-        private lateinit var bidragOrganisasjonConsumer: BidragOrganisasjonConsumer*/
 
     @Mock
     private lateinit var hendelserService: HendelserService

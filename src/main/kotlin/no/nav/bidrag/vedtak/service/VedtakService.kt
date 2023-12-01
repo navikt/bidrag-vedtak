@@ -51,14 +51,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
 
 @Service
 @Transactional
 class VedtakService(
     val persistenceService: PersistenceService,
     val hendelserService: HendelserService,
-//    private val bidragOrganisasjonConsumer: BidragOrganisasjonConsumer,
     private val meterRegistry: MeterRegistry,
 ) {
 
@@ -757,15 +755,6 @@ class VedtakService(
         }
         return referanse
     }
-
-/*    private fun hentNavnPåSaksbehandler(opprettetAv: String): String? {
-        return try {
-            bidragOrganisasjonConsumer.hentSaksbehandlernavn(opprettetAv)?.navn
-        } catch (e: Exception) {
-            SECURE_LOGGER.error("Kunne ikke hente navn på saksbehandler med ident $opprettetAv")
-            "UKJENT"
-        }
-    }*/
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)
