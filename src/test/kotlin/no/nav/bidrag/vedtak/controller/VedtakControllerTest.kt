@@ -105,7 +105,6 @@ class VedtakControllerTest {
 
     @Test
     fun `skal opprette nytt vedtak`() {
-
         // Oppretter ny forekomst
         val response = securedTestRestTemplate.exchange(
             fullUrlForNyttVedtak(),
