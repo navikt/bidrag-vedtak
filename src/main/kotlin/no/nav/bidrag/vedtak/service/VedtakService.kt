@@ -79,9 +79,9 @@ class VedtakService(
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
-        // sjekk om alle referanser for engangsbeløp er unike
+        // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
         if (!vedtakRequest.engangsbeløpListe.isNullOrEmpty()) {
-            if (duplikateReferanser(vedtakRequest.engangsbeløpListe!!)) {
+            if (duplikateReferanser(vedtakRequest.engangsbeløpListe!!.filter { it.referanse != null })) {
                 // Kaster exception hvis det er duplikate referanser
                 vedtakRequest.duplikateReferanserEngangsbeløp()
             }
