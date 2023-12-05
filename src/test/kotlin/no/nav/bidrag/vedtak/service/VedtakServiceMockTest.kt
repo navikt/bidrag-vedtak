@@ -141,7 +141,7 @@ class VedtakServiceMockTest {
         )
         Mockito.verify(
             persistenceServiceMock,
-            Mockito.times(2),
+            Mockito.times(3),
         ).opprettEngangsbeløp(MockitoHelper.any(Engangsbeløp::class.java))
         Mockito.verify(
             persistenceServiceMock,
@@ -157,7 +157,7 @@ class VedtakServiceMockTest {
         ).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagBo::class.java))
         Mockito.verify(
             persistenceServiceMock,
-            Mockito.times(6),
+            Mockito.times(9),
         ).opprettEngangsbeløpGrunnlag(MockitoHelper.any(EngangsbeløpGrunnlagBo::class.java))
         Mockito.verify(
             persistenceServiceMock,
@@ -217,7 +217,7 @@ class VedtakServiceMockTest {
 
             // Sjekk EngangsbeløpDto
             Executable { assertThat(engangsbeløpListe).isNotNull() },
-            Executable { assertThat(engangsbeløpListe.size).isEqualTo(2) },
+            Executable { assertThat(engangsbeløpListe.size).isEqualTo(3) },
 
             Executable { assertThat(engangsbeløpListe[0].type).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![0].type.toString()) },
             Executable { assertThat(engangsbeløpListe[0].sak).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![0].sak.toString()) },
@@ -369,7 +369,7 @@ class VedtakServiceMockTest {
 
             // Sjekk EngangsbeløpGrunnlagDto
             Executable { assertThat(engangsbeløpGrunnlagBoListe).isNotNull() },
-            Executable { assertThat(engangsbeløpGrunnlagBoListe.size).isEqualTo(6) },
+            Executable { assertThat(engangsbeløpGrunnlagBoListe.size).isEqualTo(9) },
 
             // Sjekk BehandlingsreferanseDto
             Executable { assertThat(behandlingsreferanseListe).isNotNull() },

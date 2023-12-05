@@ -21,10 +21,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
-// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
-// import org.springframework.beans.factory.annotation.Qualifier
-// import org.springframework.web.client.RestOperations
-// import java.net.URI
 
 const val LIVE_PROFILE = "live"
 const val LOKAL_NAIS_PROFILE = "lokal-nais"
@@ -60,15 +56,6 @@ class BidragVedtakConfig {
         objectMapper,
         topic,
     )
-//
-//    @Bean
-//    fun bidragOrganisasjonConsumer(
-//        @Value("\${BIDRAG_ORGANISASJON_URL}") url: URI,
-//        @Qualifier("azure") restTemplate: RestOperations,
-//    ) = BidragOrganisasjonConsumer(
-//        url,
-//        restTemplate,
-//    )
 
     @Bean
     fun exceptionLogger(): ExceptionLogger {

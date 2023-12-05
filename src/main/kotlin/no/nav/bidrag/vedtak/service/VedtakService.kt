@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.service
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.bidrag.commons.security.utils.TokenUtils
+import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
 import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
@@ -14,6 +15,7 @@ import no.nav.bidrag.domene.ident.Personident
 import no.nav.bidrag.domene.organisasjon.Enhetsnummer
 import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
+import no.nav.bidrag.domene.util.trimToNull
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
@@ -33,6 +35,8 @@ import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
+import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
+import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
@@ -71,12 +75,17 @@ class VedtakService(
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): OpprettVedtakResponseDto {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
-//        val opprettetAv = TokenUtils.hentSaksbehandlerIdent()
-//        val opprettetAvNavn = if (opprettetAv != null) hentNavnPåSaksbehandler(opprettetAv) else "UKJENT"
-//        val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn()!!
-        val opprettetAv = vedtakRequest.opprettetAv!!
-        val opprettetAvNavn = ""
-        val kildeapplikasjon = ""
+        val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
+        val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
+        val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
+
+        // sjekk om alle referanser for engangsbeløp er unike
+        if (!vedtakRequest.engangsbeløpListe.isNullOrEmpty()) {
+            if (duplikateReferanser(vedtakRequest.engangsbeløpListe!!)) {
+                // Kaster exception hvis det er duplikate referanser
+                vedtakRequest.duplikateReferanserEngangsbeløp()
+            }
+        }
 
         // Opprett vedtak
         val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon))
@@ -746,6 +755,10 @@ class VedtakService(
         } catch (e: Exception) {
             LOGGER.error("Det skjedde en feil ved telling av metrikker", e)
         }
+    }
+
+    fun duplikateReferanser(engangsbeløpListe: List<OpprettEngangsbeløpRequestDto>): Boolean {
+        return engangsbeløpListe.groupBy { it.referanse }.any { it.value.size > 1 }
     }
 
     private fun genererUnikReferanse(vedtaksid: Int): String {
