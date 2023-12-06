@@ -1,8 +1,7 @@
 {
   "kilde": "MANUELT",
   "type": "ALDERSJUSTERING",
-  "opprettetAv": "X123456",
-  "opprettetAvNavn": "Saksbehandler1",
+  "opprettetAv": "Z994977",
   "vedtakstidspunkt": "2020-01-01T23:34:55.869121094",
   "enhetsnummer": "4812",
   "grunnlagListe": [
@@ -87,8 +86,8 @@
         },
         {
           "periode": {
-            "fom": "2019-01",
-            "til": "2019-07"
+            "fom": "2019-07",
+            "til": "2019-12"
           },
           "beløp": 3520,
           "valutakode": "NOK",
@@ -130,8 +129,8 @@
         },
         {
           "periode": {
-            "fom": "2019-01",
-            "til": "2019-07"
+            "fom": "2019-07",
+            "til": "2019-12"
           },
           "beløp": 3410,
           "valutakode": "NOK",

@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.exception
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import no.nav.bidrag.commons.ExceptionLogger
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpHeaders
@@ -11,11 +12,14 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 @RestControllerAdvice
 @Component
-class RestExceptionHandler() {
+class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
     companion object {
         private val LOGGER = LoggerFactory.getLogger(RestExceptionHandler::class.java)
     }
@@ -29,6 +33,16 @@ class RestExceptionHandler() {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .header(HttpHeaders.WARNING, feilmelding)
             .build<Any>()
+    }
+
+    @ResponseBody
+    @ExceptionHandler(HttpClientErrorException::class, HttpServerErrorException::class)
+    protected fun handleHttpClientErrorException(e: HttpStatusCodeException): ResponseEntity<*> {
+        when (e) {
+            is HttpClientErrorException -> exceptionLogger.logException(e, "HttpClientErrorException")
+            is HttpServerErrorException -> exceptionLogger.logException(e, "HttpServerErrorException")
+        }
+        return ResponseEntity.status(e.statusCode).body(e.responseBodyAsString.ifEmpty { e.message })
     }
 
     @ResponseBody

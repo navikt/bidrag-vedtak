@@ -1,7 +1,9 @@
+NAIS_APP_NAME: bidrag-vedtak-local
 spring:
   flyway.enabled: false
-  datasource.type: com.zaxxer.hikari.HikariDataSource
-  datasource.url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+  datasource:
+  type: com.zaxxer.hikari.HikariDataSource
+  url: jdbc:postgresql://localhost:${DB_PORT:5454}/${DB_DATABASE:bidrag-vedtak}?user=${DB_USERNAME:cloudsqliamuser}&password=${DB_PASSWORD:admin}
   jpa.hibernate.hbmddl-auto: create-drop
 no.nav.security.jwt:
   issuer:

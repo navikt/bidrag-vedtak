@@ -1,10 +1,12 @@
 package no.nav.bidrag.vedtak.service
 
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchPeriode
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchStønadsendring
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchVedtak
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakMedDuplikateReferanserRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
@@ -27,10 +29,13 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.web.client.HttpClientErrorException
 
 @DisplayName("VedtakServiceTest")
 @ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
@@ -432,7 +437,7 @@ class VedtakServiceTest {
             },
 
             // Engangsbeløp
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe.size).isEqualTo(2) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe.size).isEqualTo(3) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].type) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].sak).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].sak) },
             Executable {
@@ -534,6 +539,52 @@ class VedtakServiceTest {
             },
 
         )
+    }
+
+    @Test
+    fun `test på at HttpClientErrorException kastes ved to like referanser for engangsbeløp i OpprettVedtakRequestDto`() {
+        // Oppretter nytt vedtak
+        val nyttVedtakRequest = byggVedtakMedDuplikateReferanserRequest()
+
+        assertThatExceptionOfType(HttpClientErrorException::class.java).isThrownBy {
+            vedtakService.opprettVedtak(nyttVedtakRequest)
+        }
+    }
+
+    @Test
+    fun `duplikattest engangsbeløpreferanse, skal returnere true`() {
+        // Opprett mock av OpprettEngangsbeløpRequestDto
+        val engangsbeløpMock1 = mock<OpprettEngangsbeløpRequestDto>()
+        val engangsbeløpMock2 = mock<OpprettEngangsbeløpRequestDto>()
+        val engangsbeløpMock3 = mock<OpprettEngangsbeløpRequestDto>()
+
+        // Angi referansene for mock-objektene
+        `when`(engangsbeløpMock1.referanse).thenReturn("referanse1")
+        `when`(engangsbeløpMock2.referanse).thenReturn("referanse1")
+        `when`(engangsbeløpMock3.referanse).thenReturn("referanse2")
+
+        // Kjør testen
+        val resultat = vedtakService.duplikateReferanser(listOf(engangsbeløpMock1, engangsbeløpMock2, engangsbeløpMock3))
+
+        // Utfør nødvendige assertjekker basert på forventet resultat
+        assert(resultat) { "Forventet true, men fikk false" }
+    }
+
+    @Test
+    fun `test duplikateReferanser skal returnere false når det ikke finnes duplikater i engangsbeløpreferanse`() {
+        // Opprett mock av OpprettEngangsbeløpRequestDto
+        val engangsbeløpMock1 = mock<OpprettEngangsbeløpRequestDto>()
+        val engangsbeløpMock2 = mock<OpprettEngangsbeløpRequestDto>()
+
+        // Angi ulike referanser for mock-objektene
+        `when`(engangsbeløpMock1.referanse).thenReturn("referanse1")
+        `when`(engangsbeløpMock2.referanse).thenReturn("referanse2")
+
+        // Kjør testen
+        val resultat = vedtakService.duplikateReferanser(listOf(engangsbeløpMock1, engangsbeløpMock2))
+
+        // Utfør nødvendige assertjekker basert på forventet resultat
+        assert(!resultat) { "Forventet false, men fikk true" }
     }
 
     @Test

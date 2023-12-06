@@ -9,9 +9,12 @@ import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import no.nav.bidrag.commons.ExceptionLogger
+import no.nav.bidrag.commons.security.api.EnableSecurityConfiguration
+import no.nav.bidrag.commons.service.organisasjon.EnableSaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.CorrelationIdFilter
 import no.nav.bidrag.commons.web.DefaultCorsFilter
 import no.nav.bidrag.commons.web.UserMdcFilter
+import no.nav.bidrag.commons.web.config.RestOperationsAzure
 import no.nav.bidrag.vedtak.hendelser.DefaultVedtakKafkaEventProducer
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.beans.factory.annotation.Value
@@ -21,15 +24,13 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.core.KafkaTemplate
-// import no.nav.bidrag.vedtak.consumer.BidragOrganisasjonConsumer
-// import org.springframework.beans.factory.annotation.Qualifier
-// import org.springframework.web.client.RestOperations
-// import java.net.URI
 
 const val LIVE_PROFILE = "live"
 const val LOKAL_NAIS_PROFILE = "lokal-nais"
 
 @Configuration
+@EnableSaksbehandlernavnProvider
+@EnableSecurityConfiguration
 @OpenAPIDefinition(
     info = Info(title = "bidrag-vedtak", version = "v1"),
     security = [SecurityRequirement(name = "bearer-key")],
@@ -42,7 +43,7 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     type = SecuritySchemeType.HTTP,
 )
 @EnableAspectJAutoProxy
-@Import(CorrelationIdFilter::class, UserMdcFilter::class, DefaultCorsFilter::class)
+@Import(CorrelationIdFilter::class, UserMdcFilter::class, DefaultCorsFilter::class, RestOperationsAzure::class)
 class BidragVedtakConfig {
     @Bean
     fun timedAspect(registry: MeterRegistry): TimedAspect {
@@ -60,15 +61,6 @@ class BidragVedtakConfig {
         objectMapper,
         topic,
     )
-//
-//    @Bean
-//    fun bidragOrganisasjonConsumer(
-//        @Value("\${BIDRAG_ORGANISASJON_URL}") url: URI,
-//        @Qualifier("azure") restTemplate: RestOperations,
-//    ) = BidragOrganisasjonConsumer(
-//        url,
-//        restTemplate,
-//    )
 
     @Bean
     fun exceptionLogger(): ExceptionLogger {
