@@ -26,7 +26,6 @@
 
     <!-- dependencies -->
     <bidrag-commons.version>20230516121246_1e60457</bidrag-commons.version>
-    <bidrag-commons-test.version>1.20230511093912_dc35d81</bidrag-commons-test.version>
     <bidrag-transport.version>20231113102624_1040a39</bidrag-transport.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>5.1.0</mockito-kotlin.version>
@@ -191,12 +190,6 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>no.nav.bidrag</groupId>
-      <artifactId>bidrag-commons-test</artifactId>
-      <version>${bidrag-commons-test.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
