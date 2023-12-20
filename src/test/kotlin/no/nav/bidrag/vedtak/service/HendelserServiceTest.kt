@@ -1,16 +1,16 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.commons.CorrelationId
-import no.nav.bidrag.domene.enums.BehandlingsrefKilde
-import no.nav.bidrag.domene.enums.Beslutningstype
-import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.Innkrevingstype
-import no.nav.bidrag.domene.enums.Stønadstype
-import no.nav.bidrag.domene.enums.Vedtakskilde
-import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
-import no.nav.bidrag.domene.streng.Enhetsnummer
-import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.organisasjon.Enhetsnummer
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
 import no.nav.bidrag.transport.behandling.vedtak.Engangsbeløp
@@ -58,7 +58,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -67,16 +66,22 @@ class HendelserServiceTest {
                 stønadsendringListe = null,
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"),
-                        mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A"),
+                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"),
+                        kravhaver = Personident("E"),
+                        mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A",
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null,
+                        eksternReferanse = null,
+                        grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
                 behandlingsreferanseListe = null,
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -90,7 +95,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -98,7 +102,10 @@ class HendelserServiceTest {
                 grunnlagListe = emptyList(),
                 stønadsendringListe = listOf(
                     OpprettStønadsendringRequestDto(
-                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"), mottaker = Personident("E"),
+                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"),
+                        mottaker = Personident(
+                            "E",
+                        ),
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING, Beslutningstype.ENDRING,
                         omgjørVedtakId = null, eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
@@ -109,7 +116,7 @@ class HendelserServiceTest {
                                 valutakode = "NOK",
                                 resultatkode = "A",
                                 delytelseId = null,
-                                listOf("A"),
+                                grunnlagReferanseListe = listOf("A"),
                             ),
                         ),
                     ),
@@ -119,6 +126,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -132,14 +142,16 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(), fastsattILand = null,
                 grunnlagListe = emptyList(),
                 stønadsendringListe = listOf(
                     OpprettStønadsendringRequestDto(
-                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"), mottaker = Personident("E"),
+                        type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"), kravhaver = Personident("D"),
+                        mottaker = Personident(
+                            "E",
+                        ),
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
                         Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
@@ -159,16 +171,30 @@ class HendelserServiceTest {
                 ),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"), kravhaver = Personident("E"), mottaker = Personident("F"),
-                        beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A", innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING, omgjørVedtakId = null, referanse = "referanse1", delytelseId = null, eksternReferanse = null,
-                        listOf("A"),
+                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        sak = Saksnummer("sak01"),
+                        skyldner = Personident("D"),
+                        kravhaver = Personident("E"),
+                        mottaker = Personident("F"),
+                        beløp = BigDecimal.ONE,
+                        valutakode = "NOK",
+                        resultatkode = "A",
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
+                        omgjørVedtakId = null,
+                        referanse = "referanse1",
+                        delytelseId = null,
+                        eksternReferanse = null,
+                        grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
                 behandlingsreferanseListe = null,
             ),
             1,
             LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(anyOrNull())
@@ -183,7 +209,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -193,16 +218,18 @@ class HendelserServiceTest {
                     OpprettStønadsendringRequestDto(
                         type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"),
                         kravhaver = Personident("D"),
-                        mottaker = Personident("E"), førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING,
+                        mottaker = Personident("E"),
+                        førsteIndeksreguleringsår = 2024,
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
                         listOf(
                             OpprettPeriodeRequestDto(
                                 periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
-                                BigDecimal.ONE,
-                                "NOK",
+                                beløp = BigDecimal.ONE,
+                                valutakode = "NOK",
                                 "A",
                                 "delytelseId1",
                                 listOf("A"),
@@ -213,13 +240,16 @@ class HendelserServiceTest {
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     OpprettBehandlingsreferanseRequestDto(
-                        kilde = BehandlingsrefKilde.BISYS_SOKNAD,
+                        kilde = BehandlingsrefKilde.BISYS_SØKNAD,
                         referanse = "referanse1",
                     ),
                 ),
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
 
         verify(vedtakEventProducerMock).publish(
@@ -227,14 +257,15 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 id = 1,
+                opprettetAv = "ABCDEFG",
+                opprettetAvNavn = "",
+                kildeapplikasjon = "",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = "NO",
-                opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
-                listOf(
+                stønadsendringListe = listOf(
                     Stønadsendring(
                         type = Stønadstype.BIDRAG,
                         sak = Saksnummer("B"),
@@ -260,7 +291,7 @@ class HendelserServiceTest {
                 engangsbeløpListe = emptyList(),
                 behandlingsreferanseListe = listOf(
                     Behandlingsreferanse(
-                        kilde = BehandlingsrefKilde.BISYS_SOKNAD.toString(),
+                        kilde = BehandlingsrefKilde.BISYS_SØKNAD.toString(),
                         referanse = "referanse1",
                     ),
                 ),
@@ -277,7 +308,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.now(),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -286,7 +316,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -307,6 +337,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
         verify(vedtakEventProducerMock).publish(anyOrNull())
     }
@@ -320,7 +353,6 @@ class HendelserServiceTest {
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
@@ -329,7 +361,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -350,6 +382,9 @@ class HendelserServiceTest {
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
+            opprettetAv = "ABCDEFG",
+            opprettetAvNavn = "",
+            kildeapplikasjon = "",
         )
         verify(vedtakEventProducerMock).publish(
             VedtakHendelse(
@@ -361,13 +396,14 @@ class HendelserServiceTest {
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = "NO",
                 opprettetAv = "ABCDEFG",
-                opprettetAvNavn = "Saksbehandler1",
+                opprettetAvNavn = "",
+                kildeapplikasjon = "",
                 opprettetTidspunkt = LocalDateTime.parse("2021-07-06T09:31:25.007971200"),
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe =
                 listOf(
                     Engangsbeløp(
-                        type = Engangsbeløptype.SAERTILSKUDD,
+                        type = Engangsbeløptype.SÆRTILSKUDD,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),

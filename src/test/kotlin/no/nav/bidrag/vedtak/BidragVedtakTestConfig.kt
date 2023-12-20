@@ -42,7 +42,18 @@ class BidragVedtakTestConfig {
     private fun generateTestToken(): String {
         val iss = mockOAuth2Server.issuerUrl(ISSUER)
         val newIssuer = iss.newBuilder().host("localhost").build()
-        val token = mockOAuth2Server.issueToken(ISSUER, "aud-localhost", DefaultOAuth2TokenCallback(ISSUER, "aud-localhost", JOSEObjectType.JWT.type, listOf("aud-localhost"), mapOf("iss" to newIssuer.toString()), 3600))
+        val token = mockOAuth2Server.issueToken(
+            ISSUER,
+            "aud-localhost",
+            DefaultOAuth2TokenCallback(
+                ISSUER,
+                "aud-localhost",
+                JOSEObjectType.JWT.type,
+                listOf("aud-localhost"),
+                mapOf("iss" to newIssuer.toString()),
+                3600,
+            ),
+        )
         return "Bearer " + token.serialize()
     }
 

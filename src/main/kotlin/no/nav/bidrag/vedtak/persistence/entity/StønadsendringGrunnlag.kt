@@ -26,7 +26,12 @@ data class StønadsendringGrunnlag(
 
 )
 
-fun OpprettStønadsendringGrunnlagRequestDto.toStønadsendringGrunnlagEntity(eksisterendeStønadsendring: Stønadsendring, eksisterendeGrunnlag: Grunnlag) = with(::StønadsendringGrunnlag) {
+fun OpprettStønadsendringGrunnlagRequestDto.toStønadsendringGrunnlagEntity(
+    eksisterendeStønadsendring: Stønadsendring,
+    eksisterendeGrunnlag: Grunnlag,
+) = with(
+    ::StønadsendringGrunnlag,
+) {
     val propertiesByName = OpprettStønadsendringGrunnlagRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->

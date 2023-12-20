@@ -30,6 +30,9 @@ azureAccessInbound:
   - application: bidrag-ui-feature
     namespace: bidrag
     cluster: dev-fss
+azure:
+  bidrag_organisasjon_url: bidrag-organisasjon-feature.dev-fss-pub.nais.io
+  bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon-feature
 spec:
   replicas:
     min: 1

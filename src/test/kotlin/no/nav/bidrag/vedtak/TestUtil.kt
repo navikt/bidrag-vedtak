@@ -1,17 +1,17 @@
 package no.nav.bidrag.vedtak
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.bidrag.domene.enums.BehandlingsrefKilde
-import no.nav.bidrag.domene.enums.Beslutningstype
-import no.nav.bidrag.domene.enums.Engangsbeløptype
-import no.nav.bidrag.domene.enums.Grunnlagstype
-import no.nav.bidrag.domene.enums.Innkrevingstype
-import no.nav.bidrag.domene.enums.Stønadstype
-import no.nav.bidrag.domene.enums.Vedtakskilde
-import no.nav.bidrag.domene.enums.Vedtakstype
+import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
-import no.nav.bidrag.domene.streng.Enhetsnummer
-import no.nav.bidrag.domene.streng.Saksnummer
+import no.nav.bidrag.domene.organisasjon.Enhetsnummer
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
@@ -42,7 +42,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -247,7 +246,98 @@ class TestUtil {
 
         private fun byggEngangsbeløpListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
+                sak = Saksnummer("SAK-101"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(3490),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = "referanse3",
+                delytelseId = "delytelseId1",
+                eksternReferanse = "EksternRef1",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.SÆRTILSKUDD,
+                sak = Saksnummer("SAK-101"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(2990),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = null,
+                delytelseId = "delytelseId2",
+                eksternReferanse = "EksternRef2",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.SÆRTILSKUDD,
+                sak = Saksnummer("SAK-101"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(2345),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = "referanse1",
+                delytelseId = "delytelseId2",
+                eksternReferanse = "EksternRef2",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+        )
+
+        private fun byggBehandlingsreferanseListe() = listOf(
+            OpprettBehandlingsreferanseRequestDto(
+                kilde = BehandlingsrefKilde.BISYS_SØKNAD,
+                referanse = "Bisysreferanse01",
+            ),
+            OpprettBehandlingsreferanseRequestDto(
+                kilde = BehandlingsrefKilde.BISYS_SØKNAD,
+                referanse = "Bisysreferanse02",
+            ),
+        )
+
+        fun byggVedtakMedDuplikateReferanserRequest() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = byggGrunnlagListe(),
+            stønadsendringListe = byggStønadsendringListe(),
+            engangsbeløpListe = byggEngangsbeløpListeMedDuplikateReferanser(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
+        )
+
+        private fun byggEngangsbeløpListeMedDuplikateReferanser() = listOf(
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -268,7 +358,28 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
+                sak = Saksnummer("SAK-101"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(2990),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = "referanse1",
+                delytelseId = "delytelseId2",
+                eksternReferanse = "EksternRef2",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -290,22 +401,10 @@ class TestUtil {
             ),
         )
 
-        private fun byggBehandlingsreferanseListe() = listOf(
-            OpprettBehandlingsreferanseRequestDto(
-                kilde = BehandlingsrefKilde.BISYS_SOKNAD,
-                referanse = "Bisysreferanse01",
-            ),
-            OpprettBehandlingsreferanseRequestDto(
-                kilde = BehandlingsrefKilde.BISYS_SOKNAD,
-                referanse = "Bisysreferanse02",
-            ),
-        )
-
         fun byggVedtakRequestUtenGrunnlag() = OpprettVedtakRequestDto(
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -384,7 +483,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpUtenGrunnlagListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -401,7 +500,7 @@ class TestUtil {
                 grunnlagReferanseListe = emptyList(),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -423,7 +522,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler2",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -438,7 +536,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -496,7 +593,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -577,7 +673,6 @@ class TestUtil {
             kilde = Vedtakskilde.MANUELT,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
-            opprettetAvNavn = "Saksbehandler1",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
@@ -590,7 +685,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpMedFeilListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -611,7 +706,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SAERTILSKUDD,
+                type = Engangsbeløptype.SÆRTILSKUDD,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -709,7 +804,6 @@ class TestUtil {
             "datoTil": null,
             "sivilstandKode": "sivilstandkode1"
                 }""",
-
         ) = Grunnlag(
             id = grunnlagsid,
             referanse = grunnlagReferanse,
@@ -718,29 +812,21 @@ class TestUtil {
             innhold = innhold,
         )
 
-        fun byggPeriodeGrunnlagBo(
-            periodeid: Int = byggPeriode().id,
-            grunnlagsid: Int = byggGrunnlag().id,
-        ) = PeriodeGrunnlagBo(
+        fun byggPeriodeGrunnlagBo(periodeid: Int = byggPeriode().id, grunnlagsid: Int = byggGrunnlag().id) = PeriodeGrunnlagBo(
             periodeid = periodeid,
             grunnlagsid = grunnlagsid,
         )
 
-        fun byggPeriodeGrunnlag(
-            periode: Periode = byggPeriode(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = PeriodeGrunnlag(
+        fun byggPeriodeGrunnlag(periode: Periode = byggPeriode(), grunnlag: Grunnlag = byggGrunnlag()) = PeriodeGrunnlag(
             periode = periode,
             grunnlag = grunnlag,
         )
 
-        fun byggStønadsendringGrunnlag(
-            stønadsendring: Stønadsendring = byggStønadsendring(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = StønadsendringGrunnlag(
-            stønadsendring = stønadsendring,
-            grunnlag = grunnlag,
-        )
+        fun byggStønadsendringGrunnlag(stønadsendring: Stønadsendring = byggStønadsendring(), grunnlag: Grunnlag = byggGrunnlag()) =
+            StønadsendringGrunnlag(
+                stønadsendring = stønadsendring,
+                grunnlag = grunnlag,
+            )
 
         fun byggEngangsbeløp(
             engangsbeløpId: Int = (1..100).random(),
@@ -777,18 +863,12 @@ class TestUtil {
             eksternReferanse = eksternReferanse,
         )
 
-        fun byggEngangsbeløpGrunnlagBo(
-            engangsbeløpId: Int = (1..100).random(),
-            grunnlagId: Int = (1..100).random(),
-        ) = EngangsbeløpGrunnlagBo(
+        fun byggEngangsbeløpGrunnlagBo(engangsbeløpId: Int = (1..100).random(), grunnlagId: Int = (1..100).random()) = EngangsbeløpGrunnlagBo(
             engangsbeløpsid = engangsbeløpId,
             grunnlagsid = grunnlagId,
         )
 
-        fun byggEngangsbeløpGrunnlag(
-            engangsbeløp: Engangsbeløp = byggEngangsbeløp(),
-            grunnlag: Grunnlag = byggGrunnlag(),
-        ) = EngangsbeløpGrunnlag(
+        fun byggEngangsbeløpGrunnlag(engangsbeløp: Engangsbeløp = byggEngangsbeløp(), grunnlag: Grunnlag = byggGrunnlag()) = EngangsbeløpGrunnlag(
             engangsbeløp = engangsbeløp,
             grunnlag = grunnlag,
         )
@@ -796,7 +876,7 @@ class TestUtil {
         fun byggBehandlingsreferanse(
             behandlingsreferanseid: Int = (1..100).random(),
             vedtak: Vedtak = byggVedtak(),
-            kilde: String = "BISYS_SOKNAD",
+            kilde: String = "BISYS_SØKNAD",
             referanse: String = "Bisysreferanse01",
         ) = Behandlingsreferanse(
             id = behandlingsreferanseid,

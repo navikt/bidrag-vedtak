@@ -20,6 +20,9 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
         vedtakRequest: OpprettVedtakRequestDto,
         vedtakId: Int,
         opprettetTidspunkt: LocalDateTime,
+        opprettetAv: String,
+        opprettetAvNavn: String?,
+        kildeapplikasjon: String,
     ) {
         val vedtakHendelse = VedtakHendelse(
             kilde = vedtakRequest.kilde,
@@ -27,8 +30,9 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             id = vedtakId,
             vedtakstidspunkt = vedtakRequest.vedtakstidspunkt,
             enhetsnummer = vedtakRequest.enhetsnummer,
-            opprettetAv = vedtakRequest.opprettetAv,
-            opprettetAvNavn = vedtakRequest.opprettetAvNavn,
+            opprettetAv = opprettetAv,
+            opprettetAvNavn = opprettetAvNavn,
+            kildeapplikasjon = kildeapplikasjon,
             opprettetTidspunkt = opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtakRequest.innkrevingUtsattTilDato,
             fastsattILand = vedtakRequest.fastsattILand,

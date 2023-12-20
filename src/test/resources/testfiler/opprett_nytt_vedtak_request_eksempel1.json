@@ -2,7 +2,6 @@
   "kilde": "MANUELT",
   "type": "ALDERSJUSTERING",
   "opprettetAv": "X123456",
-  "opprettetAvNavn": "Saksbehandler1",
   "vedtakstidspunkt": "2020-01-01T23:34:55.869121094",
   "enhetsnummer": "4812",
   "grunnlagListe": [
@@ -152,11 +151,11 @@
   ],
   "behandlingsreferanseListe": [
     {
-      "kilde": "BISYS_SOKNAD",
+      "kilde": "BISYS_SØKNAD",
       "referanse": "Bisys-01"
     },
     {
-      "kilde": "BISYS_SOKNAD",
+      "kilde": "BISYS_SØKNAD",
       "referanse": "Bisys-02"
     }
   ]
