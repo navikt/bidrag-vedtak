@@ -27,7 +27,7 @@
     <!-- dependencies -->
     <bidrag-commons.version>20231201131246_f719b2b</bidrag-commons.version>
     <bidrag-commons-test.version>1.20230511093912_dc35d81</bidrag-commons-test.version>
-    <bidrag-transport.version>20231201150118_8d33deb</bidrag-transport.version>
+    <bidrag-transport.version>20231221082646_bd21f54</bidrag-transport.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>5.2.1</mockito-kotlin.version>
     <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
