@@ -45,11 +45,11 @@ spec:
     enabled: true
   resources:
     limits:
-      cpu: 1000m
-      memory: 2048Mi
+      cpu: {{ spec.resources.limits.cpu }}
+      memory: {{ spec.resources.limits.memory }}
     requests:
-      cpu: 500m
-      memory: 1024Mi
+      cpu: {{ spec.resources.requests.cpu }}
+      memory: {{ spec.resources.requests.memory }}
   replicas:
     cpuThresholdPercentage: 80
     min: {{ spec.replicas.min }}
