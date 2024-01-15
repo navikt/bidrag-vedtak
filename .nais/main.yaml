@@ -43,6 +43,13 @@ spec:
   replicas:
     min: 2
     max: 4
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2048Mi
+    requests:
+      cpu: 250m
+      memory: 512Mi
   gcp:
     sqlInstances:
       tier: db-f1-micro
