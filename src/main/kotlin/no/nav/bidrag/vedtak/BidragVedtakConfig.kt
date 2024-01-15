@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
+import org.springframework.http.client.observation.DefaultClientRequestObservationConvention
 import org.springframework.kafka.core.KafkaTemplate
 
 const val LIVE_PROFILE = "live"
@@ -66,4 +67,7 @@ class BidragVedtakConfig {
     fun exceptionLogger(): ExceptionLogger {
         return ExceptionLogger(BidragVedtak::class.java.simpleName)
     }
+
+    @Bean
+    fun clientRequestObservationConvention() = DefaultClientRequestObservationConvention()
 }
