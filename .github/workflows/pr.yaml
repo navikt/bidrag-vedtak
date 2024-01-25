@@ -20,15 +20,17 @@ jobs:
   deploy_main:
     runs-on: ubuntu-latest
     name: Deploy main
+    permissions:
+      contents: "read"
+      id-token: "write"
     if: github.actor != 'dependabot[bot]'
     needs: build-deploy
 
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to dev-gcp
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yaml
           VARS: .nais/main.yaml

@@ -26,6 +26,9 @@ azureAccessInbound:
   - application: bidrag-ui
     namespace: bidrag
     cluster: prod-fss
+  - application: bidrag-behandling
+    namespace: bidrag
+    cluster: prod-gcp
 azure:
   bidrag_organisasjon_url: bidrag-organisasjon.prod-fss-pub.nais.io
   bidrag_organisasjon_scope: prod-fss.bidrag.bidrag-organisasjon
