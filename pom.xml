@@ -25,9 +25,7 @@
     <token-support.version>3.2.0</token-support.version>
 
     <!-- dependencies -->
-    <bidrag-commons.version>20231201131246_f719b2b</bidrag-commons.version>
-    <bidrag-commons-test.version>1.20230511093912_dc35d81</bidrag-commons-test.version>
-    <bidrag-felles.version>2024.0115.052337</bidrag-felles.version>
+    <bidrag-felles.version>2024.01.26.123656</bidrag-felles.version>
     <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>5.2.1</mockito-kotlin.version>
     <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
