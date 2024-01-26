@@ -38,7 +38,7 @@ data class Grunnlag(
     @Column(nullable = false, name = "innhold")
     val innhold: String = "",
 
-    @Column(nullable = false, columnDefinition = "text[]")
+    @Column(nullable = false)
     val grunnlagsreferanseListe: List<String> = emptyList(),
 )
 
