@@ -10,8 +10,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
+import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.response.GrunnlagDto
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import kotlin.reflect.full.memberProperties
@@ -38,6 +38,8 @@ data class Grunnlag(
     @Column(nullable = false, name = "innhold")
     val innhold: String = "",
 
+    @Column(nullable = false, columnDefinition = "text[]")
+    val grunnlagsreferanseListe: List<String> = emptyList(),
 )
 
 fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag) {
@@ -49,6 +51,7 @@ fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag
                 Grunnlag::vedtak.name -> vedtak
                 Grunnlag::type.name -> type.toString()
                 Grunnlag::innhold.name -> innhold.toString()
+                Grunnlag::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
             }
         },
@@ -61,7 +64,8 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
         parameters.associateWith { parameter ->
             when (parameter.name) {
                 GrunnlagDto::type.name -> Grunnlagstype.valueOf(type)
-                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold.toString())
+                GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
+                GrunnlagDto::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
             }
         },

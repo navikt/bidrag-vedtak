@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 @Timed
 class VedtakController(private val vedtakService: VedtakService) {
 
-    @PostMapping(OPPRETT_VEDTAK)
+    @PostMapping(OPPRETT_VEDTAK, "/vedtak")
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtak")
     @ApiResponses(
         value = [
