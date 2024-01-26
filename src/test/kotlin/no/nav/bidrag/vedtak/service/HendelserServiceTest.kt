@@ -63,7 +63,7 @@ class HendelserServiceTest {
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = null,
                 grunnlagListe = emptyList(),
-                stønadsendringListe = null,
+                stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
                         type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"),
@@ -75,7 +75,7 @@ class HendelserServiceTest {
                         grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
-                behandlingsreferanseListe = null,
+                behandlingsreferanseListe = emptyList(),
             ),
             vedtakId = 1,
             opprettetTidspunkt = LocalDateTime.now(),
@@ -188,7 +188,7 @@ class HendelserServiceTest {
                         grunnlagReferanseListe = listOf("A"),
                     ),
                 ),
-                behandlingsreferanseListe = null,
+                behandlingsreferanseListe = emptyList(),
             ),
             1,
             LocalDateTime.now(),
