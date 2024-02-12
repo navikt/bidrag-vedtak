@@ -8,7 +8,7 @@
     {
       "referanse": "BM-LIGS-19",
       "vedtaksid": 1,
-      "type": "INNTEKT",
+      "type": "INNTEKT_RAPPORTERING_PERIODE",
       "innhold": {
         "inntektDatoFraTil": {
           "periodeDatoFra": "2019-01-01",
@@ -21,7 +21,7 @@
     {
       "referanse": "BM-LIGN-19",
       "vedtaksid": 1,
-      "type": "INNTEKT",
+      "type": "INNTEKT_RAPPORTERING_PERIODE",
       "innhold": {
         "inntektDatoFraTil": {
           "periodeDatoFra": "2019-01-01",
