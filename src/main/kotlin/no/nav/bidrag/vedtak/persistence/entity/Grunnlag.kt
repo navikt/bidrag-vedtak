@@ -38,6 +38,9 @@ data class Grunnlag(
     @Column(nullable = false, name = "innhold")
     val innhold: String = "",
 
+    @Column
+    val gjelderReferanse: String? = null,
+
     @Column(nullable = false)
     val grunnlagsreferanseListe: List<String> = emptyList(),
 )
@@ -52,6 +55,7 @@ fun OpprettGrunnlagRequestDto.toGrunnlagEntity(vedtak: Vedtak) = with(::Grunnlag
                 Grunnlag::type.name -> type.toString()
                 Grunnlag::innhold.name -> innhold.toString()
                 Grunnlag::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
+                Grunnlag::gjelderReferanse.name -> gjelderReferanse
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagEntity)
             }
         },
@@ -66,6 +70,7 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
                 GrunnlagDto::type.name -> Grunnlagstype.valueOf(type)
                 GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
                 GrunnlagDto::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
+                GrunnlagDto::gjelderReferanse.name -> gjelderReferanse
                 else -> propertiesByName[parameter.name]?.get(this@toGrunnlagDto)
             }
         },

@@ -1,5 +1,8 @@
 package no.nav.bidrag.vedtak.service
 
+import io.mockk.every
+import io.mockk.mockkObject
+import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
@@ -86,6 +89,10 @@ class VedtakServiceTest {
         periodeRepository.deleteAll()
         stønadsendringRepository.deleteAll()
         vedtakRepository.deleteAll()
+        mockkObject(SaksbehandlernavnProvider)
+        every {
+            SaksbehandlernavnProvider.hentSaksbehandlernavn(any())
+        } returns "Saksbehandler Saksbehandlersen"
     }
 
     @Test
@@ -122,10 +129,14 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.grunnlagListe[0].referanse).isEqualTo(nyttVedtakRequest.grunnlagListe[0].referanse) },
             Executable { assertThat(vedtakFunnet.grunnlagListe[0].type).isEqualTo(nyttVedtakRequest.grunnlagListe[0].type) },
             Executable { assertThat(vedtakFunnet.grunnlagListe[0].innhold).isEqualTo(nyttVedtakRequest.grunnlagListe[0].innhold) },
+            Executable { assertThat(vedtakFunnet.grunnlagListe[0].gjelderReferanse).isEqualTo("PERSON_BM") },
+            Executable { assertThat(vedtakFunnet.grunnlagListe[0].grunnlagsreferanseListe).contains("innhentet_ainntekt_1", "innhentet_ainntekt_2") },
 
             Executable { assertThat(vedtakFunnet.grunnlagListe[1].referanse).isEqualTo(nyttVedtakRequest.grunnlagListe[1].referanse) },
             Executable { assertThat(vedtakFunnet.grunnlagListe[1].type).isEqualTo(nyttVedtakRequest.grunnlagListe[1].type) },
             Executable { assertThat(vedtakFunnet.grunnlagListe[1].innhold).isEqualTo(nyttVedtakRequest.grunnlagListe[1].innhold) },
+            Executable { assertThat(vedtakFunnet.grunnlagListe[1].gjelderReferanse).isEqualTo("PERSON_BM") },
+            Executable { assertThat(vedtakFunnet.grunnlagListe[1].grunnlagsreferanseListe).contains("innhentet_ainntekt_4", "innhentet_ainntekt_3") },
 
             Executable { assertThat(vedtakFunnet.grunnlagListe[2].referanse).isEqualTo(nyttVedtakRequest.grunnlagListe[2].referanse) },
             Executable { assertThat(vedtakFunnet.grunnlagListe[2].type).isEqualTo(nyttVedtakRequest.grunnlagListe[2].type) },

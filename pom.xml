@@ -25,8 +25,8 @@
     <token-support.version>3.2.0</token-support.version>
 
     <!-- dependencies -->
-    <bidrag-felles.version>2024.01.26.145406</bidrag-felles.version>
-    <bidrag-tilgangskontroll.version>1.9.21</bidrag-tilgangskontroll.version>
+    <bidrag-felles.version>2024.02.12.111330</bidrag-felles.version>
+    <bidrag-tilgangskontroll.version>1.9.22</bidrag-tilgangskontroll.version>
     <mockito-kotlin.version>5.2.1</mockito-kotlin.version>
     <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
     <springframework-cloud.version>4.1.0</springframework-cloud.version>
@@ -34,6 +34,8 @@
     <jackson-datatype-jsr310.version>2.16.1</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>2.3.0</springdoc-openapi-ui.version>
     <ktlint-cli.version>1.1.1</ktlint-cli.version>
+    <mockk.version>4.0.2</mockk.version>
+
   </properties>
 
   <dependencyManagement>
@@ -184,6 +186,12 @@
     <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ninja-squad</groupId>
+      <artifactId>springmockk</artifactId>
+      <version>${mockk.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
