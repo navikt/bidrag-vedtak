@@ -55,7 +55,9 @@ class TestUtil {
         private fun byggGrunnlagListe() = listOf(
             OpprettGrunnlagRequestDto(
                 referanse = "BM-LIGS-19",
-                type = Grunnlagstype.INNTEKT,
+                type = Grunnlagstype.INNTEKT_RAPPORTERING_PERIODE,
+                gjelderReferanse = "PERSON_BM",
+                grunnlagsreferanseListe = listOf("innhentet_ainntekt_1", "innhentet_ainntekt_2"),
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -70,7 +72,9 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "BM-LIGN-19",
-                type = Grunnlagstype.INNTEKT,
+                type = Grunnlagstype.INNTEKT_RAPPORTERING_PERIODE,
+                gjelderReferanse = "PERSON_BM",
+                grunnlagsreferanseListe = listOf("innhentet_ainntekt_4", "innhentet_ainntekt_3"),
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -118,7 +122,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "VIRKNINGSDATO-1",
-                type = Grunnlagstype.VIRKNINGSDATO,
+                type = Grunnlagstype.VIRKNINGSTIDSPUNKT,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -138,7 +142,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "VIRKNINGSDATO-2",
-                type = Grunnlagstype.VIRKNINGSDATO,
+                type = Grunnlagstype.VIRKNINGSTIDSPUNKT,
                 innhold = ObjectMapper().readTree(
                     """
           {
@@ -796,7 +800,7 @@ class TestUtil {
             grunnlagsid: Int = (1..100).random(),
             grunnlagReferanse: String = "BM-LIGN-19",
             vedtak: Vedtak = byggVedtak(),
-            type: String = Grunnlagstype.INNTEKT.toString(),
+            type: String = Grunnlagstype.INNTEKT_RAPPORTERING_PERIODE.toString(),
             innhold: String =
                 """{
             "rolle": "BIDRAGSMOTTAKER",

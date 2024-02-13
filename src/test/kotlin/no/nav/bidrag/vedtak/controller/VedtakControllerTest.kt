@@ -1,5 +1,8 @@
 package no.nav.bidrag.vedtak.controller
 
+import io.mockk.every
+import io.mockk.mockkObject
+import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
@@ -96,6 +99,10 @@ class VedtakControllerTest {
         periodeRepository.deleteAll()
         stønadsendringRepository.deleteAll()
         vedtakRepository.deleteAll()
+        mockkObject(SaksbehandlernavnProvider)
+        every {
+            SaksbehandlernavnProvider.hentSaksbehandlernavn(any())
+        } returns "Saksbehandler Saksbehandlersen"
     }
 
     @Test
