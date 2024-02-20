@@ -1,7 +1,6 @@
 package no.nav.bidrag.vedtak.service
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.databind.node.POJONode
 import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
 import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
@@ -36,6 +35,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
+import no.nav.bidrag.transport.felles.commonObjectmapper
 import no.nav.bidrag.transport.felles.toCompactString
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -373,10 +373,9 @@ fun Grunnlagsreferanse.toTree(grunnlagsListe: List<BaseGrunnlag>, parent: TreeCh
             Grunnlagstype.SLUTTBEREGNING_FORSKUDD ->
                 "Sluttberegning" +
                     "(${grunnlag.innholdTilObjekt<SluttberegningForskudd>().periode.fom.toCompactString()})"
-
             Grunnlagstype.SJABLON ->
                 "Sjablon(" +
-                    "${((grunnlag.innhold as POJONode).pojo as LinkedHashMap<*, *>).get("sjablonNavn")})"
+                    "${commonObjectmapper.readTree(commonObjectmapper.writeValueAsString(grunnlag.innhold)).get("sjablonNavn")})"
 
             Grunnlagstype.DELBEREGNING_INNTEKT ->
                 "Delberegning inntekt " +
