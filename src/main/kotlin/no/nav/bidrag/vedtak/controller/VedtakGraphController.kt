@@ -1,10 +1,10 @@
 package no.nav.bidrag.vedtak.controller
 
 import io.micrometer.core.annotation.Timed
-import no.nav.bidrag.vedtak.service.TreeChild
+import no.nav.bidrag.commons.util.TreeChild
+import no.nav.bidrag.commons.util.toMermaid
+import no.nav.bidrag.commons.util.toTree
 import no.nav.bidrag.vedtak.service.VedtakService
-import no.nav.bidrag.vedtak.service.toMermaid
-import no.nav.bidrag.vedtak.service.toTree
 import no.nav.security.token.support.core.api.Protected
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Protected
 @Timed
-class VedtakTreController(private val vedtakService: VedtakService) {
+class VedtakGraphController(private val vedtakService: VedtakService) {
 
     @Suppress("unused")
     @PostMapping("/vedtak/mermaid/{vedtakId}")
