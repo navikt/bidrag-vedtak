@@ -31,7 +31,7 @@
     <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
     <springframework-cloud.version>4.1.2</springframework-cloud.version>
     <com.squareup.okhttp3.version>4.12.0</com.squareup.okhttp3.version>
-    <jackson-datatype-jsr310.version>2.16.1</jackson-datatype-jsr310.version>
+    <jackson-datatype-jsr310.version>2.17.0</jackson-datatype-jsr310.version>
     <springdoc-openapi-ui.version>2.3.0</springdoc-openapi-ui.version>
     <ktlint-cli.version>1.2.1</ktlint-cli.version>
     <mockk.version>4.0.2</mockk.version>
