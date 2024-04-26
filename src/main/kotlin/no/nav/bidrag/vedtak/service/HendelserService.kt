@@ -10,6 +10,7 @@ import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
+import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -39,19 +40,15 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             stønadsendringListe = mapStønadsendringer(vedtakRequest),
             engangsbeløpListe = mapEngangsbeløp(vedtakRequest),
             behandlingsreferanseListe = mapBehandlingsreferanser(vedtakRequest),
-            sporingsdata = Sporingsdata(
-                CorrelationId.fetchCorrelationIdForThread()
-                    ?: CorrelationId.generateTimestamped(vedtakRequest.type.toString())
-                        .get(),
-            ),
+            sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
         )
         vedtakKafkaEventProducer.publish(vedtakHendelse)
-        SECURE_LOGGER.info("Ny melding lagt på topic vedtak: $vedtakHendelse")
+        SECURE_LOGGER.info("Ny melding lagt på topic vedtak: ${tilJson(vedtakHendelse)}")
     }
 
     private fun mapStønadsendringer(vedtakRequest: OpprettVedtakRequestDto): List<Stønadsendring> {
         val stønadsendringListe = mutableListOf<Stønadsendring>()
-        vedtakRequest.stønadsendringListe?.forEach {
+        vedtakRequest.stønadsendringListe.forEach {
             val periodeListe = mutableListOf<Periode>()
             it.periodeListe.forEach { periode ->
                 periodeListe.add(
@@ -86,7 +83,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
     private fun mapEngangsbeløp(vedtakRequest: OpprettVedtakRequestDto): List<Engangsbeløp> {
         val engangsbeløpListe = mutableListOf<Engangsbeløp>()
-        vedtakRequest.engangsbeløpListe?.forEach {
+        vedtakRequest.engangsbeløpListe.forEach {
             engangsbeløpListe.add(
                 Engangsbeløp(
                     type = it.type,
@@ -111,7 +108,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
 
     private fun mapBehandlingsreferanser(vedtakRequest: OpprettVedtakRequestDto): List<Behandlingsreferanse> {
         val behandlingsreferanseListe = mutableListOf<Behandlingsreferanse>()
-        vedtakRequest.behandlingsreferanseListe?.forEach {
+        vedtakRequest.behandlingsreferanseListe.forEach {
             behandlingsreferanseListe.add(
                 Behandlingsreferanse(
                     kilde = it.kilde.toString(),
