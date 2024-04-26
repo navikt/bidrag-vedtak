@@ -14,6 +14,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseD
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.service.VedtakService
+import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -48,9 +49,9 @@ class VedtakController(private val vedtakService: VedtakService) {
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<OpprettVedtakResponseDto>? {
+        SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: ${tilJson(request)}")
         val vedtakOpprettet = vedtakService.opprettVedtak(request)
-        LOGGER.info("Vedtak med id $vedtakOpprettet er opprettet")
-        SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: $request")
+        LOGGER.info("Vedtak er opprettet med følgende id: ${vedtakOpprettet.vedtaksid}")
         return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
     }
 
@@ -74,9 +75,9 @@ class VedtakController(private val vedtakService: VedtakService) {
         @PathVariable @NotNull
         vedtaksid: Int,
     ): ResponseEntity<VedtakDto> {
+        LOGGER.info("Request for å hente vedtak med følgende id ble mottatt: $vedtaksid")
         val vedtakFunnet = vedtakService.hentVedtak(vedtaksid)
-        LOGGER.info("Følgende vedtak ble hentet: $vedtaksid")
-        SECURE_LOGGER.info("Følgende vedtak ble hentet: $vedtakFunnet")
+        SECURE_LOGGER.info("Følgende vedtak ble hentet: ${tilJson(vedtakFunnet)}")
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
@@ -106,9 +107,9 @@ class VedtakController(private val vedtakService: VedtakService) {
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int>? {
+        SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtak med id $vedtaksid: ${tilJson(request)}")
         val vedtakOppdatert = vedtakService.oppdaterVedtak(vedtaksid, request)
         LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert")
-        SECURE_LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert basert på request: $request")
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
     }
 

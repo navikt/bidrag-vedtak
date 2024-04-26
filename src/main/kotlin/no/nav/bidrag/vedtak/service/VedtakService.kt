@@ -51,6 +51,7 @@ import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeEntity
 import no.nav.bidrag.vedtak.persistence.entity.toStønadsendringEntity
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakEntity
+import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -80,11 +81,9 @@ class VedtakService(
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
         // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
-        if (!vedtakRequest.engangsbeløpListe.isNullOrEmpty()) {
-            if (duplikateReferanser(vedtakRequest.engangsbeløpListe!!.filter { it.referanse != null })) {
-                // Kaster exception hvis det er duplikate referanser
-                vedtakRequest.duplikateReferanserEngangsbeløp()
-            }
+        if (vedtakRequest.engangsbeløpListe.isNotEmpty() && duplikateReferanser(vedtakRequest.engangsbeløpListe.filter { it.referanse != null })) {
+            // Kaster exception hvis det er duplikate referanser
+            vedtakRequest.duplikateReferanserEngangsbeløp()
         }
 
         // Opprett vedtak
@@ -101,17 +100,17 @@ class VedtakService(
         }
 
         // Stønadsendring
-        vedtakRequest.stønadsendringListe?.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
+        vedtakRequest.stønadsendringListe.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
 
         // Engangsbeløp
-        vedtakRequest.engangsbeløpListe?.forEach {
+        vedtakRequest.engangsbeløpListe.forEach {
             engangsbeløpReferanseListe.add(opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap).referanse)
         }
 
         // Behandlingsreferanse
-        vedtakRequest.behandlingsreferanseListe?.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
+        vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
-        if (vedtakRequest.stønadsendringListe?.isNotEmpty() == true || vedtakRequest.engangsbeløpListe?.isNotEmpty() == true) {
+        if (vedtakRequest.stønadsendringListe.isNotEmpty() || vedtakRequest.engangsbeløpListe.isNotEmpty()) {
             hendelserService.opprettHendelse(
                 vedtakRequest,
                 opprettetVedtak.id,
@@ -239,26 +238,26 @@ class VedtakService(
 
     private fun hentStønadsendringerTilVedtak(stønadsendringListe: List<Stønadsendring>): List<StønadsendringDto> {
         val stønadsendringDtoListe = ArrayList<StønadsendringDto>()
-        stønadsendringListe.forEach {
+        stønadsendringListe.forEach { stønadsendring ->
             val grunnlagReferanseResponseListe = ArrayList<String>()
-            val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(it.id)
+            val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(stønadsendring.id)
             stønadsendringGrunnlagListe.forEach {
                 val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
                 grunnlagReferanseResponseListe.add(grunnlag.referanse)
             }
-            val periodeListe = persistenceService.hentAllePerioderForStønadsendring(it.id)
+            val periodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id)
             stønadsendringDtoListe.add(
                 StønadsendringDto(
-                    type = Stønadstype.valueOf(it.type),
-                    sak = Saksnummer(it.sak),
-                    skyldner = Personident(it.skyldner),
-                    kravhaver = Personident(it.kravhaver),
-                    mottaker = Personident(it.mottaker),
-                    førsteIndeksreguleringsår = it.førsteIndeksreguleringsår,
-                    innkreving = Innkrevingstype.valueOf(it.innkreving),
-                    beslutning = Beslutningstype.valueOf(it.beslutning),
-                    omgjørVedtakId = it.omgjørVedtakId,
-                    eksternReferanse = it.eksternReferanse,
+                    type = Stønadstype.valueOf(stønadsendring.type),
+                    sak = Saksnummer(stønadsendring.sak),
+                    skyldner = Personident(stønadsendring.skyldner),
+                    kravhaver = Personident(stønadsendring.kravhaver),
+                    mottaker = Personident(stønadsendring.mottaker),
+                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
+                    innkreving = Innkrevingstype.valueOf(stønadsendring.innkreving),
+                    beslutning = Beslutningstype.valueOf(stønadsendring.beslutning),
+                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
+                    eksternReferanse = stønadsendring.eksternReferanse,
                     grunnlagReferanseListe = grunnlagReferanseResponseListe,
                     periodeListe = hentPerioderTilVedtak(periodeListe),
                 ),
@@ -326,7 +325,7 @@ class VedtakService(
         if (vedtakRequest.grunnlagListe.isEmpty()) {
             val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
             LOGGER.error(feilmelding)
-            SECURE_LOGGER.error("$feilmelding $vedtakRequest")
+            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
             throw GrunnlagsdataManglerException(feilmelding)
         }
 
@@ -336,7 +335,7 @@ class VedtakService(
         } else {
             val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
             LOGGER.error(feilmelding)
-            SECURE_LOGGER.error("$feilmelding $vedtakRequest")
+            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
             throw VedtaksdataMatcherIkkeException(feilmelding)
         }
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
@@ -356,7 +355,6 @@ class VedtakService(
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
-//            vedtakRequest.opprettetAvNavn == eksisterendeVedtak.opprettetAvNavn &&
             vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
             vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
             vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
@@ -375,21 +373,21 @@ class VedtakService(
 
         // vedtakRequest.stønadsendringListe kan være null, eksisterendeStønadsendringListe kan ikke være null,
         // bare emptyList
-        if (vedtakRequest.stønadsendringListe.isNullOrEmpty()) {
+        if (vedtakRequest.stønadsendringListe.isEmpty()) {
             return eksisterendeStønadsendringListe.isEmpty()
         }
 
         // Sjekker om det er lagret like mange stønadsendringer som det ligger i oppdaterVedtak-requesten
-        if (vedtakRequest.stønadsendringListe?.size != eksisterendeStønadsendringListe.size) {
+        if (vedtakRequest.stønadsendringListe.size != eksisterendeStønadsendringListe.size) {
             SECURE_LOGGER.error(
-                "Det er ulikt antall stønadsendringer i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
+                "Det er ulikt antall stønadsendringer i request for å oppdatere vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
             )
             return false
         }
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall stønadsendringer
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.stønadsendringListe!!
+        val matchendeElementer = vedtakRequest.stønadsendringListe
             .filter { stønadsendringRequest ->
                 eksisterendeStønadsendringListe.any {
                     stønadsendringRequest.type.toString() == it.type &&
@@ -414,7 +412,7 @@ class VedtakService(
         }
 
         // Sorterer listene likt for å kunne sammenligne perioder
-        val sortertStønadsendringRequestListe = vedtakRequest.stønadsendringListe!!
+        val sortertStønadsendringRequestListe = vedtakRequest.stønadsendringListe
             .sortedWith(compareBy({ it.type.toString() }, { it.skyldner.verdi }, { it.kravhaver.verdi }, { it.sak.toString() }))
 
         for ((i, stønadsendring) in eksisterendeStønadsendringListe.withIndex()) {
@@ -457,21 +455,21 @@ class VedtakService(
 
         // vedtakRequest.engangsbeløpListe kan være null, eksisterendeEngangsbeløpListe kan ikke være null,
         // bare emptyList
-        if (vedtakRequest.engangsbeløpListe.isNullOrEmpty()) {
+        if (vedtakRequest.engangsbeløpListe.isEmpty()) {
             return eksisterendeEngangsbeløpListe.isEmpty()
         }
 
         // Sjekker om det er lagret like mange engangsbeløp som det ligger i oppdaterVedtak-requesten
-        if (vedtakRequest.engangsbeløpListe?.size != eksisterendeEngangsbeløpListe.size) {
+        if (vedtakRequest.engangsbeløpListe.size != eksisterendeEngangsbeløpListe.size) {
             SECURE_LOGGER.error(
-                "Det er ulikt antall engangsbeløp i request for å oppdater vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
+                "Det er ulikt antall engangsbeløp i request for å oppdatere vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtakId",
             )
             return false
         }
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall engangsbeløp
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.engangsbeløpListe!!
+        val matchendeElementer = vedtakRequest.engangsbeløpListe
             .filter { engangsbeløpRequest ->
                 eksisterendeEngangsbeløpListe.any {
                     engangsbeløpRequest.type.toString() == it.type &&
@@ -505,14 +503,14 @@ class VedtakService(
 
         // vedtakRequest.engangsbeløpListe kan være null, eksisterendeEngangsbeløpListe kan ikke være null,
         // bare emptyList
-        if (vedtakRequest.behandlingsreferanseListe.isNullOrEmpty()) {
+        if (vedtakRequest.behandlingsreferanseListe.isEmpty()) {
             return eksisterendeBehandlingsreferanseListe.isEmpty()
         }
 
         // Sjekker om det er lagret like mange behandlinmgsreferanser som det ligger i oppdaterVedtak-requesten
-        if (vedtakRequest.behandlingsreferanseListe?.size != eksisterendeBehandlingsreferanseListe.size) {
+        if (vedtakRequest.behandlingsreferanseListe.size != eksisterendeBehandlingsreferanseListe.size) {
             SECURE_LOGGER.error(
-                "Det er ulikt antall behandlingsreferanser i request for å oppdater vedtak og det som er lagret på vedtaket fra før. " +
+                "Det er ulikt antall behandlingsreferanser i request for å oppdatere vedtak og det som er lagret på vedtaket fra før. " +
                     "VedtakId: $vedtakId",
             )
             return false
@@ -520,7 +518,7 @@ class VedtakService(
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall engangsbeløp
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.behandlingsreferanseListe!!
+        val matchendeElementer = vedtakRequest.behandlingsreferanseListe
             .filter { behandlingsreferanseRequestListe ->
                 eksisterendeBehandlingsreferanseListe.any {
                     behandlingsreferanseRequestListe.kilde.toString() == it.kilde &&
@@ -558,8 +556,6 @@ class VedtakService(
                 engangsbeløpGrunnlag.forEach {
                     persistenceService.engangsbeløpGrunnlagRepository.deleteById(EngangsbeløpGrunnlagPK(engangsbeløpId, it.grunnlag.id))
                 }
-                // tester på github feiler uten denne, ikke spør...
-                val eg = persistenceService.engangsbeløpGrunnlagRepository.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
             }
         }
 
@@ -585,7 +581,7 @@ class VedtakService(
         // oppdaterer PeriodeGrunnlag
         val eksisterendeStønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtakId)
 
-        vedtakRequest.stønadsendringListe?.forEach { stønadsendringRequest ->
+        vedtakRequest.stønadsendringListe.forEach { stønadsendringRequest ->
             // matcher mot eksisterende stønadsendringer for å finne stønadsendringId for igjen å finne perioder som skal brukes
             // til å oppdatere PeriodeGrunnlag
             val stønadsendringId = finnEksisterendeStønadsendringId(stønadsendringRequest, eksisterendeStønadsendringListe)
@@ -600,7 +596,7 @@ class VedtakService(
 
         // oppdaterer EngangsbeløpGrunnlag
         val eksisterendeEngangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtakId)
-        vedtakRequest.engangsbeløpListe?.forEach { engangsbeløp ->
+        vedtakRequest.engangsbeløpListe.forEach { engangsbeløp ->
             // matcher mot eksisterende engangsbeløp for å finne engangsbeløpId for igjen å oppdatere EngangsbeløpGrunnlag
             val engangsbeløpId = finnTilhørendeEngangsbeløpId(engangsbeløp, eksisterendeEngangsbeløpListe)
             oppdaterEngangsbeløpGrunnlag(engangsbeløp, engangsbeløpId, grunnlagIdRefMap)
@@ -628,8 +624,8 @@ class VedtakService(
             }
 
         if (matchendeEksisterendeStønadsendring.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer $stønadsendringrequest")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer $stønadsendringrequest")
+            SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer: ${tilJson(stønadsendringrequest)}")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer: ${tilJson(stønadsendringrequest)}")
         }
         return matchendeEksisterendeStønadsendring.first().id
     }
@@ -648,8 +644,8 @@ class VedtakService(
             }
 
         if (matchendeEksisterendePeriode.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende perioder for stønadsendring $periodeRequest")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer $periodeRequest")
+            SECURE_LOGGER.error("Det er mismatch på antall matchende perioder for stønadsendring: ${tilJson(periodeRequest)}")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer: ${tilJson(periodeRequest)}")
         }
         return matchendeEksisterendePeriode.first().id
     }
@@ -698,8 +694,8 @@ class VedtakService(
                 }
             }
         if (matchendeEksisterendeEngangsbeløp.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende engangsbeløp $engangsbeløpRequest")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende engangsbeløp $engangsbeløpRequest")
+            SECURE_LOGGER.error("Det er mismatch på antall matchende engangsbeløp: ${tilJson(engangsbeløpRequest)}")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende engangsbeløp: ${tilJson(engangsbeløpRequest)}")
         }
         return matchendeEksisterendeEngangsbeløp.first().id
     }
@@ -746,10 +742,10 @@ class VedtakService(
         try {
             val enhetsnummer = vedtakRequest.enhetsnummer
             val vedtakstype = vedtakRequest.type
-            vedtakRequest.stønadsendringListe?.forEach {
+            vedtakRequest.stønadsendringListe.forEach {
                 measureVedtak(navn, enhetsnummer, vedtakstype, it.type, null)
             }
-            vedtakRequest.engangsbeløpListe?.forEach {
+            vedtakRequest.engangsbeløpListe.forEach {
                 measureVedtak(navn, enhetsnummer, vedtakstype, null, it.type)
             }
         } catch (e: Exception) {
