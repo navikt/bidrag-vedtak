@@ -60,3 +60,4 @@ spec:
     sqlInstances:
       tier: db-f1-micro
       diskAutoresize: true
+      pointInTimeRecovery: false

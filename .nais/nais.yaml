@@ -66,6 +66,7 @@ spec:
           - name: {{ dbname }}
             envVarPrefix: DB
         tier: {{ spec.gcp.sqlInstances.tier }}
+        pointInTimeRecovery: {{ spec.gcp.sqlInstances.pointInTimeRecovery }}
         diskAutoresize: {{ spec.gcp.sqlInstances.diskAutoresize }}
   env:
     - name: TOPIC_VEDTAK
