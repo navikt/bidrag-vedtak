@@ -59,11 +59,7 @@ import java.util.*
 
 @Service
 @Transactional
-class VedtakService(
-    val persistenceService: PersistenceService,
-    val hendelserService: HendelserService,
-    private val meterRegistry: MeterRegistry,
-) {
+class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
 
     private val opprettVedtakCounterName = "opprett_vedtak"
     private val oppdaterVedtakCounterName = "oppdater_vedtak"
@@ -306,6 +302,7 @@ class VedtakService(
                     kravhaver = Personident(dto.kravhaver),
                     mottaker = Personident(dto.mottaker),
                     beløp = dto.beløp,
+                    betaltBeløp = dto.betaltBeløp,
                     valutakode = dto.valutakode,
                     resultatkode = dto.resultatkode,
                     innkreving = Innkrevingstype.valueOf(dto.innkreving),
@@ -343,12 +340,10 @@ class VedtakService(
         return vedtakId
     }
 
-    private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
-        return vedtakMatcher(vedtakId, vedtakRequest) &&
-            stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
-            engangsbeløpMatcher(vedtakId, vedtakRequest) &&
-            behandlingsreferanserMatcher(vedtakId, vedtakRequest)
-    }
+    private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
+        stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
+        engangsbeløpMatcher(vedtakId, vedtakRequest) &&
+        behandlingsreferanserMatcher(vedtakId, vedtakRequest)
 
     private fun vedtakMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
         val eksisterendeVedtak = persistenceService.hentVedtak(vedtakId)
@@ -753,9 +748,9 @@ class VedtakService(
         }
     }
 
-    fun duplikateReferanser(engangsbeløpListe: List<OpprettEngangsbeløpRequestDto>): Boolean {
-        return engangsbeløpListe.groupBy { it.referanse }.any { it.value.size > 1 }
-    }
+    fun duplikateReferanser(engangsbeløpListe: List<OpprettEngangsbeløpRequestDto>): Boolean = engangsbeløpListe.groupBy {
+        it.referanse
+    }.any { it.value.size > 1 }
 
     private fun genererUnikReferanse(vedtaksid: Int): String {
         var referanse = UUID.randomUUID().toString()

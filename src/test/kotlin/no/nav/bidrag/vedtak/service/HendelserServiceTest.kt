@@ -66,7 +66,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD, sak = Saksnummer("sak01"), skyldner = Personident("D"),
+                        type = Engangsbeløptype.SÆRBIDRAG, sak = Saksnummer("sak01"), skyldner = Personident("D"),
                         kravhaver = Personident("E"),
                         mottaker = Personident("F"), beløp = BigDecimal.ONE, valutakode = "NOK", resultatkode = "A",
                         innkreving = Innkrevingstype.MED_INNKREVING,
@@ -171,7 +171,7 @@ class HendelserServiceTest {
                 ),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        type = Engangsbeløptype.SÆRBIDRAG,
                         sak = Saksnummer("sak01"),
                         skyldner = Personident("D"),
                         kravhaver = Personident("E"),
@@ -316,7 +316,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        type = Engangsbeløptype.SÆRBIDRAG,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -361,7 +361,7 @@ class HendelserServiceTest {
                 stønadsendringListe = emptyList(),
                 engangsbeløpListe = listOf(
                     OpprettEngangsbeløpRequestDto(
-                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        type = Engangsbeløptype.SÆRBIDRAG,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),
@@ -403,7 +403,7 @@ class HendelserServiceTest {
                 engangsbeløpListe =
                 listOf(
                     Engangsbeløp(
-                        type = Engangsbeløptype.SÆRTILSKUDD,
+                        type = Engangsbeløptype.SÆRBIDRAG,
                         sak = Saksnummer("SAK-101"),
                         skyldner = Personident("skyldner"),
                         kravhaver = Personident("kravhaver"),

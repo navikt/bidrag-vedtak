@@ -41,6 +41,9 @@ data class Engangsbeløp(
     @Column(nullable = true, name = "beløp")
     val beløp: BigDecimal? = BigDecimal.ZERO,
 
+    @Column(nullable = true, name = "betalt_beløp")
+    val betaltBeløp: BigDecimal? = null,
+
     @Column(nullable = true, name = "valutakode")
     val valutakode: String? = "",
 
