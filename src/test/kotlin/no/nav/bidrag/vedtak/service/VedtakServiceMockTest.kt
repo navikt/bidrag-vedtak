@@ -399,7 +399,7 @@ class VedtakServiceMockTest {
             listOf(
                 byggEngangsbeløp(
                     engangsbeløpId = 1,
-                    type = "SÆRTILSKUDD",
+                    type = "SÆRBIDRAG",
                     sak = Saksnummer("SAK-101").toString(),
                     skyldner = Personident("01018011111").toString(),
                     kravhaver = Personident("01010511111").toString(),
@@ -461,7 +461,7 @@ class VedtakServiceMockTest {
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo("REF1") },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe.size).isEqualTo(1) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(Engangsbeløptype.SÆRTILSKUDD) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(Engangsbeløptype.SÆRBIDRAG) },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].sak.toString()).isEqualTo("SAK-101") },
             Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
         )

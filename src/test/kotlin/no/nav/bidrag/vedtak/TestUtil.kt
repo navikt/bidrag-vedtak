@@ -250,7 +250,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -271,7 +271,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -292,7 +292,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -341,7 +341,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpListeMedDuplikateReferanser() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -362,7 +362,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -383,7 +383,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -487,7 +487,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpUtenGrunnlagListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -504,7 +504,7 @@ class TestUtil {
                 grunnlagReferanseListe = emptyList(),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -689,7 +689,7 @@ class TestUtil {
 
         private fun byggEngangsbeløpMedFeilListe() = listOf(
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),
@@ -710,7 +710,7 @@ class TestUtil {
                 ),
             ),
             OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRTILSKUDD,
+                type = Engangsbeløptype.SÆRBIDRAG,
                 sak = Saksnummer("SAK-101"),
                 skyldner = Personident("01018011111"),
                 kravhaver = Personident("01010511111"),

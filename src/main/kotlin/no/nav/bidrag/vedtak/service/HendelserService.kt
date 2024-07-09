@@ -92,6 +92,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
                     kravhaver = it.kravhaver,
                     mottaker = it.mottaker,
                     beløp = it.beløp,
+                    betaltBeløp = it.betaltBeløp,
                     valutakode = it.valutakode,
                     resultatkode = it.resultatkode,
                     innkreving = it.innkreving,
