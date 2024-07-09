@@ -399,7 +399,7 @@ class VedtakServiceMockTest {
             listOf(
                 byggEngangsbeløp(
                     engangsbeløpId = 1,
-                    type = "SÆRTILSKUDD",
+                    type = "SÆRBIDRAG",
                     sak = Saksnummer("SAK-101").toString(),
                     skyldner = Personident("01018011111").toString(),
                     kravhaver = Personident("01010511111").toString(),
