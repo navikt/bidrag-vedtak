@@ -407,7 +407,7 @@ class TestUtil {
 
         fun byggVedtakRequestUtenGrunnlag() = OpprettVedtakRequestDto(
             kilde = Vedtakskilde.MANUELT,
-            type = Vedtakstype.ALDERSJUSTERING,
+            type = Vedtakstype.FASTSETTELSE,
             opprettetAv = "X123456",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
@@ -519,6 +519,113 @@ class TestUtil {
                 delytelseId = "delytelseId2",
                 eksternReferanse = "EksternRef2",
                 grunnlagReferanseListe = emptyList(),
+            ),
+        )
+
+        fun byggVedtakRequestMedInputparametre(
+            vedtaksdato: LocalDate?,
+            vedtakstype: Vedtakstype?,
+            saksnummer: Saksnummer?,
+            type: Stønadstype?,
+            skyldner: Personident?,
+            kravhaver: Personident?,
+            innkreving: Innkrevingstype?,
+            beslutning: Beslutningstype?,
+        ) = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = vedtakstype ?: Vedtakstype.ENDRING,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = if (vedtaksdato == null) {
+                LocalDateTime.of(2020, 5, 7, 23, 34, 55, 869121094)
+            } else {
+                vedtaksdato.atStartOfDay()
+            },
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = emptyList(),
+            stønadsendringListe = byggStønadsendringMedInputparametreListe(
+                saksnummer,
+                type,
+                skyldner,
+                kravhaver,
+                innkreving,
+                beslutning,
+            ),
+            engangsbeløpListe = byggEngangsbeløpUtenGrunnlagListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
+        )
+
+        private fun byggStønadsendringMedInputparametreListe(
+            saksnummer: Saksnummer?,
+            type: Stønadstype?,
+            skyldner: Personident?,
+            kravhaver: Personident?,
+            innkreving: Innkrevingstype?,
+            beslutning: Beslutningstype?,
+        ) = listOf(
+            OpprettStønadsendringRequestDto(
+                type = type ?: Stønadstype.BIDRAG,
+                sak = saksnummer ?: Saksnummer("SAK-001"),
+                skyldner = skyldner ?: Personident("1"),
+                kravhaver = kravhaver ?: Personident("2"),
+                mottaker = Personident("00000000000"),
+                førsteIndeksreguleringsår = null,
+                innkreving = innkreving ?: Innkrevingstype.MED_INNKREVING,
+                beslutning = beslutning ?: Beslutningstype.ENDRING,
+                omgjørVedtakId = null,
+                eksternReferanse = null,
+                grunnlagReferanseListe = emptyList(),
+                periodeListe = listOf(
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2019-01-01"), LocalDate.parse("2019-07-01")),
+                        beløp = BigDecimal.valueOf(3490),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = null,
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
+                        beløp = BigDecimal.valueOf(3520),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = null,
+                        grunnlagReferanseListe = emptyList(),
+
+                    ),
+                ),
+            ),
+            OpprettStønadsendringRequestDto(
+                type = Stønadstype.BIDRAG,
+                sak = Saksnummer("SAK-001"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                førsteIndeksreguleringsår = 2024,
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 200,
+                eksternReferanse = "eksternRef3",
+                grunnlagReferanseListe = emptyList(),
+                periodeListe = listOf(
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2019-06-01"), LocalDate.parse("2019-07-01")),
+                        beløp = BigDecimal.valueOf(4240),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId3",
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2019-08-01"), LocalDate.parse("2019-09-01")),
+                        beløp = BigDecimal.valueOf(3410),
+                        valutakode = "NOK",
+                        resultatkode = "SAERTILSKUDD_INNVILGET",
+                        delytelseId = "delytelseId4",
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                ),
             ),
         )
 

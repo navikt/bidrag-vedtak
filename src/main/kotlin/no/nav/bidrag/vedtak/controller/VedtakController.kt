@@ -13,6 +13,8 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
+import no.nav.bidrag.vedtak.service.HentVedtakForStønadRequest
+import no.nav.bidrag.vedtak.service.HentVedtakForStønadResponse
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import no.nav.security.token.support.core.api.Protected
@@ -113,10 +115,36 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
     }
 
+    @PostMapping(HENT_VEDTAK_FOR_SAK, "/vedtak")
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter endringsvedtak for angitt sak, skyldner, kravhaver og type")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtak hentet"),
+            ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "401",
+                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun hentVedtakForSak(
+        @Valid @RequestBody
+        request: HentVedtakForStønadRequest,
+    ): ResponseEntity<HentVedtakForStønadResponse>? {
+        SECURE_LOGGER.info("Følgende request for å hente vedtak for sak ble mottatt: ${tilJson(request)}")
+        val respons = vedtakService.hentEndringsvedtakForStønad(request)
+        SECURE_LOGGER.info("Følgende endringsvedtak ble hentet for request: $request")
+        return ResponseEntity(respons, HttpStatus.OK)
+    }
+
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
+        const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak/"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }

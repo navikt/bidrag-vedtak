@@ -2,6 +2,7 @@ package no.nav.bidrag.vedtak.service
 
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.bidrag.commons.security.utils.TokenUtils
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
@@ -17,6 +18,7 @@ import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.domene.util.trimToNull
 import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
+import no.nav.bidrag.transport.behandling.felles.grunnlag.Grunnlagsreferanse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
@@ -55,6 +57,8 @@ import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
 
 @Service
@@ -264,20 +268,20 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
         val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
-        periodeListe.forEach { dto ->
+        periodeListe.forEach { periode ->
             val grunnlagReferanseResponseListe = ArrayList<String>()
-            val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.id)
+            val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(periode.id)
             periodeGrunnlagListe.forEach {
                 val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
                 grunnlagReferanseResponseListe.add(grunnlag.referanse)
             }
             periodeResponseListe.add(
                 VedtakPeriodeDto(
-                    periode = ÅrMånedsperiode(dto.fom, dto.til),
-                    beløp = dto.beløp,
-                    valutakode = dto.valutakode?.trimEnd(),
-                    resultatkode = dto.resultatkode,
-                    delytelseId = dto.delytelseId,
+                    periode = ÅrMånedsperiode(periode.fom, periode.til),
+                    beløp = periode.beløp,
+                    valutakode = periode.valutakode?.trimEnd(),
+                    resultatkode = periode.resultatkode,
+                    delytelseId = periode.delytelseId,
                     grunnlagReferanseListe = grunnlagReferanseResponseListe,
                 ),
             )
@@ -338,6 +342,66 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
 
         return vedtakId
+    }
+
+    // Hent alle endringsvedtak for stønad
+    fun hentEndringsvedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
+        val vedtakForStønad = mutableListOf<VedtakForStønad>()
+        val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
+        stønadsendringer.filter {
+            it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
+                it.beslutning == Beslutningstype.ENDRING.toString() &&
+                (
+                    it.type == Stønadstype.BIDRAG.toString() ||
+                        it.type == Stønadstype.BIDRAG18AAR.toString() ||
+                        it.type == Stønadstype.OPPFOSTRINGSBIDRAG.toString()
+                    )
+        }
+            .forEach { stønadsendring ->
+                val periodeListe = mutableListOf<Stønadsperiode>()
+                persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id).forEach { periode ->
+                    val grunnlagReferanseResponseListe = ArrayList<String>()
+                    val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(periode.id)
+                    periodeGrunnlagListe.forEach {
+                        val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+                        grunnlagReferanseResponseListe.add(grunnlag.referanse)
+                    }
+                    periodeListe.add(
+                        Stønadsperiode(
+                            periode = ÅrMånedsperiode(periode.fom, periode.til),
+                            beløp = periode.beløp,
+                            valutakode = periode.valutakode,
+                            resultatkode = periode.resultatkode,
+                            grunnlagReferanseListe = grunnlagReferanseResponseListe,
+                        ),
+                    )
+                }
+                val grunnlagDtoListe = ArrayList<GrunnlagDto>()
+
+                val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(stønadsendring.vedtak.id)
+                grunnlagListe.forEach {
+                    grunnlagDtoListe.add(it.toGrunnlagDto())
+                }
+                vedtakForStønad.add(
+                    VedtakForStønad(
+                        vedtaksid = stønadsendring.vedtak.id,
+                        vedtaksdato = stønadsendring.vedtak.vedtakstidspunkt.toLocalDate(),
+                        type = Vedtakstype.valueOf(stønadsendring.vedtak.type),
+                        stønadsendring = StønadsendringBidrag(
+                            type = Stønadstype.valueOf(stønadsendring.type),
+                            sak = Saksnummer(stønadsendring.sak),
+                            skyldner = Personident(stønadsendring.skyldner),
+                            kravhaver = Personident(stønadsendring.kravhaver),
+                            innkreving = Innkrevingstype.valueOf(stønadsendring.innkreving),
+                            beslutning = Beslutningstype.valueOf(stønadsendring.beslutning),
+                            omgjørVedtakId = stønadsendring.omgjørVedtakId,
+                            periodeListe = periodeListe,
+                        ),
+                        grunnlagListe = grunnlagDtoListe,
+                    ),
+                )
+            }
+        return HentVedtakForStønadResponse(vedtakForStønad)
     }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
@@ -764,3 +828,73 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)
     }
 }
+
+@Schema(description = "Request for å hente alle endringsvedtak for en stønad (saksnr, stønadstype, skyldner, kravhaver")
+data class HentVedtakForStønadRequest(
+    @Schema(description = "Saksnummer")
+    val sak: Saksnummer,
+    @Schema(description = "Hvilken type stønad det er snakk om")
+    val type: Stønadstype,
+    @Schema(description = "Personen som er skyldner")
+    val skyldner: Personident,
+    @Schema(description = "Personen som er kravhaver i stønaden")
+    val kravhaver: Personident,
+)
+
+@Schema(description = "Respons med alle endringsvedtak for en stønad (saksnr, stønadstype, skyldner, kravhaver")
+data class HentVedtakForStønadResponse(
+    @Schema(description = "Liste med vedtak for stønad")
+    val vedtakListe: List<VedtakForStønad> = emptyList(),
+)
+
+@Schema(description = "Objekt med relevant informasjon fra vedtak")
+data class VedtakForStønad(
+    @Schema(description = "Unik id generert for vedtak")
+    val vedtaksid: Int,
+    @Schema(description = "Dato vedtaket er fattet")
+    val vedtaksdato: LocalDate,
+    @Schema(description = "Type vedtak")
+    val type: Vedtakstype,
+    @Schema(description = "Stønadsendring")
+    val stønadsendring: StønadsendringBidrag,
+    @Schema(description = "Liste over alle grunnlag som inngår i vedtaket. Listen vil være tom til grunnlagsoverføring er gjort")
+    val grunnlagListe: List<GrunnlagDto> = emptyList(),
+)
+
+@Schema(description = "Relevant informasjon om stønadsendringer i et vedtak")
+data class StønadsendringBidrag(
+    @Schema(description = "Saksnummer")
+    val sak: Saksnummer,
+    @Schema(description = "Stønadstype")
+    val type: Stønadstype,
+    @Schema(description = "Personidenten til den som skal betale bidraget")
+    val skyldner: Personident,
+    @Schema(description = "Personidenten til den som krever bidraget")
+    val kravhaver: Personident,
+    @Schema(description = "Angir om stønaden skal innkreves")
+    val innkreving: Innkrevingstype = Innkrevingstype.MED_INNKREVING,
+    @Schema(
+        description =
+        "Angir om søknaden om engangsbeløp er besluttet avvist, stadfestet eller skal medføre endring" +
+            "Gyldige verdier er 'AVVIST', 'STADFESTELSE' og 'ENDRING'",
+    )
+    val beslutning: Beslutningstype = Beslutningstype.ENDRING,
+    @Schema(description = "Id for vedtaket det er klaget på")
+    val omgjørVedtakId: Int?,
+    @Schema(description = "Liste over alle perioder som inngår i stønadsendringen")
+    val periodeListe: List<Stønadsperiode>,
+)
+
+@Schema(description = "Perioder tilhørende en stønadsendring")
+data class Stønadsperiode(
+    @Schema(description = "Periode med fra-og-med-dato og til-dato med format ÅÅÅÅ-MM")
+    val periode: ÅrMånedsperiode,
+    @Schema(description = "Beregnet stønadsbeløp")
+    val beløp: BigDecimal?,
+    @Schema(description = "Valutakoden tilhørende stønadsbeløpet")
+    val valutakode: String?,
+    @Schema(description = "Resultatkoden tilhørende stønadsbeløpet")
+    val resultatkode: String,
+    @Schema(description = "Liste over alle grunnlag som inngår i perioden. Listen vil være tom til grunnlagsoverføring er gjort")
+    val grunnlagReferanseListe: List<Grunnlagsreferanse> = emptyList(),
+)

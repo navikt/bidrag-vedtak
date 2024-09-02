@@ -3,6 +3,12 @@ package no.nav.bidrag.vedtak.service
 import io.mockk.every
 import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
+import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
+import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
+import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
+import no.nav.bidrag.domene.ident.Personident
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
@@ -11,6 +17,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchStø
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchVedtak
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakMedDuplikateReferanserRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedInputparametre
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
@@ -39,6 +46,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.HttpClientErrorException
+import java.time.LocalDate
+import java.time.YearMonth
 
 @DisplayName("VedtakServiceTest")
 @ActiveProfiles(BidragVedtakTest.TEST_PROFILE)
@@ -1001,5 +1010,205 @@ class VedtakServiceTest {
         assertThatExceptionOfType(GrunnlagsdataManglerException::class.java).isThrownBy {
             vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagRequest)
         }
+    }
+
+    @Test
+    fun `test hent av vedtak for stønad`() {
+        // Oppretter nytt vedtak
+        val nyttVedtakRequest = byggVedtakRequestMedInputparametre(
+            vedtaksdato = LocalDate.now(),
+            vedtakstype = Vedtakstype.ENDRING,
+            saksnummer = Saksnummer("SAK-001"),
+            type = Stønadstype.BIDRAG,
+            skyldner = Personident("11111111111"),
+            kravhaver = Personident("2222222222"),
+            innkreving = Innkrevingstype.MED_INNKREVING,
+            beslutning = Beslutningstype.ENDRING,
+        )
+        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest).vedtaksid
+
+        assertAll(
+            Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
+        )
+
+        val request = HentVedtakForStønadRequest(
+            sak = Saksnummer("SAK-001"),
+            type = Stønadstype.BIDRAG,
+            skyldner = Personident("11111111111"),
+            kravhaver = Personident("2222222222"),
+        )
+
+        // Henter vedtak
+        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe.first()
+
+        assertAll(
+            Executable { assertThat(vedtakFunnet).isNotNull() },
+
+            // Vedtak
+            Executable { assertThat(vedtakFunnet.vedtaksid).isEqualTo(nyttVedtakOpprettet) },
+            Executable { assertThat(vedtakFunnet.vedtaksdato).isEqualTo(nyttVedtakRequest.vedtakstidspunkt.toLocalDate()) },
+            Executable { assertThat(vedtakFunnet.type).isEqualTo(nyttVedtakRequest.type) },
+
+            Executable { assertThat(vedtakFunnet.stønadsendring.sak).isEqualTo(Saksnummer("SAK-001")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.skyldner).isEqualTo(Personident("11111111111")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.kravhaver).isEqualTo(Personident("2222222222")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.innkreving).isEqualTo(Innkrevingstype.MED_INNKREVING) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.beslutning).isEqualTo(Beslutningstype.ENDRING) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.omgjørVedtakId).isNull() },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe.size).isEqualTo(2) },
+
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].periode.fom).isEqualTo(YearMonth.parse("2019-01")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].periode.til).isEqualTo(YearMonth.parse("2019-07")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].beløp!!.toInt()).isEqualTo(3490) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].valutakode).isEqualTo("NOK") },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].resultatkode).isEqualTo("KOSTNADSBEREGNET_BIDRAG") },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[0].grunnlagReferanseListe).isEmpty() },
+
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].periode.fom).isEqualTo(YearMonth.parse("2019-07")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].periode.til).isEqualTo(YearMonth.parse("2020-01")) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].beløp!!.toInt()).isEqualTo(3520) },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].valutakode).isEqualTo("NOK") },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].resultatkode).isEqualTo("KOSTNADSBEREGNET_BIDRAG") },
+            Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].grunnlagReferanseListe).isEmpty() },
+
+            Executable { assertThat(vedtakFunnet.grunnlagListe).isEmpty() },
+
+        )
+    }
+
+    @Test
+    fun `test hent av flere vedtak for stønad med og uten innkreving`() {
+        // Oppretter nytt vedtak
+        val vedtakRequest1 = byggVedtakRequestMedInputparametre(
+            LocalDate.now().minusMonths(2),
+            null,
+            null,
+            null,
+            null,
+            null,
+            Innkrevingstype.MED_INNKREVING,
+            null,
+        )
+        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1).vedtaksid
+
+        assertAll(
+            Executable { assertThat(vedtakOpprettet1).isNotNull() },
+        )
+
+        // Vedtak uten innkreving, skal ikke komme i responsen under
+        val vedtakRequest2 = byggVedtakRequestMedInputparametre(
+            LocalDate.now().minusMonths(1),
+            null,
+            null,
+            null,
+            null,
+            null,
+            Innkrevingstype.UTEN_INNKREVING,
+            null,
+        )
+        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2).vedtaksid
+
+        assertAll(
+            Executable { assertThat(vedtakOpprettet2).isNotNull() },
+        )
+
+        val vedtakRequest3 = byggVedtakRequestMedInputparametre(
+            LocalDate.now(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            Innkrevingstype.MED_INNKREVING,
+            null,
+        )
+        val vedtakOpprettet3 = vedtakService.opprettVedtak(vedtakRequest3).vedtaksid
+
+        assertAll(
+            Executable { assertThat(vedtakOpprettet3).isNotNull() },
+        )
+
+        val request = HentVedtakForStønadRequest(
+            sak = Saksnummer("SAK-001"),
+            type = Stønadstype.BIDRAG,
+            skyldner = Personident("1"),
+            kravhaver = Personident("2"),
+        )
+
+        // Henter vedtak
+        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe
+        val vedtak1 = vedtakFunnet[0]
+        val vedtak2 = vedtakFunnet[1]
+
+        assertAll(
+            Executable { assertThat(vedtakFunnet.size).isEqualTo(2) },
+
+            // Vedtak
+            Executable { assertThat(vedtak1.vedtaksid).isEqualTo(vedtakOpprettet1) },
+            Executable { assertThat(vedtak1.vedtaksdato).isEqualTo(LocalDate.now().minusMonths(2)) },
+
+            Executable { assertThat(vedtak2.vedtaksid).isEqualTo(vedtakOpprettet3) },
+            Executable { assertThat(vedtak2.vedtaksdato).isEqualTo(LocalDate.now()) },
+
+        )
+    }
+
+    @Test
+    fun `test at kun bidragssaker hentes for stønad`() {
+        // Oppretter nytt vedtak
+        val vedtakRequest1 = byggVedtakRequestMedInputparametre(
+            LocalDate.now().minusMonths(2),
+            null,
+            null,
+            Stønadstype.BIDRAG18AAR,
+            null,
+            null,
+            null,
+            null,
+        )
+        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1).vedtaksid
+
+        assertAll(
+            Executable { assertThat(vedtakOpprettet1).isNotNull() },
+        )
+
+        // Vedtak uten innkreving, skal ikke komme i responsen under
+        val vedtakRequest2 = byggVedtakRequestMedInputparametre(
+            LocalDate.now().minusMonths(1),
+            null,
+            null,
+            Stønadstype.FORSKUDD,
+            null,
+            null,
+            null,
+            null,
+        )
+        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2).vedtaksid
+
+        assertAll(
+            Executable { assertThat(vedtakOpprettet2).isNotNull() },
+        )
+
+        val request = HentVedtakForStønadRequest(
+            sak = Saksnummer("SAK-001"),
+            type = Stønadstype.BIDRAG18AAR,
+            skyldner = Personident("1"),
+            kravhaver = Personident("2"),
+        )
+
+        // Henter vedtak
+        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe
+        val vedtak1 = vedtakFunnet[0]
+
+        assertAll(
+            Executable { assertThat(vedtakFunnet.size).isEqualTo(1) },
+
+            // Vedtak
+            Executable { assertThat(vedtak1.vedtaksid).isEqualTo(vedtakOpprettet1) },
+            Executable { assertThat(vedtak1.vedtaksdato).isEqualTo(LocalDate.now().minusMonths(2)) },
+            Executable { assertThat(vedtak1.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG18AAR) },
+
+        )
     }
 }
