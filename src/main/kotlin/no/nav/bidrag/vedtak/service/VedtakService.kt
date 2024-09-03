@@ -350,12 +350,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
         stønadsendringer.filter {
             it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
-                it.beslutning == Beslutningstype.ENDRING.toString() &&
-                (
-                    it.type == Stønadstype.BIDRAG.toString() ||
-                        it.type == Stønadstype.BIDRAG18AAR.toString() ||
-                        it.type == Stønadstype.OPPFOSTRINGSBIDRAG.toString()
-                    )
+                it.beslutning == Beslutningstype.ENDRING.toString()
         }
             .forEach { stønadsendring ->
                 val periodeListe = mutableListOf<Stønadsperiode>()
@@ -835,7 +830,7 @@ data class HentVedtakForStønadRequest(
     val sak: Saksnummer,
     @Schema(description = "Hvilken type stønad det er snakk om")
     val type: Stønadstype,
-    @Schema(description = "Personen som er skyldner")
+    @Schema(description = "Personen som er skyldner i stønaden")
     val skyldner: Personident,
     @Schema(description = "Personen som er kravhaver i stønaden")
     val kravhaver: Personident,
