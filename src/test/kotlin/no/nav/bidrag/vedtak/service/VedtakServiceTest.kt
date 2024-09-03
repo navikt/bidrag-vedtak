@@ -1048,6 +1048,7 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.vedtaksid).isEqualTo(nyttVedtakOpprettet) },
             Executable { assertThat(vedtakFunnet.vedtaksdato).isEqualTo(nyttVedtakRequest.vedtakstidspunkt.toLocalDate()) },
             Executable { assertThat(vedtakFunnet.type).isEqualTo(nyttVedtakRequest.type) },
+            Executable { assertThat(vedtakFunnet.søknadsid).isEqualTo("Bisysreferanse01") },
 
             Executable { assertThat(vedtakFunnet.stønadsendring.sak).isEqualTo(Saksnummer("SAK-001")) },
             Executable { assertThat(vedtakFunnet.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG) },

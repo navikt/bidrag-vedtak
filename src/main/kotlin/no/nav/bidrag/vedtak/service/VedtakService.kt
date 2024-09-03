@@ -354,6 +354,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
             .forEach { stønadsendring ->
                 val periodeListe = mutableListOf<Stønadsperiode>()
+                val behandlingsreferanse = persistenceService.hentAlleBehandlingsreferanserForVedtak(stønadsendring.vedtak.id)
+                val søknadsid = if (behandlingsreferanse.isNotEmpty()) behandlingsreferanse.first { it.kilde == "BISYS_SØKNAD" }.referanse else null
                 persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id).forEach { periode ->
                     val grunnlagReferanseResponseListe = ArrayList<String>()
                     val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(periode.id)
@@ -382,6 +384,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         vedtaksid = stønadsendring.vedtak.id,
                         vedtaksdato = stønadsendring.vedtak.vedtakstidspunkt.toLocalDate(),
                         type = Vedtakstype.valueOf(stønadsendring.vedtak.type),
+                        søknadsid = søknadsid,
                         stønadsendring = StønadsendringBidrag(
                             type = Stønadstype.valueOf(stønadsendring.type),
                             sak = Saksnummer(stønadsendring.sak),
@@ -850,6 +853,8 @@ data class VedtakForStønad(
     val vedtaksdato: LocalDate,
     @Schema(description = "Type vedtak")
     val type: Vedtakstype,
+    @Schema(description = "Ident til søknaden vedtaket er fattet for")
+    val søknadsid: String?,
     @Schema(description = "Stønadsendring")
     val stønadsendring: StønadsendringBidrag,
     @Schema(description = "Liste over alle grunnlag som inngår i vedtaket. Listen vil være tom til grunnlagsoverføring er gjort")
