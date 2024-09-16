@@ -9,6 +9,7 @@ import no.nav.bidrag.domene.enums.vedtak.Stønadstype
 import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
 import no.nav.bidrag.domene.sak.Saksnummer
+import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
@@ -164,107 +165,107 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.grunnlagListe[5].innhold).isEqualTo(nyttVedtakRequest.grunnlagListe[5].innhold) },
 
             // Stønadsendring
-            Executable { assertThat(vedtakFunnet.stønadsendringListe[0].type).isEqualTo(nyttVedtakRequest.stønadsendringListe!![0].type) },
-            Executable { assertThat(vedtakFunnet.stønadsendringListe[0].sak).isEqualTo(nyttVedtakRequest.stønadsendringListe!![0].sak) },
+            Executable { assertThat(vedtakFunnet.stønadsendringListe[0].type).isEqualTo(nyttVedtakRequest.stønadsendringListe[0].type) },
+            Executable { assertThat(vedtakFunnet.stønadsendringListe[0].sak).isEqualTo(nyttVedtakRequest.stønadsendringListe[0].sak) },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].skyldner.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].skyldner.toString(),
+                    nyttVedtakRequest.stønadsendringListe[0].skyldner.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].kravhaver.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].kravhaver.toString(),
+                    nyttVedtakRequest.stønadsendringListe[0].kravhaver.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].mottaker.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].mottaker.toString(),
+                    nyttVedtakRequest.stønadsendringListe[0].mottaker.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].førsteIndeksreguleringsår).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].førsteIndeksreguleringsår,
+                    nyttVedtakRequest.stønadsendringListe[0].førsteIndeksreguleringsår,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].innkreving)
-                    .isEqualTo(nyttVedtakRequest.stønadsendringListe!![0].innkreving)
+                    .isEqualTo(nyttVedtakRequest.stønadsendringListe[0].innkreving)
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].beslutning)
-                    .isEqualTo(nyttVedtakRequest.stønadsendringListe!![0].beslutning)
+                    .isEqualTo(nyttVedtakRequest.stønadsendringListe[0].beslutning)
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].omgjørVedtakId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].omgjørVedtakId,
+                    nyttVedtakRequest.stønadsendringListe[0].omgjørVedtakId,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].eksternReferanse).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].eksternReferanse,
+                    nyttVedtakRequest.stønadsendringListe[0].eksternReferanse,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe.size).isEqualTo(2) },
 
-            Executable { assertThat(vedtakFunnet.stønadsendringListe[1].type).isEqualTo(nyttVedtakRequest.stønadsendringListe!![1].type) },
-            Executable { assertThat(vedtakFunnet.stønadsendringListe[1].sak).isEqualTo(nyttVedtakRequest.stønadsendringListe!![1].sak) },
+            Executable { assertThat(vedtakFunnet.stønadsendringListe[1].type).isEqualTo(nyttVedtakRequest.stønadsendringListe[1].type) },
+            Executable { assertThat(vedtakFunnet.stønadsendringListe[1].sak).isEqualTo(nyttVedtakRequest.stønadsendringListe[1].sak) },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].skyldner.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].skyldner.toString(),
+                    nyttVedtakRequest.stønadsendringListe[1].skyldner.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].kravhaver.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].kravhaver.toString(),
+                    nyttVedtakRequest.stønadsendringListe[1].kravhaver.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].mottaker.toString()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].mottaker.toString(),
+                    nyttVedtakRequest.stønadsendringListe[1].mottaker.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].førsteIndeksreguleringsår).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].førsteIndeksreguleringsår,
+                    nyttVedtakRequest.stønadsendringListe[1].førsteIndeksreguleringsår,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].innkreving)
-                    .isEqualTo(nyttVedtakRequest.stønadsendringListe!![1].innkreving)
+                    .isEqualTo(nyttVedtakRequest.stønadsendringListe[1].innkreving)
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].beslutning)
-                    .isEqualTo(nyttVedtakRequest.stønadsendringListe!![1].beslutning)
+                    .isEqualTo(nyttVedtakRequest.stønadsendringListe[1].beslutning)
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].omgjørVedtakId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].omgjørVedtakId,
+                    nyttVedtakRequest.stønadsendringListe[1].omgjørVedtakId,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].eksternReferanse).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].eksternReferanse,
+                    nyttVedtakRequest.stønadsendringListe[1].eksternReferanse,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[1].grunnlagReferanseListe[1],
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe.size).isEqualTo(2) },
@@ -272,128 +273,128 @@ class VedtakServiceTest {
             // Periode
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].periode.fom).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].periode.fom,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].periode.fom,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].periode.til).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].periode.til,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].periode.til,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].beløp?.toInt(),
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].beløp?.toInt(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].valutakode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].valutakode,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].valutakode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].resultatkode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].resultatkode,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].resultatkode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].delytelseId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].delytelseId,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].delytelseId,
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
 
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].periode.fom).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].periode.fom,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].periode.fom,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].periode.til).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].periode.til,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].periode.til,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].beløp?.toInt(),
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].beløp?.toInt(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].valutakode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].valutakode,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].valutakode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].resultatkode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].resultatkode,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].resultatkode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].delytelseId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].delytelseId,
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].delytelseId,
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(4) },
 
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].periode.fom).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].periode.fom,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].periode.fom,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].periode.til).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].periode.til,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].periode.til,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].beløp?.toInt(),
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].beløp?.toInt(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].valutakode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].valutakode,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].valutakode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].resultatkode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].resultatkode,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].resultatkode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].delytelseId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].delytelseId,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].delytelseId,
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(2) },
 
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].periode.fom).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].periode.fom,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].periode.fom,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].periode.til).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].periode.til,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].periode.til,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].beløp?.toInt(),
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].beløp?.toInt(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].valutakode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].valutakode,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].valutakode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].resultatkode).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].resultatkode,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].resultatkode,
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].delytelseId).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].delytelseId,
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].delytelseId,
                 )
             },
             Executable { assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe.size).isEqualTo(2) },
@@ -401,58 +402,58 @@ class VedtakServiceTest {
             // GrunnlagReferanse
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3],
+                    nyttVedtakRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3],
                 )
             },
 
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0],
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    nyttVedtakRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1],
+                    nyttVedtakRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
 
@@ -746,83 +747,83 @@ class VedtakServiceTest {
             // StønadsendringGrunnlag
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].grunnlagReferanseListe[0],
                 )
             },
 
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].grunnlagReferanseListe[1],
                 )
             },
 
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].grunnlagReferanseListe[0],
                 )
             },
 
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].grunnlagReferanseListe[1],
                 )
             },
 
             // GrunnlagReferanse
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3],
                 )
             },
 
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1],
+                    oopdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
 
@@ -875,58 +876,58 @@ class VedtakServiceTest {
             // GrunnlagReferanse
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[0],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[1],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[0].grunnlagReferanseListe[2],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[0],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[1],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[2],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[2],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![0].periodeListe[1].grunnlagReferanseListe[3],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[0].periodeListe[1].grunnlagReferanseListe[3],
                 )
             },
 
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[0],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[0].grunnlagReferanseListe[1],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[0].grunnlagReferanseListe[1],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[0],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[0],
                 )
             },
             Executable {
                 assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1]).isEqualTo(
-                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe!![1].periodeListe[1].grunnlagReferanseListe[1],
+                    oppdaterVedtakMedGrunnlagRequest.stønadsendringListe[1].periodeListe[1].grunnlagReferanseListe[1],
                 )
             },
 
