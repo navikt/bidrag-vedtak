@@ -339,23 +339,25 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Hent alle endringsvedtak for stønad
     fun hentEndringsvedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
         val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
-        return HentVedtakForStønadResponse(stønadsendringer.filter {
-            it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
-                it.beslutning == Beslutningstype.ENDRING.toString()
-        }
-            .map { stønadsendring ->
-                val vedtak = stønadsendring.vedtak
-                VedtakForStønad(
-                    vedtaksid = vedtak.id.toLong(),
-                    vedtakstidspunkt = vedtak.vedtakstidspunkt,
-                    type = Vedtakstype.valueOf(vedtak.type),
-                    stønadsendring = stønadsendring.tilDto(),
-                    behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
-                        BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
-                    },
-                    kilde = Vedtakskilde.valueOf(vedtak.kilde)
-                )
-            })
+        return HentVedtakForStønadResponse(
+            stønadsendringer.filter {
+                it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
+                    it.beslutning == Beslutningstype.ENDRING.toString()
+            }
+                .map { stønadsendring ->
+                    val vedtak = stønadsendring.vedtak
+                    VedtakForStønad(
+                        vedtaksid = vedtak.id.toLong(),
+                        vedtakstidspunkt = vedtak.vedtakstidspunkt,
+                        type = Vedtakstype.valueOf(vedtak.type),
+                        stønadsendring = stønadsendring.tilDto(),
+                        behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
+                            BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
+                        },
+                        kilde = Vedtakskilde.valueOf(vedtak.kilde),
+                    )
+                },
+        )
     }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&

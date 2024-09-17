@@ -1047,9 +1047,8 @@ class VedtakServiceTest {
 
             // Vedtak
             Executable { assertThat(vedtakFunnet.vedtaksid).isEqualTo(nyttVedtakOpprettet) },
-            Executable { assertThat(vedtakFunnet.vedtaksdato).isEqualTo(nyttVedtakRequest.vedtakstidspunkt.toLocalDate()) },
+            Executable { assertThat(vedtakFunnet.vedtakstidspunkt).isEqualTo(nyttVedtakRequest.vedtakstidspunkt.toLocalDate()) },
             Executable { assertThat(vedtakFunnet.type).isEqualTo(nyttVedtakRequest.type) },
-            Executable { assertThat(vedtakFunnet.søknadsid).isEqualTo("Bisysreferanse01") },
 
             Executable { assertThat(vedtakFunnet.stønadsendring.sak).isEqualTo(Saksnummer("SAK-001")) },
             Executable { assertThat(vedtakFunnet.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG) },
@@ -1073,8 +1072,6 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].valutakode).isEqualTo("NOK") },
             Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].resultatkode).isEqualTo("KOSTNADSBEREGNET_BIDRAG") },
             Executable { assertThat(vedtakFunnet.stønadsendring.periodeListe[1].grunnlagReferanseListe).isEmpty() },
-
-            Executable { assertThat(vedtakFunnet.grunnlagListe).isEmpty() },
 
         )
     }
@@ -1148,10 +1145,10 @@ class VedtakServiceTest {
 
             // Vedtak
             Executable { assertThat(vedtak1.vedtaksid).isEqualTo(vedtakOpprettet1) },
-            Executable { assertThat(vedtak1.vedtaksdato).isEqualTo(LocalDate.now().minusMonths(2)) },
+            Executable { assertThat(vedtak1.vedtakstidspunkt).isEqualTo(LocalDate.now().minusMonths(2)) },
 
             Executable { assertThat(vedtak2.vedtaksid).isEqualTo(vedtakOpprettet3) },
-            Executable { assertThat(vedtak2.vedtaksdato).isEqualTo(LocalDate.now()) },
+            Executable { assertThat(vedtak2.vedtakstidspunkt).isEqualTo(LocalDate.now()) },
 
         )
     }
@@ -1208,7 +1205,7 @@ class VedtakServiceTest {
 
             // Vedtak
             Executable { assertThat(vedtak1.vedtaksid).isEqualTo(vedtakOpprettet1) },
-            Executable { assertThat(vedtak1.vedtaksdato).isEqualTo(LocalDate.now().minusMonths(2)) },
+            Executable { assertThat(vedtak1.vedtakstidspunkt).isEqualTo(LocalDate.now().minusMonths(2)) },
             Executable { assertThat(vedtak1.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG18AAR) },
 
         )
