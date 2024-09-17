@@ -28,9 +28,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDt
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
-import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringBidrag
 import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringDto
-import no.nav.bidrag.transport.behandling.vedtak.response.Stønadsperiode
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakForStønad
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
@@ -231,42 +229,35 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
             fastsattILand = vedtak.fastsattILand,
             grunnlagListe = grunnlagDtoListe,
-            stønadsendringListe = hentStønadsendringerTilVedtak(stønadsendringListe),
+            stønadsendringListe = stønadsendringListe.map { it.tilDto() },
             engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
             behandlingsreferanseListe = behandlingsreferanseResponseListe,
         )
     }
 
-    private fun hentStønadsendringerTilVedtak(stønadsendringListe: List<Stønadsendring>): List<StønadsendringDto> {
-        val stønadsendringDtoListe = ArrayList<StønadsendringDto>()
-        stønadsendringListe.forEach { stønadsendring ->
-            val grunnlagReferanseResponseListe = ArrayList<String>()
-            val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(stønadsendring.id)
-            stønadsendringGrunnlagListe.forEach {
-                val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
-                grunnlagReferanseResponseListe.add(grunnlag.referanse)
-            }
-            val periodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id)
-            stønadsendringDtoListe.add(
-                StønadsendringDto(
-                    type = Stønadstype.valueOf(stønadsendring.type),
-                    sak = Saksnummer(stønadsendring.sak),
-                    skyldner = Personident(stønadsendring.skyldner),
-                    kravhaver = Personident(stønadsendring.kravhaver),
-                    mottaker = Personident(stønadsendring.mottaker),
-                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
-                    innkreving = Innkrevingstype.valueOf(stønadsendring.innkreving),
-                    beslutning = Beslutningstype.valueOf(stønadsendring.beslutning),
-                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
-                    eksternReferanse = stønadsendring.eksternReferanse,
-                    grunnlagReferanseListe = grunnlagReferanseResponseListe,
-                    periodeListe = hentPerioderTilVedtak(periodeListe),
-                ),
-            )
+    private fun Stønadsendring.tilDto(): StønadsendringDto {
+        val grunnlagReferanseResponseListe = ArrayList<String>()
+        val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(id)
+        stønadsendringGrunnlagListe.forEach {
+            val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+            grunnlagReferanseResponseListe.add(grunnlag.referanse)
         }
-        return stønadsendringDtoListe
+        val periodeListe = persistenceService.hentAllePerioderForStønadsendring(id)
+        return StønadsendringDto(
+            type = Stønadstype.valueOf(type),
+            sak = Saksnummer(sak),
+            skyldner = Personident(skyldner),
+            kravhaver = Personident(kravhaver),
+            mottaker = Personident(mottaker),
+            førsteIndeksreguleringsår = førsteIndeksreguleringsår,
+            innkreving = Innkrevingstype.valueOf(innkreving),
+            beslutning = Beslutningstype.valueOf(beslutning),
+            omgjørVedtakId = omgjørVedtakId,
+            eksternReferanse = eksternReferanse,
+            grunnlagReferanseListe = grunnlagReferanseResponseListe,
+            periodeListe = hentPerioderTilVedtak(periodeListe),
+        )
     }
-
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
         val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
         periodeListe.forEach { periode ->
@@ -347,60 +338,24 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
     // Hent alle endringsvedtak for stønad
     fun hentEndringsvedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
-        val vedtakForStønad = mutableListOf<VedtakForStønad>()
         val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
-        stønadsendringer.filter {
+        return HentVedtakForStønadResponse(stønadsendringer.filter {
             it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
                 it.beslutning == Beslutningstype.ENDRING.toString()
         }
-            .forEach { stønadsendring ->
-                val periodeListe = mutableListOf<Stønadsperiode>()
-                val behandlingsreferanse = persistenceService.hentAlleBehandlingsreferanserForVedtak(stønadsendring.vedtak.id)
-                val søknadsid = if (behandlingsreferanse.isNotEmpty()) behandlingsreferanse.first { it.kilde == "BISYS_SØKNAD" }.referanse else null
-                persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id).forEach { periode ->
-                    val grunnlagReferanseResponseListe = ArrayList<String>()
-                    val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(periode.id)
-                    periodeGrunnlagListe.forEach {
-                        val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
-                        grunnlagReferanseResponseListe.add(grunnlag.referanse)
-                    }
-                    periodeListe.add(
-                        Stønadsperiode(
-                            periode = ÅrMånedsperiode(periode.fom, periode.til),
-                            beløp = periode.beløp,
-                            valutakode = periode.valutakode,
-                            resultatkode = periode.resultatkode,
-                            grunnlagReferanseListe = grunnlagReferanseResponseListe,
-                        ),
-                    )
-                }
-                val grunnlagDtoListe = ArrayList<GrunnlagDto>()
-
-                val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(stønadsendring.vedtak.id)
-                grunnlagListe.forEach {
-                    grunnlagDtoListe.add(it.toGrunnlagDto())
-                }
-                vedtakForStønad.add(
-                    VedtakForStønad(
-                        vedtaksid = stønadsendring.vedtak.id,
-                        vedtaksdato = stønadsendring.vedtak.vedtakstidspunkt.toLocalDate(),
-                        type = Vedtakstype.valueOf(stønadsendring.vedtak.type),
-                        søknadsid = søknadsid,
-                        stønadsendring = StønadsendringBidrag(
-                            type = Stønadstype.valueOf(stønadsendring.type),
-                            sak = Saksnummer(stønadsendring.sak),
-                            skyldner = Personident(stønadsendring.skyldner),
-                            kravhaver = Personident(stønadsendring.kravhaver),
-                            innkreving = Innkrevingstype.valueOf(stønadsendring.innkreving),
-                            beslutning = Beslutningstype.valueOf(stønadsendring.beslutning),
-                            omgjørVedtakId = stønadsendring.omgjørVedtakId,
-                            periodeListe = periodeListe,
-                        ),
-                        grunnlagListe = grunnlagDtoListe,
-                    ),
+            .map { stønadsendring ->
+                val vedtak = stønadsendring.vedtak
+                VedtakForStønad(
+                    vedtaksid = vedtak.id.toLong(),
+                    vedtakstidspunkt = vedtak.vedtakstidspunkt,
+                    type = Vedtakstype.valueOf(vedtak.type),
+                    stønadsendring = stønadsendring.tilDto(),
+                    behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
+                        BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
+                    },
+                    kilde = Vedtakskilde.valueOf(vedtak.kilde)
                 )
-            }
-        return HentVedtakForStønadResponse(vedtakForStønad)
+            })
     }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
