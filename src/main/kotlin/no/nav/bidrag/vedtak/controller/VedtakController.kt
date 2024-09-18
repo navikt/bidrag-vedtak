@@ -115,7 +115,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
     }
 
-    @PostMapping(HENT_VEDTAK_FOR_SAK, "/vedtak")
+    @PostMapping(HENT_VEDTAK_FOR_SAK)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter endringsvedtak for angitt sak, skyldner, kravhaver og type")
     @ApiResponses(
         value = [
