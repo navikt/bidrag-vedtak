@@ -48,7 +48,6 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 
 @DisplayName("VedtakServiceTest")
