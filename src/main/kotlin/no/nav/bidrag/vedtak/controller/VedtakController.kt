@@ -144,7 +144,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
-        const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak/"
+        const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }
