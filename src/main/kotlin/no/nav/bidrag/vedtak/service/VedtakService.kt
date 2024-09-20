@@ -17,6 +17,7 @@ import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.domene.util.trimToNull
 import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
+import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
@@ -25,9 +26,11 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringR
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
+import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.StønadsendringDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
+import no.nav.bidrag.transport.behandling.vedtak.response.VedtakForStønad
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakPeriodeDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
@@ -226,58 +229,51 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
             fastsattILand = vedtak.fastsattILand,
             grunnlagListe = grunnlagDtoListe,
-            stønadsendringListe = hentStønadsendringerTilVedtak(stønadsendringListe),
+            stønadsendringListe = stønadsendringListe.map { it.tilDto() },
             engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
             behandlingsreferanseListe = behandlingsreferanseResponseListe,
         )
     }
 
-    private fun hentStønadsendringerTilVedtak(stønadsendringListe: List<Stønadsendring>): List<StønadsendringDto> {
-        val stønadsendringDtoListe = ArrayList<StønadsendringDto>()
-        stønadsendringListe.forEach { stønadsendring ->
-            val grunnlagReferanseResponseListe = ArrayList<String>()
-            val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(stønadsendring.id)
-            stønadsendringGrunnlagListe.forEach {
-                val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
-                grunnlagReferanseResponseListe.add(grunnlag.referanse)
-            }
-            val periodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendring.id)
-            stønadsendringDtoListe.add(
-                StønadsendringDto(
-                    type = Stønadstype.valueOf(stønadsendring.type),
-                    sak = Saksnummer(stønadsendring.sak),
-                    skyldner = Personident(stønadsendring.skyldner),
-                    kravhaver = Personident(stønadsendring.kravhaver),
-                    mottaker = Personident(stønadsendring.mottaker),
-                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
-                    innkreving = Innkrevingstype.valueOf(stønadsendring.innkreving),
-                    beslutning = Beslutningstype.valueOf(stønadsendring.beslutning),
-                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
-                    eksternReferanse = stønadsendring.eksternReferanse,
-                    grunnlagReferanseListe = grunnlagReferanseResponseListe,
-                    periodeListe = hentPerioderTilVedtak(periodeListe),
-                ),
-            )
+    private fun Stønadsendring.tilDto(): StønadsendringDto {
+        val grunnlagReferanseResponseListe = ArrayList<String>()
+        val stønadsendringGrunnlagListe = persistenceService.hentAlleGrunnlagForStønadsendring(id)
+        stønadsendringGrunnlagListe.forEach {
+            val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
+            grunnlagReferanseResponseListe.add(grunnlag.referanse)
         }
-        return stønadsendringDtoListe
+        val periodeListe = persistenceService.hentAllePerioderForStønadsendring(id)
+        return StønadsendringDto(
+            type = Stønadstype.valueOf(type),
+            sak = Saksnummer(sak),
+            skyldner = Personident(skyldner),
+            kravhaver = Personident(kravhaver),
+            mottaker = Personident(mottaker),
+            førsteIndeksreguleringsår = førsteIndeksreguleringsår,
+            innkreving = Innkrevingstype.valueOf(innkreving),
+            beslutning = Beslutningstype.valueOf(beslutning),
+            omgjørVedtakId = omgjørVedtakId,
+            eksternReferanse = eksternReferanse,
+            grunnlagReferanseListe = grunnlagReferanseResponseListe,
+            periodeListe = hentPerioderTilVedtak(periodeListe),
+        )
     }
-
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
         val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
-        periodeListe.forEach { dto ->
+        periodeListe.forEach { periode ->
             val grunnlagReferanseResponseListe = ArrayList<String>()
-            val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(dto.id)
+            val periodeGrunnlagListe = persistenceService.hentAlleGrunnlagForPeriode(periode.id)
             periodeGrunnlagListe.forEach {
                 val grunnlag = persistenceService.hentGrunnlag(it.grunnlag.id)
                 grunnlagReferanseResponseListe.add(grunnlag.referanse)
             }
             periodeResponseListe.add(
                 VedtakPeriodeDto(
-                    periode = ÅrMånedsperiode(dto.fom, dto.til),
-                    beløp = dto.beløp,
-                    valutakode = dto.valutakode?.trimEnd(),
-                    resultatkode = dto.resultatkode,
-                    delytelseId = dto.delytelseId,
+                    periode = ÅrMånedsperiode(periode.fom, periode.til),
+                    beløp = periode.beløp,
+                    valutakode = periode.valutakode?.trimEnd(),
+                    resultatkode = periode.resultatkode,
+                    delytelseId = periode.delytelseId,
                     grunnlagReferanseListe = grunnlagReferanseResponseListe,
                 ),
             )
@@ -338,6 +334,30 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
 
         return vedtakId
+    }
+
+    // Hent alle endringsvedtak for stønad
+    fun hentEndringsvedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
+        val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
+        return HentVedtakForStønadResponse(
+            stønadsendringer.filter {
+                it.innkreving == Innkrevingstype.MED_INNKREVING.toString() &&
+                    it.beslutning == Beslutningstype.ENDRING.toString()
+            }
+                .map { stønadsendring ->
+                    val vedtak = stønadsendring.vedtak
+                    VedtakForStønad(
+                        vedtaksid = vedtak.id.toLong(),
+                        vedtakstidspunkt = vedtak.vedtakstidspunkt,
+                        type = Vedtakstype.valueOf(vedtak.type),
+                        stønadsendring = stønadsendring.tilDto(),
+                        behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
+                            BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
+                        },
+                        kilde = Vedtakskilde.valueOf(vedtak.kilde),
+                    )
+                },
+        )
     }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&

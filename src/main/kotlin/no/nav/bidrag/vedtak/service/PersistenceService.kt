@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.service
 
 import io.micrometer.core.annotation.Timed
+import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -40,14 +41,11 @@ class PersistenceService(
 ) {
 
     @Timed
-    fun opprettVedtak(vedtak: Vedtak): Vedtak {
-        return vedtakRepository.save(vedtak)
-    }
+    fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
     @Timed
-    fun hentVedtak(id: Int): Vedtak {
-        return vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
-    }
+    fun hentVedtak(id: Int): Vedtak =
+        vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
 
     fun opprettStønadsendring(stønadsendring: Stønadsendring): Stønadsendring {
         vedtakRepository.findById(stønadsendring.vedtak.id)
@@ -55,9 +53,7 @@ class PersistenceService(
         return stønadsendringRepository.save(stønadsendring)
     }
 
-    fun hentAlleStønadsendringerForVedtak(id: Int): List<Stønadsendring> {
-        return stønadsendringRepository.hentAlleStønadsendringerForVedtak(id)
-    }
+    fun hentAlleStønadsendringerForVedtak(id: Int): List<Stønadsendring> = stønadsendringRepository.hentAlleStønadsendringerForVedtak(id)
 
     fun opprettPeriode(periode: Periode): Periode {
         stønadsendringRepository.findById(periode.stønadsendring.id)
@@ -65,13 +61,10 @@ class PersistenceService(
         return periodeRepository.save(periode)
     }
 
-    fun hentAllePerioderForStønadsendring(id: Int): List<Periode> {
-        return periodeRepository.hentAllePerioderForStønadsendring(id)
-    }
+    fun hentAllePerioderForStønadsendring(id: Int): List<Periode> = periodeRepository.hentAllePerioderForStønadsendring(id)
 
-    fun hentAlleGrunnlagForStønadsendring(stønadsendringId: Int): List<StønadsendringGrunnlag> {
-        return stønadsendringGrunnlagRepository.hentAlleGrunnlagForStønadsendring(stønadsendringId)
-    }
+    fun hentAlleGrunnlagForStønadsendring(stønadsendringId: Int): List<StønadsendringGrunnlag> =
+        stønadsendringGrunnlagRepository.hentAlleGrunnlagForStønadsendring(stønadsendringId)
 
     fun opprettGrunnlag(grunnlag: Grunnlag): Grunnlag {
         vedtakRepository.findById(grunnlag.vedtak.id)
@@ -85,13 +78,9 @@ class PersistenceService(
         return grunnlag
     }
 
-    fun hentAlleGrunnlagForVedtak(id: Int): List<Grunnlag> {
-        return grunnlagRepository.hentAlleGrunnlagForVedtak(id)
-    }
+    fun hentAlleGrunnlagForVedtak(id: Int): List<Grunnlag> = grunnlagRepository.hentAlleGrunnlagForVedtak(id)
 
-    fun slettAlleGrunnlagForVedtak(vedtakId: Int): Int {
-        return grunnlagRepository.slettAlleGrunnlagForVedtak(vedtakId)
-    }
+    fun slettAlleGrunnlagForVedtak(vedtakId: Int): Int = grunnlagRepository.slettAlleGrunnlagForVedtak(vedtakId)
 
     fun opprettStønadsendringGrunnlag(stønadsendringGrunnlagBo: StønadsendringGrunnlagBo): StønadsendringGrunnlag {
         val eksisterendeStønadsendring = stønadsendringRepository.findById(stønadsendringGrunnlagBo.stønadsendringsid)
@@ -117,9 +106,7 @@ class PersistenceService(
         return periodeGrunnlagRepository.save(nyttPeriodeGrunnlag)
     }
 
-    fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlag> {
-        return periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
-    }
+    fun hentAlleGrunnlagForPeriode(periodeId: Int): List<PeriodeGrunnlag> = periodeGrunnlagRepository.hentAlleGrunnlagForPeriode(periodeId)
 
     fun opprettEngangsbeløp(engangsbeløp: Engangsbeløp): Engangsbeløp {
         vedtakRepository.findById(engangsbeløp.vedtak.id)
@@ -127,9 +114,7 @@ class PersistenceService(
         return engangsbeløpRepository.save(engangsbeløp)
     }
 
-    fun hentAlleEngangsbeløpForVedtak(id: Int): List<Engangsbeløp> {
-        return engangsbeløpRepository.hentAlleEngangsbeløpForVedtak(id)
-    }
+    fun hentAlleEngangsbeløpForVedtak(id: Int): List<Engangsbeløp> = engangsbeløpRepository.hentAlleEngangsbeløpForVedtak(id)
 
     fun opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo: EngangsbeløpGrunnlagBo): EngangsbeløpGrunnlag {
         val eksisterendeEngangsbeløp = engangsbeløpRepository.findById(engangsbeløpGrunnlagBo.engangsbeløpsid)
@@ -145,9 +130,8 @@ class PersistenceService(
         return engangsbeløpGrunnlagRepository.save(nyttEngangsbeløpGrunnlag)
     }
 
-    fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpId: Int): List<EngangsbeløpGrunnlag> {
-        return engangsbeløpGrunnlagRepository.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
-    }
+    fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpId: Int): List<EngangsbeløpGrunnlag> =
+        engangsbeløpGrunnlagRepository.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
 
     fun opprettBehandlingsreferanse(behandlingsreferanse: Behandlingsreferanse): Behandlingsreferanse {
         vedtakRepository.findById(behandlingsreferanse.vedtak.id)
@@ -155,11 +139,15 @@ class PersistenceService(
         return behandlingsreferanseRepository.save(behandlingsreferanse)
     }
 
-    fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<Behandlingsreferanse> {
-        return behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
-    }
+    fun hentAlleBehandlingsreferanserForVedtak(id: Int): List<Behandlingsreferanse> =
+        behandlingsreferanseRepository.hentAlleBehandlingsreferanserForVedtak(id)
 
-    fun referanseErUnik(vedtaksid: Int, referanse: String): Boolean {
-        return engangsbeløpRepository.sjekkReferanse(vedtaksid, referanse).isNullOrBlank()
-    }
+    fun referanseErUnik(vedtaksid: Int, referanse: String): Boolean = engangsbeløpRepository.sjekkReferanse(vedtaksid, referanse).isNullOrBlank()
+
+    fun hentStønadsendringForStønad(request: HentVedtakForStønadRequest): List<Stønadsendring> = stønadsendringRepository.hentVedtakForStønad(
+        request.sak.toString(),
+        request.type.toString(),
+        request.skyldner.verdi,
+        request.kravhaver.verdi,
+    )
 }
