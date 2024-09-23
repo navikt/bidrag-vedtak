@@ -58,6 +58,6 @@ spec:
       memory: 256Mi
   gcp:
     sqlInstances:
-      tier: db-custom-1-3840
+      tier: db-f1-micro
       diskAutoresize: true
       pointInTimeRecovery: false
