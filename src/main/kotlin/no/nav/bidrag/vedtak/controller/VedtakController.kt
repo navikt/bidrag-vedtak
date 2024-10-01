@@ -136,7 +136,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ): ResponseEntity<HentVedtakForStønadResponse>? {
         SECURE_LOGGER.info("Følgende request for å hente vedtak for sak ble mottatt: ${tilJson(request)}")
         val respons = vedtakService.hentEndringsvedtakForStønad(request)
-        SECURE_LOGGER.info("Følgende endringsvedtak ble hentet for request: $request")
+        SECURE_LOGGER.info("Følgende endringsvedtak ble hentet for request: ${tilJson(request)}: ${tilJson(respons)}")
         return ResponseEntity(respons, HttpStatus.OK)
     }
 
