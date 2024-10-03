@@ -1,0 +1,40 @@
+name: Deploy q1
+on:
+  push:
+    branches:
+      - 'q1/**'
+      - 'Q1/**'
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build-deploy:
+    name: "Build and deploy to q1"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    uses: navikt/bidrag-workflow/.github/workflows/deploy.yaml@main
+    secrets: inherit
+    with:
+      nais_variabler_filnavn: q1.yaml
+
+  run_cucumber_tests-feature:
+    runs-on: ubuntu-latest
+    name: Run cucumber tests feature
+    needs: build-deploy
+    if: false #${{ always() && needs.build-deploy.outputs.deploy_suksess == 'true' }}
+
+    env:
+      INGRESS_CUCUMBER: https://bidrag-cucumber-cloud-feature.ekstern.dev.nav.no
+      INGRESS_VEDTAK: https://bidrag-vedtak-q1.intern.dev.nav.no
+
+    steps:
+      - run: |
+          curl -H "Content-Type: application/json" -i \
+                -H "Authorization: Basic ${{ secrets.BIDRAG_CUCUMBER_CLOUD_AUTH }}" \
+               --request POST \
+               --data '{"noContextPathForApps":["bidrag-vedtak"],"ingressesForApps":[
+                   "${{ env.INGRESS_VEDTAK }}@tag:bidrag-vedtak"
+                 ]}' \
+               ${{ env.INGRESS_CUCUMBER }}/bidrag-cucumber-cloud/run | tee .cucumber-result
+          cat .cucumber-result | grep HTTP/2 | grep -c 200 > /dev/null # fails if count is 0 (http status is not ok, aka http status code is not 200)

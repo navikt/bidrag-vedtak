@@ -1,0 +1,54 @@
+name: bidrag-vedtak-q1
+ingresses:
+  - https://bidrag-vedtak-q1.intern.dev.nav.no
+dbname: bidrag-vedtak-q1
+kafka:
+  pool: nav-dev
+kafka-topic-vedtak: bidrag.vedtak-q1
+azureAccessInbound:
+  - application: bidrag-vedtak-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-revurder-forskudd-data-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-cucumber-cloud-feature
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bisys
+    namespace: bidrag˝
+    cluster: dev-fss
+  - application: bidrag-dokument-bestilling-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-dokument-forsendelse-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-simuler-beregning-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-ui-q1
+    namespace: bidrag
+    cluster: dev-fss
+  - application: bidrag-behandling-q1
+    namespace: bidrag
+    cluster: dev-gcp
+azure:
+  bidrag_organisasjon_url: bidrag-organisasjon-q1.dev-fss-pub.nais.io
+  bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon-q1
+spec:
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2048Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  gcp:
+    sqlInstances:
+      tier: db-f1-micro
+      diskAutoresize: false
+      pointInTimeRecovery: false
