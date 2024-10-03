@@ -1,16 +1,13 @@
-name: bidrag-vedtak-feature
+name: bidrag-vedtak-q4
 ingresses:
-  - https://bidrag-vedtak-feature.intern.dev.nav.no
-dbname: bidrag-vedtak-feature
+  - https://bidrag-vedtak-q4.intern.dev.nav.no
+dbname: bidrag-vedtak-q4
 kafka:
   pool: nav-dev
-kafka-topic-vedtak: bidrag.vedtak-feature
-spring-profiles: live,nais,database-legacy
+kafka-topic-vedtak: bidrag.vedtak-q4
+spring-profiles: live,nais,database-new
 azureAccessInbound:
-  - application: bidrag-vedtak-feature
-    namespace: bidrag
-    cluster: dev-gcp
-  - application: bidrag-revurder-forskudd-data-feature
+  - application: bidrag-revurder-forskudd-data-q4
     namespace: bidrag
     cluster: dev-gcp
   - application: bidrag-cucumber-cloud-feature
@@ -19,24 +16,24 @@ azureAccessInbound:
   - application: bisys
     namespace: bidrag
     cluster: dev-fss
-  - application: bidrag-dokument-bestilling-feature
+  - application: bidrag-dokument-bestilling-q4
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-dokument-forsendelse-feature
+  - application: bidrag-dokument-forsendelse-q4
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-simuler-beregning-feature
+  - application: bidrag-simuler-beregning-q4
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-ui-feature
+  - application: bidrag-ui-q4
     namespace: bidrag
     cluster: dev-fss
-  - application: bidrag-behandling-feature
+  - application: bidrag-behandling-q4
     namespace: bidrag
     cluster: dev-gcp
 azure:
-  bidrag_organisasjon_url: bidrag-organisasjon-feature.dev-fss-pub.nais.io
-  bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon-feature
+  bidrag_organisasjon_url: bidrag-organisasjon.dev-fss-pub.nais.io
+  bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon
 spec:
   replicas:
     min: 1

@@ -75,3 +75,5 @@ spec:
       value: https://{{ azure.bidrag_organisasjon_url }}/bidrag-organisasjon
     - name: BIDRAG_ORGANISASJON_SCOPE
       value: {{ azure.bidrag_organisasjon_scope }}
+    - name: SPRING_PROFILES_ACTIVE
+      value: {{ spring-profiles }}

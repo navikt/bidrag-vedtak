@@ -1,16 +1,13 @@
-name: bidrag-vedtak-syntetisk
+name: bidrag-vedtak-q2
 ingresses:
-  - https://bidrag-vedtak-syntetisk.intern.dev.nav.no
-dbname: bidrag-vedtak-syntetisk
+  - https://bidrag-vedtak-q2.intern.dev.nav.no
+dbname: bidrag-vedtak-q2
 kafka:
   pool: nav-dev
-kafka-topic-vedtak: bidrag.vedtak-syntetisk
-spring-profiles: live,nais,database-legacy
+kafka-topic-vedtak: bidrag.vedtak-q2
+spring-profiles: live,nais,database-new
 azureAccessInbound:
-  - application: bidrag-vedtak
-    namespace: bidrag
-    cluster: dev-gcp
-  - application: bidrag-revurder-forskudd-data
+  - application: bidrag-revurder-forskudd-data-q2
     namespace: bidrag
     cluster: dev-gcp
   - application: bidrag-cucumber-cloud
@@ -19,19 +16,19 @@ azureAccessInbound:
   - application: bisys
     namespace: bidrag
     cluster: dev-fss
-  - application: bidrag-dokument-bestilling
+  - application: bidrag-dokument-bestilling-q2
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-dokument-forsendelse
+  - application: bidrag-dokument-forsendelse-q2
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-simuler-beregning
+  - application: bidrag-simuler-beregning-q2
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-ui
+  - application: bidrag-ui-q2
     namespace: bidrag
     cluster: dev-fss
-  - application: bidrag-behandling
+  - application: bidrag-behandling-q2
     namespace: bidrag
     cluster: dev-gcp
 azure:
@@ -46,10 +43,10 @@ spec:
       cpu: 1000m
       memory: 2048Mi
     requests:
-      cpu: 150m
-      memory: 512Mi
+      cpu: 100m
+      memory: 128Mi
   gcp:
     sqlInstances:
       tier: db-f1-micro
-      diskAutoresize: true
-      pointInTimeRecovery: true
+      diskAutoresize: false
+      pointInTimeRecovery: false

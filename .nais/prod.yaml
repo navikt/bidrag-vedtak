@@ -5,6 +5,7 @@ dbname: bidrag-vedtak-prod
 kafka:
   pool: nav-prod
 kafka-topic-vedtak: bidrag.vedtak
+spring-profiles: live,nais,database-legacy
 inbound:
   bidrag-revurder-forskudd-app: bidrag-revurder-forskudd-data
 azureAccessInbound:
