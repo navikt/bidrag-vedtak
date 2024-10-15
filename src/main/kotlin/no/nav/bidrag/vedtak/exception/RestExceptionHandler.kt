@@ -2,6 +2,7 @@ package no.nav.bidrag.vedtak.exception
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import no.nav.bidrag.commons.ExceptionLogger
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpHeaders
@@ -60,6 +61,16 @@ class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .header(HttpHeaders.WARNING, "Forespørselen inneholder ugyldig verdi: ${valideringsFeil ?: exception.message}")
+            .build<Any>()
+    }
+
+    @ResponseBody
+    @ExceptionHandler(JwtTokenUnauthorizedException::class)
+    fun handleUnauthorizedException(exception: Exception): ResponseEntity<*> {
+        LOGGER.warn(exception.message)
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .header(HttpHeaders.WARNING, exception.message)
             .build<Any>()
     }
 
