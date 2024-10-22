@@ -19,7 +19,13 @@ azureAccessInbound:
   - application: bidrag-dokument-bestilling-q2
     namespace: bidrag
     cluster: dev-gcp
+  - application: bidrag-dokument-bestilling
+    namespace: bidrag
+    cluster: dev-gcp
   - application: bidrag-dokument-forsendelse-q2
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-dokument-forsendelse
     namespace: bidrag
     cluster: dev-gcp
   - application: bidrag-simuler-beregning-q2
