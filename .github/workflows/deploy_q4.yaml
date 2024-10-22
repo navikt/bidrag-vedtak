@@ -1,5 +1,6 @@
 name: Deploy q4
 on:
+  workflow_dispatch:
   push:
     branches:
       - '**'
