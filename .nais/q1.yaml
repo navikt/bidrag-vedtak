@@ -25,10 +25,10 @@ azureAccessInbound:
   - application: bidrag-simuler-beregning-q1
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-ui-q1
-    namespace: bidrag
-    cluster: dev-fss
   - application: bidrag-behandling-q1
+    namespace: bidrag
+    cluster: dev-gcp
+  - application: bidrag-behandling-feature
     namespace: bidrag
     cluster: dev-gcp
 azure:
