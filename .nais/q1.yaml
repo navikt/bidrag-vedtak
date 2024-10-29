@@ -16,10 +16,10 @@ azureAccessInbound:
   - application: bisys
     namespace: bidrag
     cluster: dev-fss
-  - application: bidrag-dokument-bestilling-q1
+  - application: bidrag-dokument-bestilling-feature
     namespace: bidrag
     cluster: dev-gcp
-  - application: bidrag-dokument-forsendelse-q1
+  - application: bidrag-dokument-forsendelse-feature
     namespace: bidrag
     cluster: dev-gcp
   - application: bidrag-simuler-beregning-q1
