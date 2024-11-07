@@ -68,7 +68,7 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
-                GrunnlagDto::type.name -> commonObjectmapper.readValue(type, Grunnlagstype::class.java)
+                GrunnlagDto::type.name -> commonObjectmapper.readValue("\"$type\"", Grunnlagstype::class.java)
                 GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
                 GrunnlagDto::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
                 GrunnlagDto::gjelderReferanse.name -> gjelderReferanse
