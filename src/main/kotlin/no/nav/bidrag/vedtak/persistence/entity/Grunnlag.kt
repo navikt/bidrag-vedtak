@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne
 import no.nav.bidrag.domene.enums.grunnlag.Grunnlagstype
 import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
+import no.nav.bidrag.transport.felles.commonObjectmapper
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import kotlin.reflect.full.memberProperties
@@ -67,7 +68,7 @@ fun Grunnlag.toGrunnlagDto() = with(::GrunnlagDto) {
     callBy(
         parameters.associateWith { parameter ->
             when (parameter.name) {
-                GrunnlagDto::type.name -> Grunnlagstype.valueOf(type)
+                GrunnlagDto::type.name -> commonObjectmapper.readValue("\"$type\"", Grunnlagstype::class.java)
                 GrunnlagDto::innhold.name -> stringTilJsonNode(innhold)
                 GrunnlagDto::grunnlagsreferanseListe.name -> grunnlagsreferanseListe
                 GrunnlagDto::gjelderReferanse.name -> gjelderReferanse

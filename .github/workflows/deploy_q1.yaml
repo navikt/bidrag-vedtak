@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - '**'
+      - '!main'
       - 'q1/**'
       - 'Q1/**'
 env:
@@ -21,7 +23,7 @@ jobs:
 
   run_cucumber_tests-feature:
     runs-on: ubuntu-latest
-    name: Run cucumber tests feature
+    name: Run cucumber tests q1
     needs: build-deploy
     if: false #${{ always() && needs.build-deploy.outputs.deploy_suksess == 'true' }}
 

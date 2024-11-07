@@ -103,7 +103,7 @@ class TestUtil {
             ),
             OpprettGrunnlagRequestDto(
                 referanse = "SJAB-REF001",
-                type = Grunnlagstype.SJABLON,
+                type = Grunnlagstype.SJABLON_SJABLONTALL,
                 innhold = ObjectMapper().readTree(
                     """
           {
