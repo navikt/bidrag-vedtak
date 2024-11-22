@@ -1,0 +1,1 @@
+ALTER TABLE grunnlag add column if not exists gjelder_barn_referanse text;
