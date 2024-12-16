@@ -140,11 +140,45 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(respons, HttpStatus.OK)
     }
 
+    @GetMapping(HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak for angitt kilde og behandlingsreferanse")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtak funnet"),
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun hentVedtakForBehandlingsreferanse(
+        @PathVariable @NotNull
+        kilde: String,
+        @PathVariable @NotNull
+        behandlingsreferanse: String,
+    ): ResponseEntity<VedtakDto?> {
+        LOGGER.info("Request for å hente vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse mottatt")
+        val vedtakFunnet = vedtakService.hentVedtakForBehandlingsreferanse(kilde, behandlingsreferanse)
+        if (vedtakFunnet != null) {
+            SECURE_LOGGER.info("Følgende vedtak ble hentet: ${tilJson(vedtakFunnet)}")
+            return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+        } else {
+            SECURE_LOGGER.info("Fant ikke vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse")
+            return ResponseEntity(vedtakFunnet, HttpStatus.NOT_FOUND)
+        }
+    }
+
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
+        const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }
