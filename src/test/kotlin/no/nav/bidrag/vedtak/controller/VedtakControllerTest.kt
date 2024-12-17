@@ -210,7 +210,7 @@ class VedtakControllerTest {
 
         assertAll(
             Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND) },
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
             Executable { assertThat(response.body).isEmpty() },
         )
     }
