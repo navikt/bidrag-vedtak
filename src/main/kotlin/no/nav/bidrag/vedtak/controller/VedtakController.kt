@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
+import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -158,7 +159,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     )
     fun hentVedtakForBehandlingsreferanse(
         @PathVariable @NotNull
-        kilde: String,
+        kilde: BehandlingsrefKilde,
         @PathVariable @NotNull
         behandlingsreferanse: String,
     ): ResponseEntity<List<Int>> {
