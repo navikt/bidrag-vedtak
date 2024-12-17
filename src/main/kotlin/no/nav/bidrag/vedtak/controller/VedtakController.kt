@@ -166,11 +166,10 @@ class VedtakController(private val vedtakService: VedtakService) {
         val vedtakFunnet = vedtakService.hentVedtakForBehandlingsreferanse(kilde, behandlingsreferanse)
         if (vedtakFunnet.isNotEmpty()) {
             SECURE_LOGGER.info("Følgende vedtak ble hentet: ${tilJson(vedtakFunnet)}")
-            return ResponseEntity(vedtakFunnet, HttpStatus.OK)
         } else {
             SECURE_LOGGER.info("Fant ingen vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse")
-            return ResponseEntity(vedtakFunnet, HttpStatus.NOT_FOUND)
         }
+        return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
     companion object {
