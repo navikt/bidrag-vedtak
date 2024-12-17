@@ -40,7 +40,6 @@ import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
 import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
-import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
@@ -362,13 +361,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Hent vedtaksdata
-    fun hentVedtakForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): VedtakDto {
+    fun hentVedtakForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): VedtakDto? {
         val vedtaksid = persistenceService.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
 
-        return hentVedtak(vedtaksid)
-
+        return if (vedtaksid != null) {
+            hentVedtak(vedtaksid)
+        } else {
+            null
+        }
     }
-
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
         stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&

@@ -151,6 +151,12 @@ class PersistenceService(
         request.kravhaver.verdi,
     )
 
-    fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): Int? =
-        behandlingsreferanseRepository.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
+    fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): List<Int> {
+        val vedtakFunnet = behandlingsreferanseRepository.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
+        return if (vedtakFunnet.isEmpty()) {
+            emptyList()
+        } else {
+            vedtakFunnet.map { it.vedtak.id }
+        }
+    }
 }

@@ -161,14 +161,14 @@ class VedtakController(private val vedtakService: VedtakService) {
         kilde: String,
         @PathVariable @NotNull
         behandlingsreferanse: String,
-    ): ResponseEntity<VedtakDto?> {
+    ): ResponseEntity<List<Int>> {
         LOGGER.info("Request for å hente vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse mottatt")
         val vedtakFunnet = vedtakService.hentVedtakForBehandlingsreferanse(kilde, behandlingsreferanse)
-        if (vedtakFunnet != null) {
+        if (vedtakFunnet.isNotEmpty()) {
             SECURE_LOGGER.info("Følgende vedtak ble hentet: ${tilJson(vedtakFunnet)}")
             return ResponseEntity(vedtakFunnet, HttpStatus.OK)
         } else {
-            SECURE_LOGGER.info("Fant ikke vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse")
+            SECURE_LOGGER.info("Fant ingen vedtak for kilde $kilde og behandlingsreferanse $behandlingsreferanse")
             return ResponseEntity(vedtakFunnet, HttpStatus.NOT_FOUND)
         }
     }
