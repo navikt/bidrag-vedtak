@@ -12,7 +12,7 @@ interface BehandlingsreferanseRepository : CrudRepository<Behandlingsreferanse, 
     fun hentAlleBehandlingsreferanserForVedtak(vedtaksid: Int): List<Behandlingsreferanse>
 
     @Query(
-        "select br.vedtak.id from Behandlingsreferanse br where br.kilde = :kilde and br.referanse = :behandlingsreferanse",
+        "select br from Behandlingsreferanse br where br.kilde = :kilde and br.referanse = :behandlingsreferanse",
     )
-    fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): Int?
+    fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): List<Behandlingsreferanse>
 }

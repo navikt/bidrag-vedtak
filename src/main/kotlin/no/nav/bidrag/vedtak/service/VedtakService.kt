@@ -361,14 +361,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Hent vedtaksdata
-    fun hentVedtakForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): VedtakDto? {
-        val vedtaksid = persistenceService.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
-
-        return if (vedtaksid != null) {
-            hentVedtak(vedtaksid)
-        } else {
-            null
-        }
+    fun hentVedtakForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): List<Int> {
+        return persistenceService.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
     }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
