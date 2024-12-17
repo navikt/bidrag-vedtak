@@ -184,12 +184,50 @@ class VedtakControllerTest {
         )
     }
 
+    @Test
+    fun `skal opprette nytt vedtak og hente det via behandlingsreferanse`() {
+        // Oppretter ny forekomst
+
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+
+        val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
+
+        val kilde = vedtak.behandlingsreferanseListe[0].kilde
+        val behandlingsreferanse = vedtak.behandlingsreferanseListe[0].referanse
+
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/hent-vedtak-for-behandlingsreferanse/$kilde/$behandlingsreferanse")
+
+        assertAll(
+            Executable { assertThat(response).isNotNull() },
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(response.body).isNotNull() },
+        )
+    }
+
+    @Test
+    fun `skal forsøke å hente ikke-eksisterende vedtak via behandlingsreferanse, respons skal være null`() {
+        val kilde = "BISYS_SØKNAD"
+        val behandlingsreferanse = "Jeg finnes ikke"
+
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/hent-vedtak-for-behandlingsreferanse/$kilde/$behandlingsreferanse")
+
+        assertAll(
+            Executable { assertThat(response).isNotNull() },
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND) },
+            Executable { assertThat(response.body).isNull() },
+        )
+    }
+
     private fun fullUrlForNyttVedtak(): String {
         return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
     }
 
     private fun fullUrlForHentVedtak(): String {
         return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
+    }
+
+    private fun fullUrlForHentVedtakForBehandlingsreferanse(): String {
+        return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE).toUriString()
     }
 
     private fun makeFullContextPath(): String {

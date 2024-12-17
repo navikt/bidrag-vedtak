@@ -150,4 +150,7 @@ class PersistenceService(
         request.skyldner.verdi,
         request.kravhaver.verdi,
     )
+
+    fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): Int? =
+        behandlingsreferanseRepository.hentVedtaksidForBehandlingsreferanse(kilde, behandlingsreferanse)
 }
