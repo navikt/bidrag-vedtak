@@ -58,7 +58,7 @@ import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 @Service
 @Transactional
@@ -361,9 +361,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Hent vedtaksdata
-    fun hentVedtakForBehandlingsreferanse(kilde: BehandlingsrefKilde, behandlingsreferanse: String): List<Int> {
-        return persistenceService.hentVedtaksidForBehandlingsreferanse(kilde.name, behandlingsreferanse)
-    }
+    fun hentVedtakForBehandlingsreferanse(kilde: BehandlingsrefKilde, behandlingsreferanse: String): List<Int> =
+        persistenceService.hentVedtaksidForBehandlingsreferanse(kilde.name, behandlingsreferanse)
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
         stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
