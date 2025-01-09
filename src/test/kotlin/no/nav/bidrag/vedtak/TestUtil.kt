@@ -933,11 +933,10 @@ class TestUtil {
             grunnlag = grunnlag,
         )
 
-        fun byggStønadsendringGrunnlag(stønadsendring: Stønadsendring = byggStønadsendring(), grunnlag: Grunnlag = byggGrunnlag()) =
-            StønadsendringGrunnlag(
-                stønadsendring = stønadsendring,
-                grunnlag = grunnlag,
-            )
+        fun byggStønadsendringGrunnlag(stønadsendring: Stønadsendring = byggStønadsendring(), grunnlag: Grunnlag = byggGrunnlag()) = StønadsendringGrunnlag(
+            stønadsendring = stønadsendring,
+            grunnlag = grunnlag,
+        )
 
         fun byggEngangsbeløp(
             engangsbeløpId: Int = (1..100).random(),

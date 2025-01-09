@@ -47,9 +47,7 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
 @Import(CorrelationIdFilter::class, UserMdcFilter::class, DefaultCorsFilter::class, RestOperationsAzure::class)
 class BidragVedtakConfig {
     @Bean
-    fun timedAspect(registry: MeterRegistry): TimedAspect {
-        return TimedAspect(registry)
-    }
+    fun timedAspect(registry: MeterRegistry): TimedAspect = TimedAspect(registry)
 
     @Bean
     @Profile(LIVE_PROFILE, LOKAL_NAIS_PROFILE)
@@ -64,9 +62,7 @@ class BidragVedtakConfig {
     )
 
     @Bean
-    fun exceptionLogger(): ExceptionLogger {
-        return ExceptionLogger(BidragVedtak::class.java.simpleName)
-    }
+    fun exceptionLogger(): ExceptionLogger = ExceptionLogger(BidragVedtak::class.java.simpleName)
 
     @Bean
     fun clientRequestObservationConvention() = DefaultClientRequestObservationConvention()

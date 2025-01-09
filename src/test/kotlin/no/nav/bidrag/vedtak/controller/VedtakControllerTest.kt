@@ -215,25 +215,15 @@ class VedtakControllerTest {
         )
     }
 
-    private fun fullUrlForNyttVedtak(): String {
-        return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
-    }
+    private fun fullUrlForNyttVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
 
-    private fun fullUrlForHentVedtak(): String {
-        return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
-    }
+    private fun fullUrlForHentVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
 
-    private fun fullUrlForHentVedtakForBehandlingsreferanse(): String {
-        return UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE).toUriString()
-    }
+    private fun fullUrlForHentVedtakForBehandlingsreferanse(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE).toUriString()
 
-    private fun makeFullContextPath(): String {
-        return "http://localhost:$port"
-    }
+    private fun makeFullContextPath(): String = "http://localhost:$port"
 
-    private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequestDto> {
-        return initHttpEntity(TestUtil.byggVedtakRequest())
-    }
+    private fun byggVedtakRequest(): HttpEntity<OpprettVedtakRequestDto> = initHttpEntity(TestUtil.byggVedtakRequest())
 
     // Les inn fil med request-data (json)
     private fun lesFilOgByggRequest(filnavn: String): HttpEntity<String> {
