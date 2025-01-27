@@ -80,7 +80,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     ): ResponseEntity<VedtakDto> {
         LOGGER.info("Request for å hente vedtak med følgende id ble mottatt: $vedtaksid")
         val vedtakFunnet = vedtakService.hentVedtak(vedtaksid)
-        SECURE_LOGGER.info("Følgende vedtak ble hentet: ${tilJson(vedtakFunnet)}")
+        SECURE_LOGGER.info("Følgende vedtak ble hentet: $vedtaksid ${tilJson(vedtakFunnet)}")
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
