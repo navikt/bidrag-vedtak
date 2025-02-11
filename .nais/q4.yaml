@@ -50,3 +50,4 @@ spec:
       tier: db-f1-micro
       diskAutoresize: false
       pointInTimeRecovery: false
+      auditlog: "off"

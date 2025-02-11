@@ -52,3 +52,4 @@ spec:
       tier: db-custom-1-3840
       diskAutoresize: true
       pointInTimeRecovery: true
+      auditlog: "on"
