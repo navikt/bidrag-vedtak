@@ -72,6 +72,13 @@ spec:
         tier: {{ spec.gcp.sqlInstances.tier }}
         pointInTimeRecovery: {{ spec.gcp.sqlInstances.pointInTimeRecovery }}
         diskAutoresize: {{ spec.gcp.sqlInstances.diskAutoresize }}
+        flags:
+          - name: "cloudsql.enable_pgaudit"
+            value: "{{ spec.gcp.sqlInstances.auditlog }}"
+          - name: "pgaudit.log"
+            value: "write"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
