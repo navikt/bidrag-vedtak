@@ -74,7 +74,7 @@ spec:
         diskAutoresize: {{ spec.gcp.sqlInstances.diskAutoresize }}
         flags:
           - name: "cloudsql.enable_pgaudit"
-            value: {{spec.gcp.sqlInstances.auditlog}}
+            value: {{ spec.gcp.sqlInstances.auditlog }}
           - name: "pgaudit.log"
             value: "write"
   env:
