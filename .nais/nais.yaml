@@ -77,6 +77,8 @@ spec:
             value: "{{ spec.gcp.sqlInstances.auditlog }}"
           - name: "pgaudit.log"
             value: "write"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
