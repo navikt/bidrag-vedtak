@@ -53,7 +53,7 @@ spec:
       memory: 2048Mi
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 206Mi
   gcp:
     sqlInstances:
       tier: db-f1-micro
