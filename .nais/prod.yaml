@@ -45,8 +45,8 @@ spec:
       cpu: 1000m
       memory: 2048Mi
     requests:
-      cpu: 500m
-      memory: 1024Mi
+      cpu: 50m
+      memory: 512Mi
   gcp:
     sqlInstances:
       tier: db-custom-1-3840
