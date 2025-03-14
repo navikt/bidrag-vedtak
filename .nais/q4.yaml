@@ -31,6 +31,9 @@ azureAccessInbound:
   - application: bidrag-behandling-q4
     namespace: bidrag
     cluster: dev-gcp
+  - application: bidrag-automatisk-jobb-q4
+    namespace: bidrag
+    cluster: dev-gcp
 azure:
   bidrag_organisasjon_url: bidrag-organisasjon.dev-fss-pub.nais.io
   bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon
