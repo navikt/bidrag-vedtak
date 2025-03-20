@@ -31,8 +31,19 @@
     <springdoc-openapi-ui.version>2.8.5</springdoc-openapi-ui.version>
     <ktlint-cli.version>1.5.0</ktlint-cli.version>
     <mockk.version>1.13.17</mockk.version>
-
   </properties>
+
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/navikt/bidrag-felles</url>
+    </repository>
+    <repository>
+      <id>confluent</id>
+      <name>Confluent kafka</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <!-- spring -->
