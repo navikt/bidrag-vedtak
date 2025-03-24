@@ -20,7 +20,7 @@
   <properties>
 
     <!-- build/language -->
-    <kotlin.version>2.1.0</kotlin.version>
+    <kotlin.version>2.1.20</kotlin.version>
     <build-helper-maven.version>3.2.0</build-helper-maven.version>
     <token-support.version>3.2.0</token-support.version>
 
