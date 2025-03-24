@@ -37,7 +37,7 @@
     <snakeyaml.version>2.3</snakeyaml.version>
     <scala-library.version>2.13.15</scala-library.version>
     <httpclient.version>4.5.14</httpclient.version>
-    <kafka-clients.version>3.8.0</kafka-clients.version>
+    <kafka-clients.version>4.0.0</kafka-clients.version>
     <swagger-annotations.version>2.2.27</swagger-annotations.version>
 
   </properties>
