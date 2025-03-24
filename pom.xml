@@ -22,7 +22,7 @@
     <!-- build/language -->
     <kotlin.version>2.1.0</kotlin.version>
     <build-helper-maven.version>3.2.0</build-helper-maven.version>
-    <token-support.version>3.2.0</token-support.version>
+    <token-support.version>5.0.20</token-support.version>
 
     <!-- dependencies -->
     <bidrag-felles.version>2025.03.13.153013</bidrag-felles.version>
