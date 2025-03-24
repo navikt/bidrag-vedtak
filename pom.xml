@@ -34,7 +34,7 @@
     <ktlint-cli.version>1.5.0</ktlint-cli.version>
     <mockk.version>4.0.2</mockk.version>
     <com.squareup.okhttp3.version>4.12.0</com.squareup.okhttp3.version>
-    <snakeyaml.version>2.3</snakeyaml.version>
+    <snakeyaml.version>2.4</snakeyaml.version>
     <scala-library.version>2.13.15</scala-library.version>
     <httpclient.version>4.5.14</httpclient.version>
     <kafka-clients.version>3.8.0</kafka-clients.version>
