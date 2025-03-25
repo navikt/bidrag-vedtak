@@ -7,7 +7,9 @@ import no.nav.bidrag.transport.behandling.vedtak.Periode
 import no.nav.bidrag.transport.behandling.vedtak.Sporingsdata
 import no.nav.bidrag.transport.behandling.vedtak.Stønadsendring
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
+import no.nav.bidrag.transport.behandling.vedtak.VedtaksforslagHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
@@ -17,7 +19,7 @@ import java.time.LocalDateTime
 @Service
 class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventProducer) {
 
-    fun opprettHendelse(
+    fun opprettHendelseVedtak(
         vedtakRequest: OpprettVedtakRequestDto,
         vedtakId: Int,
         opprettetTidspunkt: LocalDateTime,
@@ -118,5 +120,35 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             )
         }
         return behandlingsreferanseListe
+    }
+
+    fun opprettHendelseVedtaksforslag(
+        request: OpprettVedtaksforslagRequestDto,
+        vedtakId: Int,
+        opprettetTidspunkt: LocalDateTime,
+        opprettetAv: String,
+        opprettetAvNavn: String?,
+        kildeapplikasjon: String,
+    ) {
+        val vedtaksforslagHendelse = VedtaksforslagHendelse(
+            status = ,
+            kilde = request.kilde,
+            type = request.type,
+            id = vedtakId,
+            vedtakstidspunkt = request.vedtakstidspunkt,
+            enhetsnummer = request.enhetsnummer,
+            opprettetAv = opprettetAv,
+            opprettetAvNavn = opprettetAvNavn,
+            kildeapplikasjon = kildeapplikasjon,
+            opprettetTidspunkt = opprettetTidspunkt,
+            innkrevingUtsattTilDato = request.innkrevingUtsattTilDato,
+            fastsattILand = request.fastsattILand,
+            stønadsendringListe = mapStønadsendringer(request),
+            engangsbeløpListe = mapEngangsbeløp(request),
+            behandlingsreferanseListe = mapBehandlingsreferanser(request),
+            sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
+        )
+        vedtakKafkaEventProducer.publish(vedtaksforslagHendelse)
+        SECURE_LOGGER.info("Ny melding lagt på topic vedtak: ${tilJson(vedtaksforslagHendelse)}")
     }
 }

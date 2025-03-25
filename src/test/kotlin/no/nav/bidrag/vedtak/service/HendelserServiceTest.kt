@@ -53,7 +53,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse når kun engangsbeløp er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -90,7 +90,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette en hendelse når kun stønadsendring er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -137,7 +137,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse når både stønadsendring og engangsbeløp er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -204,7 +204,7 @@ class HendelserServiceTest {
     @Suppress("NonAsciiCharacters")
     fun `skal opprette en hendelse med skyldner-id`() {
         CorrelationId.existing("test")
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -303,7 +303,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -348,7 +348,7 @@ class HendelserServiceTest {
     @Suppress("NonAsciiCharacters")
     fun `opprettet hendelse skal ha innhold fra engangsbeløpListe`() {
         CorrelationId.existing("test")
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,

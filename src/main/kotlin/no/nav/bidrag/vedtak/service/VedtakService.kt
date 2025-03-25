@@ -24,6 +24,7 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestD
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -110,7 +111,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
         if (vedtakRequest.stønadsendringListe.isNotEmpty() || vedtakRequest.engangsbeløpListe.isNotEmpty()) {
-            hendelserService.opprettHendelse(
+            hendelserService.opprettHendelseVedtak(
                 vedtakRequest,
                 opprettetVedtak.id,
                 opprettetVedtak.opprettetTidspunkt,
@@ -223,7 +224,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             opprettetAv = vedtak.opprettetAv,
             opprettetAvNavn = vedtak.opprettetAvNavn,
             kildeapplikasjon = vedtak.kildeapplikasjon,
-            vedtakstidspunkt = vedtak.vedtakstidspunkt,
+            vedtakstidspunkt = vedtak.vedtakstidspunkt!!,
             enhetsnummer = if (vedtak.enhetsnummer != null) Enhetsnummer(vedtak.enhetsnummer) else null,
             opprettetTidspunkt = vedtak.opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
@@ -348,7 +349,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     val vedtak = stønadsendring.vedtak
                     VedtakForStønad(
                         vedtaksid = vedtak.id.toLong(),
-                        vedtakstidspunkt = vedtak.vedtakstidspunkt,
+                        vedtakstidspunkt = vedtak.vedtakstidspunkt!!,
                         type = Vedtakstype.valueOf(vedtak.type),
                         stønadsendring = stønadsendring.tilDto(),
                         behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
@@ -364,6 +365,61 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     fun hentVedtakForBehandlingsreferanse(kilde: BehandlingsrefKilde, behandlingsreferanse: String): List<Int> =
         persistenceService.hentVedtaksidForBehandlingsreferanse(kilde.name, behandlingsreferanse)
 
+
+
+
+    // Opprett vedtaksforslag (alle tabeller)
+    fun opprettVedtaksforslag(request: OpprettVedtaksforslagRequestDto): Int {
+        // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
+        val opprettetAv = request.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: request.manglerOpprettetAv()
+        val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
+        val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
+
+        // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
+        if (request.engangsbeløpListe.isNotEmpty() && duplikateReferanser(request.engangsbeløpListe.filter { it.referanse != null })) {
+            // Kaster exception hvis det er duplikate referanser
+            request.duplikateReferanserEngangsbeløp()
+        }
+
+        // Opprett vedtak
+        val opprettetVedtaksforslag = persistenceService.opprettVedtak(request.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon))
+
+        val grunnlagIdRefMap = mutableMapOf<String, Int>()
+
+        val engangsbeløpReferanseListe = mutableListOf<String>()
+
+        // Grunnlag
+        request.grunnlagListe.forEach {
+            val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtaksforslag)
+            grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
+        }
+
+        // Stønadsendring
+        request.stønadsendringListe.forEach { opprettStønadsendring(it, opprettetVedtaksforslag, grunnlagIdRefMap) }
+
+        // Engangsbeløp
+        request.engangsbeløpListe.forEach {
+            engangsbeløpReferanseListe.add(opprettEngangsbeløp(it, opprettetVedtaksforslag, grunnlagIdRefMap).referanse)
+        }
+
+        // Behandlingsreferanse
+        request.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtaksforslag) }
+
+        // Opprett hendelse for vedtaksforslag
+        if (request.stønadsendringListe.isNotEmpty() || request.engangsbeløpListe.isNotEmpty()) {
+            hendelserService.opprettHendelseVedtaksforslag(
+                request,
+                opprettetVedtaksforslag.id,
+                opprettetVedtaksforslag.opprettetTidspunkt,
+                opprettetAv,
+                opprettetAvNavn,
+                kildeapplikasjon,
+            )
+        }
+
+        return opprettetVedtaksforslag.id
+    }
+
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
         stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&
         engangsbeløpMatcher(vedtakId, vedtakRequest) &&
@@ -374,7 +430,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
-            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
+            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt!!.year &&
             vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
             vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
             vedtakRequest.vedtakstidspunkt.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
