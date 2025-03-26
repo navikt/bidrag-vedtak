@@ -193,7 +193,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     )
     fun opprettVedtaksforslag(
         @Valid @RequestBody
-        request: OpprettVedtaksforslagRequestDto,
+        request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int> {
         SECURE_LOGGER.info("Følgende request for å opprette vedtaksforslag mottatt: ${tilJson(request)}")
         val vedtaksforslagOpprettet = vedtakService.opprettVedtaksforslag(request)
@@ -226,7 +226,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         @PathVariable @NotNull
         vedtaksid: Int,
         @Valid @RequestBody
-        request: OpprettVedtaksforslagRequestDto,
+        request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int>? {
         SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtaksforslag med id $vedtaksid: ${tilJson(request)}")
         val vedtaksforslagOppdatert = vedtakService.oppdaterVedtaksforslag(vedtaksid, request)
