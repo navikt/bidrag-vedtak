@@ -16,6 +16,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEnga
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchPeriode
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchStønadsendring
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchVedtak
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakEngangsbeløpUtenReferanseRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakMedDuplikateReferanserRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedInputparametre
@@ -109,7 +110,7 @@ class VedtakServiceTest {
     fun `skal opprette og hente vedtak`() {
         // Oppretter nytt vedtak
         val nyttVedtakRequest = byggVedtakRequest()
-        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest).vedtaksid
+        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid
 
         assertAll(
             Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
@@ -128,6 +129,7 @@ class VedtakServiceTest {
 //      Executable { assertThat(vedtakFunnet.vedtakstidspunkt).isEqualTo(nyttVedtakRequest.vedtakstidspunkt) },
             Executable { assertThat(vedtakFunnet.opprettetTidspunkt).isNotNull() },
             Executable { assertThat(vedtakFunnet.opprettetAv).isEqualTo(nyttVedtakRequest.opprettetAv) },
+            Executable { assertThat(vedtakFunnet.unikReferanse).isEqualTo(nyttVedtakRequest.unikReferanse) },
             Executable { assertThat(vedtakFunnet.enhetsnummer).isEqualTo(nyttVedtakRequest.enhetsnummer) },
             Executable { assertThat(vedtakFunnet.innkrevingUtsattTilDato).isEqualTo(nyttVedtakRequest.innkrevingUtsattTilDato) },
             Executable { assertThat(vedtakFunnet.fastsattILand).isEqualTo(nyttVedtakRequest.fastsattILand) },
@@ -459,90 +461,90 @@ class VedtakServiceTest {
 
             // Engangsbeløp
             Executable { assertThat(vedtakFunnet.engangsbeløpListe.size).isEqualTo(3) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].type) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].sak).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].sak) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].type).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].type) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].sak).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].sak) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].skyldner.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].skyldner.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[0].skyldner.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].kravhaver.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].kravhaver.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[0].kravhaver.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].mottaker.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].mottaker.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[0].mottaker.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].beløp?.toInt(),
+                    nyttVedtakRequest.engangsbeløpListe[0].beløp?.toInt(),
                 )
             },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].valutakode).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].valutakode) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].valutakode).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].valutakode) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].resultatkode)
-                    .isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].resultatkode)
+                    .isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].resultatkode)
             },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].innkreving).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].innkreving) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].beslutning).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].beslutning) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].innkreving).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].innkreving) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].beslutning).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].beslutning) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].omgjørVedtakId).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].omgjørVedtakId,
+                    nyttVedtakRequest.engangsbeløpListe[0].omgjørVedtakId,
                 )
             },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].referanse).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].referanse) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].delytelseId).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![0].delytelseId) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].referanse).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].referanse) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].delytelseId).isEqualTo(nyttVedtakRequest.engangsbeløpListe[0].delytelseId) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[0].eksternReferanse).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![0].eksternReferanse,
+                    nyttVedtakRequest.engangsbeløpListe[0].eksternReferanse,
                 )
             },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
 
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].type).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].type) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].sak).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].sak) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].type).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].type) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].sak).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].sak) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].skyldner.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].skyldner.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[1].skyldner.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].kravhaver.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].kravhaver.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[1].kravhaver.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].mottaker.toString()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].mottaker.toString(),
+                    nyttVedtakRequest.engangsbeløpListe[1].mottaker.toString(),
                 )
             },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].beløp?.toInt()).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].beløp?.toInt(),
+                    nyttVedtakRequest.engangsbeløpListe[1].beløp?.toInt(),
                 )
             },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].valutakode).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].valutakode) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].valutakode).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].valutakode) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].resultatkode)
-                    .isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].resultatkode)
+                    .isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].resultatkode)
             },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].innkreving).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].innkreving) },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].beslutning).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].beslutning) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].innkreving).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].innkreving) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].beslutning).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].beslutning) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].omgjørVedtakId).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].omgjørVedtakId,
+                    nyttVedtakRequest.engangsbeløpListe[1].omgjørVedtakId,
                 )
             },
             // Tester på at det genereres en referanse hvis den ikke er angitt i requesten
-            Executable { assertThat(nyttVedtakRequest.engangsbeløpListe!![1].referanse).isNull() },
+            Executable { assertThat(nyttVedtakRequest.engangsbeløpListe[1].referanse).isNull() },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].referanse).isNotNull() },
-            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].delytelseId).isEqualTo(nyttVedtakRequest.engangsbeløpListe!![1].delytelseId) },
+            Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].delytelseId).isEqualTo(nyttVedtakRequest.engangsbeløpListe[1].delytelseId) },
             Executable {
                 assertThat(vedtakFunnet.engangsbeløpListe[1].eksternReferanse).isEqualTo(
-                    nyttVedtakRequest.engangsbeløpListe!![1].eksternReferanse,
+                    nyttVedtakRequest.engangsbeløpListe[1].eksternReferanse,
                 )
             },
             Executable { assertThat(vedtakFunnet.engangsbeløpListe[1].grunnlagReferanseListe.size).isEqualTo(3) },
@@ -551,11 +553,11 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakFunnet.behandlingsreferanseListe.size).isEqualTo(2) },
             Executable {
                 assertThat(vedtakFunnet.behandlingsreferanseListe[0].kilde)
-                    .isEqualTo(nyttVedtakRequest.behandlingsreferanseListe!![0].kilde)
+                    .isEqualTo(nyttVedtakRequest.behandlingsreferanseListe[0].kilde)
             },
             Executable {
                 assertThat(vedtakFunnet.behandlingsreferanseListe[0].referanse).isEqualTo(
-                    nyttVedtakRequest.behandlingsreferanseListe!![0].referanse,
+                    nyttVedtakRequest.behandlingsreferanseListe[0].referanse,
                 )
             },
 
@@ -568,7 +570,7 @@ class VedtakServiceTest {
         val nyttVedtakRequest = byggVedtakMedDuplikateReferanserRequest()
 
         assertThatExceptionOfType(HttpClientErrorException::class.java).isThrownBy {
-            vedtakService.opprettVedtak(nyttVedtakRequest)
+            vedtakService.opprettVedtak(nyttVedtakRequest, false)
         }
     }
 
@@ -614,7 +616,7 @@ class VedtakServiceTest {
     fun `skal opprette vedtak uten grunnlag og så oppdatere vedtak med grunnlag`() {
         // Oppretter nytt vedtak
         val oopdaterVedtakUtenGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
-        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest).vedtaksid
+        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest, false).vedtaksid
 
         // Henter vedtak uten grunnlag
         val vedtakUtenGrunnlag = vedtakService.hentVedtak(vedtakUtenGrunnlagVedtakId)
@@ -845,7 +847,7 @@ class VedtakServiceTest {
     fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
         // Oppretter nytt vedtak
         val vedtakRequest = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtakRequest).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtakRequest, false).vedtaksid
 
         // Henter vedtak uten grunnlag
         val vedtak = vedtakService.hentVedtak(vedtakId)
@@ -948,7 +950,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på vedtak feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtak, false).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchVedtak()
 
@@ -962,7 +964,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på stønadsendring feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtak, false).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchStønadsendring()
 
@@ -976,7 +978,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på periode feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtak, false).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchPeriode()
 
@@ -990,7 +992,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak med mismatch på engangsbeløp feiler`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtak, false).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggOppdaterVedtakMedMismatchEngangsbeløp()
 
@@ -1004,7 +1006,7 @@ class VedtakServiceTest {
     fun `test at oppdatering av vedtak feiler hvis grunnlag mangler i request`() {
         // Oppretter nytt vedtak
         val vedtak = byggVedtakRequest()
-        val vedtakId = vedtakService.opprettVedtak(vedtak).vedtaksid
+        val vedtakId = vedtakService.opprettVedtak(vedtak, false).vedtaksid
 
         val oppdaterVedtakMedGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
 
@@ -1026,7 +1028,7 @@ class VedtakServiceTest {
             innkreving = Innkrevingstype.MED_INNKREVING,
             beslutning = Beslutningstype.ENDRING,
         )
-        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest).vedtaksid
+        val nyttVedtakOpprettet = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid
 
         assertAll(
             Executable { assertThat(nyttVedtakOpprettet).isNotNull() },
@@ -1089,7 +1091,7 @@ class VedtakServiceTest {
             Innkrevingstype.MED_INNKREVING,
             null,
         )
-        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1).vedtaksid
+        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1, false).vedtaksid
 
         assertAll(
             Executable { assertThat(vedtakOpprettet1).isNotNull() },
@@ -1106,7 +1108,7 @@ class VedtakServiceTest {
             Innkrevingstype.UTEN_INNKREVING,
             null,
         )
-        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2).vedtaksid
+        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2, false).vedtaksid
 
         assertAll(
             Executable { assertThat(vedtakOpprettet2).isNotNull() },
@@ -1122,7 +1124,7 @@ class VedtakServiceTest {
             Innkrevingstype.MED_INNKREVING,
             null,
         )
-        val vedtakOpprettet3 = vedtakService.opprettVedtak(vedtakRequest3).vedtaksid
+        val vedtakOpprettet3 = vedtakService.opprettVedtak(vedtakRequest3, false).vedtaksid
 
         assertAll(
             Executable { assertThat(vedtakOpprettet3).isNotNull() },
@@ -1166,7 +1168,7 @@ class VedtakServiceTest {
             null,
             null,
         )
-        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1).vedtaksid
+        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1, false).vedtaksid
 
         assertAll(
             Executable { assertThat(vedtakOpprettet1).isNotNull() },
@@ -1183,7 +1185,7 @@ class VedtakServiceTest {
             null,
             null,
         )
-        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2).vedtaksid
+        val vedtakOpprettet2 = vedtakService.opprettVedtak(vedtakRequest2, false).vedtaksid
 
         assertAll(
             Executable { assertThat(vedtakOpprettet2).isNotNull() },
@@ -1209,5 +1211,16 @@ class VedtakServiceTest {
             Executable { assertThat(vedtak1.stønadsendring.type).isEqualTo(Stønadstype.BIDRAG18AAR) },
 
         )
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at omgjøringsvedtak for engangsbeløp uten referanse feiler`() {
+        // Oppretter nytt vedtak der det ikke er angitt referanse på engansbeløpet det er klaget på
+        val request = byggVedtakEngangsbeløpUtenReferanseRequest()
+
+        assertThatExceptionOfType(HttpClientErrorException::class.java).isThrownBy {
+            vedtakService.opprettVedtak(request, false)
+        }
     }
 }

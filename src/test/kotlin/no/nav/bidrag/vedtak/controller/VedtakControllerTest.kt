@@ -151,7 +151,7 @@ class VedtakControllerTest {
     @Test
     fun `skal hente alle data for et vedtak`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
 
         // Henter forekomster
         val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
@@ -187,7 +187,7 @@ class VedtakControllerTest {
     @Test
     fun `skal opprette nytt vedtak og hente det via behandlingsreferanse`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
         val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
         val kilde = vedtak.behandlingsreferanseListe[0].kilde
         val behandlingsreferanse = vedtak.behandlingsreferanseListe[0].referanse
@@ -212,6 +212,22 @@ class VedtakControllerTest {
             Executable { assertThat(response).isNotNull() },
             Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
             Executable { assertThat(response.body).isEmpty() },
+        )
+    }
+
+    @Test
+    fun `skal opprette nytt vedtak og hente det via unik referanse`() {
+        // Oppretter ny forekomst
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
+        val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
+        val unikReferanse = vedtak.unikReferanse
+
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/hent-vedtak-for-unik-referanse/$unikReferanse")
+
+        assertAll(
+            Executable { assertThat(response).isNotNull() },
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(response.body).isNotNull() },
         )
     }
 

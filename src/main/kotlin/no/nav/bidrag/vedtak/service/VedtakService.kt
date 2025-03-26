@@ -40,6 +40,7 @@ import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
 import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
+import no.nav.bidrag.vedtak.exception.custom.referanseTilPåklagetEngangsbeløpMangler
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
@@ -58,6 +59,7 @@ import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -73,20 +75,30 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
     // Opprett vedtak (alle tabeller)
-    fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto): OpprettVedtakResponseDto {
+    fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto, vedtaksforslag: Boolean): OpprettVedtakResponseDto {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
         val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
+        val vedtakstidspunkt = if (vedtaksforslag) null else vedtakRequest.vedtakstidspunkt ?: LocalDateTime.now()
+
         // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
-        if (vedtakRequest.engangsbeløpListe.isNotEmpty() && duplikateReferanser(vedtakRequest.engangsbeløpListe.filter { it.referanse != null })) {
-            // Kaster exception hvis det er duplikate referanser
-            vedtakRequest.duplikateReferanserEngangsbeløp()
+        if (vedtakRequest.engangsbeløpListe.isNotEmpty()) {
+            if (duplikateReferanser(vedtakRequest.engangsbeløpListe.filter { it.referanse != null })) {
+                // Kaster exception hvis det er duplikate referanser
+                vedtakRequest.duplikateReferanserEngangsbeløp()
+            } else {
+                // Kaster exception hvis det er et klagevedtak og det mangler referanse til engangsbeløp.
+                if (vedtakRequest.engangsbeløpListe.any { it.omgjørVedtakId != null && it.referanse == null }) {
+                    vedtakRequest.referanseTilPåklagetEngangsbeløpMangler()
+                }
+            }
         }
 
         // Opprett vedtak
-        val opprettetVedtak = persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon))
+        val opprettetVedtak =
+            persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon, vedtakstidspunkt))
 
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
@@ -224,6 +236,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             opprettetAvNavn = vedtak.opprettetAvNavn,
             kildeapplikasjon = vedtak.kildeapplikasjon,
             vedtakstidspunkt = vedtak.vedtakstidspunkt,
+            unikReferanse = vedtak.unikReferanse,
             enhetsnummer = if (vedtak.enhetsnummer != null) Enhetsnummer(vedtak.enhetsnummer) else null,
             opprettetTidspunkt = vedtak.opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
@@ -249,6 +262,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             skyldner = Personident(skyldner),
             kravhaver = Personident(kravhaver),
             mottaker = Personident(mottaker),
+            sisteVedtaksid = null,
             førsteIndeksreguleringsår = førsteIndeksreguleringsår,
             innkreving = Innkrevingstype.valueOf(innkreving),
             beslutning = Beslutningstype.valueOf(beslutning),
@@ -258,6 +272,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             periodeListe = hentPerioderTilVedtak(periodeListe),
         )
     }
+
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
         val periodeResponseListe = ArrayList<VedtakPeriodeDto>()
         periodeListe.forEach { periode ->
@@ -348,7 +363,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     val vedtak = stønadsendring.vedtak
                     VedtakForStønad(
                         vedtaksid = vedtak.id.toLong(),
-                        vedtakstidspunkt = vedtak.vedtakstidspunkt,
+                        vedtakstidspunkt = vedtak.vedtakstidspunkt!!,
                         type = Vedtakstype.valueOf(vedtak.type),
                         stønadsendring = stønadsendring.tilDto(),
                         behandlingsreferanser = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id).map {
@@ -374,12 +389,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
-            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
-            vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
-            vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
-            vedtakRequest.vedtakstidspunkt.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
-            vedtakRequest.vedtakstidspunkt.minute == eksisterendeVedtak.vedtakstidspunkt.minute &&
-            vedtakRequest.vedtakstidspunkt.second == eksisterendeVedtak.vedtakstidspunkt.second &&
+            vedtakRequest.vedtakstidspunkt?.year == eksisterendeVedtak.vedtakstidspunkt?.year &&
+            vedtakRequest.vedtakstidspunkt?.month == eksisterendeVedtak.vedtakstidspunkt?.month &&
+            vedtakRequest.vedtakstidspunkt?.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt?.dayOfMonth &&
+            vedtakRequest.vedtakstidspunkt?.hour == eksisterendeVedtak.vedtakstidspunkt?.hour &&
+            vedtakRequest.vedtakstidspunkt?.minute == eksisterendeVedtak.vedtakstidspunkt?.minute &&
+            vedtakRequest.vedtakstidspunkt?.second == eksisterendeVedtak.vedtakstidspunkt?.second &&
             vedtakRequest.enhetsnummer.toString() == eksisterendeVedtak.enhetsnummer &&
             vedtakRequest.innkrevingUtsattTilDato == eksisterendeVedtak.innkrevingUtsattTilDato &&
             vedtakRequest.fastsattILand == eksisterendeVedtak.fastsattILand
@@ -740,6 +755,43 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 persistenceService.opprettEngangsbeløpGrunnlag(engangsbeløpGrunnlagBo)
             }
         }
+    }
+
+    // Hent vedtaksdata
+    fun hentVedtakForUnikReferanse(unikReferanse: String): VedtakDto {
+        val vedtak = persistenceService.hentVedtakForUnikReferanse(unikReferanse)
+        val grunnlagDtoListe = ArrayList<GrunnlagDto>()
+        val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(vedtak.id)
+        grunnlagListe.forEach {
+            grunnlagDtoListe.add(it.toGrunnlagDto())
+        }
+        val stønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id)
+        val engangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtak.id)
+        val behandlingsreferanseListe = persistenceService.hentAlleBehandlingsreferanserForVedtak(vedtak.id)
+        val behandlingsreferanseResponseListe = ArrayList<BehandlingsreferanseDto>()
+        behandlingsreferanseListe.forEach {
+            behandlingsreferanseResponseListe.add(
+                BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse),
+            )
+        }
+
+        return VedtakDto(
+            kilde = Vedtakskilde.valueOf(vedtak.kilde),
+            type = Vedtakstype.valueOf(vedtak.type),
+            opprettetAv = vedtak.opprettetAv,
+            opprettetAvNavn = vedtak.opprettetAvNavn,
+            kildeapplikasjon = vedtak.kildeapplikasjon,
+            vedtakstidspunkt = vedtak.vedtakstidspunkt,
+            unikReferanse = vedtak.unikReferanse,
+            enhetsnummer = if (vedtak.enhetsnummer != null) Enhetsnummer(vedtak.enhetsnummer) else null,
+            opprettetTidspunkt = vedtak.opprettetTidspunkt,
+            innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
+            fastsattILand = vedtak.fastsattILand,
+            grunnlagListe = grunnlagDtoListe,
+            stønadsendringListe = stønadsendringListe.map { it.tilDto() },
+            engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
+            behandlingsreferanseListe = behandlingsreferanseResponseListe,
+        )
     }
 
     fun measureVedtak(
