@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.reflect.full.memberProperties
@@ -34,8 +33,11 @@ data class Vedtak(
     @Column(nullable = false, name = "kildeapplikasjon")
     val kildeapplikasjon: String = "",
 
-    @Column(nullable = false, name = "vedtakstidspunkt")
-    val vedtakstidspunkt: LocalDateTime? = null,
+    @Column(nullable = true, name = "vedtakstidspunkt")
+    val vedtakstidspunkt: LocalDateTime? = LocalDateTime.now(),
+
+    @Column(nullable = true, name = "unik_referanse")
+    val unikReferanse: String? = null,
 
     @Column(nullable = true, name = "enhetsnummer")
     val enhetsnummer: String? = "",
@@ -49,9 +51,14 @@ data class Vedtak(
     @Column(nullable = false, name = "opprettet_tidspunkt")
     val opprettetTidspunkt: LocalDateTime = LocalDateTime.now(),
 
-)
+    )
 
-fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn: String?, kildeapplikasjon: String) = with(::Vedtak) {
+fun OpprettVedtakRequestDto.toVedtakEntity(
+    opprettetAv: String,
+    opprettetAvNavn: String?,
+    kildeapplikasjon: String,
+    vedtakstidspunkt: LocalDateTime?,
+) = with(::Vedtak) {
     val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
@@ -61,6 +68,7 @@ fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn:
                 Vedtak::type.name -> type.toString()
                 Vedtak::opprettetAv.name -> opprettetAv
                 Vedtak::opprettetAvNavn.name -> opprettetAvNavn
+                Vedtak::vedtakstidspunkt.name -> vedtakstidspunkt
                 Vedtak::kildeapplikasjon.name -> kildeapplikasjon
                 Vedtak::opprettetTidspunkt.name -> LocalDateTime.now()
                 Vedtak::enhetsnummer.name -> enhetsnummer?.toString()
@@ -70,22 +78,3 @@ fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn:
     )
 }
 
-fun OpprettVedtaksforslagRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn: String?, kildeapplikasjon: String) = with(::Vedtak) {
-    val propertiesByName = OpprettVedtaksforslagRequestDto::class.memberProperties.associateBy { it.name }
-    callBy(
-        parameters.associateWith { parameter ->
-            when (parameter.name) {
-                Vedtak::id.name -> 0
-                Vedtak::kilde.name -> kilde.toString()
-                Vedtak::type.name -> type.toString()
-                Vedtak::opprettetAv.name -> opprettetAv
-                Vedtak::opprettetAvNavn.name -> opprettetAvNavn
-                Vedtak::kildeapplikasjon.name -> kildeapplikasjon
-                Vedtak::vedtakstidspunkt.name -> null
-                Vedtak::opprettetTidspunkt.name -> LocalDateTime.now()
-                Vedtak::enhetsnummer.name -> enhetsnummer?.toString()
-                else -> propertiesByName[parameter.name]?.get(this@toVedtakEntity)
-            }
-        },
-    )
-}

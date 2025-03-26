@@ -1223,4 +1223,15 @@ class VedtakServiceTest {
             vedtakService.opprettVedtak(request, false)
         }
     }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `test at det feiler hvis man sender inn vedtak med unik-referanse som er bruk fra før`() {
+        // Oppretter nytt vedtak der det ikke er angitt referanse på engansbeløpet det er klaget på
+        val vedtakOpprettet1 = vedtakService.opprettVedtak(vedtakRequest1, false).vedtaksid
+
+        assertThatExceptionOfType(HttpClientErrorException::class.java).isThrownBy {
+            vedtakService.opprettVedtak(request, false)
+        }
+    }
 }

@@ -159,4 +159,6 @@ class PersistenceService(
             vedtakFunnet.map { it.vedtak.id }
         }
     }
+
+    fun hentVedtakForUnikReferanse(referanse: String): Vedtak = vedtakRepository.hentVedtakForUnikReferanse(referanse)
 }

@@ -2,6 +2,10 @@ package no.nav.bidrag.vedtak.service
 
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
 import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
@@ -92,6 +96,9 @@ class VedtakServiceMockTest {
 
     @Test
     fun `skal opprette nytt vedtak`() {
+        mockkObject(SaksbehandlernavnProvider)
+        every { SaksbehandlernavnProvider.hentSaksbehandlernavn(any()) } returns "Saksbehandler Saksbehandlersen"
+
         Mockito.`when`(persistenceServiceMock.opprettVedtak(MockitoHelper.capture(vedtakCaptor)))
             .thenReturn(byggVedtak())
         Mockito.`when`(persistenceServiceMock.opprettStønadsendring(MockitoHelper.capture(stønadsendringCaptor)))
@@ -113,7 +120,7 @@ class VedtakServiceMockTest {
         Mockito.`when`(persistenceServiceMock.referanseErUnik(vedtaksid = any(), referanse = any())).thenReturn(true)
 
         val opprettVedtakRequestDto = byggVedtakRequest()
-        val nyttVedtakOpprettet = vedtakService.opprettVedtak(opprettVedtakRequestDto)
+        val nyttVedtakOpprettet = vedtakService.opprettVedtak(opprettVedtakRequestDto, false)
 
         val vedtak = vedtakCaptor.value
         val stønadsendringListe = stønadsendringCaptor.allValues
@@ -376,6 +383,9 @@ class VedtakServiceMockTest {
             Executable { assertThat(behandlingsreferanseListe.size).isEqualTo(2) },
 
         )
+
+        // Rydder bort mock
+        unmockkObject(SaksbehandlernavnProvider)
     }
 
     @Test

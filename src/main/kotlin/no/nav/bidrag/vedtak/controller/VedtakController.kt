@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
@@ -55,7 +54,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<OpprettVedtakResponseDto>? {
         SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: ${tilJson(request)}")
-        val vedtakOpprettet = vedtakService.opprettVedtak(request)
+        val vedtakOpprettet = vedtakService.opprettVedtak(request, false)
         LOGGER.info("Vedtak er opprettet med følgende id: ${vedtakOpprettet.vedtaksid}")
         return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
     }
@@ -246,10 +245,9 @@ class VedtakController(private val vedtakService: VedtakService) {
                 content = [Content(schema = Schema(hidden = true))],
             ),
             ApiResponse(responseCode = "404", description = "Vedtaksforslag ikke funnet", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
         ],
     )
+
     fun slettVedtaksforslag(
         @PathVariable @NotNull
         vedtaksid: Int,
@@ -258,6 +256,33 @@ class VedtakController(private val vedtakService: VedtakService) {
         val vedtaksforslagSlettet = vedtakService.slettVedtaksforslag(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtaksforslag ble slettet: $vedtaksid ${tilJson(vedtaksforslagSlettet)}")
         return ResponseEntity(vedtaksforslagSlettet, HttpStatus.OK)
+    }
+
+    @GetMapping(HENT_VEDTAK_FOR_UNIK_REFERANSE)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak tilknyttet unik referanse")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtak funnet"),
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun hentVedtakForUnikReferanse(
+        @PathVariable @NotNull
+        unikReferanse: String,
+    ): ResponseEntity<VedtakDto> {
+        LOGGER.info("Request for å hente vedtak med følgende unike referanse ble mottatt: $unikReferanse")
+        val vedtakFunnet = vedtakService.hentVedtakForUnikReferanse(unikReferanse)
+        SECURE_LOGGER.info("Følgende vedtak ble hentet: $unikReferanse ${tilJson(vedtakFunnet)}")
+        return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+
     }
 
     @GetMapping(FATT_VEDTAK_FRA_VEDTAKSFORSLAG)
@@ -286,18 +311,19 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakFattet, HttpStatus.OK)
     }
 
+
+
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
-
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag/"
         const val OPPDATER_VEDTAKSFORSLAG = "/vedtak/oppdater/{vedtaksid}"
         const val SLETT_VEDTAKSFORSLAG = "/vedtak/slett-vedtaksforslag/{vedtaksid}"
         const val FATT_VEDTAK_FRA_VEDTAKSFORSLAG = "/vedtak/fatt-vedtak-fra-vedtaksforslag/{vedtaksid}"
-
+        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/hent-vedtak-for-unik-referanse/{unikReferanse}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }

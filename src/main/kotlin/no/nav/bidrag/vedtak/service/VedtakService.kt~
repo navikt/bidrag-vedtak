@@ -24,6 +24,7 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestD
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.BehandlingsreferanseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.EngangsbeløpDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -60,7 +61,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 @Transactional
@@ -235,8 +236,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             opprettetAv = vedtak.opprettetAv,
             opprettetAvNavn = vedtak.opprettetAvNavn,
             kildeapplikasjon = vedtak.kildeapplikasjon,
+<<<<<<< HEAD
+            vedtakstidspunkt = vedtak.vedtakstidspunkt!!,
+=======
             vedtakstidspunkt = vedtak.vedtakstidspunkt,
             unikReferanse = vedtak.unikReferanse,
+>>>>>>> feature/unik-referanse
             enhetsnummer = if (vedtak.enhetsnummer != null) Enhetsnummer(vedtak.enhetsnummer) else null,
             opprettetTidspunkt = vedtak.opprettetTidspunkt,
             innkrevingUtsattTilDato = vedtak.innkrevingUtsattTilDato,
@@ -383,7 +388,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
 
     // Opprett vedtaksforslag (alle tabeller)
-    fun opprettVedtaksforslag(request: OpprettVedtakRequestDto): Int {
+    fun opprettVedtaksforslag(request: OpprettVedtaksforslagRequestDto): Int {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
         val opprettetAv = request.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: request.manglerOpprettetAv()
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
@@ -444,12 +449,21 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
+<<<<<<< HEAD
+            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt!!.year &&
+            vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
+            vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
+            vedtakRequest.vedtakstidspunkt.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
+            vedtakRequest.vedtakstidspunkt.minute == eksisterendeVedtak.vedtakstidspunkt.minute &&
+            vedtakRequest.vedtakstidspunkt.second == eksisterendeVedtak.vedtakstidspunkt.second &&
+=======
             vedtakRequest.vedtakstidspunkt?.year == eksisterendeVedtak.vedtakstidspunkt?.year &&
             vedtakRequest.vedtakstidspunkt?.month == eksisterendeVedtak.vedtakstidspunkt?.month &&
             vedtakRequest.vedtakstidspunkt?.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt?.dayOfMonth &&
             vedtakRequest.vedtakstidspunkt?.hour == eksisterendeVedtak.vedtakstidspunkt?.hour &&
             vedtakRequest.vedtakstidspunkt?.minute == eksisterendeVedtak.vedtakstidspunkt?.minute &&
             vedtakRequest.vedtakstidspunkt?.second == eksisterendeVedtak.vedtakstidspunkt?.second &&
+>>>>>>> feature/unik-referanse
             vedtakRequest.enhetsnummer.toString() == eksisterendeVedtak.enhetsnummer &&
             vedtakRequest.innkrevingUtsattTilDato == eksisterendeVedtak.innkrevingUtsattTilDato &&
             vedtakRequest.fastsattILand == eksisterendeVedtak.fastsattILand
