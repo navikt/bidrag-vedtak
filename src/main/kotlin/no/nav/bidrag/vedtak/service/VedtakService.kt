@@ -560,13 +560,20 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
+        val stønadsendringer = persistenceService.stønadsendringRepository.hentAlleStønadsendringerForVedtak(vedtakId)
+
+        stønadsendringer.forEach { stønadsendring ->
+            val perioder = persistenceService.periodeRepository.hentAllePerioderForStønadsendring(stønadsendring.id)
+            perioder.forEach {
+                persistenceService.periodeGrunnlagRepository.deletePeriodeGrunnlagsByPeriode(it)
+            }
+            persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendringVedtakId(stønadsendring.id)
+        }
         // slett fra PeriodeGrunnlag
-        persistenceService.periodeGrunnlagRepository.deleteByPeriodeStønadsendringVedtakId(vedtakId)
-
-        persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendringVedtakId(vedtakId)
-
-        // slett fra EngangsbeløpGrunnlag
-        persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløpVedtakId(vedtakId)
+        val engangsbeløpListe = persistenceService.engangsbeløpRepository.hentAlleEngangsbeløpForVedtak(vedtakId)
+        engangsbeløpListe.forEach {
+            persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløpVedtakId(it.id)
+        }
 
         // slett fra Grunnlag
         persistenceService.slettAlleGrunnlagForVedtak(vedtakId)
