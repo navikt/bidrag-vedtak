@@ -255,7 +255,6 @@ class VedtakControllerTest {
             Int::class.java,
         )
 
-
         assertAll(
             Executable { assertThat(oppdatertVedtak).isNotNull() },
             Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
