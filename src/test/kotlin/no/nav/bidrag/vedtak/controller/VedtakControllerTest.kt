@@ -5,6 +5,7 @@ import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
@@ -231,7 +232,40 @@ class VedtakControllerTest {
         )
     }
 
+    @Test
+    fun `skal opprette nytt vedtak og så oppdatere det med grunnlag - input fra fil`() {
+        // Bygger request
+        val filnavn = "/testfiler/oppdater_vedtak_med_grunnlag.json"
+        val request = lesFilOgByggRequest(filnavn)
+
+        // Oppretter ny forekomst
+        val opprettResponse = securedTestRestTemplate.exchange(
+            fullUrlForNyttVedtak(),
+            HttpMethod.POST,
+            request,
+            OpprettVedtakResponseDto::class.java,
+        )
+
+        val vedtaksid = opprettResponse.body?.vedtaksid
+
+        val oppdatertVedtak = securedTestRestTemplate.exchange(
+            makeFullContextPath() + "/vedtak/oppdater/$vedtaksid",
+            HttpMethod.POST,
+            request,
+            Int::class.java,
+        )
+
+
+        assertAll(
+            Executable { assertThat(oppdatertVedtak).isNotNull() },
+            Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(oppdatertVedtak.body).isNotNull() },
+        )
+    }
+
     private fun fullUrlForNyttVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
+
+    private fun fullUrlForOppdaterVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPDATER_VEDTAK).toUriString()
 
     private fun fullUrlForHentVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
 

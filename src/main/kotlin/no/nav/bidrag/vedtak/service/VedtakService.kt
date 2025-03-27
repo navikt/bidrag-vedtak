@@ -565,11 +565,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         stønadsendringer.forEach { stønadsendring ->
             val perioder = persistenceService.periodeRepository.hentAllePerioderForStønadsendring(stønadsendring.id)
             perioder.forEach {
-                persistenceService.periodeGrunnlagRepository.deletePeriodeGrunnlagsByPeriode(it)
+                persistenceService.periodeGrunnlagRepository.deleteByPeriode(it.id)
             }
             persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendringVedtakId(stønadsendring.id)
         }
-        // slett fra PeriodeGrunnlag
+        // slett fra EngangsbeløpGrunnlag
         val engangsbeløpListe = persistenceService.engangsbeløpRepository.hentAlleEngangsbeløpForVedtak(vedtakId)
         engangsbeløpListe.forEach {
             persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløpVedtakId(it.id)

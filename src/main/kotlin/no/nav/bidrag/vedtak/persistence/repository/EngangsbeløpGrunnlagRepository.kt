@@ -2,8 +2,11 @@ package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.query.Param
+import org.springframework.transaction.annotation.Transactional
 
 interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag, EngangsbeløpGrunnlagPK?> {
 
@@ -18,5 +21,9 @@ interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag
     )
     fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpsid: Int): List<EngangsbeløpGrunnlag>
 
-    fun deleteByEngangsbeløpVedtakId(engangsbeløpVedtakId: Int)
+    @Modifying
+    @Query(
+        "delete from EngangsbeløpGrunnlag er where er.engangsbeløp.vedtak.id = :vedtaksid",
+    )
+    fun deleteByEngangsbeløpVedtakId(@Param("vedtaksid") vedtaksid: Int): Int
 }
