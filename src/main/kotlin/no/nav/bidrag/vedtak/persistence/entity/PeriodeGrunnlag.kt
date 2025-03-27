@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.IdClass
@@ -15,12 +16,12 @@ import kotlin.reflect.full.memberProperties
 data class PeriodeGrunnlag(
 
     @Id
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "periodeid")
     val periode: Periode = Periode(),
 
     @Id
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag(),
 
