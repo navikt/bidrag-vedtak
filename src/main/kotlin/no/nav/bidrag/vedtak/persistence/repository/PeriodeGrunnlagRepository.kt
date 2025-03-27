@@ -19,6 +19,5 @@ interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGru
     )
     fun hentAlleGrunnlagForPeriode(periodeid: Int): List<PeriodeGrunnlag>
     fun deletePeriodeGrunnlagsByPeriode(periode: Periode)
-    fun deleteByPeriode_Stønadsendring_Id(periodeStønadsendringId: Int)
-    fun deleteByPeriode_Stønadsendring_vedtak_id(periodeStønadsendringVedtakId: Int)
+    fun deleteByPeriodeStønadsendringVedtakId(periodeStønadsendringVedtakId: Int)
 }

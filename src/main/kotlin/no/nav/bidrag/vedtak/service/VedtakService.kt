@@ -42,11 +42,8 @@ import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
 import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
 import no.nav.bidrag.vedtak.exception.custom.referanseTilPåklagetEngangsbeløpMangler
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
-import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Periode
-import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
-import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlagPK
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
 import no.nav.bidrag.vedtak.persistence.entity.toBehandlingsreferanseEntity
 import no.nav.bidrag.vedtak.persistence.entity.toEngangsbeløpEntity
@@ -563,14 +560,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
-
         // slett fra PeriodeGrunnlag
-        persistenceService.periodeGrunnlagRepository.deleteByPeriode_Stønadsendring_vedtak_id(vedtakId)
+        persistenceService.periodeGrunnlagRepository.deleteByPeriodeStønadsendringVedtakId(vedtakId)
 
-        persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendring_Vedtak_Id(vedtakId)
+        persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendringVedtakId(vedtakId)
 
         // slett fra EngangsbeløpGrunnlag
-        persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløp_Vedtak_Id(vedtakId)
+        persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløpVedtakId(vedtakId)
 
         // slett fra Grunnlag
         persistenceService.slettAlleGrunnlagForVedtak(vedtakId)
