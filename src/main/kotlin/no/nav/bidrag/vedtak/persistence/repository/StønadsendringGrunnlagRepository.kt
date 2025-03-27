@@ -17,4 +17,5 @@ interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrun
         "select sg from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringsid order by sg.grunnlag.id",
     )
     fun hentAlleGrunnlagForStønadsendring(stønadsendringsid: Int): List<StønadsendringGrunnlag>
+    fun deleteByStønadsendring_Vedtak_Id(stønadsendringVedtakId: Int)
 }

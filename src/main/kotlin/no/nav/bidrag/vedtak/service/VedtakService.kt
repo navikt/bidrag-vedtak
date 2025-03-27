@@ -563,35 +563,14 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtakId: Int) {
-        // slett fra StønadsendringGrunnlag
-        if (stønadsendringsidGrunnlagSkalSlettesListe.isNotEmpty()) {
-            stønadsendringsidGrunnlagSkalSlettesListe.forEach { stønadsendringsid ->
-                val stønadsendringGrunnlag = persistenceService.hentAlleGrunnlagForStønadsendring(stønadsendringsid)
-                stønadsendringGrunnlag.forEach {
-                    persistenceService.stønadsendringGrunnlagRepository.deleteById(StønadsendringGrunnlagPK(stønadsendringsid, it.grunnlag.id))
-                }
-            }
-        }
 
         // slett fra PeriodeGrunnlag
-        if (periodeidGrunnlagSkalSlettesListe.isNotEmpty()) {
-            periodeidGrunnlagSkalSlettesListe.forEach { periodeId ->
-                val periodeGrunnlag = persistenceService.hentAlleGrunnlagForPeriode(periodeId)
-                periodeGrunnlag.forEach {
-                    persistenceService.periodeGrunnlagRepository.deleteById(PeriodeGrunnlagPK(periodeId, it.grunnlag.id))
-                }
-            }
-        }
+        persistenceService.periodeGrunnlagRepository.deleteByPeriode_Stønadsendring_vedtak_id(vedtakId)
+
+        persistenceService.stønadsendringGrunnlagRepository.deleteByStønadsendring_Vedtak_Id(vedtakId)
 
         // slett fra EngangsbeløpGrunnlag
-        if (engangsbeløpsidGrunnlagSkalSlettesListe.isNotEmpty()) {
-            engangsbeløpsidGrunnlagSkalSlettesListe.forEach { engangsbeløpId ->
-                val engangsbeløpGrunnlag = persistenceService.hentAlleGrunnlagForEngangsbeløp(engangsbeløpId)
-                engangsbeløpGrunnlag.forEach {
-                    persistenceService.engangsbeløpGrunnlagRepository.deleteById(EngangsbeløpGrunnlagPK(engangsbeløpId, it.grunnlag.id))
-                }
-            }
-        }
+        persistenceService.engangsbeløpGrunnlagRepository.deleteByEngangsbeløp_Vedtak_Id(vedtakId)
 
         // slett fra Grunnlag
         persistenceService.slettAlleGrunnlagForVedtak(vedtakId)

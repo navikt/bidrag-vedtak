@@ -1,5 +1,6 @@
 package no.nav.bidrag.vedtak.persistence.repository
 
+import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlagPK
 import org.springframework.data.jpa.repository.Query
@@ -17,4 +18,5 @@ interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag
         "select ebg from EngangsbeløpGrunnlag ebg where ebg.engangsbeløp.id = :engangsbeløpsid order by ebg.grunnlag.id",
     )
     fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpsid: Int): List<EngangsbeløpGrunnlag>
+    fun deleteByEngangsbeløp_Vedtak_Id(engangsbeløpVedtakId: Int)
 }

@@ -16,12 +16,12 @@ import kotlin.reflect.full.memberProperties
 data class PeriodeGrunnlag(
 
     @Id
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "periodeid")
     val periode: Periode = Periode(),
 
     @Id
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "grunnlagsid")
     val grunnlag: Grunnlag = Grunnlag(),
 
