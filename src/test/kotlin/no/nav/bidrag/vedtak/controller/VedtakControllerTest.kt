@@ -5,6 +5,7 @@ import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
@@ -151,7 +152,7 @@ class VedtakControllerTest {
     @Test
     fun `skal hente alle data for et vedtak`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
 
         // Henter forekomster
         val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
@@ -187,7 +188,7 @@ class VedtakControllerTest {
     @Test
     fun `skal opprette nytt vedtak og hente det via behandlingsreferanse`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
         val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
         val kilde = vedtak.behandlingsreferanseListe[0].kilde
         val behandlingsreferanse = vedtak.behandlingsreferanseListe[0].referanse
@@ -215,7 +216,55 @@ class VedtakControllerTest {
         )
     }
 
+    @Test
+    fun `skal opprette nytt vedtak og hente det via unik referanse`() {
+        // Oppretter ny forekomst
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
+        val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
+        val unikReferanse = vedtak.unikReferanse
+
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/hent-vedtak-for-unik-referanse/$unikReferanse")
+
+        assertAll(
+            Executable { assertThat(response).isNotNull() },
+            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(response.body).isNotNull() },
+        )
+    }
+
+    @Test
+    fun `skal opprette nytt vedtak og så oppdatere det med grunnlag - input fra fil`() {
+        // Bygger request
+        val filnavn = "/testfiler/oppdater_vedtak_med_grunnlag.json"
+        val request = lesFilOgByggRequest(filnavn)
+
+        // Oppretter ny forekomst
+        val opprettResponse = securedTestRestTemplate.exchange(
+            fullUrlForNyttVedtak(),
+            HttpMethod.POST,
+            request,
+            OpprettVedtakResponseDto::class.java,
+        )
+
+        val vedtaksid = opprettResponse.body?.vedtaksid
+
+        val oppdatertVedtak = securedTestRestTemplate.exchange(
+            makeFullContextPath() + "/vedtak/oppdater/$vedtaksid",
+            HttpMethod.POST,
+            request,
+            Int::class.java,
+        )
+
+        assertAll(
+            Executable { assertThat(oppdatertVedtak).isNotNull() },
+            Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(oppdatertVedtak.body).isNotNull() },
+        )
+    }
+
     private fun fullUrlForNyttVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
+
+    private fun fullUrlForOppdaterVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPDATER_VEDTAK).toUriString()
 
     private fun fullUrlForHentVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
 

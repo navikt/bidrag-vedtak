@@ -29,7 +29,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             kilde = vedtakRequest.kilde,
             type = vedtakRequest.type,
             id = vedtakId,
-            vedtakstidspunkt = vedtakRequest.vedtakstidspunkt,
+            vedtakstidspunkt = vedtakRequest.vedtakstidspunkt!!,
             enhetsnummer = vedtakRequest.enhetsnummer,
             opprettetAv = opprettetAv,
             opprettetAvNavn = opprettetAvNavn,

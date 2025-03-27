@@ -33,8 +33,11 @@ data class Vedtak(
     @Column(nullable = false, name = "kildeapplikasjon")
     val kildeapplikasjon: String = "",
 
-    @Column(nullable = false, name = "vedtakstidspunkt")
-    val vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
+    @Column(nullable = true, name = "vedtakstidspunkt")
+    val vedtakstidspunkt: LocalDateTime? = LocalDateTime.now(),
+
+    @Column(nullable = true, name = "unik_referanse")
+    val unikReferanse: String? = null,
 
     @Column(nullable = true, name = "enhetsnummer")
     val enhetsnummer: String? = "",
@@ -50,7 +53,12 @@ data class Vedtak(
 
 )
 
-fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn: String?, kildeapplikasjon: String) = with(::Vedtak) {
+fun OpprettVedtakRequestDto.toVedtakEntity(
+    opprettetAv: String,
+    opprettetAvNavn: String?,
+    kildeapplikasjon: String,
+    vedtakstidspunkt: LocalDateTime?,
+) = with(::Vedtak) {
     val propertiesByName = OpprettVedtakRequestDto::class.memberProperties.associateBy { it.name }
     callBy(
         parameters.associateWith { parameter ->
@@ -60,6 +68,7 @@ fun OpprettVedtakRequestDto.toVedtakEntity(opprettetAv: String, opprettetAvNavn:
                 Vedtak::type.name -> type.toString()
                 Vedtak::opprettetAv.name -> opprettetAv
                 Vedtak::opprettetAvNavn.name -> opprettetAvNavn
+                Vedtak::vedtakstidspunkt.name -> vedtakstidspunkt
                 Vedtak::kildeapplikasjon.name -> kildeapplikasjon
                 Vedtak::opprettetTidspunkt.name -> LocalDateTime.now()
                 Vedtak::enhetsnummer.name -> enhetsnummer?.toString()

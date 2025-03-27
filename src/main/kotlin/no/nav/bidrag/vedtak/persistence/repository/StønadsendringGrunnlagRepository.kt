@@ -2,8 +2,10 @@ package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlagPK
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.transaction.annotation.Transactional
 
 interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrunnlag, StønadsendringGrunnlagPK?> {
 
@@ -17,4 +19,8 @@ interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrun
         "select sg from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringsid order by sg.grunnlag.id",
     )
     fun hentAlleGrunnlagForStønadsendring(stønadsendringsid: Int): List<StønadsendringGrunnlag>
+
+    @Modifying
+    @Transactional
+    fun deleteByStønadsendringVedtakId(stønadsendringVedtakId: Int): Int
 }
