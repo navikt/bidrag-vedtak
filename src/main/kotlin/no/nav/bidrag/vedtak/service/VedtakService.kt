@@ -375,64 +375,61 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         )
     }
 
+    fun oppdaterVedtaksforslag(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Int {
+//        if (vedtakRequest.grunnlagListe.isEmpty()) {
+//            val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
+//            LOGGER.error(feilmelding)
+//            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
+//            throw GrunnlagsdataManglerException(feilmelding)
+//        }
+
+        if (alleVedtaksdataMatcher(vedtakId, vedtakRequest)) {
+            slettEventueltEksisterendeGrunnlag(vedtakId)
+            oppdaterGrunnlag(vedtakId, vedtakRequest)
+        } else {
+            val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
+            LOGGER.error(feilmelding)
+            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
+            throw VedtaksdataMatcherIkkeException(feilmelding)
+        }
+        measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
+
+        return vedtakId
+    }
+
+
+    fun slettVedtaksforslag(vedtakId: Int): Int {
+//        if (vedtakRequest.grunnlagListe.isEmpty()) {
+//            val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
+//            LOGGER.error(feilmelding)
+//            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
+//            throw GrunnlagsdataManglerException(feilmelding)
+//        }
+
+
+
+        return vedtakId
+    }
+
+    fun fattVedtakForVedtaksforslag(vedtakId: Int): Int {
+//        if (vedtakRequest.grunnlagListe.isEmpty()) {
+//            val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
+//            LOGGER.error(feilmelding)
+//            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
+//            throw GrunnlagsdataManglerException(feilmelding)
+//        }
+
+
+
+        return vedtakId
+    }
+
+
     // Hent vedtaksdata
     fun hentVedtakForBehandlingsreferanse(kilde: BehandlingsrefKilde, behandlingsreferanse: String): List<Int> =
         persistenceService.hentVedtaksidForBehandlingsreferanse(kilde.name, behandlingsreferanse)
 
 
-
-
-    // Opprett vedtaksforslag (alle tabeller)
-    fun opprettVedtaksforslag(request: OpprettVedtakRequestDto): Int {
-        // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
-        val opprettetAv = request.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: request.manglerOpprettetAv()
-        val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
-        val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
-
-        // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
-        if (request.engangsbeløpListe.isNotEmpty() && duplikateReferanser(request.engangsbeløpListe.filter { it.referanse != null })) {
-            // Kaster exception hvis det er duplikate referanser
-            request.duplikateReferanserEngangsbeløp()
-        }
-
-        // Opprett vedtak
-        val opprettetVedtaksforslag = persistenceService.opprettVedtak(request.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon))
-
-        val grunnlagIdRefMap = mutableMapOf<String, Int>()
-
-        val engangsbeløpReferanseListe = mutableListOf<String>()
-
-        // Grunnlag
-        request.grunnlagListe.forEach {
-            val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtaksforslag)
-            grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
-        }
-
-        // Stønadsendring
-        request.stønadsendringListe.forEach { opprettStønadsendring(it, opprettetVedtaksforslag, grunnlagIdRefMap) }
-
-        // Engangsbeløp
-        request.engangsbeløpListe.forEach {
-            engangsbeløpReferanseListe.add(opprettEngangsbeløp(it, opprettetVedtaksforslag, grunnlagIdRefMap).referanse)
-        }
-
-        // Behandlingsreferanse
-        request.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtaksforslag) }
-
-        // Opprett hendelse for vedtaksforslag
-        if (request.stønadsendringListe.isNotEmpty() || request.engangsbeløpListe.isNotEmpty()) {
-            hendelserService.opprettHendelseVedtaksforslag(
-                request,
-                opprettetVedtaksforslag.id,
-                opprettetVedtaksforslag.opprettetTidspunkt,
-                opprettetAv,
-                opprettetAvNavn,
-                kildeapplikasjon,
-            )
-        }
-
-        return opprettetVedtaksforslag.id
-    }
 
     private fun alleVedtaksdataMatcher(vedtakId: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean = vedtakMatcher(vedtakId, vedtakRequest) &&
         stønadsendringerOgPerioderMatcher(vedtakId, vedtakRequest) &&

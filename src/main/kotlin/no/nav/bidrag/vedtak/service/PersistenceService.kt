@@ -41,11 +41,21 @@ class PersistenceService(
 ) {
 
     @Timed
-    fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
+    fun  opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
     @Timed
     fun hentVedtak(id: Int): Vedtak =
         vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
+
+    @Timed
+    fun oppdaterVedtak(vedtak: Vedtak): Vedtak {
+        // Sjekker at vedtaket eksisterer før oppdatering
+        vedtakRepository.findById(vedtak.id)
+            .orElseThrow { IllegalArgumentException("Fant ikke vedtak med id ${vedtak.id} i databasen") }
+
+        // Lagrer endringene (utfører oppdatering)
+        return vedtakRepository.save(vedtak)
+    }
 
     fun opprettStønadsendring(stønadsendring: Stønadsendring): Stønadsendring {
         vedtakRepository.findById(stønadsendring.vedtak.id)

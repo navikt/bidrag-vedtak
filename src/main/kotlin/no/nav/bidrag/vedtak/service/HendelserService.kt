@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.commons.CorrelationId
+import no.nav.bidrag.domene.enums.vedtak.VedtaksforslagStatus
 import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
 import no.nav.bidrag.transport.behandling.vedtak.Engangsbeløp
 import no.nav.bidrag.transport.behandling.vedtak.Periode
@@ -9,7 +10,6 @@ import no.nav.bidrag.transport.behandling.vedtak.Stønadsendring
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
 import no.nav.bidrag.transport.behandling.vedtak.VedtaksforslagHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtaksforslagRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
@@ -123,7 +123,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
     }
 
     fun opprettHendelseVedtaksforslag(
-        request: OpprettVedtaksforslagRequestDto,
+        request: OpprettVedtakRequestDto,
         vedtakId: Int,
         opprettetTidspunkt: LocalDateTime,
         opprettetAv: String,
@@ -131,21 +131,9 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
         kildeapplikasjon: String,
     ) {
         val vedtaksforslagHendelse = VedtaksforslagHendelse(
-            status = ,
-            kilde = request.kilde,
-            type = request.type,
-            id = vedtakId,
-            vedtakstidspunkt = request.vedtakstidspunkt,
-            enhetsnummer = request.enhetsnummer,
-            opprettetAv = opprettetAv,
-            opprettetAvNavn = opprettetAvNavn,
-            kildeapplikasjon = kildeapplikasjon,
-            opprettetTidspunkt = opprettetTidspunkt,
-            innkrevingUtsattTilDato = request.innkrevingUtsattTilDato,
-            fastsattILand = request.fastsattILand,
-            stønadsendringListe = mapStønadsendringer(request),
-            engangsbeløpListe = mapEngangsbeløp(request),
-            behandlingsreferanseListe = mapBehandlingsreferanser(request),
+            status = VedtaksforslagStatus.OPPDATERT,
+            vedtaksid = vedtakId,
+            saksnummerListe = emptyList(),
             sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
         )
         vedtakKafkaEventProducer.publish(vedtaksforslagHendelse)

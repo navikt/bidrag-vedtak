@@ -54,7 +54,9 @@ class VedtakController(private val vedtakService: VedtakService) {
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<OpprettVedtakResponseDto>? {
         SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: ${tilJson(request)}")
-        val vedtakOpprettet = vedtakService.opprettVedtak(request, false)
+        val vedtakOpprettet = vedtakService.opprettVedtak(
+            vedtakRequest = request,
+            vedtaksforslag = true)
         LOGGER.info("Vedtak er opprettet med følgende id: ${vedtakOpprettet.vedtaksid}")
         return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
     }
@@ -195,9 +197,11 @@ class VedtakController(private val vedtakService: VedtakService) {
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int> {
         SECURE_LOGGER.info("Følgende request for å opprette vedtaksforslag mottatt: ${tilJson(request)}")
-        val vedtaksforslagOpprettet = vedtakService.opprettVedtaksforslag(request)
-        LOGGER.info("Vedtaksforslag er opprettet med følgende id: $vedtaksforslagOpprettet")
-        return ResponseEntity(vedtaksforslagOpprettet, HttpStatus.OK)
+        val vedtaksforslagOpprettet = vedtakService.opprettVedtak(
+            vedtakRequest = request,
+            vedtaksforslag = true)
+        LOGGER.info("Vedtaksforslag er opprettet med følgende id: ${vedtaksforslagOpprettet.vedtaksid}")
+        return ResponseEntity(vedtaksforslagOpprettet.vedtaksid, HttpStatus.OK)
     }
 
 
@@ -251,7 +255,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     fun slettVedtaksforslag(
         @PathVariable @NotNull
         vedtaksid: Int,
-    ): ResponseEntity<VedtakDto> {
+    ): ResponseEntity<Int> {
         LOGGER.info("Request for å slette vedtaksforslag med følgende id ble mottatt: $vedtaksid")
         val vedtaksforslagSlettet = vedtakService.slettVedtaksforslag(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtaksforslag ble slettet: $vedtaksid ${tilJson(vedtaksforslagSlettet)}")
@@ -306,7 +310,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         vedtaksid: Int,
     ): ResponseEntity<Int> {
         LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
-        val vedtakFattet = vedtakService.fattVedtakFraVedtaksforslag(vedtaksid)
+        val vedtakFattet = vedtakService.fattVedtakForVedtaksforslag(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtak ble fattet fra vedtaksforslag: $vedtaksid ${tilJson(vedtakFattet)}")
         return ResponseEntity(vedtakFattet, HttpStatus.OK)
     }
