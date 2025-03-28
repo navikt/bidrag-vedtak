@@ -2,8 +2,10 @@ package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlag
 import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.query.Param
 
 interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGrunnlagPK?> {
 
@@ -17,4 +19,12 @@ interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGru
         "select pg from PeriodeGrunnlag pg where pg.periode.id = :periodeid order by pg.grunnlag.id",
     )
     fun hentAlleGrunnlagForPeriode(periodeid: Int): List<PeriodeGrunnlag>
+
+    @Modifying
+    @Query(
+        "delete from PeriodeGrunnlag pg where pg.periode.id = :periodeId",
+    )
+    fun deleteByPeriode(@Param("periodeId") periodeId: Int): Int
+
+    fun deleteByPeriodeStønadsendringVedtakId(periodeStønadsendringVedtakId: Int)
 }

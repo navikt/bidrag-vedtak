@@ -1,0 +1,335 @@
+{
+  "kilde": "MANUELT",
+  "type": "INNKREVING",
+  "opprettetAv": "H118527",
+  "vedtakstidspunkt": [
+    2024,
+    4,
+    2,
+    11,
+    7,
+    9,
+    312000
+  ],
+  "enhetsnummer": "4812",
+  "innkrevingUtsattTilDato": null,
+  "fastsattILand": null,
+  "grunnlagListe": [
+    {
+      "referanse": "person_PERSON_SØKNADSBARN_19071581023_6114368",
+      "type": "PERSON_SØKNADSBARN",
+      "innhold": {
+        "ident": "19071581023",
+        "navn": "xumybPDL-TEST, dobyla",
+        "fødselsdato": [
+          2015,
+          7,
+          19
+        ]
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
+    },
+    {
+      "referanse": "person_PERSON_BIDRAGSMOTTAKER_19109233849_6114371",
+      "type": "PERSON_BIDRAGSMOTTAKER",
+      "innhold": {
+        "ident": "19109233849",
+        "navn": "folæPDL-TEST, pubap ekeqem",
+        "fødselsdato": [
+          1992,
+          10,
+          19
+        ]
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
+    },
+    {
+      "referanse": "SAMVÆRSPERIODE_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370_person_PERSON_SØKNADSBARN_18011889626_6114369_2023-11",
+      "type": "SAMVÆRSPERIODE",
+      "innhold": {
+        "periode": {
+          "fom": [
+            2023,
+            11
+          ],
+          "til": null
+        },
+        "manueltRegistrert": true,
+        "samværsklasse": "SAMVÆRSKLASSE_0"
+      },
+      "grunnlagsreferanseListe": [
+        "person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370"
+      ],
+      "gjelderReferanse": "person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370",
+      "gjelderBarnReferanse": "person_PERSON_SØKNADSBARN_18011889626_6114369"
+    },
+    {
+      "referanse": "SLUTTBEREGNING_BARNEBIDRAG_person_PERSON_SØKNADSBARN_18011889626_6114369_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370__2023-11",
+      "type": "SLUTTBEREGNING_BARNEBIDRAG",
+      "innhold": {
+        "periode": {
+          "fom": [
+            2023,
+            11
+          ],
+          "til": null
+        },
+        "beregnetBeløp": 0,
+        "resultatBeløp": 0,
+        "bruttoBidragEtterBarnetilleggBM": 0,
+        "nettoBidragEtterBarnetilleggBM": 0,
+        "bruttoBidragJustertForEvneOg25Prosent": 0,
+        "bruttoBidragEtterBegrensetRevurdering": 0,
+        "bruttoBidragEtterBarnetilleggBP": 0,
+        "nettoBidragEtterSamværsfradrag": 0,
+        "bpAndelAvUVedDeltBostedFaktor": 0,
+        "bpAndelAvUVedDeltBostedBeløp": 0,
+        "løpendeForskudd": 0,
+        "løpendeBidrag": 0,
+        "barnetErSelvforsørget": false,
+        "bidragJustertForDeltBosted": false,
+        "bidragJustertForNettoBarnetilleggBP": false,
+        "bidragJustertForNettoBarnetilleggBM": false,
+        "bidragJustertNedTilEvne": false,
+        "bidragJustertNedTil25ProsentAvInntekt": false,
+        "bidragJustertTilForskuddssats": false,
+        "begrensetRevurderingUtført": false,
+        "ikkeOmsorgForBarnet": false,
+        "uminusNettoBarnetilleggBM": 0
+      },
+      "grunnlagsreferanseListe": [
+        "SAMVÆRSPERIODE_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370_person_PERSON_SØKNADSBARN_18011889626_6114369_2023-11"
+      ],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": "person_PERSON_SØKNADSBARN_18011889626_6114369"
+    },
+    {
+      "referanse": "SAMVÆRSPERIODE_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370_person_PERSON_SØKNADSBARN_19071581023_6114368_2023-11",
+      "type": "SAMVÆRSPERIODE",
+      "innhold": {
+        "periode": {
+          "fom": [
+            2023,
+            11
+          ],
+          "til": null
+        },
+        "manueltRegistrert": true,
+        "samværsklasse": "SAMVÆRSKLASSE_0"
+      },
+      "grunnlagsreferanseListe": [
+        "person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370"
+      ],
+      "gjelderReferanse": "person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370",
+      "gjelderBarnReferanse": "person_PERSON_SØKNADSBARN_19071581023_6114368"
+    },
+    {
+      "referanse": "person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370",
+      "type": "PERSON_BIDRAGSPLIKTIG",
+      "innhold": {
+        "ident": "03038545530",
+        "navn": "enifPDL-TEST, udåmo åri",
+        "fødselsdato": [
+          1985,
+          3,
+          3
+        ]
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
+    },
+    {
+      "referanse": "person_PERSON_SØKNADSBARN_18011889626_6114369",
+      "type": "PERSON_SØKNADSBARN",
+      "innhold": {
+        "ident": "18011889626",
+        "navn": "qameroPDL-TEST, arøwo",
+        "fødselsdato": [
+          2018,
+          1,
+          18
+        ]
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
+    },
+    {
+      "referanse": "SLUTTBEREGNING_BARNEBIDRAG_person_PERSON_SØKNADSBARN_19071581023_6114368_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370__2023-11",
+      "type": "SLUTTBEREGNING_BARNEBIDRAG",
+      "innhold": {
+        "periode": {
+          "fom": [
+            2023,
+            11
+          ],
+          "til": null
+        },
+        "beregnetBeløp": 0,
+        "resultatBeløp": 0,
+        "bruttoBidragEtterBarnetilleggBM": 0,
+        "nettoBidragEtterBarnetilleggBM": 0,
+        "bruttoBidragJustertForEvneOg25Prosent": 0,
+        "bruttoBidragEtterBegrensetRevurdering": 0,
+        "bruttoBidragEtterBarnetilleggBP": 0,
+        "nettoBidragEtterSamværsfradrag": 0,
+        "bpAndelAvUVedDeltBostedFaktor": 0,
+        "bpAndelAvUVedDeltBostedBeløp": 0,
+        "løpendeForskudd": 0,
+        "løpendeBidrag": 0,
+        "barnetErSelvforsørget": false,
+        "bidragJustertForDeltBosted": false,
+        "bidragJustertForNettoBarnetilleggBP": false,
+        "bidragJustertForNettoBarnetilleggBM": false,
+        "bidragJustertNedTilEvne": false,
+        "bidragJustertNedTil25ProsentAvInntekt": false,
+        "bidragJustertTilForskuddssats": false,
+        "begrensetRevurderingUtført": false,
+        "ikkeOmsorgForBarnet": false,
+        "uminusNettoBarnetilleggBM": 0
+      },
+      "grunnlagsreferanseListe": [
+        "SAMVÆRSPERIODE_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370_person_PERSON_SØKNADSBARN_19071581023_6114368_2023-11"
+      ],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": "person_PERSON_SØKNADSBARN_19071581023_6114368"
+    },
+    {
+      "referanse": "søknad",
+      "type": "SØKNAD",
+      "innhold": {
+        "mottattDato": [
+          2024,
+          2,
+          20
+        ],
+        "søktFraDato": [
+          2023,
+          11,
+          1
+        ],
+        "søktAv": "BIDRAGSMOTTAKER",
+        "klageMottattDato": null,
+        "opprinneligVedtakstype": null,
+        "begrensetRevurdering": false,
+        "egetTiltak": false
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
+    }
+  ],
+  "stønadsendringListe": [
+    {
+      "type": "BIDRAG",
+      "sak": "2309466",
+      "skyldner": "03038545530",
+      "kravhaver": "19071581023",
+      "mottaker": "19109233849",
+      "førsteIndeksreguleringsår": 2025,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "omgjørVedtakId": null,
+      "eksternReferanse": null,
+      "grunnlagReferanseListe": [],
+      "periodeListe": [
+        {
+          "periode": {
+            "fom": [
+              2023,
+              11
+            ],
+            "til": null
+          },
+          "beløp": 8340.0,
+          "valutakode": "NOK",
+          "resultatkode": "IV",
+          "delytelseId": "27096726",
+          "grunnlagReferanseListe": [
+            "SLUTTBEREGNING_BARNEBIDRAG_person_PERSON_SØKNADSBARN_19071581023_6114368_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370__2023-11"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "BIDRAG",
+      "sak": "2309466",
+      "skyldner": "03038545530",
+      "kravhaver": "18011889626",
+      "mottaker": "19109233849",
+      "førsteIndeksreguleringsår": 2025,
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "omgjørVedtakId": null,
+      "eksternReferanse": null,
+      "grunnlagReferanseListe": [],
+      "periodeListe": [
+        {
+          "periode": {
+            "fom": [
+              2023,
+              11
+            ],
+            "til": null
+          },
+          "beløp": 6570.0,
+          "valutakode": "NOK",
+          "resultatkode": "IV",
+          "delytelseId": "27096728",
+          "grunnlagReferanseListe": [
+            "SLUTTBEREGNING_BARNEBIDRAG_person_PERSON_SØKNADSBARN_18011889626_6114369_person_PERSON_BIDRAGSPLIKTIG_03038545530_6114370__2023-11"
+          ]
+        }
+      ]
+    }
+  ],
+  "engangsbeløpListe": [
+    {
+      "type": "DIREKTE_OPPGJOR",
+      "sak": "2309466",
+      "skyldner": "03038545530",
+      "kravhaver": "19071581023",
+      "mottaker": "19109233849",
+      "beløp": 12000.0,
+      "valutakode": "NOK",
+      "resultatkode": "V",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "omgjørVedtakId": null,
+      "referanse": "Bisys-SL-58191833",
+      "delytelseId": "27096727",
+      "eksternReferanse": null,
+      "grunnlagReferanseListe": [],
+      "betaltBeløp": null
+    },
+    {
+      "type": "DIREKTE_OPPGJOR",
+      "sak": "2309466",
+      "skyldner": "03038545530",
+      "kravhaver": "18011889626",
+      "mottaker": "19109233849",
+      "beløp": 12000.0,
+      "valutakode": "NOK",
+      "resultatkode": "V",
+      "innkreving": "MED_INNKREVING",
+      "beslutning": "ENDRING",
+      "omgjørVedtakId": null,
+      "referanse": "Bisys-SL-58191832",
+      "delytelseId": "27096729",
+      "eksternReferanse": null,
+      "grunnlagReferanseListe": [],
+      "betaltBeløp": null
+    }
+  ],
+  "behandlingsreferanseListe": [
+    {
+      "kilde": "BISYS_SØKNAD",
+      "referanse": "56227922"
+    }
+  ]
+}
