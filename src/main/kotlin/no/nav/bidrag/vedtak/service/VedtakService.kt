@@ -79,6 +79,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
+        if (vedtaksforslag && vedtakRequest.vedtakstidspunkt != null) {
+            throw IllegalArgumentException("Vedtakstidspunkt kan ikke være angitt ved opprettelse av vedtaksforslag")
+        }
+
         val vedtakstidspunkt = if (vedtaksforslag) null else vedtakRequest.vedtakstidspunkt ?: LocalDateTime.now()
 
         // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
@@ -387,6 +391,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             LOGGER.error(feilmelding)
             SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
             throw IllegalArgumentException(feilmelding)
+        }
+
+        if (vedtakRequest.vedtakstidspunkt != null) {
+            throw IllegalArgumentException("Vedtakstidspunkt kan ikke være angitt ved oppdatering av vedtaksforslag. " +
+                "Bruk endepunkt for å fatte vedtak fra vedtaksforslag")
         }
 
         val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
