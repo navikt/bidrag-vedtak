@@ -26,3 +26,10 @@ fun OpprettVedtakRequestDto.referanseTilPåklagetEngangsbeløpMangler(): Nothing
     objectmapper.writeValueAsBytes(this),
     null,
 )
+
+fun OpprettVedtakRequestDto.angittVedtakForOppdaterVedtaksforslagFinnesIkke(): Nothing = throw HttpClientErrorException(
+    HttpStatus.BAD_REQUEST,
+    "Angitt vedtak i mottatt forspørsel for å oppdatere vedtaksforslag finnes ikke",
+    objectmapper.writeValueAsBytes(this),
+    null,
+)

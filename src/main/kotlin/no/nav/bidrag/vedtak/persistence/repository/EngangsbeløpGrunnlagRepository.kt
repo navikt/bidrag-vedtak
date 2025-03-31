@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import org.springframework.transaction.annotation.Transactional
 
 interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag, EngangsbeløpGrunnlagPK?> {
 
@@ -21,8 +22,9 @@ interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag
     fun hentAlleGrunnlagForEngangsbeløp(engangsbeløpsid: Int): List<EngangsbeløpGrunnlag>
 
     @Modifying
+    @Transactional
     @Query(
-        "delete from EngangsbeløpGrunnlag er where er.engangsbeløp.vedtak.id = :vedtaksid",
+        "delete from EngangsbeløpGrunnlag er where er.engangsbeløp.id = :engangsbeløpsid",
     )
-    fun deleteByEngangsbeløpVedtakId(@Param("vedtaksid") vedtaksid: Int): Int
+    fun slettForEngangsbeløp(@Param("engangsbeløpsid") engangsbeløpsid: Int): Int
 }

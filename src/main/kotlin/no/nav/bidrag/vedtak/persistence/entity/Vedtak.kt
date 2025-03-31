@@ -16,7 +16,7 @@ data class Vedtak(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vedtaksid")
-    val id: Int = 0,
+    var id: Int = 0,
 
     @Column(nullable = false, name = "kilde")
     val kilde: String = "",
@@ -34,7 +34,7 @@ data class Vedtak(
     val kildeapplikasjon: String = "",
 
     @Column(nullable = true, name = "vedtakstidspunkt")
-    val vedtakstidspunkt: LocalDateTime? = LocalDateTime.now(),
+    var vedtakstidspunkt: LocalDateTime? = LocalDateTime.now(),
 
     @Column(nullable = true, name = "unik_referanse")
     val unikReferanse: String? = null,
@@ -51,7 +51,7 @@ data class Vedtak(
     @Column(nullable = false, name = "opprettet_tidspunkt")
     val opprettetTidspunkt: LocalDateTime = LocalDateTime.now(),
 
-    )
+)
 
 fun OpprettVedtakRequestDto.toVedtakEntity(
     opprettetAv: String,
@@ -77,4 +77,3 @@ fun OpprettVedtakRequestDto.toVedtakEntity(
         },
     )
 }
-

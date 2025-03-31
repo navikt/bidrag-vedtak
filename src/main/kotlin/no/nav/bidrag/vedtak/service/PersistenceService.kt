@@ -41,7 +41,9 @@ class PersistenceService(
 ) {
 
     @Timed
-    fun  opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
+    fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
+
+    fun oppdaterVedtaksforslag(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
     @Timed
     fun hentVedtak(id: Int): Vedtak =
@@ -171,4 +173,21 @@ class PersistenceService(
     }
 
     fun hentVedtakForUnikReferanse(referanse: String): Vedtak = vedtakRepository.hentVedtakForUnikReferanse(referanse)
+
+    fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int): Int = periodeGrunnlagRepository.slettForPeriode(periodeId)
+
+    fun slettAlleStønadsendringGrunnlagForStønadsendring(stønadsendringsid: Int): Int =
+        stønadsendringGrunnlagRepository.slettStønadsendringGrunnlagForStønadsendring(stønadsendringsid)
+
+    fun slettAlleEngangsbeløpGrunnlagForEngangsbeløp(engangsbeløpsid: Int): Int = engangsbeløpGrunnlagRepository.slettForEngangsbeløp(engangsbeløpsid)
+
+    fun slettAllePerioderForStønadsendring(stønadsendringsid: Int): Int = periodeRepository.slettPerioderForStønadsendring(stønadsendringsid)
+
+    fun slettAlleBehandlingsreferanserForVedtak(vedtaksid: Int): Int = behandlingsreferanseRepository.slettBehandlingsreferanserForVedtak(vedtaksid)
+
+    fun slettAlleEngangsbeløpForVedtak(vedtaksid: Int): Int = engangsbeløpRepository.slettEngangsbeløpForVedtak(vedtaksid)
+
+    fun slettStønadsendring(stønadsendringsid: Int): Int = stønadsendringRepository.slettStønadsendring(stønadsendringsid)
+
+    fun slettVedtak(vedtaksid: Int): Int = vedtakRepository.slettVedtak(vedtaksid)
 }

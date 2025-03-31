@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
@@ -15,4 +16,11 @@ interface BehandlingsreferanseRepository : CrudRepository<Behandlingsreferanse, 
         "select br from Behandlingsreferanse br where br.kilde = :kilde and br.referanse = :behandlingsreferanse",
     )
     fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): List<Behandlingsreferanse>
+
+    // Sletter alle perioder tilknyttet en stønadsendring
+    @Modifying
+    @Query(
+        "delete from Behandlingsreferanse br where br.vedtak.id = :vedtaksid",
+    )
+    fun slettBehandlingsreferanserForVedtak(vedtaksid: Int): Int
 }
