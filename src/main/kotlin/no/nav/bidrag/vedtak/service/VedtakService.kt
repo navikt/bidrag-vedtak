@@ -394,8 +394,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         if (vedtakRequest.vedtakstidspunkt != null) {
-            throw IllegalArgumentException("Vedtakstidspunkt kan ikke være angitt ved oppdatering av vedtaksforslag. " +
-                "Bruk endepunkt for å fatte vedtak fra vedtaksforslag")
+            throw IllegalArgumentException(
+                "Vedtakstidspunkt kan ikke være angitt ved oppdatering av vedtaksforslag. " +
+                    "Bruk endepunkt for å fatte vedtak fra vedtaksforslag",
+            )
         }
 
         val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
