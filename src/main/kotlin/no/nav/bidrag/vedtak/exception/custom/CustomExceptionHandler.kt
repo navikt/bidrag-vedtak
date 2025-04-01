@@ -18,4 +18,16 @@ class CustomExceptionHandler(private val exceptionLogger: ExceptionLogger) {
         exceptionLogger.logException(e, "CustomExceptionHandler")
         return ResponseEntity(e.message, HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler(PreconditionFailedException::class)
+    fun handlePreconditionFailedException(e: PreconditionFailedException): ResponseEntity<String> {
+        exceptionLogger.logException(e, "Precondition feilet")
+        return ResponseEntity(e.message, HttpStatus.PRECONDITION_FAILED)
+    }
+
+    @ExceptionHandler(ConflictException::class)
+    fun handleConflictException(e: ConflictException): ResponseEntity<String> {
+        exceptionLogger.logException(e, "Innsendt unik-referanse finnes fra før")
+        return ResponseEntity(e.message, HttpStatus.CONFLICT)
+    }
 }

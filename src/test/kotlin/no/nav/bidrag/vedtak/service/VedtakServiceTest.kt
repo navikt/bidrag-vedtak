@@ -23,6 +23,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedInputparametr
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagMedOppdatertInnholdRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagRequest
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
@@ -1702,6 +1703,18 @@ class VedtakServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException::class.java).isThrownBy {
             vedtakService.hentVedtak(slettetVedtaksforslagVedtaksid)
+        }
+    }
+
+    @Disabled
+    @Test
+    fun `test at exception kastes når unikReferanse finnes fra før`() {
+        // Oppretter nytt vedtak
+        val nyttVedtakRequest = byggVedtakRequest()
+        vedtakService.opprettVedtak(nyttVedtakRequest, false)
+
+        assertThatExceptionOfType(ConflictException::class.java).isThrownBy {
+            vedtakService.opprettVedtak(nyttVedtakRequest, false)
         }
     }
 }

@@ -37,7 +37,9 @@ import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
+import no.nav.bidrag.vedtak.exception.custom.PreconditionFailedException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
 import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
@@ -83,6 +85,21 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             throw IllegalArgumentException("Vedtakstidspunkt kan ikke være angitt ved opprettelse av vedtaksforslag")
         }
 
+        val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
+        if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
+            stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
+                if (!validerAtSisteVedtaksidErOk(stønad)) {
+                    val feilmelding =
+                        "Angitt sisteVedtaksid for stønad ${stønad.sak} + ' ' + ${stønad.type} " +
+                            "+ ' ' + ${stønad.skyldner} + ' ' + ${stønad.kravhaver} " +
+                            " ' ' + ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid"
+                    LOGGER.error(feilmelding)
+                    SECURE_LOGGER.error(feilmelding)
+                    throw PreconditionFailedException(feilmelding)
+                }
+            }
+        }
+
         val vedtakstidspunkt = if (vedtaksforslag) null else vedtakRequest.vedtakstidspunkt ?: LocalDateTime.now()
 
         // sjekk om alle referanser for engangsbeløp er unike. Forekomster med null i referanse utelukkes i sjekken.
@@ -99,8 +116,27 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         // Opprett vedtak
-        val opprettetVedtak =
+        val opprettetVedtak = try {
             persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon, vedtakstidspunkt))
+        } catch (e: Exception) {
+            // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
+            if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
+                LOGGER.error(
+                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen.",
+                )
+                SECURE_LOGGER.error(
+                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtakRequest.unikReferanse}. Request: ${
+                        tilJson(
+                            vedtakRequest,
+                        )
+                    }",
+                    e.message,
+                )
+                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
+            }
+            //
+            throw e
+        }
 
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
@@ -962,6 +998,25 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             referanse = genererUnikReferanse(vedtaksid)
         }
         return referanse
+    }
+
+    private fun validerAtSisteVedtaksidErOk(stønad: OpprettStønadsendringRequestDto): Boolean {
+        val sisteVedtaksid = persistenceService.hentSisteVedtaksidForStønad(
+            stønad.sak.verdi,
+            stønad.type.name,
+            stønad.skyldner.verdi,
+            stønad.kravhaver.verdi,
+        )
+        if (stønad.sisteVedtaksid?.toInt() != sisteVedtaksid) {
+            val feilmelding =
+                "Angitt sisteVedtaksid for stønad ${stønad.sak} + ' ' + ${stønad.type} + ' ' + ${stønad.skyldner} + ' ' + ${stønad.kravhaver} " +
+                    " ' ' + ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid: $sisteVedtaksid"
+            LOGGER.error(feilmelding)
+            SECURE_LOGGER.error(feilmelding)
+            return false
+        }
+
+        return true
     }
 
     companion object {

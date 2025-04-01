@@ -190,8 +190,4 @@ class PersistenceService(
     fun slettStønadsendring(stønadsendringsid: Int): Int = stønadsendringRepository.slettStønadsendring(stønadsendringsid)
 
     fun slettVedtak(vedtaksid: Int): Int = vedtakRepository.slettVedtak(vedtaksid)
-
-    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
-        stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
-            .maxOfOrNull { it.vedtak.id } ?: 0
 }

@@ -26,6 +26,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
@@ -259,6 +260,31 @@ class VedtakControllerTest {
             Executable { assertThat(oppdatertVedtak).isNotNull() },
             Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
             Executable { assertThat(oppdatertVedtak.body).isNotNull() },
+        )
+    }
+
+    @Disabled
+    @Test
+    fun `test at det 409 Conflict returneres når innsendt unikeReferanse i vedtak finnes fra før`() {
+        // Oppretter ny forekomst
+        val respons1 = securedTestRestTemplate.exchange(
+            fullUrlForNyttVedtak(),
+            HttpMethod.POST,
+            byggVedtakRequest(),
+            String::class.java,
+        )
+
+        val respons2 = securedTestRestTemplate.exchange(
+            fullUrlForNyttVedtak(),
+            HttpMethod.POST,
+            byggVedtakRequest(),
+            String::class.java,
+        )
+
+        assertAll(
+            Executable { assertThat(respons2).isNotNull() },
+            Executable { assertThat(respons2.statusCode).isEqualTo(HttpStatus.CONFLICT) },
+            Executable { assertThat(respons2.body).isNull() },
         )
     }
 
