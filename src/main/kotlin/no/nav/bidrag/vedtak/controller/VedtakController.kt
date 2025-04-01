@@ -46,7 +46,11 @@ class VedtakController(private val vedtakService: VedtakService) {
                 content = [Content(schema = Schema(hidden = true))],
             ),
             ApiResponse(responseCode = "409", description = "Unik referanse finnes fra før", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "412", description = "Angitt sisteVedtaksid er ikke nyeste vedtak", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "412",
+                description = "Angitt sisteVedtaksid er ikke nyeste vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
         ],
