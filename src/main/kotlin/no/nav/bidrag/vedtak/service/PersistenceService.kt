@@ -46,7 +46,7 @@ class PersistenceService(
     fun opprettVedtak(vedtak: Vedtak): Vedtak = try {
         vedtakRepository.save(vedtak)
     } catch (e: Exception) {
-        // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
+        // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen. Håndteres her for å unngå logging av referanse.
         if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
             LOGGER.error(
                 "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen.",

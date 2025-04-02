@@ -88,12 +88,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
             stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
                 if (!validerAtSisteVedtaksidErOk(stønad)) {
-                    LOGGER.error("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid. Saksnr: ${stønad.sak}")
-                    val feilmelding =
-                        "Angitt sisteVedtaksid for stønad ${stønad.sak} ${stønad.type} " +
-                            " ${stønad.skyldner} ${stønad.kravhaver}: ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid"
-                    SECURE_LOGGER.error(feilmelding)
-                    throw PreconditionFailedException(feilmelding)
+                    throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
                 }
             }
         }
@@ -116,26 +111,26 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         // Opprett vedtak
         val opprettetVedtak = // try {
             persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon, vedtakstidspunkt))
-   /*     } catch (e: Exception) {
-            // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
-            if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
-                LOGGER.error(
-                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen.",
-                )
-                SECURE_LOGGER.error(
-                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtakRequest.unikReferanse}. Request: ${
-                        tilJson(
-                            vedtakRequest,
-                        )
-                    }",
-                    e.message,
-                )
-                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
-            }
-            //
-            throw e
-        }
-*/
+        /*     } catch (e: Exception) {
+                 // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
+                 if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
+                     LOGGER.error(
+                         "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen.",
+                     )
+                     SECURE_LOGGER.error(
+                         "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtakRequest.unikReferanse}. Request: ${
+                             tilJson(
+                                 vedtakRequest,
+                             )
+                         }",
+                         e.message,
+                     )
+                     throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
+                 }
+                 //
+                 throw e
+             }
+     */
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
         val engangsbeløpReferanseListe = mutableListOf<String>()
@@ -1006,10 +1001,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             stønad.kravhaver.verdi,
         )
         if (stønad.sisteVedtaksid?.toInt() != sisteVedtaksid) {
+            LOGGER.error("Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for sak: ${stønad.sak} er ikke lik lagret siste vedtaksid: $sisteVedtaksid")
             val feilmelding =
-                "Angitt sisteVedtaksid for stønad ${stønad.sak} + ' ' + ${stønad.type} + ' ' + ${stønad.skyldner} + ' ' + ${stønad.kravhaver} " +
-                    " ' ' + ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid: $sisteVedtaksid"
-            LOGGER.error(feilmelding)
+                "Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for stønad ${stønad.sak} ${stønad.type} ${stønad.skyldner} ${stønad.kravhaver}: " +
+                    "er ikke lik lagret siste vedtaksid: $sisteVedtaksid"
             SECURE_LOGGER.error(feilmelding)
             return false
         }
