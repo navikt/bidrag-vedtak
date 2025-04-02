@@ -93,5 +93,4 @@ class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
             .header(HttpHeaders.WARNING, feilmelding)
             .build<Any>()
     }
-
 }
