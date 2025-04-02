@@ -90,9 +90,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
                 if (!validerAtSisteVedtaksidErOk(stønad)) {
                     val feilmelding =
-                        "Angitt sisteVedtaksid for stønad ${stønad.sak} + ' ' + ${stønad.type} " +
-                            "+ ' ' + ${stønad.skyldner} + ' ' + ${stønad.kravhaver} " +
-                            " ' ' + ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid"
+                        "Angitt sisteVedtaksid for stønad ${stønad.sak} ${stønad.type} " +
+                            " ${stønad.skyldner} ${stønad.kravhaver}: ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid"
                     LOGGER.error(feilmelding)
                     SECURE_LOGGER.error(feilmelding)
                     throw PreconditionFailedException(feilmelding)
