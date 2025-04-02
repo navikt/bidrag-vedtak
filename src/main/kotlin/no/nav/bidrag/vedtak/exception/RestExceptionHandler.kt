@@ -2,6 +2,8 @@ package no.nav.bidrag.vedtak.exception
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import no.nav.bidrag.commons.ExceptionLogger
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
+import no.nav.bidrag.vedtak.exception.custom.PreconditionFailedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpHeaders
@@ -71,4 +73,25 @@ class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
         }
         return "${paths.joinToString("->")} kan ikke være null"
     }
+
+    @ResponseBody
+    @ExceptionHandler(ConflictException::class)
+    protected fun handleConflictException(e: ConflictException): ResponseEntity<*> {
+        val feilmelding = "Feil, unikReferanse finnes fra før: ${e.message}"
+        return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .header(HttpHeaders.WARNING, feilmelding)
+            .build<Any>()
+    }
+
+    @ResponseBody
+    @ExceptionHandler(PreconditionFailedException::class)
+    protected fun handleConflictException(e: PreconditionFailedException): ResponseEntity<*> {
+        val feilmelding = "Feil, angitt sisteVedtaksid er ikke det nyeste vedtaket for stønaden: ${e.message}"
+        return ResponseEntity
+            .status(HttpStatus.PRECONDITION_FAILED)
+            .header(HttpHeaders.WARNING, feilmelding)
+            .build<Any>()
+    }
+
 }
