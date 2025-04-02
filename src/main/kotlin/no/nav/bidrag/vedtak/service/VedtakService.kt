@@ -37,7 +37,6 @@ import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
-import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
 import no.nav.bidrag.vedtak.exception.custom.PreconditionFailedException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
@@ -89,10 +88,10 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
             stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
                 if (!validerAtSisteVedtaksidErOk(stønad)) {
+                    LOGGER.error("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid. Saksnr: ${stønad.sak}")
                     val feilmelding =
                         "Angitt sisteVedtaksid for stønad ${stønad.sak} ${stønad.type} " +
                             " ${stønad.skyldner} ${stønad.kravhaver}: ${stønad.sisteVedtaksid}  + er ikke lik lagret siste vedtaksid"
-                    LOGGER.error(feilmelding)
                     SECURE_LOGGER.error(feilmelding)
                     throw PreconditionFailedException(feilmelding)
                 }
@@ -115,9 +114,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         // Opprett vedtak
-        val opprettetVedtak = try {
+        val opprettetVedtak = // try {
             persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon, vedtakstidspunkt))
-        } catch (e: Exception) {
+   /*     } catch (e: Exception) {
             // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
             if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
                 LOGGER.error(
@@ -136,7 +135,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             //
             throw e
         }
-
+*/
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
         val engangsbeløpReferanseListe = mutableListOf<String>()

@@ -6,6 +6,7 @@ import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
 import no.nav.bidrag.vedtak.persistence.entity.EngangsbeløpGrunnlag
@@ -25,6 +26,7 @@ import no.nav.bidrag.vedtak.persistence.repository.StønadsendringGrunnlagReposi
 import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -41,7 +43,27 @@ class PersistenceService(
 ) {
 
     @Timed
-    fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
+    fun opprettVedtak(vedtak: Vedtak): Vedtak = try {
+        vedtakRepository.save(vedtak)
+    } catch (e: Exception) {
+        // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
+        if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
+            LOGGER.error(
+                "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen.",
+            )
+            SECURE_LOGGER.error(
+                "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtak.unikReferanse}. Request: ${
+                    tilJson(
+                        vedtak,
+                    )
+                }",
+                e.message,
+            )
+            throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
+        }
+        //
+        throw e
+    }
 
     fun oppdaterVedtaksforslag(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
@@ -194,4 +216,8 @@ class PersistenceService(
     fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
         stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
             .maxOfOrNull { it.vedtak.id } ?: 0
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(PersistenceService::class.java)
+    }
 }
