@@ -57,11 +57,12 @@ class PersistenceService(
                         vedtak,
                     )
                 }",
-                e.message,
+                e,
             )
             throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
         }
-        //
+        LOGGER.error("Uventet feil ved lagring av vedtak")
+        SECURE_LOGGER.error("Uventet feil ved lagring av vedtak: ${e.message}", e)
         throw e
     }
 

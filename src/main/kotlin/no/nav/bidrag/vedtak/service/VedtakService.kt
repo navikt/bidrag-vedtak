@@ -130,7 +130,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                  //
                  throw e
              }
-     */
+         */
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
         val engangsbeløpReferanseListe = mutableListOf<String>()
