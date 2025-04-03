@@ -308,7 +308,6 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
-
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
