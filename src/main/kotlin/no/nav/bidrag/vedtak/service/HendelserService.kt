@@ -1,12 +1,15 @@
 package no.nav.bidrag.vedtak.service
 
 import no.nav.bidrag.commons.CorrelationId
+import no.nav.bidrag.domene.enums.vedtak.VedtaksforslagStatus
+import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.transport.behandling.vedtak.Behandlingsreferanse
 import no.nav.bidrag.transport.behandling.vedtak.Engangsbeløp
 import no.nav.bidrag.transport.behandling.vedtak.Periode
 import no.nav.bidrag.transport.behandling.vedtak.Sporingsdata
 import no.nav.bidrag.transport.behandling.vedtak.Stønadsendring
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
+import no.nav.bidrag.transport.behandling.vedtak.VedtaksforslagHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
@@ -17,19 +20,20 @@ import java.time.LocalDateTime
 @Service
 class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventProducer) {
 
-    fun opprettHendelse(
+    fun opprettHendelseVedtak(
         vedtakRequest: OpprettVedtakRequestDto,
         vedtakId: Int,
         opprettetTidspunkt: LocalDateTime,
         opprettetAv: String,
         opprettetAvNavn: String?,
         kildeapplikasjon: String,
+        vedtakstidspunkt: LocalDateTime,
     ) {
         val vedtakHendelse = VedtakHendelse(
             kilde = vedtakRequest.kilde,
             type = vedtakRequest.type,
             id = vedtakId,
-            vedtakstidspunkt = vedtakRequest.vedtakstidspunkt!!,
+            vedtakstidspunkt = vedtakstidspunkt,
             enhetsnummer = vedtakRequest.enhetsnummer,
             opprettetAv = opprettetAv,
             opprettetAvNavn = opprettetAvNavn,
@@ -42,7 +46,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             behandlingsreferanseListe = mapBehandlingsreferanser(vedtakRequest),
             sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
         )
-        vedtakKafkaEventProducer.publish(vedtakHendelse)
+        vedtakKafkaEventProducer.publishVedtak(vedtakHendelse)
         SECURE_LOGGER.info("Ny melding lagt på topic vedtak: ${tilJson(vedtakHendelse)}")
     }
 
@@ -118,5 +122,21 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
             )
         }
         return behandlingsreferanseListe
+    }
+
+    fun opprettHendelseVedtaksforslag(status: VedtaksforslagStatus, request: OpprettVedtakRequestDto?, vedtakId: Int) {
+        // Lager liste med unike saksnummer
+        val saksnummerListe = request?.stønadsendringListe
+            ?.map { it.sak.verdi }
+            ?.toSet()
+            ?.map { Saksnummer(it) }
+        val vedtaksforslagHendelse = VedtaksforslagHendelse(
+            status = status,
+            vedtaksid = vedtakId,
+            saksnummerListe = saksnummerListe ?: emptyList(),
+            sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
+        )
+        vedtakKafkaEventProducer.publishVedtaksforslag(vedtaksforslagHendelse)
+        SECURE_LOGGER.info("Ny melding lagt på topic vedtaksforslag: ${tilJson(vedtaksforslagHendelse)}")
     }
 }

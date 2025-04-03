@@ -5,6 +5,7 @@ dbname: bidrag-vedtak-q1
 kafka:
   pool: nav-dev
 kafka-topic-vedtak: bidrag.vedtak-q1
+kafka-topic-vedtaksforslag: bidrag.vedtaksforslag-q1
 spring-profiles: live,nais,database-new
 azureAccessInbound:
   - application: bidrag-revurder-forskudd-data-q1

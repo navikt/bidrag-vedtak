@@ -1,6 +1,7 @@
 package no.nav.bidrag.vedtak.persistence.repository
 
 import no.nav.bidrag.vedtak.persistence.entity.Engangsbeløp
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
@@ -15,4 +16,11 @@ interface EngangsbeløpRepository : CrudRepository<Engangsbeløp, Int?> {
         "select eb.referanse from Engangsbeløp eb where eb.vedtak.id = :vedtaksid and eb.referanse = :referanse",
     )
     fun sjekkReferanse(vedtaksid: Int, referanse: String): String?
+
+    // Sletter alle engangsbeløp for vedtak
+    @Modifying
+    @Query(
+        "delete from Engangsbeløp eb where eb.vedtak.id = :vedtaksid",
+    )
+    fun slettEngangsbeløpForVedtak(vedtaksid: Int): Int
 }

@@ -82,6 +82,8 @@ spec:
   env:
     - name: TOPIC_VEDTAK
       value: {{ kafka-topic-vedtak }}
+    - name: TOPIC_VEDTAKSFORSLAG
+      value: {{ kafka-topic-vedtaksforslag }}
     - name: BIDRAG_ORGANISASJON_URL
       value: https://{{ azure.bidrag_organisasjon_url }}/bidrag-organisasjon
     - name: BIDRAG_ORGANISASJON_SCOPE

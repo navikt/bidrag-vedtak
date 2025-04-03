@@ -54,11 +54,13 @@ class BidragVedtakConfig {
     fun vedtakKafkaEventProducer(
         kafkaTemplate: KafkaTemplate<String?, String?>?,
         objectMapper: ObjectMapper,
-        @Value("\${TOPIC_VEDTAK}") topic: String,
+        @Value("\${TOPIC_VEDTAK}") topicVedtak: String,
+        @Value("\${TOPIC_VEDTAKSFORSLAG}") topicVedtaksforslag: String,
     ) = DefaultVedtakKafkaEventProducer(
         kafkaTemplate,
         objectMapper,
-        topic,
+        topicVedtak,
+        topicVedtaksforslag,
     )
 
     @Bean
