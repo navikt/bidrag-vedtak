@@ -111,10 +111,12 @@ class HendelserServiceTest {
                             "E",
                         ),
                         sisteVedtaksid = null,
-                        førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING, Beslutningstype.ENDRING,
+                        førsteIndeksreguleringsår = 2024,
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null, eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
-                        listOf(
+                        periodeListe = listOf(
                             OpprettPeriodeRequestDto(
                                 periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
                                 beløp = BigDecimal.ONE,
@@ -161,11 +163,11 @@ class HendelserServiceTest {
                         ),
                         sisteVedtaksid = null,
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
-                        Beslutningstype.ENDRING,
+                        beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
-                        listOf(
+                        periodeListe = listOf(
                             OpprettPeriodeRequestDto(
                                 periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
                                 beløp = BigDecimal.ONE,
@@ -236,7 +238,7 @@ class HendelserServiceTest {
                         omgjørVedtakId = null,
                         eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
-                        listOf(
+                        periodeListe = listOf(
                             OpprettPeriodeRequestDto(
                                 periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
                                 beløp = BigDecimal.ONE,
