@@ -186,7 +186,7 @@ class VedtakController(private val vedtakService: VedtakService) {
 
     // Endepunkter for Vedtaksforslag
     // Endepunkt for å enten opprette vedtaksforslag
-    @PostMapping(VEDTAKSFORSLAG)
+    @PostMapping(OPPRETT_VEDTAKSFORSLAG)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtaksforslag")
     @ApiResponses(
         value = [
@@ -332,6 +332,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
         const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse/{unikReferanse}"
+        const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag/"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         const val FATT_VEDTAK = "/vedtaksforslag/fatt-vedtak/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
