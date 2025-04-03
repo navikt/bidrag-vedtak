@@ -232,6 +232,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             stønadsendringListe = stønadsendringListe.map { it.tilDto() },
             engangsbeløpListe = hentEngangsbeløpTilVedtak(engangsbeløpListe),
             behandlingsreferanseListe = behandlingsreferanseResponseListe,
+            unikReferanse = null,
         )
     }
 
@@ -256,6 +257,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             eksternReferanse = eksternReferanse,
             grunnlagReferanseListe = grunnlagReferanseResponseListe,
             periodeListe = hentPerioderTilVedtak(periodeListe),
+            sisteVedtaksid = null,
         )
     }
     private fun hentPerioderTilVedtak(periodeListe: List<Periode>): List<VedtakPeriodeDto> {
@@ -374,12 +376,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtakRequest.kilde.toString() == eksisterendeVedtak.kilde &&
             vedtakRequest.type.toString() == eksisterendeVedtak.type &&
             vedtakRequest.opprettetAv == eksisterendeVedtak.opprettetAv &&
-            vedtakRequest.vedtakstidspunkt.year == eksisterendeVedtak.vedtakstidspunkt.year &&
-            vedtakRequest.vedtakstidspunkt.month == eksisterendeVedtak.vedtakstidspunkt.month &&
-            vedtakRequest.vedtakstidspunkt.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
-            vedtakRequest.vedtakstidspunkt.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
-            vedtakRequest.vedtakstidspunkt.minute == eksisterendeVedtak.vedtakstidspunkt.minute &&
-            vedtakRequest.vedtakstidspunkt.second == eksisterendeVedtak.vedtakstidspunkt.second &&
+            vedtakRequest.vedtakstidspunkt!!.year == eksisterendeVedtak.vedtakstidspunkt.year &&
+            vedtakRequest.vedtakstidspunkt!!.month == eksisterendeVedtak.vedtakstidspunkt.month &&
+            vedtakRequest.vedtakstidspunkt!!.dayOfMonth == eksisterendeVedtak.vedtakstidspunkt.dayOfMonth &&
+            vedtakRequest.vedtakstidspunkt!!.hour == eksisterendeVedtak.vedtakstidspunkt.hour &&
+            vedtakRequest.vedtakstidspunkt!!.minute == eksisterendeVedtak.vedtakstidspunkt.minute &&
+            vedtakRequest.vedtakstidspunkt!!.second == eksisterendeVedtak.vedtakstidspunkt.second &&
             vedtakRequest.enhetsnummer.toString() == eksisterendeVedtak.enhetsnummer &&
             vedtakRequest.innkrevingUtsattTilDato == eksisterendeVedtak.innkrevingUtsattTilDato &&
             vedtakRequest.fastsattILand == eksisterendeVedtak.fastsattILand
