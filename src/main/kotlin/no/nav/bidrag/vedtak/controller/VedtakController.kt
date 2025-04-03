@@ -186,7 +186,7 @@ class VedtakController(private val vedtakService: VedtakService) {
 
     // Endepunkter for Vedtaksforslag
     // Endepunkt for å enten opprette vedtaksforslag eller fatte vedtak fra eksisterende vedtaksforslag
-    @PostMapping(BEHANDLE_VEDTAKSFORSLAG)
+    @PostMapping("/vedtaksforslag", "/vedtaksforslag/{vedtaksid}")
     @Operation(
         security = [SecurityRequirement(name = "bearer-key")],
         summary = "Oppretter nytt vedtaksforslag. Hvis vedtaksid er utfylt så skal det fattes vedtak for angitt vedtaksforslag",
@@ -205,7 +205,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         ],
     )
     fun behandleVedtaksforslag(
-        @PathVariable
+        @PathVariable(required = false)
         vedtaksid: Int?,
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
