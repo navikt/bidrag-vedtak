@@ -223,7 +223,7 @@ class VedtakControllerTest {
         val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
         val unikReferanse = vedtak.unikReferanse
 
-        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/hent-vedtak-for-unik-referanse/$unikReferanse")
+        val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/unikreferanse/$unikReferanse")
 
         assertAll(
             Executable { assertThat(response).isNotNull() },

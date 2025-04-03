@@ -184,11 +184,14 @@ class VedtakController(private val vedtakService: VedtakService) {
     }
 
     // Endepunkter for Vedtaksforslag
-    @PostMapping(OPPRETT_VEDTAKSFORSLAG, "/vedtaksforslag")
-    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtaksforslag")
+    @PostMapping(OPPRETT_VEDTAKSFORSLAG_ELLER_FATT_VEDTAK_FOR_VEDTAKSFORSLAG, "/vedtaksforslag")
+    @Operation(
+        security = [SecurityRequirement(name = "bearer-key")],
+        summary = "Oppretter nytt vedtaksforslag. Hvis vedtaksid er utfylt så skal det fattes vedtak for eksisterende vedtaksforslag",
+    )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Vedtaksforslag opprettet"),
+            ApiResponse(responseCode = "200", description = "Vedtaksforslag behandlet"),
             ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(
                 responseCode = "401",
@@ -200,48 +203,25 @@ class VedtakController(private val vedtakService: VedtakService) {
         ],
     )
     fun opprettVedtaksforslag(
+        @PathVariable
+        vedtaksid: Int?,
         @Valid @RequestBody
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int> {
-        SECURE_LOGGER.info("Følgende request for å opprette vedtaksforslag mottatt: ${tilJson(request)}")
-        val vedtaksforslagOpprettet = vedtakService.opprettVedtak(
-            vedtakRequest = request,
-            vedtaksforslag = true,
-        )
-        LOGGER.info("Vedtaksforslag er opprettet med følgende id: ${vedtaksforslagOpprettet.vedtaksid}")
-        return ResponseEntity(vedtaksforslagOpprettet.vedtaksid, HttpStatus.OK)
-    }
-
-    @PostMapping(OPPDATER_VEDTAKSFORSLAG)
-    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppdaterer grunnlag på et eksisterende vedtaksforslag")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Vedtaksforslag oppdatert"),
-            ApiResponse(
-                responseCode = "400",
-                description = "Data i innsendt vedtak matcher ikke lagrede vedtaksforslagsopplysninger",
-                content = [Content(schema = Schema(hidden = true))],
-            ),
-            ApiResponse(
-                responseCode = "401",
-                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
-                content = [Content(schema = Schema(hidden = true))],
-            ),
-            ApiResponse(responseCode = "404", description = "Vedtaksforslag ikke funnet", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
-        ],
-    )
-    fun oppdaterVedtaksforslag(
-        @PathVariable @NotNull
-        vedtaksid: Int,
-        @Valid @RequestBody
-        request: OpprettVedtakRequestDto,
-    ): ResponseEntity<Int>? {
-        SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtaksforslag med id $vedtaksid: ${tilJson(request)}")
-        val vedtaksforslagOppdatert = vedtakService.oppdaterVedtaksforslag(vedtaksid, request)
-        LOGGER.info("Vedtaksforslag med id $vedtaksforslagOppdatert er oppdatert")
-        return ResponseEntity(vedtaksforslagOppdatert, HttpStatus.OK)
+        if (vedtaksid == null) {
+            SECURE_LOGGER.info("Følgende request for å opprette vedtaksforslag mottatt: ${tilJson(request)}")
+            val vedtaksforslagOpprettet = vedtakService.opprettVedtak(
+                vedtakRequest = request,
+                vedtaksforslag = true,
+            )
+            LOGGER.info("Vedtaksforslag er opprettet med følgende id: ${vedtaksforslagOpprettet.vedtaksid}")
+            return ResponseEntity(vedtaksforslagOpprettet.vedtaksid, HttpStatus.OK)
+        } else {
+            SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtaksforslag med id $vedtaksid: ${tilJson(request)}")
+            val vedtaksforslagOppdatert = vedtakService.oppdaterVedtaksforslag(vedtaksid, request)
+            LOGGER.info("Vedtaksforslag med id $vedtaksforslagOppdatert er oppdatert")
+            return ResponseEntity(vedtaksforslagOppdatert, HttpStatus.OK)
+        }
     }
 
     @DeleteMapping(SLETT_VEDTAKSFORSLAG)
@@ -326,10 +306,9 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
-        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/hent-vedtak-for-unik-referanse/{unikReferanse}"
-        const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag/"
-        const val OPPDATER_VEDTAKSFORSLAG = "/vedtaksforslag/oppdater/{vedtaksid}"
-        const val SLETT_VEDTAKSFORSLAG = "/vedtaksforslag/slett/{vedtaksid}"
+        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse/{unikReferanse}"
+        const val OPPRETT_VEDTAKSFORSLAG_ELLER_FATT_VEDTAK_FOR_VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
+        const val SLETT_VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         const val FATT_VEDTAK_FRA_VEDTAKSFORSLAG = "/vedtaksforslag/fatt-vedtak-fra-vedtaksforslag/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
