@@ -47,11 +47,19 @@ class VedtakController(private val vedtakService: VedtakService) {
                 description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
                 content = [Content(schema = Schema(hidden = true))],
             ),
-            ApiResponse(responseCode = "409", description = "Unik referanse finnes fra før", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "409",
+                description = "Unik referanse finnes fra før",
+                content = [Content(schema = Schema(implementation = ConflictException::class))]
+            ),
             ApiResponse(
                 responseCode = "412",
                 description = "Angitt sisteVedtaksid er ikke nyeste vedtak",
-                content = [Content(schema = Schema(hidden = true))],
+                content = [
+                    Content(
+                        schema = Schema(implementation = ConflictException::class),
+                    ),
+                ],
             ),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
@@ -186,7 +194,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     }
 
     // Endepunkter for Vedtaksforslag
-    // Endepunkt for å enten opprette vedtaksforslag
+    // Endepunkt for å opprette vedtaksforslag
     @PostMapping(OPPRETT_VEDTAKSFORSLAG)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtaksforslag")
     @ApiResponses(
@@ -199,8 +207,13 @@ class VedtakController(private val vedtakService: VedtakService) {
                 content = [Content(schema = Schema(hidden = true))],
             ),
             ApiResponse(
+                responseCode = "409",
+                description = "Unik referanse finnes fra før",
+                content = [Content(schema = Schema(implementation = ConflictException::class))]
+            ),
+            ApiResponse(
                 responseCode = "412",
-                description = "Validering av grunnlag feilet for beregning",
+                description = "Angitt sisteVedtaksid er ikke nyeste vedtak",
                 content = [
                     Content(
                         schema = Schema(implementation = ConflictException::class),

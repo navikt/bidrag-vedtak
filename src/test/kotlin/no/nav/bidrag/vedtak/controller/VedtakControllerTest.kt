@@ -1,6 +1,10 @@
 package no.nav.bidrag.vedtak.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
@@ -10,6 +14,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.TestUtil
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.persistence.repository.BehandlingsreferanseRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpGrunnlagRepository
 import no.nav.bidrag.vedtak.persistence.repository.EngangsbeløpRepository
@@ -21,6 +26,7 @@ import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.service.PersistenceService
 import no.nav.bidrag.vedtak.service.VedtakService
+import no.nav.security.mock.oauth2.http.objectMapper
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -29,7 +35,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.server.LocalServerPort
@@ -40,6 +48,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.web.util.UriComponentsBuilder
 
 @DisplayName("VedtakControllerTest")
@@ -47,6 +58,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @SpringBootTest(classes = [BidragVedtakTest::class], webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableMockOAuth2Server
 @AutoConfigureWireMock(port = 0)
+@AutoConfigureMockMvc
 class VedtakControllerTest {
 
     @Autowired
@@ -87,6 +99,9 @@ class VedtakControllerTest {
 
     @LocalServerPort
     private val port = 0
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
     @BeforeEach
     fun `init`() {
@@ -262,13 +277,17 @@ class VedtakControllerTest {
         )
     }
 
-    private fun fullUrlForNyttVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
 
-    private fun fullUrlForOppdaterVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPDATER_VEDTAK).toUriString()
+    private fun fullUrlForNyttVedtak(): String =
+        UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
+
+    private fun fullUrlForOppdaterVedtak(): String =
+        UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPDATER_VEDTAK).toUriString()
 
     private fun fullUrlForHentVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
 
-    private fun fullUrlForHentVedtakForBehandlingsreferanse(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE).toUriString()
+    private fun fullUrlForHentVedtakForBehandlingsreferanse(): String =
+        UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE).toUriString()
 
     private fun makeFullContextPath(): String = "http://localhost:$port"
 
