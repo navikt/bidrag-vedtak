@@ -16,6 +16,7 @@ import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadRe
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import no.nav.security.token.support.core.api.Protected
@@ -196,6 +197,15 @@ class VedtakController(private val vedtakService: VedtakService) {
                 responseCode = "401",
                 description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
                 content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(
+                responseCode = "412",
+                description = "Validering av grunnlag feilet for beregning",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ConflictException::class),
+                    ),
+                ],
             ),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),

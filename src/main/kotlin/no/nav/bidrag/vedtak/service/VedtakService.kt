@@ -62,6 +62,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 
+data class VedtakConflictResponse(val vedtaksid: Int)
+
 @Service
 @Transactional
 class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
@@ -77,7 +79,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto, vedtaksforslag: Boolean): OpprettVedtakResponseDto {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
-        val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
+        val opprettetAv =
+            vedtakRequest.opprettetAv.trimToNull()
+                ?: TokenUtils.hentSaksbehandlerIdent()
+                ?: TokenUtils.hentApplikasjonsnavn()
+                ?: vedtakRequest.manglerOpprettetAv()
+
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
@@ -126,7 +133,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                     }",
                     e,
                 )
-                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede")
+                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede", VedtakConflictResponse(1))
             }
             LOGGER.error("Uventet feil ved lagring av vedtak")
             SECURE_LOGGER.error("Uventet feil ved lagring av vedtak: ${e.message}", e)
