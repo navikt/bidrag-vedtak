@@ -274,6 +274,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         return VedtakDto(
+            vedtaksid = vedtak.id.toLong(),
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
@@ -941,6 +942,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         return VedtakDto(
+            vedtaksid = vedtak.id.toLong(),
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
