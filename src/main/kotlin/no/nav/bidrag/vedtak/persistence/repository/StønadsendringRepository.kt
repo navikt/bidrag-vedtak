@@ -14,7 +14,7 @@ interface StønadsendringRepository : CrudRepository<Stønadsendring, Int?> {
 
     @Query(
         "select st from Stønadsendring st where st.sak = :saksnr and st.type = :type and st.skyldner = :skyldner and st.kravhaver = :kravhaver " +
-            "and st.vedtak.vedtakstidspunkt != null order by st.vedtak.id",
+            "and st.vedtak.vedtakstidspunkt is not null order by st.vedtak.id",
     )
     fun hentVedtakForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): List<Stønadsendring>
 
