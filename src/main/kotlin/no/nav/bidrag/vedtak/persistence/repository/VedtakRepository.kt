@@ -10,7 +10,7 @@ interface VedtakRepository : JpaRepository<Vedtak, Int?> {
     @Query(
         "select v from Vedtak v where v.unikReferanse = :unikReferanse",
     )
-    fun hentVedtakForUnikReferanse(unikReferanse: String): Vedtak
+    fun hentVedtakForUnikReferanse(unikReferanse: String): Vedtak?
 
     // Slett vedtak
     @Modifying

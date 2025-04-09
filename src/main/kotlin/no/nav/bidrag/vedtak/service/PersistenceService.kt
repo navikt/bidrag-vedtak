@@ -172,7 +172,7 @@ class PersistenceService(
         }
     }
 
-    fun hentVedtakForUnikReferanse(referanse: String): Vedtak = vedtakRepository.hentVedtakForUnikReferanse(referanse)
+    fun hentVedtakForUnikReferanse(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
 
     fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int): Int = periodeGrunnlagRepository.slettForPeriode(periodeId)
 

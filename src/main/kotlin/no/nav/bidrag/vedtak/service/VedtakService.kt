@@ -274,6 +274,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         return VedtakDto(
+            vedtaksid = vedtak.id.toLong(),
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
@@ -923,8 +924,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Hent vedtaksdata
-    fun hentVedtakForUnikReferanse(unikReferanse: String): VedtakDto {
-        val vedtak = persistenceService.hentVedtakForUnikReferanse(unikReferanse)
+    fun hentVedtakForUnikReferanse(unikReferanse: String): VedtakDto? {
+        val vedtak = persistenceService.hentVedtakForUnikReferanse(unikReferanse) ?: return null
         val grunnlagDtoListe = ArrayList<GrunnlagDto>()
         val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(vedtak.id)
         grunnlagListe.forEach {
@@ -941,6 +942,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         return VedtakDto(
+            vedtaksid = vedtak.id.toLong(),
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
