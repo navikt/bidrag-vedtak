@@ -309,7 +309,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtaksforslagSlettet, HttpStatus.OK)
     }
 
-    @GetMapping(HENT_VEDTAK_FOR_UNIK_REFERANSE)
+    @PostMapping(HENT_VEDTAK_FOR_UNIK_REFERANSE)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak tilknyttet unik referanse")
     @ApiResponses(
         value = [
@@ -326,12 +326,12 @@ class VedtakController(private val vedtakService: VedtakService) {
         ],
     )
     fun hentVedtakForUnikReferanse(
-        @PathVariable @NotNull
+        @RequestBody @NotNull
         unikReferanse: String,
-    ): ResponseEntity<VedtakDto> {
+    ): ResponseEntity<VedtakDto?> {
         LOGGER.info("Request for å hente vedtak med følgende unike referanse ble mottatt: $unikReferanse")
         val vedtakFunnet = vedtakService.hentVedtakForUnikReferanse(unikReferanse)
-        SECURE_LOGGER.info("Følgende vedtak ble hentet: $unikReferanse ${tilJson(vedtakFunnet)}")
+        SECURE_LOGGER.info("Følgende vedtak ble hentet: $unikReferanse $vedtakFunnet")
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
@@ -341,7 +341,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
-        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse/{unikReferanse}"
+        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse"
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)

@@ -924,8 +924,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     // Hent vedtaksdata
-    fun hentVedtakForUnikReferanse(unikReferanse: String): VedtakDto {
-        val vedtak = persistenceService.hentVedtakForUnikReferanse(unikReferanse)
+    fun hentVedtakForUnikReferanse(unikReferanse: String): VedtakDto? {
+        val vedtak = persistenceService.hentVedtakForUnikReferanse(unikReferanse) ?: return null
         val grunnlagDtoListe = ArrayList<GrunnlagDto>()
         val grunnlagListe = persistenceService.hentAlleGrunnlagForVedtak(vedtak.id)
         grunnlagListe.forEach {
