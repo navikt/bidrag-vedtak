@@ -354,7 +354,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
-        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse/{unikReferanse}"
+        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse"
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
