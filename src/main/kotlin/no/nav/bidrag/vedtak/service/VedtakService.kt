@@ -118,31 +118,30 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Opprett vedtak
         val opprettetVedtak = try {
+            // Sjekker om det finnes et vedtak med samme unikReferanse som i requesten
+            if (vedtakRequest.unikReferanse != null) {
+                val eksisterendeVedtak = persistenceService.hentVedtakForUnikReferanse(vedtakRequest.unikReferanse!!)
+                if (eksisterendeVedtak != null) {
+                    LOGGER.error(
+                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen. Id: ${eksisterendeVedtak.id}",
+                    )
+                    SECURE_LOGGER.error(
+                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtakRequest.unikReferanse}. " +
+                            "Id: ${eksisterendeVedtak.id}. Request: ${tilJson(vedtakRequest)}",
+                    )
+                    throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede", VedtakConflictResponse(eksisterendeVedtak.id))
+                }
+            }
+
+            // No existing record found, proceed with the insert
             persistenceService.opprettVedtak(vedtakRequest.toVedtakEntity(opprettetAv, opprettetAvNavn, kildeapplikasjon, vedtakstidspunkt))
         } catch (e: Exception) {
-            // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
-            if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
-                val idEksisterendeVedtak =
-                    if (vedtakRequest.unikReferanse == null) null
-                    else persistenceService.hentVedtakForUnikReferanse(vedtakRequest.unikReferanse!!)?.id
-                LOGGER.error(
-                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen. Id: $idEksisterendeVedtak",
-                )
-                SECURE_LOGGER.error(
-                    "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referanse: ${vedtakRequest.unikReferanse}. " +
-                        "Id: $idEksisterendeVedtak. Request: ${
-                            tilJson(
-                                vedtakRequest,
-                            )
-                        }",
-                    e,
-                )
-                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede", VedtakConflictResponse(idEksisterendeVedtak))
-            }
+            // Only handle other unexpected exceptions
             LOGGER.error("Uventet feil ved lagring av vedtak")
             SECURE_LOGGER.error("Uventet feil ved lagring av vedtak: ${e.message}", e)
             throw e
         }
+
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
 
         val engangsbeløpReferanseListe = mutableListOf<String>()
