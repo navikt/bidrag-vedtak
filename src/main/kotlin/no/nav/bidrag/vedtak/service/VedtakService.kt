@@ -62,7 +62,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 
-data class VedtakConflictResponse(val vedtaksid: Int)
+data class VedtakConflictResponse(val vedtaksid: Int?)
 
 @Service
 @Transactional
@@ -135,7 +135,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         }",
                     e,
                 )
-                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede", VedtakConflictResponse(idEksisterendeVedtak!!))
+                throw ConflictException("Et vedtak med angitt unikReferanse finnes allerede", VedtakConflictResponse(idEksisterendeVedtak))
             }
             LOGGER.error("Uventet feil ved lagring av vedtak")
             SECURE_LOGGER.error("Uventet feil ved lagring av vedtak: ${e.message}", e)
