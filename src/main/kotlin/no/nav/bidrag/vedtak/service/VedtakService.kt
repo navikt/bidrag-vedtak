@@ -122,7 +122,9 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         } catch (e: Exception) {
             // Sjekker om lagring feiler pga den unike referansen allerede finnes i vedtaktabellen
             if (e.message?.contains("idx_vedtak_unik_referanse") == true) {
-                val idEksisterendeVedtak = persistenceService.hentVedtakForUnikReferanse(vedtakRequest.unikReferanse!!)?.id
+                val idEksisterendeVedtak =
+                    if (vedtakRequest.unikReferanse == null) null
+                    else persistenceService.hentVedtakForUnikReferanse(vedtakRequest.unikReferanse!!)?.id
                 LOGGER.error(
                     "Feil ved lagring av vedtak. Det finnes allerede et vedtak med denne unike referansen. Id: $idEksisterendeVedtak",
                 )
