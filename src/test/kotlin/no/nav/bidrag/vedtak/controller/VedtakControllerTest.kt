@@ -5,6 +5,7 @@ import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.server.LocalServerPort
@@ -39,6 +41,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
 import org.springframework.web.util.UriComponentsBuilder
 
 @DisplayName("VedtakControllerTest")
@@ -46,6 +49,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @SpringBootTest(classes = [BidragVedtakTest::class], webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableMockOAuth2Server
 @AutoConfigureWireMock(port = 0)
+@AutoConfigureMockMvc
 class VedtakControllerTest {
 
     @Autowired
@@ -86,6 +90,9 @@ class VedtakControllerTest {
 
     @LocalServerPort
     private val port = 0
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
     @BeforeEach
     fun `init`() {
@@ -151,7 +158,7 @@ class VedtakControllerTest {
     @Test
     fun `skal hente alle data for et vedtak`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
 
         // Henter forekomster
         val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
@@ -187,7 +194,7 @@ class VedtakControllerTest {
     @Test
     fun `skal opprette nytt vedtak og hente det via behandlingsreferanse`() {
         // Oppretter ny forekomst
-        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest()).vedtaksid
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
         val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
         val kilde = vedtak.behandlingsreferanseListe[0].kilde
         val behandlingsreferanse = vedtak.behandlingsreferanseListe[0].referanse
@@ -215,7 +222,62 @@ class VedtakControllerTest {
         )
     }
 
+    @Test
+    fun `skal opprette nytt vedtak og hente det via unik referanse`() {
+        // Oppretter ny forekomst
+        val opprettetVedtakId = vedtakService.opprettVedtak(TestUtil.byggVedtakRequest(), false).vedtaksid
+        val vedtak = vedtakService.hentVedtak(opprettetVedtakId)
+        val unikReferanse = HttpEntity(vedtak.unikReferanse, HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON })
+
+        val opprettResponse = securedTestRestTemplate.exchange(
+            fullUrlHentVedtakForUnikReferanse(),
+            HttpMethod.POST,
+            unikReferanse,
+            String::class.java,
+        )
+
+        assertAll(
+            Executable { assertThat(opprettResponse).isNotNull() },
+            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(opprettResponse.body).isNotNull() },
+        )
+    }
+
+    @Test
+    fun `skal opprette nytt vedtak og så oppdatere det med grunnlag - input fra fil`() {
+        // Bygger request
+        val filnavn = "/testfiler/oppdater_vedtak_med_grunnlag.json"
+        val request = lesFilOgByggRequest(filnavn)
+
+        // Oppretter ny forekomst
+        val opprettResponse = securedTestRestTemplate.exchange(
+            fullUrlForNyttVedtak(),
+            HttpMethod.POST,
+            request,
+            OpprettVedtakResponseDto::class.java,
+        )
+
+        val vedtaksid = opprettResponse.body?.vedtaksid
+
+        val oppdatertVedtak = securedTestRestTemplate.exchange(
+            makeFullContextPath() + "/vedtak/oppdater/$vedtaksid",
+            HttpMethod.POST,
+            request,
+            Int::class.java,
+        )
+
+        assertAll(
+            Executable { assertThat(oppdatertVedtak).isNotNull() },
+            Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
+            Executable { assertThat(oppdatertVedtak.body).isNotNull() },
+        )
+    }
+
     private fun fullUrlForNyttVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPRETT_VEDTAK).toUriString()
+
+    private fun fullUrlHentVedtakForUnikReferanse(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK_FOR_UNIK_REFERANSE).toUriString()
+
+    private fun fullUrlForOppdaterVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.OPPDATER_VEDTAK).toUriString()
 
     private fun fullUrlForHentVedtak(): String = UriComponentsBuilder.fromHttpUrl(makeFullContextPath() + VedtakController.HENT_VEDTAK).toUriString()
 

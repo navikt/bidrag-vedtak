@@ -16,15 +16,18 @@ import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadRe
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.SECURE_LOGGER
+import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.service.VedtakService
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import no.nav.security.token.support.core.api.Protected
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
@@ -44,6 +47,20 @@ class VedtakController(private val vedtakService: VedtakService) {
                 description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
                 content = [Content(schema = Schema(hidden = true))],
             ),
+            ApiResponse(
+                responseCode = "409",
+                description = "Unik referanse finnes fra før",
+                content = [Content(schema = Schema(implementation = ConflictException::class))],
+            ),
+            ApiResponse(
+                responseCode = "412",
+                description = "Angitt sisteVedtaksid er ikke nyeste vedtak",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ConflictException::class),
+                    ),
+                ],
+            ),
             ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
         ],
@@ -53,7 +70,10 @@ class VedtakController(private val vedtakService: VedtakService) {
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<OpprettVedtakResponseDto>? {
         SECURE_LOGGER.info("Følgende request for å opprette vedtak mottatt: ${tilJson(request)}")
-        val vedtakOpprettet = vedtakService.opprettVedtak(request)
+        val vedtakOpprettet = vedtakService.opprettVedtak(
+            vedtakRequest = request,
+            vedtaksforslag = false,
+        )
         LOGGER.info("Vedtak er opprettet med følgende id: ${vedtakOpprettet.vedtaksid}")
         return ResponseEntity(vedtakOpprettet, HttpStatus.OK)
     }
@@ -173,12 +193,170 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakFunnet, HttpStatus.OK)
     }
 
+    // Endepunkter for Vedtaksforslag
+    // Endepunkt for å opprette vedtaksforslag
+    @PostMapping(OPPRETT_VEDTAKSFORSLAG)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppretter nytt vedtaksforslag")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtaksforslag opprettet"),
+            ApiResponse(responseCode = "400", description = "Feil opplysinger oppgitt", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "401",
+                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(
+                responseCode = "409",
+                description = "Unik referanse finnes fra før",
+                content = [Content(schema = Schema(implementation = ConflictException::class))],
+            ),
+            ApiResponse(
+                responseCode = "412",
+                description = "Angitt sisteVedtaksid er ikke nyeste vedtak",
+                content = [
+                    Content(
+                        schema = Schema(implementation = ConflictException::class),
+                    ),
+                ],
+            ),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun opprettVedtaksforslag(
+        @Valid @RequestBody
+        request: OpprettVedtakRequestDto,
+    ): ResponseEntity<Int> {
+        SECURE_LOGGER.info("Følgende request for å opprette vedtaksforslag mottatt: ${tilJson(request)}")
+        val vedtaksforslagOpprettet = vedtakService.opprettVedtak(
+            vedtakRequest = request,
+            vedtaksforslag = true,
+        )
+        LOGGER.info("Vedtaksforslag er opprettet med følgende id: ${vedtaksforslagOpprettet.vedtaksid}")
+        return ResponseEntity(vedtaksforslagOpprettet.vedtaksid, HttpStatus.OK)
+    }
+
+    // Endepunkt for å oppdatere vedtaksforslag
+    @PutMapping(VEDTAKSFORSLAG)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppdaterer grunnlag på et eksisterende vedtaksforslag")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtaksforslag oppdatert"),
+            ApiResponse(
+                responseCode = "400",
+                description = "Data i innsendt vedtak matcher ikke lagrede vedtaksforslagsopplysninger",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "Sikkerhetstoken mangler, er utløpt, eller av andre årsaker ugyldig",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtaksforslag ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun oppdaterVedtaksforslag(
+        @PathVariable @NotNull
+        vedtaksid: Int,
+        @Valid @RequestBody
+        request: OpprettVedtakRequestDto,
+    ): ResponseEntity<Int>? {
+        SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtaksforslag med id $vedtaksid: ${tilJson(request)}")
+        val vedtaksforslagOppdatert = vedtakService.oppdaterVedtaksforslag(vedtaksid, request)
+        LOGGER.info("Vedtaksforslag med id $vedtaksforslagOppdatert er oppdatert")
+        return ResponseEntity(vedtaksforslagOppdatert, HttpStatus.OK)
+    }
+
+    // Endepunkt for å fatte vedtak fra vedtaksforslag
+    @PostMapping(VEDTAKSFORSLAG)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Fatter vedtak fra vedtaksforslag")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtak fattet"),
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å fatte vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtaksforslag ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun fattVedtakFraVedtaksforslag(
+        @PathVariable @NotNull
+        vedtaksid: Int,
+    ): ResponseEntity<Int> {
+        LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
+        val vedtakFattet = vedtakService.fattVedtakForVedtaksforslag(vedtaksid)
+        SECURE_LOGGER.info("Følgende vedtak ble fattet fra vedtaksforslag: $vedtaksid ${tilJson(vedtakFattet)}")
+        return ResponseEntity(vedtakFattet, HttpStatus.OK)
+    }
+
+    // Endepunkt for å fatte slette vedtaksforslag
+    @DeleteMapping(VEDTAKSFORSLAG)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Sletter vedtaksforslag")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "vedtaksforslag slettet"),
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtaksforslag",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtaksforslag ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun slettVedtaksforslag(
+        @PathVariable @NotNull
+        vedtaksid: Int,
+    ): ResponseEntity<Int> {
+        LOGGER.info("Request for å slette vedtaksforslag med følgende id ble mottatt: $vedtaksid")
+        val vedtaksforslagSlettet = vedtakService.slettVedtaksforslag(vedtaksid)
+        SECURE_LOGGER.info("Følgende vedtaksforslag ble slettet: $vedtaksid ${tilJson(vedtaksforslagSlettet)}")
+        return ResponseEntity(vedtaksforslagSlettet, HttpStatus.OK)
+    }
+
+    @PostMapping(HENT_VEDTAK_FOR_UNIK_REFERANSE)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter et vedtak tilknyttet unik referanse")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Vedtak funnet"),
+            ApiResponse(responseCode = "401", description = "Manglende eller utløpt id-token", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(
+                responseCode = "403",
+                description = "Saksbehandler mangler tilgang til å lese data for aktuelt vedtak",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(responseCode = "404", description = "Vedtak ikke funnet", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "500", description = "Serverfeil", content = [Content(schema = Schema(hidden = true))]),
+            ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
+        ],
+    )
+    fun hentVedtakForUnikReferanse(
+        @RequestBody @NotNull
+        unikReferanse: String,
+    ): ResponseEntity<VedtakDto?> {
+        LOGGER.info("Request for å hente vedtak med følgende unike referanse ble mottatt: $unikReferanse")
+        val vedtakFunnet = vedtakService.hentVedtakForUnikReferanse(unikReferanse)
+        SECURE_LOGGER.info("Følgende vedtak ble hentet: $unikReferanse $vedtakFunnet")
+        return ResponseEntity(vedtakFunnet, HttpStatus.OK)
+    }
+
     companion object {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
         const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
+        const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse"
+        const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
+        const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }

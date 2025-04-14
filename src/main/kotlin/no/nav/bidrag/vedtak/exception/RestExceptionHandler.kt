@@ -1,7 +1,8 @@
 package no.nav.bidrag.vedtak.exception
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
-import no.nav.bidrag.commons.ExceptionLogger
+import no.nav.bidrag.transport.felles.ifTrue
+import no.nav.bidrag.vedtak.exception.custom.PreconditionFailedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpHeaders
@@ -19,30 +20,22 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @RestControllerAdvice
 @Component
-class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
+@Suppress("unused")
+class RestExceptionHandler {
     companion object {
         private val LOGGER = LoggerFactory.getLogger(RestExceptionHandler::class.java)
     }
 
     @ResponseBody
-    @ExceptionHandler(Exception::class)
-    protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
-        val feilmelding = "Det skjedde en feil: ${e.message}"
-        LOGGER.error(feilmelding, e)
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .header(HttpHeaders.WARNING, feilmelding)
-            .build<Any>()
-    }
-
-    @ResponseBody
     @ExceptionHandler(HttpClientErrorException::class, HttpServerErrorException::class)
     protected fun handleHttpClientErrorException(e: HttpStatusCodeException): ResponseEntity<*> {
-        when (e) {
-            is HttpClientErrorException -> exceptionLogger.logException(e, "HttpClientErrorException")
-            is HttpServerErrorException -> exceptionLogger.logException(e, "HttpServerErrorException")
-        }
-        return ResponseEntity.status(e.statusCode).body(e.responseBodyAsString.ifEmpty { e.message })
+        LOGGER.warn("Det skjedde en feil ${e.message}", e)
+        val payloadFeilmelding =
+            e.responseBodyAsString.isEmpty().ifTrue { e.message }
+                ?: e.responseBodyAsString
+        return ResponseEntity.status(e.statusCode)
+            .header(HttpHeaders.WARNING, e.message)
+            .body(payloadFeilmelding)
     }
 
     @ResponseBody
@@ -70,5 +63,26 @@ class RestExceptionHandler(private val exceptionLogger: ExceptionLogger) {
             "$objectName.$field"
         }
         return "${paths.joinToString("->")} kan ikke være null"
+    }
+
+    @ResponseBody
+    @ExceptionHandler(PreconditionFailedException::class)
+    protected fun handleConflictException(e: PreconditionFailedException): ResponseEntity<*> {
+        val feilmelding = "Feil, angitt sisteVedtaksid er ikke det nyeste vedtaket for stønaden: ${e.message}"
+        return ResponseEntity
+            .status(HttpStatus.PRECONDITION_FAILED)
+            .header(HttpHeaders.WARNING, feilmelding)
+            .build<Any>()
+    }
+
+    @ResponseBody
+    @ExceptionHandler(Exception::class)
+    protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
+        val feilmelding = "Det skjedde en feil: ${e.message}"
+        LOGGER.error(feilmelding, e)
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .header(HttpHeaders.WARNING, feilmelding)
+            .build<Any>()
     }
 }

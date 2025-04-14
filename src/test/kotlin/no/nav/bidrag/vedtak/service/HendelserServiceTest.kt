@@ -6,6 +6,7 @@ import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
 import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
 import no.nav.bidrag.domene.enums.vedtak.Stønadstype
+import no.nav.bidrag.domene.enums.vedtak.VedtaksforslagStatus
 import no.nav.bidrag.domene.enums.vedtak.Vedtakskilde
 import no.nav.bidrag.domene.enums.vedtak.Vedtakstype
 import no.nav.bidrag.domene.ident.Personident
@@ -18,6 +19,7 @@ import no.nav.bidrag.transport.behandling.vedtak.Periode
 import no.nav.bidrag.transport.behandling.vedtak.Sporingsdata
 import no.nav.bidrag.transport.behandling.vedtak.Stønadsendring
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
+import no.nav.bidrag.transport.behandling.vedtak.VedtaksforslagHendelse
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
@@ -53,7 +55,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse når kun engangsbeløp er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -82,20 +84,22 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.now(),
         )
 
-        verify(vedtakEventProducerMock).publish(anyOrNull())
+        verify(vedtakEventProducerMock).publishVedtak(anyOrNull())
     }
 
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette en hendelse når kun stønadsendring er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
                 vedtakstidspunkt = LocalDateTime.now(),
+                unikReferanse = null,
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = null,
@@ -106,7 +110,10 @@ class HendelserServiceTest {
                         mottaker = Personident(
                             "E",
                         ),
-                        førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING, beslutning = Beslutningstype.ENDRING,
+                        sisteVedtaksid = null,
+                        førsteIndeksreguleringsår = 2024,
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null, eksternReferanse = null,
                         grunnlagReferanseListe = emptyList(),
                         periodeListe = listOf(
@@ -129,20 +136,22 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.now(),
         )
 
-        verify(vedtakEventProducerMock).publish(anyOrNull())
+        verify(vedtakEventProducerMock).publishVedtak(anyOrNull())
     }
 
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse når både stønadsendring og engangsbeløp er del av request`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
                 vedtakstidspunkt = LocalDateTime.now(),
+                unikReferanse = null,
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(), fastsattILand = null,
                 grunnlagListe = emptyList(),
@@ -152,6 +161,7 @@ class HendelserServiceTest {
                         mottaker = Personident(
                             "E",
                         ),
+                        sisteVedtaksid = null,
                         førsteIndeksreguleringsår = 2024, innkreving = Innkrevingstype.MED_INNKREVING,
                         beslutning = Beslutningstype.ENDRING,
                         omgjørVedtakId = null,
@@ -195,21 +205,23 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.now(),
         )
 
-        verify(vedtakEventProducerMock).publish(anyOrNull())
+        verify(vedtakEventProducerMock).publishVedtak(anyOrNull())
     }
 
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette en hendelse med skyldner-id`() {
         CorrelationId.existing("test")
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
                 opprettetAv = "ABCDEFG",
                 vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+                unikReferanse = "unikReferanse",
                 enhetsnummer = Enhetsnummer("ABCD"),
                 innkrevingUtsattTilDato = LocalDate.now(),
                 fastsattILand = "NO",
@@ -219,6 +231,7 @@ class HendelserServiceTest {
                         type = Stønadstype.BIDRAG, sak = Saksnummer("B"), skyldner = Personident("C"),
                         kravhaver = Personident("D"),
                         mottaker = Personident("E"),
+                        sisteVedtaksid = null,
                         førsteIndeksreguleringsår = 2024,
                         innkreving = Innkrevingstype.MED_INNKREVING,
                         beslutning = Beslutningstype.ENDRING,
@@ -250,9 +263,10 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
         )
 
-        verify(vedtakEventProducerMock).publish(
+        verify(vedtakEventProducerMock).publishVedtak(
             VedtakHendelse(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -303,7 +317,7 @@ class HendelserServiceTest {
     @Test
     @Suppress("NonAsciiCharacters")
     fun `skal opprette hendelse ved engangsbeløp SAERTILSKUDD`() {
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -340,15 +354,16 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.now(),
         )
-        verify(vedtakEventProducerMock).publish(anyOrNull())
+        verify(vedtakEventProducerMock).publishVedtak(anyOrNull())
     }
 
     @Test
     @Suppress("NonAsciiCharacters")
     fun `opprettet hendelse skal ha innhold fra engangsbeløpListe`() {
         CorrelationId.existing("test")
-        hendelserService.opprettHendelse(
+        hendelserService.opprettHendelseVedtak(
             OpprettVedtakRequestDto(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -385,8 +400,9 @@ class HendelserServiceTest {
             opprettetAv = "ABCDEFG",
             opprettetAvNavn = "",
             kildeapplikasjon = "",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
         )
-        verify(vedtakEventProducerMock).publish(
+        verify(vedtakEventProducerMock).publishVedtak(
             VedtakHendelse(
                 kilde = Vedtakskilde.MANUELT,
                 type = Vedtakstype.ALDERSJUSTERING,
@@ -420,6 +436,69 @@ class HendelserServiceTest {
                     ),
                 ),
                 behandlingsreferanseListe = emptyList(),
+                sporingsdata = Sporingsdata("test"),
+            ),
+        )
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `skal opprette en hendelse for vedtaksforslag`() {
+        CorrelationId.existing("test")
+        hendelserService.opprettHendelseVedtaksforslag(
+            status = VedtaksforslagStatus.OPPRETTET,
+            request = OpprettVedtakRequestDto(
+                kilde = Vedtakskilde.MANUELT,
+                type = Vedtakstype.ALDERSJUSTERING,
+                opprettetAv = "ABCDEFG",
+                vedtakstidspunkt = null,
+                unikReferanse = "unikReferanse",
+                enhetsnummer = Enhetsnummer("ABCD"),
+                innkrevingUtsattTilDato = LocalDate.now(),
+                fastsattILand = "NO",
+                grunnlagListe = emptyList(),
+                stønadsendringListe = listOf(
+                    OpprettStønadsendringRequestDto(
+                        type = Stønadstype.BIDRAG,
+                        sak = Saksnummer("B"),
+                        skyldner = Personident("C"),
+                        kravhaver = Personident("D"),
+                        mottaker = Personident("E"),
+                        sisteVedtaksid = null,
+                        førsteIndeksreguleringsår = 2024,
+                        innkreving = Innkrevingstype.MED_INNKREVING,
+                        beslutning = Beslutningstype.ENDRING,
+                        omgjørVedtakId = null,
+                        eksternReferanse = null,
+                        grunnlagReferanseListe = emptyList(),
+                        listOf(
+                            OpprettPeriodeRequestDto(
+                                periode = ÅrMånedsperiode(LocalDate.now(), LocalDate.now()),
+                                beløp = BigDecimal.ONE,
+                                valutakode = "NOK",
+                                "A",
+                                "delytelseId1",
+                                listOf("A"),
+                            ),
+                        ),
+                    ),
+                ),
+                engangsbeløpListe = emptyList(),
+                behandlingsreferanseListe = listOf(
+                    OpprettBehandlingsreferanseRequestDto(
+                        kilde = BehandlingsrefKilde.BISYS_SØKNAD,
+                        referanse = "referanse1",
+                    ),
+                ),
+            ),
+            vedtakId = 1,
+        )
+
+        verify(vedtakEventProducerMock).publishVedtaksforslag(
+            VedtaksforslagHendelse(
+                status = VedtaksforslagStatus.OPPRETTET,
+                vedtaksid = 1,
+                saksnummerListe = listOf(Saksnummer("B")),
                 sporingsdata = Sporingsdata("test"),
             ),
         )

@@ -43,6 +43,7 @@ class TestUtil {
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            unikReferanse = "unikReferanse",
             enhetsnummer = Enhetsnummer("4812"),
             innkrevingUtsattTilDato = LocalDate.now(),
             fastsattILand = "NO",
@@ -281,7 +282,7 @@ class TestUtil {
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
                 beslutning = Beslutningstype.ENDRING,
-                omgjørVedtakId = 400,
+                omgjørVedtakId = null,
                 referanse = null,
                 delytelseId = "delytelseId2",
                 eksternReferanse = "EksternRef2",
@@ -993,6 +994,143 @@ class TestUtil {
             vedtak = vedtak,
             kilde = kilde,
             referanse = referanse,
+        )
+
+        fun byggVedtakEngangsbeløpUtenReferanseRequest() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.KLAGE,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = emptyList(),
+            stønadsendringListe = emptyList(),
+            engangsbeløpListe = byggEngangsbeløpOmgøringsvedtakUtenReferanse(),
+            behandlingsreferanseListe = emptyList(),
+        )
+
+        private fun byggEngangsbeløpOmgøringsvedtakUtenReferanse() = listOf(
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.SÆRBIDRAG,
+                sak = Saksnummer("SAK-101"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(3490),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = null,
+                delytelseId = "delytelseId1",
+                eksternReferanse = "EksternRef1",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+        )
+
+        fun byggVedtaksforslagRequest() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = null,
+            unikReferanse = "unikReferanse",
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = byggGrunnlagListe(),
+            stønadsendringListe = byggStønadsendringListe(),
+            engangsbeløpListe = byggEngangsbeløpListe(),
+            behandlingsreferanseListe = byggBehandlingsreferanseListe(),
+        )
+
+        fun byggVedtaksforslagMedOppdatertInnholdRequest() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.AUTOMATISK,
+            type = Vedtakstype.ALDERSJUSTERING,
+            opprettetAv = "X654321",
+            vedtakstidspunkt = null,
+            unikReferanse = "unikReferanse",
+            enhetsnummer = Enhetsnummer("5000"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = listOf(
+                OpprettGrunnlagRequestDto(
+                    referanse = "BM-LIGS-20",
+                    type = Grunnlagstype.INNTEKT_RAPPORTERING_PERIODE,
+                    gjelderReferanse = "PERSON_BM",
+                    grunnlagsreferanseListe = emptyList(),
+                    innhold = ObjectMapper().readTree(
+                        """
+          {
+            "inntektDatoFraTil": {
+              "periodeDatoFra": "2019-02-01",
+              "periodeDatoTil": "2020-03-01"
+            },
+            "inntektBelop": 500000,
+            "inntektType": "SKATTEGRUNNLAG_SKE"
+          }""",
+                    ),
+                ),
+            ),
+            stønadsendringListe = listOf(
+                OpprettStønadsendringRequestDto(
+                    type = Stønadstype.BIDRAG,
+                    sak = Saksnummer("SAK-001"),
+                    skyldner = Personident("01018011111"),
+                    kravhaver = Personident("01010511111"),
+                    mottaker = Personident("01018211111"),
+                    førsteIndeksreguleringsår = 2024,
+                    innkreving = Innkrevingstype.MED_INNKREVING,
+                    beslutning = Beslutningstype.ENDRING,
+                    omgjørVedtakId = 123,
+                    eksternReferanse = "eksternRef2",
+                    grunnlagReferanseListe = emptyList(),
+                    periodeListe = listOf(
+                        OpprettPeriodeRequestDto(
+                            periode = ÅrMånedsperiode(LocalDate.parse("2019-02-01"), LocalDate.parse("2020-03-01")),
+                            beløp = BigDecimal.valueOf(600),
+                            valutakode = "NOK",
+                            resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                            delytelseId = "delytelseId2",
+                            grunnlagReferanseListe = listOf(
+                                "BM-LIGS-20",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            engangsbeløpListe = listOf(
+                OpprettEngangsbeløpRequestDto(
+                    type = Engangsbeløptype.SÆRBIDRAG,
+                    sak = Saksnummer("SAK-101"),
+                    skyldner = Personident("01018011111"),
+                    kravhaver = Personident("01010511111"),
+                    mottaker = Personident("01018211111"),
+                    beløp = BigDecimal.valueOf(1000),
+                    valutakode = "NOK",
+                    resultatkode = "SAERTILSKUDD BEREGNET",
+                    innkreving = Innkrevingstype.MED_INNKREVING,
+                    beslutning = Beslutningstype.ENDRING,
+                    omgjørVedtakId = null,
+                    referanse = "referanse4",
+                    delytelseId = "delytelseId6",
+                    eksternReferanse = "EksternRef3",
+                    grunnlagReferanseListe = listOf(
+                        "BM-LIGS-20",
+                    ),
+                ),
+            ),
+            behandlingsreferanseListe = listOf(
+                OpprettBehandlingsreferanseRequestDto(
+                    kilde = BehandlingsrefKilde.BISYS_SØKNAD,
+                    referanse = "Bisysreferanse05",
+                ),
+            ),
         )
     }
 }

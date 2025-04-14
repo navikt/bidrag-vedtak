@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.VedtakHendelse
+import no.nav.bidrag.transport.behandling.vedtak.VedtaksforslagHendelse
 import no.nav.bidrag.vedtak.BidragVedtakLocal.Companion.LOCAL_PROFILE
 import no.nav.bidrag.vedtak.BidragVedtakTest.Companion.TEST_PROFILE
 import no.nav.bidrag.vedtak.hendelser.VedtakKafkaEventProducer
@@ -62,7 +63,10 @@ class BidragVedtakTestConfig {
 }
 
 class TestVedtakKafkaEventProducer : VedtakKafkaEventProducer {
-    override fun publish(vedtakHendelse: VedtakHendelse) {
-        SECURE_LOGGER.info("Test Kafka: $vedtakHendelse")
+    override fun publishVedtak(vedtakHendelse: VedtakHendelse) {
+        SECURE_LOGGER.info("Test Kafka vedtak: $vedtakHendelse")
+    }
+    override fun publishVedtaksforslag(vedtaksforslagHendelse: VedtaksforslagHendelse) {
+        SECURE_LOGGER.info("Test Kafka vedtaksforslag: $vedtaksforslagHendelse")
     }
 }

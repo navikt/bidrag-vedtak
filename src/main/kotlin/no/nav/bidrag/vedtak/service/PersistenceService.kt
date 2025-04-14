@@ -26,6 +26,8 @@ import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PersistenceService(
@@ -43,9 +45,21 @@ class PersistenceService(
     @Timed
     fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
+    fun oppdaterVedtaksforslag(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
+
     @Timed
     fun hentVedtak(id: Int): Vedtak =
         vedtakRepository.findById(id).orElseThrow { IllegalArgumentException(String.format("Fant ikke vedtak med id %d i databasen", id)) }
+
+    @Timed
+    fun oppdaterVedtak(vedtak: Vedtak): Vedtak {
+        // Sjekker at vedtaket eksisterer før oppdatering
+        vedtakRepository.findById(vedtak.id)
+            .orElseThrow { IllegalArgumentException("Fant ikke vedtak med id ${vedtak.id} i databasen") }
+
+        // Lagrer endringene (utfører oppdatering)
+        return vedtakRepository.save(vedtak)
+    }
 
     fun opprettStønadsendring(stønadsendring: Stønadsendring): Stønadsendring {
         vedtakRepository.findById(stønadsendring.vedtak.id)
@@ -159,4 +173,30 @@ class PersistenceService(
             vedtakFunnet.map { it.vedtak.id }
         }
     }
+
+    fun hentVedtakForUnikReferanse(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    fun hentVedtakForUnikReferanseEgenTransaksjon(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
+
+    fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int): Int = periodeGrunnlagRepository.slettForPeriode(periodeId)
+
+    fun slettAlleStønadsendringGrunnlagForStønadsendring(stønadsendringsid: Int): Int =
+        stønadsendringGrunnlagRepository.slettStønadsendringGrunnlagForStønadsendring(stønadsendringsid)
+
+    fun slettAlleEngangsbeløpGrunnlagForEngangsbeløp(engangsbeløpsid: Int): Int = engangsbeløpGrunnlagRepository.slettForEngangsbeløp(engangsbeløpsid)
+
+    fun slettAllePerioderForStønadsendring(stønadsendringsid: Int): Int = periodeRepository.slettPerioderForStønadsendring(stønadsendringsid)
+
+    fun slettAlleBehandlingsreferanserForVedtak(vedtaksid: Int): Int = behandlingsreferanseRepository.slettBehandlingsreferanserForVedtak(vedtaksid)
+
+    fun slettAlleEngangsbeløpForVedtak(vedtaksid: Int): Int = engangsbeløpRepository.slettEngangsbeløpForVedtak(vedtaksid)
+
+    fun slettStønadsendring(stønadsendringsid: Int): Int = stønadsendringRepository.slettStønadsendring(stønadsendringsid)
+
+    fun slettVedtak(vedtaksid: Int): Int = vedtakRepository.slettVedtak(vedtaksid)
+
+    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
+        stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
+            .maxOfOrNull { it.vedtak.id } ?: 0
 }
