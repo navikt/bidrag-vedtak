@@ -27,17 +27,6 @@ class RestExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler(Exception::class)
-    protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
-        val feilmelding = "Det skjedde en feil: ${e.message}"
-        LOGGER.error(feilmelding, e)
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .header(HttpHeaders.WARNING, feilmelding)
-            .build<Any>()
-    }
-
-    @ResponseBody
     @ExceptionHandler(HttpClientErrorException::class, HttpServerErrorException::class)
     protected fun handleHttpClientErrorException(e: HttpStatusCodeException): ResponseEntity<*> {
         LOGGER.warn("Det skjedde en feil ${e.message}", e)
@@ -82,6 +71,17 @@ class RestExceptionHandler {
         val feilmelding = "Feil, angitt sisteVedtaksid er ikke det nyeste vedtaket for stønaden: ${e.message}"
         return ResponseEntity
             .status(HttpStatus.PRECONDITION_FAILED)
+            .header(HttpHeaders.WARNING, feilmelding)
+            .build<Any>()
+    }
+
+    @ResponseBody
+    @ExceptionHandler(Exception::class)
+    protected fun handleOtherExceptions(e: Exception): ResponseEntity<*> {
+        val feilmelding = "Det skjedde en feil: ${e.message}"
+        LOGGER.error(feilmelding, e)
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .header(HttpHeaders.WARNING, feilmelding)
             .build<Any>()
     }

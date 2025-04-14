@@ -26,6 +26,8 @@ import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PersistenceService(
@@ -173,6 +175,9 @@ class PersistenceService(
     }
 
     fun hentVedtakForUnikReferanse(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    fun hentVedtakForUnikReferanseEgenTransaksjon(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
 
     fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int): Int = periodeGrunnlagRepository.slettForPeriode(periodeId)
 
