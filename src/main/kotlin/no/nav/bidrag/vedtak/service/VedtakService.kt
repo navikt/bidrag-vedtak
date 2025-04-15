@@ -832,7 +832,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         stønadsendring.sak == stønadsendringrequest.sak.verdi &&
                         stønadsendring.skyldner == stønadsendringrequest.skyldner.verdi &&
                         stønadsendring.kravhaver == stønadsendringrequest.kravhaver.verdi &&
-                        stønadsendring.mottaker == stønadsendringrequest.mottaker.verdi &&
+//                        stønadsendring.mottaker == stønadsendringrequest.mottaker.verdi &&
                         stønadsendring.førsteIndeksreguleringsår == stønadsendringrequest.førsteIndeksreguleringsår &&
                         stønadsendring.innkreving == stønadsendringrequest.innkreving.name &&
                         stønadsendring.beslutning == stønadsendringrequest.beslutning.name &&
@@ -899,7 +899,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         engangsbeløp.sak == engangsbeløpRequest.sak.verdi &&
                         engangsbeløp.skyldner == engangsbeløpRequest.skyldner.verdi &&
                         engangsbeløp.kravhaver == engangsbeløpRequest.kravhaver.verdi &&
-                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.verdi &&
+//                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.verdi &&
                         engangsbeløp.beløp?.toInt() == engangsbeløpRequest.beløp?.toInt() &&
                         engangsbeløp.valutakode == engangsbeløpRequest.valutakode &&
                         engangsbeløp.resultatkode == engangsbeløpRequest.resultatkode &&
