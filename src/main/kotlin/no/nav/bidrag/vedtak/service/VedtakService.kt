@@ -404,7 +404,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         } else {
             val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
             LOGGER.error(feilmelding)
-            SECURE_LOGGER.error("$feilmelding: ${tilJson(vedtakRequest)}")
+            SECURE_LOGGER.error("$feilmelding: Request: $vedtakRequest \n\n Vedtak som oppdateres: ${hentVedtak(vedtaksid)} ")
             throw VedtaksdataMatcherIkkeException(feilmelding)
         }
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
@@ -617,7 +617,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         stønadsendringRequest.sak.verdi == it.sak &&
                         stønadsendringRequest.skyldner.verdi == it.skyldner &&
                         stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
-                        stønadsendringRequest.mottaker.verdi == it.mottaker &&
+                        // TODO: Mottaker kan være reelmottaker hvis barnet har blitt 18år. Derfor kan det hende at dette ikke matcher lenger etter ny kjøring
+//                        stønadsendringRequest.mottaker.verdi == it.mottaker &&
                         stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
                         stønadsendringRequest.innkreving.name == it.innkreving &&
                         stønadsendringRequest.beslutning.name == it.beslutning &&
@@ -699,7 +700,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         engangsbeløpRequest.sak.verdi == it.sak &&
                         engangsbeløpRequest.skyldner.verdi == it.skyldner &&
                         engangsbeløpRequest.kravhaver.verdi == it.kravhaver &&
-                        engangsbeløpRequest.mottaker.verdi == it.mottaker &&
+                        // TODO: Mottaker kan være reelmottaker hvis barnet har blitt 18år. Derfor kan det hende at dette ikke matcher lenger etter ny kjøring
+//                        engangsbeløpRequest.mottaker.verdi == it.mottaker &&
                         engangsbeløpRequest.beløp?.toInt() == it.beløp?.toInt() &&
                         engangsbeløpRequest.valutakode == it.valutakode &&
                         engangsbeløpRequest.resultatkode == it.resultatkode &&
@@ -830,7 +832,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         stønadsendring.sak == stønadsendringrequest.sak.verdi &&
                         stønadsendring.skyldner == stønadsendringrequest.skyldner.verdi &&
                         stønadsendring.kravhaver == stønadsendringrequest.kravhaver.verdi &&
-                        stønadsendring.mottaker == stønadsendringrequest.mottaker.verdi &&
+//                        stønadsendring.mottaker == stønadsendringrequest.mottaker.verdi &&
                         stønadsendring.førsteIndeksreguleringsår == stønadsendringrequest.førsteIndeksreguleringsår &&
                         stønadsendring.innkreving == stønadsendringrequest.innkreving.name &&
                         stønadsendring.beslutning == stønadsendringrequest.beslutning.name &&
@@ -897,7 +899,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                         engangsbeløp.sak == engangsbeløpRequest.sak.verdi &&
                         engangsbeløp.skyldner == engangsbeløpRequest.skyldner.verdi &&
                         engangsbeløp.kravhaver == engangsbeløpRequest.kravhaver.verdi &&
-                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.verdi &&
+//                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.verdi &&
                         engangsbeløp.beløp?.toInt() == engangsbeløpRequest.beløp?.toInt() &&
                         engangsbeløp.valutakode == engangsbeløpRequest.valutakode &&
                         engangsbeløp.resultatkode == engangsbeløpRequest.resultatkode &&
