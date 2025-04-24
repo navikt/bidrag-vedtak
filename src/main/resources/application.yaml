@@ -13,7 +13,8 @@ management:
       exposure:
         include: "*"
 springdoc.packages-to-scan: no.nav.bidrag.vedtak.controller
-
+management.metrics.distribution.percentiles-histogram.http.server.requests: true
+management.metrics.distribution.percentiles-histogram.http.client.requests: true
 ---
 
 ####################################################################
