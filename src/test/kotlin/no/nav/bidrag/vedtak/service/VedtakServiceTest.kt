@@ -1045,7 +1045,7 @@ class VedtakServiceTest {
         )
 
         // Henter vedtak
-        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe.first()
+        val vedtakFunnet = vedtakService.hentVedtakForStønad(request).vedtakListe.first()
 
         assertAll(
             Executable { assertThat(vedtakFunnet).isNotNull() },
@@ -1100,7 +1100,6 @@ class VedtakServiceTest {
             Executable { assertThat(vedtakOpprettet1).isNotNull() },
         )
 
-        // Vedtak uten innkreving, skal ikke komme i responsen under
         val vedtakRequest2 = byggVedtakRequestMedInputparametre(
             LocalDate.now().minusMonths(1),
             null,
@@ -1141,19 +1140,23 @@ class VedtakServiceTest {
         )
 
         // Henter vedtak
-        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe
+        val vedtakFunnet = vedtakService.hentVedtakForStønad(request).vedtakListe
         val vedtak1 = vedtakFunnet[0]
         val vedtak2 = vedtakFunnet[1]
+        val vedtak3 = vedtakFunnet[2]
 
         assertAll(
-            Executable { assertThat(vedtakFunnet.size).isEqualTo(2) },
+            Executable { assertThat(vedtakFunnet.size).isEqualTo(3) },
 
             // Vedtak
             Executable { assertThat(vedtak1.vedtaksid).isEqualTo(vedtakOpprettet1.toLong()) },
             Executable { assertThat(vedtak1.vedtakstidspunkt.toLocalDate()).isEqualTo(LocalDate.now().minusMonths(2)) },
 
-            Executable { assertThat(vedtak2.vedtaksid).isEqualTo(vedtakOpprettet3.toLong()) },
-            Executable { assertThat(vedtak2.vedtakstidspunkt.toLocalDate()).isEqualTo(LocalDate.now()) },
+            Executable { assertThat(vedtak2.vedtaksid).isEqualTo(vedtakOpprettet2.toLong()) },
+            Executable { assertThat(vedtak2.vedtakstidspunkt.toLocalDate()).isEqualTo(LocalDate.now().minusMonths(1)) },
+
+            Executable { assertThat(vedtak3.vedtaksid).isEqualTo(vedtakOpprettet3.toLong()) },
+            Executable { assertThat(vedtak3.vedtakstidspunkt.toLocalDate()).isEqualTo(LocalDate.now()) },
 
         )
     }
@@ -1202,7 +1205,7 @@ class VedtakServiceTest {
         )
 
         // Henter vedtak
-        val vedtakFunnet = vedtakService.hentEndringsvedtakForStønad(request).vedtakListe
+        val vedtakFunnet = vedtakService.hentVedtakForStønad(request).vedtakListe
         val vedtak1 = vedtakFunnet[0]
 
         assertAll(

@@ -412,14 +412,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         return vedtaksid
     }
 
-    // Hent alle endringsvedtak for stønad
-    fun hentEndringsvedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
+    // Hent alle vedtak for stønad
+    fun hentVedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
         val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
         return HentVedtakForStønadResponse(
-            stønadsendringer.filter {
-                it.innkreving == Innkrevingstype.MED_INNKREVING.name &&
-                    it.beslutning == Beslutningstype.ENDRING.name
-            }
+            stønadsendringer
                 .map { stønadsendring ->
                     val vedtak = stønadsendring.vedtak
                     VedtakForStønad(
