@@ -136,7 +136,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
     }
 
-    @PostMapping(HENT_VEDTAK_FOR_SAK)
+    @PostMapping(HENT_VEDTAK_FOR_STØNAD)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Henter endringsvedtak for angitt sak, skyldner, kravhaver og type")
     @ApiResponses(
         value = [
@@ -151,12 +151,12 @@ class VedtakController(private val vedtakService: VedtakService) {
             ApiResponse(responseCode = "503", description = "Tjeneste utilgjengelig", content = [Content(schema = Schema(hidden = true))]),
         ],
     )
-    fun hentVedtakForSak(
+    fun hentVedtakForStønad(
         @Valid @RequestBody
         request: HentVedtakForStønadRequest,
     ): ResponseEntity<HentVedtakForStønadResponse>? {
-        SECURE_LOGGER.info("Følgende request for å hente vedtak for sak ble mottatt: ${tilJson(request)}")
-        val respons = vedtakService.hentEndringsvedtakForStønad(request)
+        SECURE_LOGGER.info("Følgende request for å hente vedtak for stønad ble mottatt: ${tilJson(request)}")
+        val respons = vedtakService.hentVedtakForStønad(request)
         SECURE_LOGGER.info("Følgende endringsvedtak ble hentet for request: ${tilJson(request)}: ${tilJson(respons)}")
         return ResponseEntity(respons, HttpStatus.OK)
     }
@@ -352,7 +352,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPRETT_VEDTAK = "/vedtak/"
         const val HENT_VEDTAK = "/vedtak/{vedtaksid}"
         const val OPPDATER_VEDTAK = "/vedtak/oppdater/{vedtaksid}"
-        const val HENT_VEDTAK_FOR_SAK = "/vedtak/hent-vedtak"
+        const val HENT_VEDTAK_FOR_STØNAD = "/vedtak/hent-vedtak"
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
         const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse"
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
