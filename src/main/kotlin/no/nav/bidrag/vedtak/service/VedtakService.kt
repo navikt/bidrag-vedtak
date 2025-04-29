@@ -164,7 +164,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         }
 
         if (vedtaksforslag) {
-            hendelserService.opprettHendelseVedtaksforslag(VedtaksforslagStatus.OPPRETTET, vedtakRequest, opprettetVedtak.id)
+            hendelserService.opprettHendelseVedtaksforslag(
+                status = VedtaksforslagStatus.OPPRETTET,
+                request = vedtakRequest,
+                vedtakId = opprettetVedtak.id,
+                saksnummer = vedtakRequest.stønadsendringListe.firstOrNull()?.sak,
+            )
         }
 
         measureVedtak(opprettVedtakCounterName, vedtakRequest)
@@ -491,7 +496,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         // Behandlingsreferanse
         vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, oppdatertVedtaksforslag) }
 
-        hendelserService.opprettHendelseVedtaksforslag(VedtaksforslagStatus.OPPDATERT, vedtakRequest, vedtaksid)
+        hendelserService.opprettHendelseVedtaksforslag(
+            status = VedtaksforslagStatus.OPPDATERT,
+            request = vedtakRequest,
+            vedtakId = vedtaksid,
+            saksnummer = vedtakRequest.stønadsendringListe.firstOrNull()?.sak,
+        )
 
         return oppdatertVedtaksforslag.id
     }
@@ -516,6 +526,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             throw IllegalArgumentException(feilmelding)
         }
 
+        val saksnummer = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id).firstOrNull()?.sak
+
         slettEventueltEksisterendeGrunnlag(vedtaksid)
         slettStønadsendringerBehandlingsreferanserPerioderOgEngangsbeløpForVedtak(vedtaksid)
         persistenceService.slettVedtak(vedtaksid)
@@ -523,7 +535,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         hendelserService.opprettHendelseVedtaksforslag(
             status = VedtaksforslagStatus.SLETTET,
             request = null,
-            vedtaksid,
+            vedtakId = vedtaksid,
+            saksnummer = saksnummer?.let { Saksnummer(it) },
         )
 
         return vedtaksid
@@ -552,10 +565,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtak.vedtakstidspunkt = LocalDateTime.now()
         persistenceService.oppdaterVedtak(vedtak)
 
+        val saksnummer = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id).firstOrNull()?.sak
+
         hendelserService.opprettHendelseVedtaksforslag(
             status = VedtaksforslagStatus.FATTET,
             request = null,
-            vedtaksid,
+            vedtakId = vedtaksid,
+            saksnummer = saksnummer?.let { Saksnummer(it) },
         )
 
         return vedtaksid

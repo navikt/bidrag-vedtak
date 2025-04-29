@@ -492,6 +492,7 @@ class HendelserServiceTest {
                 ),
             ),
             vedtakId = 1,
+            saksnummer = Saksnummer("1234567"),
         )
 
         verify(vedtakEventProducerMock).publishVedtaksforslag(

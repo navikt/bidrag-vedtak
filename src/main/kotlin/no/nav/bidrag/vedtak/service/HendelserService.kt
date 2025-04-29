@@ -124,7 +124,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
         return behandlingsreferanseListe
     }
 
-    fun opprettHendelseVedtaksforslag(status: VedtaksforslagStatus, request: OpprettVedtakRequestDto?, vedtakId: Int) {
+    fun opprettHendelseVedtaksforslag(status: VedtaksforslagStatus, request: OpprettVedtakRequestDto?, vedtakId: Int, saksnummer: Saksnummer?) {
         // Lager liste med unike saksnummer
         val saksnummerListe = request?.stønadsendringListe
             ?.map { it.sak.verdi }
@@ -133,7 +133,7 @@ class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventPro
         val vedtaksforslagHendelse = VedtaksforslagHendelse(
             status = status,
             vedtaksid = vedtakId,
-            saksnummerListe = saksnummerListe ?: emptyList(),
+            saksnummerListe = saksnummerListe ?: saksnummer?.let { listOf(it) } ?: emptyList(),
             sporingsdata = Sporingsdata(CorrelationId.fetchCorrelationIdForThread()),
         )
         vedtakKafkaEventProducer.publishVedtaksforslag(vedtaksforslagHendelse)
