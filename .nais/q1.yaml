@@ -40,8 +40,8 @@ azure:
   bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon
 spec:
   replicas:
-    min: 1
-    max: 1
+    min: 2
+    max: 4
   resources:
     limits:
       memory: 2048Mi
@@ -50,7 +50,7 @@ spec:
       memory: 206Mi
   gcp:
     sqlInstances:
-      tier: db-f1-micro
+      tier: db-custom-1-3840
       diskAutoresize: false
       pointInTimeRecovery: false
       auditlog: "off"
