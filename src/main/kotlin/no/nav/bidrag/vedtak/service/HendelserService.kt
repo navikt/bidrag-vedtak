@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service
 @Service
 class HendelserService(private val vedtakKafkaEventProducer: VedtakKafkaEventProducer) {
 
-    fun opprettHendelseVedtak(
-        vedtakDto: VedtakDto,
-        vedtakId: Int) {
+    fun opprettHendelseVedtak(vedtakDto: VedtakDto, vedtakId: Int) {
         val vedtakHendelse = VedtakHendelse(
             kilde = vedtakDto.kilde,
             type = vedtakDto.type,

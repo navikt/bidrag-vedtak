@@ -563,6 +563,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         vedtak.vedtakstidspunkt = LocalDateTime.now()
         persistenceService.oppdaterVedtak(vedtak)
 
+        val vedtakDto = hentVedtak(vedtaksid)
+
+        if ((vedtakDto.stønadsendringListe.isNotEmpty() || vedtakDto.engangsbeløpListe.isNotEmpty())) {
+            hendelserService.opprettHendelseVedtak(
+                vedtakDto = vedtakDto,
+                vedtakId = vedtaksid,
+            )
+        }
+
         val saksnummer = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id).firstOrNull()?.sak
 
         hendelserService.opprettHendelseVedtaksforslag(
