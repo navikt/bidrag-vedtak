@@ -151,15 +151,13 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         // Behandlingsreferanse
         vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
 
+        // Hent lagret vedtak for bruk til å lage hendelse
+        val vedtakDto = hentVedtak(opprettetVedtak.id)
+
         if ((vedtakRequest.stønadsendringListe.isNotEmpty() || vedtakRequest.engangsbeløpListe.isNotEmpty()) && !vedtaksforslag) {
             hendelserService.opprettHendelseVedtak(
-                vedtakRequest = vedtakRequest,
+                vedtakDto = vedtakDto,
                 vedtakId = opprettetVedtak.id,
-                opprettetTidspunkt = opprettetVedtak.opprettetTidspunkt,
-                opprettetAv = opprettetAv,
-                opprettetAvNavn = opprettetAvNavn,
-                kildeapplikasjon = kildeapplikasjon,
-                vedtakstidspunkt = vedtakstidspunkt!!,
             )
         }
 
@@ -564,6 +562,15 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         vedtak.vedtakstidspunkt = LocalDateTime.now()
         persistenceService.oppdaterVedtak(vedtak)
+
+        val vedtakDto = hentVedtak(vedtaksid)
+
+        if ((vedtakDto.stønadsendringListe.isNotEmpty() || vedtakDto.engangsbeløpListe.isNotEmpty())) {
+            hendelserService.opprettHendelseVedtak(
+                vedtakDto = vedtakDto,
+                vedtakId = vedtaksid,
+            )
+        }
 
         val saksnummer = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id).firstOrNull()?.sak
 

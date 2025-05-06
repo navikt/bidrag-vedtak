@@ -19,6 +19,7 @@ import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestD
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.persistence.entity.Behandlingsreferanse
@@ -1131,6 +1132,24 @@ class TestUtil {
                     referanse = "Bisysreferanse05",
                 ),
             ),
+        )
+
+        fun byggVedtakDto() = VedtakDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            opprettetAvNavn = "Saksbehandler1",
+            opprettetTidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            kildeapplikasjon = "Bidrag",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            unikReferanse = "unikReferanse",
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = emptyList(),
+            stønadsendringListe = emptyList(),
+            engangsbeløpListe = emptyList(),
+            behandlingsreferanseListe = emptyList(),
         )
     }
 }

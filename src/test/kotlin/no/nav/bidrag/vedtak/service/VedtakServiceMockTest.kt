@@ -71,6 +71,9 @@ class VedtakServiceMockTest {
     private lateinit var vedtakCaptor: ArgumentCaptor<Vedtak>
 
     @Captor
+    private lateinit var vedtaksidCaptor: ArgumentCaptor<Int>
+
+    @Captor
     private lateinit var stønadsendringCaptor: ArgumentCaptor<Stønadsendring>
 
     @Captor
@@ -118,6 +121,17 @@ class VedtakServiceMockTest {
         Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
             .thenReturn(byggBehandlingsreferanse())
         Mockito.`when`(persistenceServiceMock.referanseErUnik(vedtaksid = any(), referanse = any())).thenReturn(true)
+
+        Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.capture(vedtaksidCaptor)))
+            .thenReturn(byggVedtak())
+        Mockito.`when`(persistenceServiceMock.hentAlleGrunnlagForVedtak(MockitoHelper.capture(vedtaksidCaptor)))
+            .thenReturn(listOf(byggGrunnlag()))
+        Mockito.`when`(persistenceServiceMock.hentAlleStønadsendringerForVedtak(MockitoHelper.capture(vedtaksidCaptor)))
+            .thenReturn(listOf(byggStønadsendring()))
+        Mockito.`when`(persistenceServiceMock.hentAlleEngangsbeløpForVedtak(MockitoHelper.capture(vedtaksidCaptor)))
+            .thenReturn(listOf(byggEngangsbeløp()))
+        Mockito.`when`(persistenceServiceMock.hentAlleBehandlingsreferanserForVedtak(MockitoHelper.capture(vedtaksidCaptor)))
+            .thenReturn(listOf(byggBehandlingsreferanse()))
 
         val opprettVedtakRequestDto = byggVedtakRequest()
         val nyttVedtakOpprettet = vedtakService.opprettVedtak(opprettVedtakRequestDto, false)
