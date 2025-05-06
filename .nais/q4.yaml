@@ -51,6 +51,7 @@ spec:
   gcp:
     sqlInstances:
       tier: db-f1-micro
+      diskSize: 10
       diskAutoresize: false
       pointInTimeRecovery: false
       auditlog: "off"

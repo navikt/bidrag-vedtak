@@ -71,6 +71,7 @@ spec:
     sqlInstances:
       - name: {{ dbname }}
         type: POSTGRES_15
+        diskSize: {{ spec.gcp.sqlInstances.diskSize }}
         databases:
           - name: {{ dbname }}
             envVarPrefix: DB
