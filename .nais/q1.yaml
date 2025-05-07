@@ -50,7 +50,7 @@ spec:
       memory: 206Mi
   gcp:
     sqlInstances:
-      tier: db-custom-2-7680
+      tier: db-custom-4-7680
       diskAutoresize: false
       pointInTimeRecovery: false
       auditlog: "off"
