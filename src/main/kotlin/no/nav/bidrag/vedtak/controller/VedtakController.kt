@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -239,7 +240,7 @@ class VedtakController(private val vedtakService: VedtakService) {
 
     @GetMapping(HENT_ALLE_VEDTAKSFORSLAG)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Hent alle vedtaksforslag ider")
-    fun hentAlleVedtaksforslag() = vedtakService.hentAlleVedtaksforslagIder()
+    fun hentAlleVedtaksforslag(@RequestParam(required = false, defaultValue = "100") limit: Int) = vedtakService.hentAlleVedtaksforslagIder(limit)
 
     // Endepunkt for å oppdatere vedtaksforslag
     @PutMapping(VEDTAKSFORSLAG)

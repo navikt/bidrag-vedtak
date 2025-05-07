@@ -78,7 +78,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val periodeidGrunnlagSkalSlettesListe = mutableListOf<Int>()
     val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
-    fun hentAlleVedtaksforslagIder(): List<Int> = persistenceService.hentAlleVedtaksforslagIder()
+    fun hentAlleVedtaksforslagIder(limit: Int): List<Int> = persistenceService.hentAlleVedtaksforslagIder(limit)
 
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto, vedtaksforslag: Boolean): OpprettVedtakResponseDto {

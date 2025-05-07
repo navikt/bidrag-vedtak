@@ -25,6 +25,7 @@ import no.nav.bidrag.vedtak.persistence.repository.StønadsendringGrunnlagReposi
 import no.nav.bidrag.vedtak.persistence.repository.StønadsendringRepository
 import no.nav.bidrag.vedtak.persistence.repository.VedtakRepository
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -43,7 +44,7 @@ class PersistenceService(
 ) {
 
     @Timed
-    fun hentAlleVedtaksforslagIder(): List<Int> = vedtakRepository.hentAlleVedtaksforslagIder()
+    fun hentAlleVedtaksforslagIder(limit: Int): List<Int> = vedtakRepository.hentAlleVedtaksforslagIder(Pageable.ofSize(limit))
 
     @Timed
     fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
