@@ -52,5 +52,6 @@ spec:
     sqlInstances:
       tier: db-custom-4-7680
       diskAutoresize: false
+      diskSize: 25
       pointInTimeRecovery: false
       auditlog: "off"
