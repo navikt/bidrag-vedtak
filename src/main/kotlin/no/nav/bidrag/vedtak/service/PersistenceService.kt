@@ -43,6 +43,9 @@ class PersistenceService(
 ) {
 
     @Timed
+    fun hentAlleVedtaksforslagIder(): List<Int> = vedtakRepository.hentAlleVedtaksforslagIder()
+
+    @Timed
     fun opprettVedtak(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)
 
     fun oppdaterVedtaksforslag(vedtak: Vedtak): Vedtak = vedtakRepository.save(vedtak)

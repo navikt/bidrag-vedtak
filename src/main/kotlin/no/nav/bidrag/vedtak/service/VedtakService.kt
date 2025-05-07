@@ -78,6 +78,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val periodeidGrunnlagSkalSlettesListe = mutableListOf<Int>()
     val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
+    fun hentAlleVedtaksforslagIder(): List<Int> = persistenceService.hentAlleVedtaksforslagIder()
+
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto, vedtaksforslag: Boolean): OpprettVedtakResponseDto {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
