@@ -179,7 +179,7 @@ class PersistenceService(
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     fun hentVedtakForUnikReferanseEgenTransaksjon(referanse: String): Vedtak? = vedtakRepository.hentVedtakForUnikReferanse(referanse)
 
-    fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int): Int = periodeGrunnlagRepository.slettForPeriode(periodeId)
+    fun slettAllePeriodeGrunnlagForPeriode(periodeId: Int) = periodeGrunnlagRepository.slettForPeriode(periodeId)
 
     fun slettAlleStønadsendringGrunnlagForStønadsendring(stønadsendringsid: Int): Int =
         stønadsendringGrunnlagRepository.slettStønadsendringGrunnlagForStønadsendring(stønadsendringsid)
@@ -199,4 +199,9 @@ class PersistenceService(
     fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
         stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
             .maxOfOrNull { it.vedtak.id } ?: 0
+
+    // Direkte sletting av grunnlagsdata for vedtak via join
+    fun slettAllePeriodeGrunnlagForVedtak(vedtaksid: Int) = periodeGrunnlagRepository.slettAllePeriodeGrunnlagForVedtak(vedtaksid)
+    fun slettAlleStønadsendringGrunnlagForVedtak(vedtaksid: Int) = stønadsendringGrunnlagRepository.slettStønadsendringGrunnlagForVedtak(vedtaksid)
+    fun slettAlleEngangsbeløpGrunnlagForVedtak(vedtaksid: Int) = engangsbeløpGrunnlagRepository.slettAlleEngangsbeløpGrunnlagForVedtak(vedtaksid)
 }

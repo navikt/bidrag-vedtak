@@ -5,7 +5,6 @@ import no.nav.bidrag.vedtak.persistence.entity.PeriodeGrunnlagPK
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
 interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGrunnlagPK?> {
@@ -26,5 +25,18 @@ interface PeriodeGrunnlagRepository : CrudRepository<PeriodeGrunnlag, PeriodeGru
     @Query(
         "delete from PeriodeGrunnlag pg where pg.periode.id = :periodeId",
     )
-    fun slettForPeriode(@Param("periodeId") periodeId: Int): Int
+    fun slettForPeriode(periodeId: Int)
+
+    @Modifying
+    @Transactional
+    @Query(
+        value = "delete from PeriodeGrunnlag pg" +
+            " where pg.periodeid in (" +
+            "  select p.periodeid from Periode p " +
+            "  join Stønadsendring s on p.stønadsendringsid = s.stønadsendringsid " +
+            "  where s.vedtaksid = :vedtaksid" +
+            ")",
+        nativeQuery = true,
+    )
+    fun slettAllePeriodeGrunnlagForVedtak(vedtaksid: Int)
 }

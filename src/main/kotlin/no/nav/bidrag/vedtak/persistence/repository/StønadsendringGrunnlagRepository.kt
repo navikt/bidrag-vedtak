@@ -5,7 +5,6 @@ import no.nav.bidrag.vedtak.persistence.entity.StønadsendringGrunnlagPK
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.query.Param
 import org.springframework.transaction.annotation.Transactional
 
 interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrunnlag, StønadsendringGrunnlagPK?> {
@@ -26,5 +25,18 @@ interface StønadsendringGrunnlagRepository : CrudRepository<StønadsendringGrun
     @Query(
         "delete from StønadsendringGrunnlag sg where sg.stønadsendring.id = :stønadsendringsid",
     )
-    fun slettStønadsendringGrunnlagForStønadsendring(@Param("stønadsendringsid") stønadsendringsid: Int): Int
+    fun slettStønadsendringGrunnlagForStønadsendring(stønadsendringsid: Int): Int
+
+    @Modifying
+    @Transactional
+    @Query(
+        value = "delete from StønadsendringGrunnlag sg" +
+            " where sg.stønadsendringsid in (" +
+            " select s.stønadsendringsid from Stønadsendring s " +
+            " join Vedtak v on s.vedtaksid = v.vedtaksid " +
+            " where s.vedtaksid = :vedtaksid" +
+            ")",
+        nativeQuery = true,
+    )
+    fun slettStønadsendringGrunnlagForVedtak(vedtaksid: Int)
 }

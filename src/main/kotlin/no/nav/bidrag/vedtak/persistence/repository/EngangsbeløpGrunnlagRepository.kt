@@ -27,4 +27,17 @@ interface EngangsbeløpGrunnlagRepository : CrudRepository<EngangsbeløpGrunnlag
         "delete from EngangsbeløpGrunnlag er where er.engangsbeløp.id = :engangsbeløpsid",
     )
     fun slettForEngangsbeløp(@Param("engangsbeløpsid") engangsbeløpsid: Int): Int
+
+    @Modifying
+    @Transactional
+    @Query(
+        value = "delete from EngangsbeløpGrunnlag eg" +
+            " where eg.engangsbeløpsid in (" +
+            " select e.engangsbeløpsid from engangsbeløp e " +
+            " join Vedtak v on e.vedtaksid = v.vedtaksid " +
+            " where v.vedtaksid = :vedtaksid" +
+            ")",
+        nativeQuery = true,
+    )
+    fun slettAlleEngangsbeløpGrunnlagForVedtak(vedtaksid: Int)
 }
