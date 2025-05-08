@@ -4,7 +4,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 
 interface GrunnlagRepository : JpaRepository<Grunnlag, Int?> {
 
@@ -17,5 +16,5 @@ interface GrunnlagRepository : JpaRepository<Grunnlag, Int?> {
     @Query(
         "delete from Grunnlag gr where gr.vedtak.id = :vedtaksid",
     )
-    fun slettAlleGrunnlagForVedtak(@Param("vedtaksid") vedtaksid: Int): Int
+    fun slettAlleGrunnlagForVedtak(vedtaksid: Int): Int
 }
