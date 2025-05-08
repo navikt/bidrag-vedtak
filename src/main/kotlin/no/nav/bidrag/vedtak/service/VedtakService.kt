@@ -39,6 +39,7 @@ import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
 import no.nav.bidrag.vedtak.bo.StønadsendringGrunnlagBo
 import no.nav.bidrag.vedtak.exception.custom.ConflictException
 import no.nav.bidrag.vedtak.exception.custom.GrunnlagsdataManglerException
+import no.nav.bidrag.vedtak.exception.custom.PreconditionFailedException
 import no.nav.bidrag.vedtak.exception.custom.VedtaksdataMatcherIkkeException
 import no.nav.bidrag.vedtak.exception.custom.duplikateReferanserEngangsbeløp
 import no.nav.bidrag.vedtak.exception.custom.manglerOpprettetAv
@@ -95,14 +96,14 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             throw IllegalArgumentException("Vedtakstidspunkt kan ikke være angitt ved opprettelse av vedtaksforslag")
         }
 
-//        val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
-//        if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
-//            stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
-//                if (!validerAtSisteVedtaksidErOk(stønad)) {
-//                    throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
-//                }
-//            }
-//        }
+        val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
+        if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
+            stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
+                if (!validerAtSisteVedtaksidErOk(stønad)) {
+                    throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
+                }
+            }
+        }
 
         val vedtakstidspunkt = if (vedtaksforslag) null else vedtakRequest.vedtakstidspunkt ?: LocalDateTime.now()
 
@@ -185,7 +186,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
                 if (vedtaksid != null) {
                     LOGGER.error(
-                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unike referansen  $vedtaksid",
+                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak unik referansen ${vedtakRequest.unikReferanse} med vedtaksid $vedtaksid",
                     )
                     SECURE_LOGGER.error(
                         "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referansen ${vedtakRequest.unikReferanse}. " +
