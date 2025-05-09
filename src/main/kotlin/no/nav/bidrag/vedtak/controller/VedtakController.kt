@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -237,6 +238,10 @@ class VedtakController(private val vedtakService: VedtakService) {
         return ResponseEntity(vedtaksforslagOpprettet.vedtaksid, HttpStatus.OK)
     }
 
+    @GetMapping(HENT_ALLE_VEDTAKSFORSLAG)
+    @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Hent alle vedtaksforslag ider")
+    fun hentAlleVedtaksforslag(@RequestParam(required = false, defaultValue = "100") limit: Int) = vedtakService.hentAlleVedtaksforslagIder(limit)
+
     // Endepunkt for å oppdatere vedtaksforslag
     @PutMapping(VEDTAKSFORSLAG)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Oppdaterer grunnlag på et eksisterende vedtaksforslag")
@@ -356,6 +361,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val HENT_VEDTAK_FOR_BEHANDLINGSREFERANSE = "/vedtak/hent-vedtak-for-behandlingsreferanse/{kilde}/{behandlingsreferanse}"
         const val HENT_VEDTAK_FOR_UNIK_REFERANSE = "/vedtak/unikreferanse"
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
+        const val HENT_ALLE_VEDTAKSFORSLAG = "/vedtaksforslag/alle"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }

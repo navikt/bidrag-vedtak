@@ -78,6 +78,8 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     val periodeidGrunnlagSkalSlettesListe = mutableListOf<Int>()
     val engangsbeløpsidGrunnlagSkalSlettesListe = mutableListOf<Int>()
 
+    fun hentAlleVedtaksforslagIder(limit: Int): List<Int> = persistenceService.hentAlleVedtaksforslagIder(limit)
+
     // Opprett vedtak (alle tabeller)
     fun opprettVedtak(vedtakRequest: OpprettVedtakRequestDto, vedtaksforslag: Boolean): OpprettVedtakResponseDto {
         // Hent saksbehandlerident (opprettetAv) og kildeapplikasjon fra token. + Navn på saksbehandler (opprettetAvNavn) fra bidrag-organisasjon.
@@ -184,7 +186,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
                 if (vedtaksid != null) {
                     LOGGER.error(
-                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unike referansen  $vedtaksid",
+                        "Feil ved lagring av vedtak. Det finnes allerede et vedtak unik referansen ${vedtakRequest.unikReferanse} med vedtaksid $vedtaksid",
                     )
                     SECURE_LOGGER.error(
                         "Feil ved lagring av vedtak. Det finnes allerede et vedtak med unik referansen ${vedtakRequest.unikReferanse}. " +
@@ -454,7 +456,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
             )
         }
 
-        val opprettetAv = vedtakRequest.opprettetAv.trimToNull() ?: TokenUtils.hentSaksbehandlerIdent() ?: vedtakRequest.manglerOpprettetAv()
+        val opprettetAv =
+            vedtakRequest.opprettetAv.trimToNull()
+                ?: TokenUtils.hentSaksbehandlerIdent()
+                ?: TokenUtils.hentApplikasjonsnavn()
+                ?: vedtakRequest.manglerOpprettetAv()
         val opprettetAvNavn = SaksbehandlernavnProvider.hentSaksbehandlernavn(opprettetAv)
         val kildeapplikasjon = TokenUtils.hentApplikasjonsnavn() ?: "UKJENT"
 
