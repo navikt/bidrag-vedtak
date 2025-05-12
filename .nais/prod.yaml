@@ -52,7 +52,8 @@ spec:
       memory: 1000Mi
   gcp:
     sqlInstances:
-      tier: db-custom-1-3840
+      tier: db-custom-8-7680
       diskAutoresize: true
+      diskSize: 25
       pointInTimeRecovery: true
       auditlog: "on"

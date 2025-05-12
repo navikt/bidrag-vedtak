@@ -41,16 +41,17 @@ azure:
 spec:
   replicas:
     min: 2
-    max: 4
+    max: 8
   resources:
     limits:
       memory: 2048Mi
     requests:
-      cpu: 50m
-      memory: 206Mi
+      cpu: 300m
+      memory: 1000Mi
   gcp:
     sqlInstances:
-      tier: db-custom-1-3840
+      tier: db-custom-8-15360
       diskAutoresize: false
+      diskSize: 25
       pointInTimeRecovery: false
       auditlog: "off"
