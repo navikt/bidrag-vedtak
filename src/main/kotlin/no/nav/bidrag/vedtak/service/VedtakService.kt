@@ -780,7 +780,12 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
     }
 
     private fun slettEventueltEksisterendeGrunnlag(vedtaksid: Int) {
-        val stønadsendringer = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
+        // Sletter alle referanser til grunnlag
+        persistenceService.slettAllePeriodeGrunnlagForVedtak(vedtaksid)
+        persistenceService.slettAlleStønadsendringGrunnlagForVedtak(vedtaksid)
+        persistenceService.slettAlleEngangsbeløpGrunnlagForVedtak(vedtaksid)
+
+/*        val stønadsendringer = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
 
         stønadsendringer.forEach { stønadsendring ->
             persistenceService.slettAlleStønadsendringGrunnlagForStønadsendring(stønadsendring.id)
@@ -794,7 +799,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         val engangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtaksid)
         engangsbeløpListe.forEach { engangsbeløp ->
             persistenceService.slettAlleEngangsbeløpGrunnlagForEngangsbeløp(engangsbeløp.id)
-        }
+        }*/
 
         // slett fra Grunnlag
         persistenceService.slettAlleGrunnlagForVedtak(vedtaksid)
