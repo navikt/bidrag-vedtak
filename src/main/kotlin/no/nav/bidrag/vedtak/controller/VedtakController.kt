@@ -132,7 +132,12 @@ class VedtakController(private val vedtakService: VedtakService) {
         request: OpprettVedtakRequestDto,
     ): ResponseEntity<Int>? {
         SECURE_LOGGER.info("Følgende request mottatt om å oppdatere vedtak med id $vedtaksid: ${tilJson(request)}")
-        val vedtakOppdatert = vedtakService.oppdaterVedtak(vedtaksid, request)
+        val vedtakOppdatert = try {
+            vedtakService.oppdaterVedtak(vedtaksid, request)
+        } catch (e: Exception) {
+            SECURE_LOGGER.error("Følgende request feilet om å oppdatere vedtak med id $vedtaksid: $request")
+            throw e
+        }
         LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert")
         return ResponseEntity(vedtakOppdatert, HttpStatus.OK)
     }
