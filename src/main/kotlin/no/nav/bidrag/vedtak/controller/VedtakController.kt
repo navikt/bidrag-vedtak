@@ -135,7 +135,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         val vedtakOppdatert = try {
             vedtakService.oppdaterVedtak(vedtaksid, request)
         } catch (e: Exception) {
-            SECURE_LOGGER.error("Følgende request feilet om å oppdatere vedtak med id $vedtaksid: $request")
+            SECURE_LOGGER.error("Følgende request feilet om å oppdatere vedtak med id $vedtaksid: ${tilJson(request)}")
             throw e
         }
         LOGGER.info("Vedtak med id $vedtakOppdatert er oppdatert")
