@@ -653,7 +653,11 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
                 }
             }
         if (matchendeElementer.size != eksisterendeStønadsendringListe.size) {
-            SECURE_LOGGER.error("Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak $vedtaksid")
+            SECURE_LOGGER.error(
+                "Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak $vedtaksid: request: ${tilJson(
+                    vedtakRequest.stønadsendringListe,
+                )} eksisterende: ${tilJson(eksisterendeStønadsendringListe)}",
+            )
             return false
         }
 
@@ -712,7 +716,7 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
         // Sjekker om det er lagret like mange engangsbeløp som det ligger i oppdaterVedtak-requesten
         if (vedtakRequest.engangsbeløpListe.size != eksisterendeEngangsbeløpListe.size) {
             SECURE_LOGGER.error(
-                "Det er ulikt antall engangsbeløp i request for å oppdatere vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtaksid",
+                "Det er ulikt antall engangsbeløp i request for å oppdatere vedtak og det som er lagret på vedtaket fra før. VedtakId $vedtaksid: request: ${vedtakRequest.engangsbeløpListe}, eksisterende: $eksisterendeEngangsbeløpListe",
             )
             return false
         }
