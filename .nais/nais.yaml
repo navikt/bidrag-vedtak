@@ -31,9 +31,10 @@ spec:
             namespace: {{this.namespace}}
             cluster: {{this.cluster}}
       {{/each}}
-          - application: logging
-            namespace: nais-system
     outbound:
+      rules:
+       - application: logging
+         namespace: nais-system
       external:
         - host: {{ azure.bidrag_organisasjon_url }}
   image: {{ image }}
