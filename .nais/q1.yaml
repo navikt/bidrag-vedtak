@@ -35,9 +35,6 @@ azureAccessInbound:
   - application: bidrag-automatisk-jobb-q1
     namespace: bidrag
     cluster: dev-gcp
-  - application: logging
-    namespace: nais-system
-    cluster: dev-gcp
 azure:
   bidrag_organisasjon_url: bidrag-organisasjon.dev-fss-pub.nais.io
   bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon
