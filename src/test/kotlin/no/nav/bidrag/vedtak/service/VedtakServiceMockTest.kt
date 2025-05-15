@@ -33,6 +33,7 @@ import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
+import no.nav.bidrag.vedtak.util.IdentUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
@@ -60,6 +61,9 @@ class VedtakServiceMockTest {
 
     @Mock
     private lateinit var hendelserService: HendelserService
+
+    @Mock
+    private lateinit var identUtils: IdentUtils
 
     @Spy
     private var meterRegistry: MeterRegistry = SimpleMeterRegistry()
