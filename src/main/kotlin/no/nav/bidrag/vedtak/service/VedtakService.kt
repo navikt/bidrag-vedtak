@@ -670,8 +670,8 @@ class VedtakService(
             val eksisterendeStønadsendringListeMedOppdaterteIdenter =
                 eksisterendeStønadsendringListe.map { stønadsendring ->
                     stønadsendring.copy(
-                        skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).toString(),
-                        kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).toString(),
+                        skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi,
+                        kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi,
                     )
                 }
 
