@@ -38,8 +38,8 @@ azureAccessInbound:
 azure:
   bidrag_organisasjon_url: bidrag-organisasjon.dev-fss-pub.nais.io
   bidrag_organisasjon_scope: dev-fss.bidrag.bidrag-organisasjon
-  bidragperson_url: bidrag-person-feature.dev-fss-pub.nais.io
-  bidragperson_scope: dev-fss.bidrag.bidrag-person-q4
+  bidrag_person_url: bidrag-person-feature.dev-fss-pub.nais.io
+  bidrag_person_scope: dev-fss.bidrag.bidrag-person-q4
 spec:
   replicas:
     min: 1
