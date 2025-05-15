@@ -55,6 +55,7 @@ import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeEntity
 import no.nav.bidrag.vedtak.persistence.entity.toStønadsendringEntity
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakEntity
+import no.nav.bidrag.vedtak.util.IdentUtils
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.hibernate.exception.ConstraintViolationException
 import org.slf4j.LoggerFactory
@@ -68,7 +69,12 @@ data class VedtakConflictResponse(val vedtaksid: Int?)
 
 @Service
 @Transactional
-class VedtakService(val persistenceService: PersistenceService, val hendelserService: HendelserService, private val meterRegistry: MeterRegistry) {
+class VedtakService(
+    val persistenceService: PersistenceService,
+    val hendelserService: HendelserService,
+    private val meterRegistry: MeterRegistry,
+    private val identUtils: IdentUtils,
+) {
 
     private val opprettVedtakCounterName = "opprett_vedtak"
     private val oppdaterVedtakCounterName = "oppdater_vedtak"
@@ -636,29 +642,57 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall stønadsendringer
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.stønadsendringListe
-            .filter { stønadsendringRequest ->
-                eksisterendeStønadsendringListe.any {
-                    stønadsendringRequest.type.name == it.type &&
-                        stønadsendringRequest.sak.verdi == it.sak &&
-                        stønadsendringRequest.skyldner.verdi == it.skyldner &&
-                        stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
-                        // TODO: Mottaker kan være reelmottaker hvis barnet har blitt 18år. Derfor kan det hende at dette ikke matcher lenger etter ny kjøring
-//                        stønadsendringRequest.mottaker.verdi == it.mottaker &&
-                        stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
-                        stønadsendringRequest.innkreving.name == it.innkreving &&
-                        stønadsendringRequest.beslutning.name == it.beslutning &&
-                        stønadsendringRequest.omgjørVedtakId == it.omgjørVedtakId &&
-                        stønadsendringRequest.eksternReferanse == it.eksternReferanse
-                }
-            }
-        if (matchendeElementer.size != eksisterendeStønadsendringListe.size) {
-            SECURE_LOGGER.error(
-                "Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak $vedtaksid: request: ${tilJson(
-                    vedtakRequest.stønadsendringListe,
-                )} eksisterende: ${tilJson(eksisterendeStønadsendringListe)}",
+        val antallMatchendeElementer = antallMatchendeStønadsendringer(vedtakRequest.stønadsendringListe, eksisterendeStønadsendringListe)
+
+        // Hvis det er mismatch så gjøres det en innhenting av nyeste personident for partene i stønadsendringen og deretter gjøres
+        // et nytt forsøk på å matche
+        if (antallMatchendeElementer != eksisterendeStønadsendringListe.size) {
+            SECURE_LOGGER.warn(
+                "Det er mismatch på minst én stønadsendring ved forsøk på å oppdatere vedtak, forsøker på nytt med oppdaterte personidenter. " +
+                    "Vedtak: $vedtaksid: request: ${
+                        tilJson(
+                            vedtakRequest.stønadsendringListe,
+                        )
+                    } eksisterende: ${tilJson(eksisterendeStønadsendringListe)}",
             )
-            return false
+
+            // Kopierer requesten med oppdaterte identer
+            val requestMedOppdaterteIdenter = vedtakRequest.copy(
+                stønadsendringListe = vedtakRequest.stønadsendringListe.map { stønadsendring ->
+                    stønadsendring.copy(
+                        skyldner = identUtils.hentNyesteIdent(stønadsendring.skyldner),
+                        kravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver),
+                    )
+                },
+            )
+
+            // Kopierer eksisterende stønadsendringer med oppdaterte identer
+            val eksisterendeStønadsendringListeMedOppdaterteIdenter =
+                eksisterendeStønadsendringListe.map { stønadsendring ->
+                    stønadsendring.copy(
+                        skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).toString(),
+                        kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).toString(),
+                    )
+                }
+
+            val antallMatchendeElementerOppdaterteIdenter =
+                antallMatchendeStønadsendringer(
+                    requestMedOppdaterteIdenter.stønadsendringListe,
+                    eksisterendeStønadsendringListeMedOppdaterteIdenter,
+                )
+
+            if (antallMatchendeElementerOppdaterteIdenter != eksisterendeStønadsendringListeMedOppdaterteIdenter.size) {
+                // Hvis det fortsatt er mismatch så kastes exception
+                SECURE_LOGGER.error(
+                    "Det er fortsatt mismatch etter å ha testet på nyeste personidenter på minst én stønadsendring ved forsøk på å oppdatere " +
+                        "vedtak $vedtaksid: request: ${
+                            tilJson(
+                                requestMedOppdaterteIdenter.stønadsendringListe,
+                            )
+                        } eksisterende: ${tilJson(eksisterendeStønadsendringListeMedOppdaterteIdenter)}",
+                )
+                return false
+            }
         }
 
         eksisterendeStønadsendringListe.forEach {
@@ -1069,6 +1103,24 @@ class VedtakService(val persistenceService: PersistenceService, val hendelserSer
 
         return true
     }
+
+    private fun antallMatchendeStønadsendringer(
+        requeststønadsendringListe: List<OpprettStønadsendringRequestDto>,
+        eksisterendeStønadsendringListe: List<Stønadsendring>,
+    ) = requeststønadsendringListe
+        .filter { stønadsendringRequest ->
+            eksisterendeStønadsendringListe.any {
+                stønadsendringRequest.type.name == it.type &&
+                    stønadsendringRequest.sak.verdi == it.sak &&
+                    stønadsendringRequest.skyldner.verdi == it.skyldner &&
+                    stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
+                    stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
+                    stønadsendringRequest.innkreving.name == it.innkreving &&
+                    stønadsendringRequest.beslutning.name == it.beslutning &&
+                    stønadsendringRequest.omgjørVedtakId == it.omgjørVedtakId &&
+                    stønadsendringRequest.eksternReferanse == it.eksternReferanse
+            }
+        }.size
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)

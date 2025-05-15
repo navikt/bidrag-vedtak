@@ -37,6 +37,7 @@ spec:
          namespace: nais-system
       external:
         - host: {{ azure.bidrag_organisasjon_url }}
+        - host: {{ azure.bidrag_person_url }}
   image: {{ image }}
   kafka:
     pool: {{ kafka.pool }}
@@ -99,3 +100,7 @@ spec:
       value: {{ azure.bidrag_organisasjon_scope }}
     - name: SPRING_PROFILES_ACTIVE
       value: {{ spring-profiles }}
+    - name: BIDRAG_PERSON_URL
+      value: https://{{ azure.bidrag_person_url }}/bidrag-person
+    - name: BIDRAG_PERSON_SCOPE
+      value: {{ azure.bidrag_person_scope }}
