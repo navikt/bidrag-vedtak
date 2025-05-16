@@ -667,13 +667,22 @@ class VedtakService(
             )
 
             // Kopierer eksisterende stønadsendringer med oppdaterte identer
-            val eksisterendeStønadsendringListeMedOppdaterteIdenter =
-                eksisterendeStønadsendringListe.map { stønadsendring ->
-                    stønadsendring.copy(
-                        skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi,
-                        kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi,
-                    )
-                }
+            val eksisterendeStønadsendringListeMedOppdaterteIdenter = eksisterendeStønadsendringListe.map { stønadsendring ->
+                Stønadsendring(
+                    id = stønadsendring.id,
+                    vedtak = stønadsendring.vedtak,
+                    type = stønadsendring.type,
+                    sak = stønadsendring.sak,
+                    skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi,
+                    kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi,
+                    mottaker = stønadsendring.mottaker,
+                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
+                    innkreving = stønadsendring.innkreving,
+                    beslutning = stønadsendring.beslutning,
+                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
+                    eksternReferanse = stønadsendring.eksternReferanse,
+                )
+            }
 
             val antallMatchendeElementerOppdaterteIdenter =
                 antallMatchendeStønadsendringer(
