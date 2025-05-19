@@ -566,10 +566,10 @@ class VedtakService(
         // sjekk at angitt vedtak  er et vedtaksforslag, skal ikke kunne slettes ellers
         val vedtak = persistenceService.hentVedtak(vedtaksid)
         if (vedtak.vedtakstidspunkt != null) {
-            val feilmelding = "Vedtak er ikke vedtaksforslag og vedtak kan derfor ikke fattes: $vedtaksid"
-            LOGGER.error(feilmelding)
-            SECURE_LOGGER.error(feilmelding)
-            throw IllegalArgumentException(feilmelding)
+            val feilmelding = "Vedtak er allerede fattet. Ignorer forespørsel $vedtaksid"
+            LOGGER.warn(feilmelding)
+            SECURE_LOGGER.warn(feilmelding)
+            return vedtaksid
         }
 
         vedtak.vedtakstidspunkt = LocalDateTime.now()
