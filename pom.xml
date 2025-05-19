@@ -21,7 +21,7 @@
 
     <!-- build/language -->
     <kotlin.version>2.1.0</kotlin.version>
-    <token-support.version>5.0.25</token-support.version>
+    <token-support.version>5.0.27</token-support.version>
 
     <!-- dependencies -->
     <bidrag-felles.version>2025.05.09.074649</bidrag-felles.version>
