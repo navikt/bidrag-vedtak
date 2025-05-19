@@ -203,5 +203,5 @@ class PersistenceService(
     fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
         stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
             .filter { it.vedtak.vedtakstidspunkt != null }
-            .maxByOrNull { it.vedtak.vedtakstidspunkt!! }?.id ?: 0
+            .maxByOrNull { it.vedtak.vedtakstidspunkt!! }?.vedtak?.id ?: 0
 }
