@@ -1139,10 +1139,10 @@ class VedtakService(
                 )
             }
 
-            val matchendeEksisterendeEngangsbeløp =
+            val matchendeEksisterendeEngangsbeløpMedOppdatertIdent =
                 finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListeMedOppdaterteIdenter, listOf(requestMedOppdaterteIdenter))
 
-            if (matchendeEksisterendeEngangsbeløp.size != 1) {
+            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
                 SECURE_LOGGER.error("Det er fortsatt mismatch på antall matchende engangsbeløp: ${tilJson(requestMedOppdaterteIdenter)}")
                 throw VedtaksdataMatcherIkkeException(
                     "Det er fortsatt mismatch på antall matchende engangsbeløp: ${
@@ -1152,6 +1152,7 @@ class VedtakService(
                     }",
                 )
             }
+            return matchendeEksisterendeEngangsbeløpMedOppdatertIdent.first().id
         }
         return matchendeEksisterendeEngangsbeløp.first().id
     }
