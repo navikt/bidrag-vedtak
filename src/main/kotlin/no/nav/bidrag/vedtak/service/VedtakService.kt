@@ -641,8 +641,8 @@ class VedtakService(
         }
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall stønadsendringer
-        // som ligger på vedtaket fra før så feilmeldes det
-        val antallMatchendeElementer = antallMatchendeStønadsendringer(vedtakRequest.stønadsendringListe, eksisterendeStønadsendringListe)
+        // som ligger på vedtaket fra før så gjøres det et nytt forsøk på oppdaterte personidenter
+        val antallMatchendeElementer = finnMatchendeStønadsendringer(eksisterendeStønadsendringListe, vedtakRequest.stønadsendringListe).size
 
         // Hvis det er mismatch så gjøres det en innhenting av nyeste personident for partene i stønadsendringen og deretter gjøres
         // et nytt forsøk på å matche
@@ -659,22 +659,37 @@ class VedtakService(
             // Kopierer requesten med oppdaterte identer
             val requestMedOppdaterteIdenter = vedtakRequest.copy(
                 stønadsendringListe = vedtakRequest.stønadsendringListe.map { stønadsendring ->
+                    val nyesteSkyldner = identUtils.hentNyesteIdent(stønadsendring.skyldner)
+                    val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver)
+
+                    SECURE_LOGGER.info(
+                        "Stønadsendring. Mottatt skyldner: ${stønadsendring.skyldner.verdi} kravhaver: ${stønadsendring.kravhaver.verdi} " +
+                            "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
+                    )
+
                     stønadsendring.copy(
-                        skyldner = identUtils.hentNyesteIdent(stønadsendring.skyldner),
-                        kravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver),
+                        skyldner = nyesteSkyldner,
+                        kravhaver = nyesteKravhaver,
                     )
                 },
             )
 
             // Kopierer eksisterende stønadsendringer med oppdaterte identer
             val eksisterendeStønadsendringListeMedOppdaterteIdenter = eksisterendeStønadsendringListe.map { stønadsendring ->
+                val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi
+                val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi
+
+                SECURE_LOGGER.info(
+                    "Stønadsendring. Eksisterende skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
+                        "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                )
                 Stønadsendring(
                     id = stønadsendring.id,
                     vedtak = stønadsendring.vedtak,
                     type = stønadsendring.type,
                     sak = stønadsendring.sak,
-                    skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi,
-                    kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi,
+                    skyldner = nyesteSkyldner,
+                    kravhaver = nyesteKravhaver,
                     mottaker = stønadsendring.mottaker,
                     førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
                     innkreving = stønadsendring.innkreving,
@@ -685,10 +700,10 @@ class VedtakService(
             }
 
             val antallMatchendeElementerOppdaterteIdenter =
-                antallMatchendeStønadsendringer(
-                    requestMedOppdaterteIdenter.stønadsendringListe,
+                finnMatchendeStønadsendringer(
                     eksisterendeStønadsendringListeMedOppdaterteIdenter,
-                )
+                    requestMedOppdaterteIdenter.stønadsendringListe,
+                ).size
 
             if (antallMatchendeElementerOppdaterteIdenter != eksisterendeStønadsendringListeMedOppdaterteIdenter.size) {
                 // Hvis det fortsatt er mismatch så kastes exception
@@ -766,34 +781,89 @@ class VedtakService(
 
         // Teller antall forekomster som matcher. Hvis antallet er lavere enn antall engangsbeløp
         // som ligger på vedtaket fra før så feilmeldes det
-        val matchendeElementer = vedtakRequest.engangsbeløpListe
-            .filter { engangsbeløpRequest ->
-                eksisterendeEngangsbeløpListe.any {
-                    engangsbeløpRequest.type.name == it.type &&
-                        engangsbeløpRequest.sak.verdi == it.sak &&
-                        engangsbeløpRequest.skyldner.verdi == it.skyldner &&
-                        engangsbeløpRequest.kravhaver.verdi == it.kravhaver &&
-                        // TODO: Mottaker kan være reelmottaker hvis barnet har blitt 18år. Derfor kan det hende at dette ikke matcher lenger etter ny kjøring
-//                        engangsbeløpRequest.mottaker.verdi == it.mottaker &&
-                        engangsbeløpRequest.beløp?.toInt() == it.beløp?.toInt() &&
-                        engangsbeløpRequest.valutakode == it.valutakode &&
-                        engangsbeløpRequest.resultatkode == it.resultatkode &&
-                        engangsbeløpRequest.innkreving.name == it.innkreving &&
-                        engangsbeløpRequest.beslutning.name == it.beslutning &&
-                        engangsbeløpRequest.omgjørVedtakId == it.omgjørVedtakId &&
-                        engangsbeløpRequest.referanse == it.referanse &&
-                        engangsbeløpRequest.delytelseId == it.delytelseId &&
-                        engangsbeløpRequest.eksternReferanse == it.eksternReferanse
-                }
-            }
+        val antallMatchendeElementer = finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListe, vedtakRequest.engangsbeløpListe).size
 
-        if (matchendeElementer.size == eksisterendeEngangsbeløpListe.size) {
+        // Hvis det er mismatch så gjøres det en innhenting av nyeste personident for partene i engangsbeløpet og deretter gjøres
+        // et nytt forsøk på å matche
+        if (antallMatchendeElementer == eksisterendeEngangsbeløpListe.size) {
             eksisterendeEngangsbeløpListe.forEach {
                 engangsbeløpsidGrunnlagSkalSlettesListe.add(it.id)
             }
-        }
+            return true
+        } else {
+            SECURE_LOGGER.warn(
+                "Det er mismatch på minst ett engangsbeløp ved forsøk på å oppdatere vedtak, forsøker på nytt med oppdaterte personidenter. " +
+                    "Vedtak: $vedtaksid: request: ${
+                        tilJson(
+                            vedtakRequest.engangsbeløpListe,
+                        )
+                    } eksisterende: ${tilJson(eksisterendeEngangsbeløpListe)}",
+            )
 
-        return matchendeElementer.size == eksisterendeEngangsbeløpListe.size
+            // Kopierer requesten med oppdaterte identer
+            val requestMedOppdaterteIdenter = vedtakRequest.copy(
+                engangsbeløpListe = vedtakRequest.engangsbeløpListe.map { engangsbeløp ->
+                    val nyesteSkyldner = identUtils.hentNyesteIdent(engangsbeløp.skyldner)
+                    val nyesteKravhaver = identUtils.hentNyesteIdent(engangsbeløp.kravhaver)
+
+                    SECURE_LOGGER.info(
+                        "Engangsbeløp. Mottatt skyldner: ${engangsbeløp.skyldner.verdi} kravhaver: ${engangsbeløp.kravhaver.verdi} " +
+                            "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
+                    )
+                    engangsbeløp.copy(
+                        skyldner = nyesteSkyldner,
+                        kravhaver = nyesteKravhaver,
+                    )
+                },
+            )
+
+            // Kopierer eksisterende stønadsendringer med oppdaterte identer
+            val eksisterendeEngangsbeløpListeMedOppdaterteIdenter = eksisterendeEngangsbeløpListe.map { engangsbeløp ->
+                val skyldner = identUtils.hentNyesteIdent(Personident(engangsbeløp.skyldner)).verdi
+                val kravhaver = identUtils.hentNyesteIdent(Personident(engangsbeløp.kravhaver)).verdi
+
+                SECURE_LOGGER.info(
+                    "Engangsbeløp. Eksisterende skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
+                        "etter oppdatering, skyldner: $skyldner kravhaver: $kravhaver",
+                )
+                Engangsbeløp(
+                    id = engangsbeløp.id,
+                    vedtak = engangsbeløp.vedtak,
+                    type = engangsbeløp.type,
+                    sak = engangsbeløp.sak,
+                    skyldner = skyldner,
+                    kravhaver = kravhaver,
+                    mottaker = engangsbeløp.mottaker,
+                    innkreving = engangsbeløp.innkreving,
+                    beslutning = engangsbeløp.beslutning,
+                    omgjørVedtakId = engangsbeløp.omgjørVedtakId,
+                    eksternReferanse = engangsbeløp.eksternReferanse,
+                )
+            }
+
+            val antallMatchendeElementerMedOppdaterteIdenter =
+                finnMatchendeEngangsbeløp(
+                    eksisterendeEngangsbeløpListe,
+                    requestMedOppdaterteIdenter.engangsbeløpListe,
+                ).size
+
+            if (antallMatchendeElementerMedOppdaterteIdenter == eksisterendeEngangsbeløpListe.size) {
+                eksisterendeEngangsbeløpListe.forEach {
+                    engangsbeløpsidGrunnlagSkalSlettesListe.add(it.id)
+                }
+                return true
+            } else {
+                SECURE_LOGGER.error(
+                    "Det er fortsatt mismatch på minst ett engangsbeløp med oppdaterte personidenter ved forsøk på å oppdatere vedtak . " +
+                        "Vedtak: $vedtaksid: request: ${
+                            tilJson(
+                                requestMedOppdaterteIdenter.engangsbeløpListe,
+                            )
+                        } eksisterende: ${tilJson(eksisterendeEngangsbeløpListeMedOppdaterteIdenter)}",
+                )
+            }
+            return false
+        }
     }
 
     private fun behandlingsreferanserMatcher(vedtaksid: Int, vedtakRequest: OpprettVedtakRequestDto): Boolean {
@@ -873,14 +943,14 @@ class VedtakService(
         val eksisterendeStønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
 
         vedtakRequest.stønadsendringListe.forEach { stønadsendringRequest ->
-            // matcher mot eksisterende stønadsendringer for å finne stønadsendringId for igjen å finne perioder som skal brukes
+            // matcher mot eksisterende stønadsendringer for å finne stønadsendringsid for igjen å finne perioder som skal brukes
             // til å oppdatere PeriodeGrunnlag
-            val stønadsendringId = finnEksisterendeStønadsendringId(stønadsendringRequest, eksisterendeStønadsendringListe)
-            val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringId)
+            val stønadsendringsid = finnEksisterendeStønadsendringsid(stønadsendringRequest, eksisterendeStønadsendringListe)
+            val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringsid)
 
             stønadsendringRequest.periodeListe.forEach { periode ->
                 // matcher mot eksisterende perioder for å finne periodeId for å oppdatere PeriodeGrunnlag
-                val periodeId = finnEksisterendePeriodeId(periode, eksisterendePeriodeListe)
+                val periodeId = finnEksisterendePeriodeid(periode, eksisterendePeriodeListe)
                 oppdaterPeriodeGrunnlag(periode, periodeId, grunnlagIdRefMap)
             }
         }
@@ -894,34 +964,89 @@ class VedtakService(
         }
     }
 
-    private fun finnEksisterendeStønadsendringId(
-        stønadsendringrequest: OpprettStønadsendringRequestDto,
+    private fun finnEksisterendeStønadsendringsid(
+        stønadsendringRequest: OpprettStønadsendringRequestDto,
         eksisterendeStønadsendringListe: List<Stønadsendring>,
     ): Int {
-        val matchendeEksisterendeStønadsendring = eksisterendeStønadsendringListe
-            .filter { stønadsendring ->
-                eksisterendeStønadsendringListe.any {
-                    stønadsendring.type == stønadsendringrequest.type.name &&
-                        stønadsendring.sak == stønadsendringrequest.sak.verdi &&
-                        stønadsendring.skyldner == stønadsendringrequest.skyldner.verdi &&
-                        stønadsendring.kravhaver == stønadsendringrequest.kravhaver.verdi &&
-//                        stønadsendring.mottaker == stønadsendringrequest.mottaker.verdi &&
-                        stønadsendring.førsteIndeksreguleringsår == stønadsendringrequest.førsteIndeksreguleringsår &&
-                        stønadsendring.innkreving == stønadsendringrequest.innkreving.name &&
-                        stønadsendring.beslutning == stønadsendringrequest.beslutning.name &&
-                        stønadsendring.omgjørVedtakId == stønadsendringrequest.omgjørVedtakId &&
-                        stønadsendring.eksternReferanse == stønadsendringrequest.eksternReferanse
-                }
-            }
+        val matchendeEksisterendeStønadsendring = finnMatchendeStønadsendringer(eksisterendeStønadsendringListe, listOf(stønadsendringRequest))
 
         if (matchendeEksisterendeStønadsendring.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende stønadsendringer: ${tilJson(stønadsendringrequest)}")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer: ${tilJson(stønadsendringrequest)}")
+            SECURE_LOGGER.warn(
+                "Feil ved forsøk på å hente stønadsendringsid under oppdatering av vedtak. Forsøker på nytt med oppdaterte personidenter: ${
+                    tilJson(
+                        stønadsendringRequest,
+                    )
+                }",
+            )
+
+            val nyesteSkyldner = identUtils.hentNyesteIdent(stønadsendringRequest.skyldner)
+            val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendringRequest.kravhaver)
+
+            SECURE_LOGGER.info(
+                "Stønadsendring. Mottatt skyldner: ${stønadsendringRequest.skyldner.verdi} kravhaver: ${stønadsendringRequest.kravhaver.verdi} " +
+                    "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
+            )
+
+            // Kopierer requesten med oppdaterte identer
+            val requestMedOppdaterteIdenter = stønadsendringRequest.copy(
+                skyldner = nyesteSkyldner,
+                kravhaver = nyesteKravhaver,
+            )
+
+            // Kopierer eksisterende stønadsendringer med oppdaterte identer
+            val eksisterendeStønadsendringListeMedOppdaterteIdenter = eksisterendeStønadsendringListe.map { stønadsendring ->
+
+                val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi
+                val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi
+
+                SECURE_LOGGER.info(
+                    "Stønadsendring. Eksisterende skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
+                        "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                )
+                Stønadsendring(
+                    id = stønadsendring.id,
+                    vedtak = stønadsendring.vedtak,
+                    type = stønadsendring.type,
+                    sak = stønadsendring.sak,
+                    skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi,
+                    kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi,
+                    mottaker = stønadsendring.mottaker,
+                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
+                    innkreving = stønadsendring.innkreving,
+                    beslutning = stønadsendring.beslutning,
+                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
+                    eksternReferanse = stønadsendring.eksternReferanse,
+                )
+            }
+
+            val matchendeElementerOppdaterteIdenter =
+                finnMatchendeStønadsendringer(
+                    eksisterendeStønadsendringListeMedOppdaterteIdenter,
+                    listOf(requestMedOppdaterteIdenter),
+                )
+
+            if (matchendeElementerOppdaterteIdenter.size != 1) {
+                SECURE_LOGGER.error(
+                    "Andre forsøk på å hente stønadsendringsid under oppdatering av vedtak feiler. Request: ${
+                        tilJson(
+                            requestMedOppdaterteIdenter,
+                        )
+                    }",
+                )
+                throw VedtaksdataMatcherIkkeException(
+                    "Stønadsendringsid ikke funnet ved oppdatering av vedtak. Eksisterende stønadsendringer med oppdaterte identer: ${
+                        tilJson(
+                            eksisterendeStønadsendringListeMedOppdaterteIdenter,
+                        )
+                    }",
+                )
+            }
+            return matchendeElementerOppdaterteIdenter.first().id
         }
         return matchendeEksisterendeStønadsendring.first().id
     }
 
-    private fun finnEksisterendePeriodeId(periodeRequest: OpprettPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
+    private fun finnEksisterendePeriodeid(periodeRequest: OpprettPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
@@ -965,28 +1090,69 @@ class VedtakService(
         engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
         eksisterendeEngangsbeløpListe: List<Engangsbeløp>,
     ): Int {
-        val matchendeEksisterendeEngangsbeløp = eksisterendeEngangsbeløpListe
-            .filter { engangsbeløp ->
-                eksisterendeEngangsbeløpListe.any {
-                    engangsbeløp.type == engangsbeløpRequest.type.name &&
-                        engangsbeløp.sak == engangsbeløpRequest.sak.verdi &&
-                        engangsbeløp.skyldner == engangsbeløpRequest.skyldner.verdi &&
-                        engangsbeløp.kravhaver == engangsbeløpRequest.kravhaver.verdi &&
-//                        engangsbeløp.mottaker == engangsbeløpRequest.mottaker.verdi &&
-                        engangsbeløp.beløp?.toInt() == engangsbeløpRequest.beløp?.toInt() &&
-                        engangsbeløp.valutakode == engangsbeløpRequest.valutakode &&
-                        engangsbeløp.resultatkode == engangsbeløpRequest.resultatkode &&
-                        engangsbeløp.innkreving == engangsbeløpRequest.innkreving.name &&
-                        engangsbeløp.beslutning == engangsbeløpRequest.beslutning.name &&
-                        engangsbeløp.omgjørVedtakId == engangsbeløpRequest.omgjørVedtakId &&
-                        engangsbeløp.referanse == engangsbeløpRequest.referanse &&
-                        engangsbeløp.delytelseId == engangsbeløpRequest.delytelseId &&
-                        engangsbeløp.eksternReferanse == engangsbeløpRequest.eksternReferanse
-                }
-            }
+        val matchendeEksisterendeEngangsbeløp = finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListe, listOf(engangsbeløpRequest))
+
         if (matchendeEksisterendeEngangsbeløp.size != 1) {
-            SECURE_LOGGER.error("Det er mismatch på antall matchende engangsbeløp: ${tilJson(engangsbeløpRequest)}")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende engangsbeløp: ${tilJson(engangsbeløpRequest)}")
+            SECURE_LOGGER.warn(
+                "Feil ved forsøk på å hente engangsbeløpid under oppdatering av vedtak. Forsøker på nytt med oppdaterte personidenter: ${
+                    tilJson(
+                        engangsbeløpRequest,
+                    )
+                }",
+            )
+
+            val nyesteSkyldner = identUtils.hentNyesteIdent(engangsbeløpRequest.skyldner)
+            val nyesteKravhaver = identUtils.hentNyesteIdent(engangsbeløpRequest.kravhaver)
+
+            // Kopierer requesten med oppdaterte identer
+            val requestMedOppdaterteIdenter = engangsbeløpRequest.copy(
+                skyldner = nyesteSkyldner,
+                kravhaver = nyesteKravhaver,
+            )
+
+            SECURE_LOGGER.info(
+                "Engangsbeløp. Mottatt skyldner: ${engangsbeløpRequest.skyldner.verdi} kravhaver: ${engangsbeløpRequest.kravhaver.verdi} " +
+                    "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
+            )
+
+            // Kopierer eksisterende stønadsendringer med oppdaterte identer
+            val eksisterendeEngangsbeløpListeMedOppdaterteIdenter = eksisterendeEngangsbeløpListe.map { engangsbeløp ->
+                val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(engangsbeløp.skyldner)).verdi
+                val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(engangsbeløp.kravhaver)).verdi
+
+                SECURE_LOGGER.info(
+                    "Engangsbeløp. Eksisterende skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
+                        "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                )
+                Engangsbeløp(
+                    id = engangsbeløp.id,
+                    vedtak = engangsbeløp.vedtak,
+                    type = engangsbeløp.type,
+                    sak = engangsbeløp.sak,
+                    skyldner = nyesteSkyldner,
+                    kravhaver = nyesteKravhaver,
+                    mottaker = engangsbeløp.mottaker,
+                    innkreving = engangsbeløp.innkreving,
+                    beslutning = engangsbeløp.beslutning,
+                    omgjørVedtakId = engangsbeløp.omgjørVedtakId,
+                    eksternReferanse = engangsbeløp.eksternReferanse,
+                )
+            }
+
+            val matchendeEksisterendeEngangsbeløpMedOppdatertIdent =
+                finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListeMedOppdaterteIdenter, listOf(requestMedOppdaterteIdenter))
+
+            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
+                SECURE_LOGGER.error("Det er fortsatt mismatch på antall matchende engangsbeløp: ${tilJson(requestMedOppdaterteIdenter)}")
+                throw VedtaksdataMatcherIkkeException(
+                    "Det er fortsatt mismatch på antall matchende engangsbeløp: ${
+                        tilJson(
+                            eksisterendeEngangsbeløpListeMedOppdaterteIdenter,
+                        )
+                    }",
+                )
+            }
+            return matchendeEksisterendeEngangsbeløpMedOppdatertIdent.first().id
         }
         return matchendeEksisterendeEngangsbeløp.first().id
     }
@@ -1113,23 +1279,40 @@ class VedtakService(
         return true
     }
 
-    private fun antallMatchendeStønadsendringer(
-        requeststønadsendringListe: List<OpprettStønadsendringRequestDto>,
+    private fun finnMatchendeStønadsendringer(
         eksisterendeStønadsendringListe: List<Stønadsendring>,
-    ) = requeststønadsendringListe
-        .filter { stønadsendringRequest ->
-            eksisterendeStønadsendringListe.any {
-                stønadsendringRequest.type.name == it.type &&
-                    stønadsendringRequest.sak.verdi == it.sak &&
-                    stønadsendringRequest.skyldner.verdi == it.skyldner &&
-                    stønadsendringRequest.kravhaver.verdi == it.kravhaver &&
-                    stønadsendringRequest.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
-                    stønadsendringRequest.innkreving.name == it.innkreving &&
-                    stønadsendringRequest.beslutning.name == it.beslutning &&
-                    stønadsendringRequest.omgjørVedtakId == it.omgjørVedtakId &&
-                    stønadsendringRequest.eksternReferanse == it.eksternReferanse
+        requestStønadsendringListe: List<OpprettStønadsendringRequestDto>,
+    ) = eksisterendeStønadsendringListe
+        .filter { eksisterendeStønadsendring ->
+            requestStønadsendringListe.any {
+                eksisterendeStønadsendring.type == it.type.name &&
+                    eksisterendeStønadsendring.sak == it.sak.verdi &&
+                    eksisterendeStønadsendring.skyldner == it.skyldner.verdi &&
+                    eksisterendeStønadsendring.kravhaver == it.kravhaver.verdi &&
+                    eksisterendeStønadsendring.førsteIndeksreguleringsår == it.førsteIndeksreguleringsår &&
+                    eksisterendeStønadsendring.innkreving == it.innkreving.name &&
+                    eksisterendeStønadsendring.beslutning == it.beslutning.name &&
+                    eksisterendeStønadsendring.omgjørVedtakId == it.omgjørVedtakId &&
+                    eksisterendeStønadsendring.eksternReferanse == it.eksternReferanse
             }
-        }.size
+        }
+
+    private fun finnMatchendeEngangsbeløp(
+        eksisterendeEngangsbeløpListe: List<Engangsbeløp>,
+        requestEngangsbeløpListe: List<OpprettEngangsbeløpRequestDto>,
+    ) = eksisterendeEngangsbeløpListe
+        .filter { eksisterendeEngangsbeløp ->
+            requestEngangsbeløpListe.any {
+                eksisterendeEngangsbeløp.type == it.type.name &&
+                    eksisterendeEngangsbeløp.sak == it.sak.verdi &&
+                    eksisterendeEngangsbeløp.skyldner == it.skyldner.verdi &&
+                    eksisterendeEngangsbeløp.kravhaver == it.kravhaver.verdi &&
+                    eksisterendeEngangsbeløp.innkreving == it.innkreving.name &&
+                    eksisterendeEngangsbeløp.beslutning == it.beslutning.name &&
+                    eksisterendeEngangsbeløp.omgjørVedtakId == it.omgjørVedtakId &&
+                    eksisterendeEngangsbeløp.eksternReferanse == it.eksternReferanse
+            }
+        }
 
     companion object {
         private val LOGGER = LoggerFactory.getLogger(VedtakService::class.java)

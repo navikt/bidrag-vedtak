@@ -100,7 +100,7 @@ spec:
       value: {{ azure.bidrag_organisasjon_scope }}
     - name: SPRING_PROFILES_ACTIVE
       value: {{ spring-profiles }}
-    - name: BIDRAG_PERSON_URL
+    - name: PERSON_URL
       value: https://{{ azure.bidrag_person_url }}/bidrag-person
-    - name: BIDRAG_PERSON_SCOPE
+    - name: PERSON_SCOPE
       value: {{ azure.bidrag_person_scope }}

@@ -7,6 +7,8 @@
 #
 ####################################################################
 BIDRAG_ORGANISASJON_URL: http://localhost:${wiremock.server.https-port}/organisasjon
+PERSON_URL: http://localhost:${wiremock.server.https-port}/person
+PERSON_SCOPE: test
 NAIS_APP_NAME: bidrag-vedtak
 spring:
   config.activate.on-profile: test, local
@@ -30,6 +32,15 @@ no.nav.security.jwt:
     registration:
       bidrag-organisasjon:
         resource-url: ${BIDRAG_ORGANISASJON_URL}
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azure/token
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: api://org/.default
+        authentication:
+          client-id: someid
+          client-secret: secret
+          client-auth-method: client_secret_post
+      bidrag-person:
+        resource-url: ${PERSON_URL}
         token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azure/token
         grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
         scope: api://org/.default
