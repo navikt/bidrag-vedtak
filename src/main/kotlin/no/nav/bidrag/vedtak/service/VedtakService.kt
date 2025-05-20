@@ -663,8 +663,8 @@ class VedtakService(
                     val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver)
 
                     SECURE_LOGGER.info(
-                        "Stønadsendring. Mottatt skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
-                            "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                        "Stønadsendring. Mottatt skyldner: ${stønadsendring.skyldner.verdi} kravhaver: ${stønadsendring.kravhaver.verdi} " +
+                            "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
                     )
 
                     stønadsendring.copy(
@@ -807,8 +807,8 @@ class VedtakService(
                     val nyesteKravhaver = identUtils.hentNyesteIdent(engangsbeløp.kravhaver)
 
                     SECURE_LOGGER.info(
-                        "Engangsbeløp. Mottatt skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
-                            "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                        "Engangsbeløp. Mottatt skyldner: ${engangsbeløp.skyldner.verdi} kravhaver: ${engangsbeløp.kravhaver.verdi} " +
+                            "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
                     )
                     engangsbeløp.copy(
                         skyldner = nyesteSkyldner,
@@ -983,8 +983,8 @@ class VedtakService(
             val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendringRequest.kravhaver)
 
             SECURE_LOGGER.info(
-                "Stønadsendring. Mottatt skyldner: ${stønadsendringRequest.skyldner} kravhaver: ${stønadsendringRequest.kravhaver} " +
-                    "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                "Stønadsendring. Mottatt skyldner: ${stønadsendringRequest.skyldner.verdi} kravhaver: ${stønadsendringRequest.kravhaver.verdi} " +
+                    "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
             )
 
             // Kopierer requesten med oppdaterte identer
