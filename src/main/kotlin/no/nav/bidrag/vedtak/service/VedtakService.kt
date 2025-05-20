@@ -659,37 +659,37 @@ class VedtakService(
             // Kopierer requesten med oppdaterte identer
             val requestMedOppdaterteIdenter = vedtakRequest.copy(
                 stønadsendringListe = vedtakRequest.stønadsendringListe.map { stønadsendring ->
-                    val skyldner = identUtils.hentNyesteIdent(stønadsendring.skyldner)
-                    val kravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver)
+                    val nyesteSkyldner = identUtils.hentNyesteIdent(stønadsendring.skyldner)
+                    val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendring.kravhaver)
 
                     SECURE_LOGGER.info(
                         "Stønadsendring. Mottatt skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
-                            "etter oppdatering, skyldner: $skyldner kravhaver: $kravhaver",
+                            "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
                     )
 
                     stønadsendring.copy(
-                        skyldner = identUtils.hentNyesteIdent(skyldner),
-                        kravhaver = identUtils.hentNyesteIdent(kravhaver),
+                        skyldner = nyesteSkyldner,
+                        kravhaver = nyesteKravhaver,
                     )
                 },
             )
 
             // Kopierer eksisterende stønadsendringer med oppdaterte identer
             val eksisterendeStønadsendringListeMedOppdaterteIdenter = eksisterendeStønadsendringListe.map { stønadsendring ->
-                val skyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi
-                val kravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi
+                val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi
+                val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi
 
                 SECURE_LOGGER.info(
                     "Stønadsendring. Eksisterende skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
-                        "etter oppdatering, skyldner: $skyldner kravhaver: $kravhaver",
+                        "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
                 )
                 Stønadsendring(
                     id = stønadsendring.id,
                     vedtak = stønadsendring.vedtak,
                     type = stønadsendring.type,
                     sak = stønadsendring.sak,
-                    skyldner = skyldner,
-                    kravhaver = kravhaver,
+                    skyldner = nyesteSkyldner,
+                    kravhaver = nyesteKravhaver,
                     mottaker = stønadsendring.mottaker,
                     førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
                     innkreving = stønadsendring.innkreving,
@@ -803,16 +803,16 @@ class VedtakService(
             // Kopierer requesten med oppdaterte identer
             val requestMedOppdaterteIdenter = vedtakRequest.copy(
                 engangsbeløpListe = vedtakRequest.engangsbeløpListe.map { engangsbeløp ->
-                    val skyldner = identUtils.hentNyesteIdent(engangsbeløp.skyldner)
-                    val kravhaver = identUtils.hentNyesteIdent(engangsbeløp.kravhaver)
+                    val nyesteSkyldner = identUtils.hentNyesteIdent(engangsbeløp.skyldner)
+                    val nyesteKravhaver = identUtils.hentNyesteIdent(engangsbeløp.kravhaver)
 
                     SECURE_LOGGER.info(
                         "Engangsbeløp. Mottatt skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
-                            "etter oppdatering, skyldner: $skyldner kravhaver: $kravhaver",
+                            "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
                     )
                     engangsbeløp.copy(
-                        skyldner = skyldner,
-                        kravhaver = kravhaver,
+                        skyldner = nyesteSkyldner,
+                        kravhaver = nyesteKravhaver,
                     )
                 },
             )
@@ -982,6 +982,11 @@ class VedtakService(
             val nyesteSkyldner = identUtils.hentNyesteIdent(stønadsendringRequest.skyldner)
             val nyesteKravhaver = identUtils.hentNyesteIdent(stønadsendringRequest.kravhaver)
 
+            SECURE_LOGGER.info(
+                "Stønadsendring. Mottatt skyldner: ${stønadsendringRequest.skyldner} kravhaver: ${stønadsendringRequest.kravhaver} " +
+                    "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+            )
+
             // Kopierer requesten med oppdaterte identer
             val requestMedOppdaterteIdenter = stønadsendringRequest.copy(
                 skyldner = nyesteSkyldner,
@@ -990,6 +995,14 @@ class VedtakService(
 
             // Kopierer eksisterende stønadsendringer med oppdaterte identer
             val eksisterendeStønadsendringListeMedOppdaterteIdenter = eksisterendeStønadsendringListe.map { stønadsendring ->
+
+                val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(stønadsendring.skyldner)).verdi
+                val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(stønadsendring.kravhaver)).verdi
+
+                SECURE_LOGGER.info(
+                    "Stønadsendring. Eksisterende skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
+                        "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
+                )
                 Stønadsendring(
                     id = stønadsendring.id,
                     vedtak = stønadsendring.vedtak,
