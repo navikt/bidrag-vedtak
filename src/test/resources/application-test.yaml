@@ -39,6 +39,15 @@ no.nav.security.jwt:
           client-id: someid
           client-secret: secret
           client-auth-method: client_secret_post
+      bidrag-person:
+        resource-url: ${PERSON_URL}
+        token-endpoint-url: http://localhost:${mock-oauth2-server.port}/azure/token
+        grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+        scope: api://org/.default
+        authentication:
+          client-id: someid
+          client-secret: secret
+          client-auth-method: client_secret_post
   issuer:
     aad:
       discovery_url: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
