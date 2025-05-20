@@ -7,6 +7,8 @@
 #
 ####################################################################
 BIDRAG_ORGANISASJON_URL: http://localhost:${wiremock.server.https-port}/organisasjon
+PERSON_URL: http://localhost:${wiremock.server.https-port}/person
+PERSON_SCOPE: test
 NAIS_APP_NAME: bidrag-vedtak
 spring:
   config.activate.on-profile: test, local
