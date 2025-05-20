@@ -846,11 +846,12 @@ class TestUtil {
             kilde: String = Vedtakskilde.MANUELT.toString(),
             type: String = Vedtakstype.ALDERSJUSTERING.toString(),
             enhetsnummer: String = Enhetsnummer("4812").toString(),
-            vedtakstidspunkt: LocalDateTime = LocalDateTime.now(),
+            vedtakstidspunkt: LocalDateTime = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             opprettetAv: String = "X123456",
             opprettetAvNavn: String = "Saksbehandler1",
             opprettetTimestamp: LocalDateTime = LocalDateTime.now(),
             innkrevingUtsattTilDato: LocalDate = LocalDate.now(),
+            fastsattILand: String? = "NO",
         ) = Vedtak(
             id = vedtaksid,
             kilde = kilde,
@@ -861,6 +862,7 @@ class TestUtil {
             opprettetAvNavn = opprettetAvNavn,
             opprettetTidspunkt = opprettetTimestamp,
             innkrevingUtsattTilDato = innkrevingUtsattTilDato,
+            fastsattILand = fastsattILand,
         )
 
         fun byggStønadsendring(
@@ -873,6 +875,8 @@ class TestUtil {
             innkreving: String = Innkrevingstype.MED_INNKREVING.toString(),
             beslutning: String = Beslutningstype.ENDRING.toString(),
             eksternReferanse: String = "eksternRef1",
+            omgjørVedtakId: Int = 123,
+            førsteIndeksreguleringsår: Int? = 2024,
         ) = Stønadsendring(
             id = stønadsendringsid,
             type = type,
@@ -884,6 +888,8 @@ class TestUtil {
             innkreving = innkreving,
             beslutning = beslutning,
             eksternReferanse = eksternReferanse,
+            omgjørVedtakId = omgjørVedtakId,
+            førsteIndeksreguleringsår = førsteIndeksreguleringsår,
         )
 
         fun byggPeriode(
@@ -1150,6 +1156,67 @@ class TestUtil {
             stønadsendringListe = emptyList(),
             engangsbeløpListe = emptyList(),
             behandlingsreferanseListe = emptyList(),
+        )
+
+        fun byggVedtakForOppdateringRequest() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.ALDERSJUSTERING,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            unikReferanse = "unikReferanse",
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = byggGrunnlagForOppdatering(),
+            stønadsendringListe = byggStønadsendringForOppdatering(),
+            engangsbeløpListe = emptyList(),
+            behandlingsreferanseListe = emptyList(),
+        )
+
+        private fun byggGrunnlagForOppdatering() = listOf(
+            OpprettGrunnlagRequestDto(
+                referanse = "BM-LIGS-19",
+                type = Grunnlagstype.INNTEKT_RAPPORTERING_PERIODE,
+                gjelderReferanse = "PERSON_BM",
+                grunnlagsreferanseListe = listOf("innhentet_ainntekt_1", "innhentet_ainntekt_2"),
+                innhold = ObjectMapper().readTree(
+                    """
+          {
+            "inntektDatoFraTil": {
+              "periodeDatoFra": "2019-01-01",
+              "periodeDatoTil": "2020-01-01"
+            },
+            "inntektBelop": 400000,
+            "inntektType": "SKATTEGRUNNLAG_SKE"
+          }""",
+                ),
+            ),
+        )
+
+        private fun byggStønadsendringForOppdatering() = listOf(
+            OpprettStønadsendringRequestDto(
+                type = Stønadstype.BIDRAG,
+                sak = Saksnummer("SAK-001"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("34444444444"),
+                mottaker = Personident("01018211111"),
+                førsteIndeksreguleringsår = 2024,
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 123,
+                eksternReferanse = "eksternRef1",
+                grunnlagReferanseListe = emptyList(),
+                periodeListe = listOf(
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2019-07-01"), LocalDate.parse("2020-01-01")),
+                        beløp = BigDecimal.valueOf(3520),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId1",
+                        grunnlagReferanseListe = emptyList(),
+                    ),
+                ),
+            ),
         )
     }
 }

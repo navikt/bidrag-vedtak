@@ -618,8 +618,8 @@ class VedtakServiceTest {
     @Suppress("NonAsciiCharacters")
     fun `skal opprette vedtak uten grunnlag og så oppdatere vedtak med grunnlag`() {
         // Oppretter nytt vedtak
-        val oopdaterVedtakUtenGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
-        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oopdaterVedtakUtenGrunnlagRequest, false).vedtaksid
+        val oppdaterVedtakUtenGrunnlagRequest = byggVedtakRequestUtenGrunnlag()
+        val vedtakUtenGrunnlagVedtakId = vedtakService.opprettVedtak(oppdaterVedtakUtenGrunnlagRequest, false).vedtaksid
 
         // Henter vedtak uten grunnlag
         val vedtakUtenGrunnlag = vedtakService.hentVedtak(vedtakUtenGrunnlagVedtakId)
