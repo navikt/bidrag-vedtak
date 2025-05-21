@@ -847,7 +847,7 @@ class VedtakService(
                     requestMedOppdaterteIdenter.engangsbeløpListe,
                 ).size
 
-            if (antallMatchendeElementerMedOppdaterteIdenter == 1) {
+            if (antallMatchendeElementerMedOppdaterteIdenter == eksisterendeEngangsbeløpListe.size) {
                 eksisterendeEngangsbeløpListe.forEach {
                     engangsbeløpsidGrunnlagSkalSlettesListe.add(it.id)
                 }
@@ -1310,7 +1310,6 @@ class VedtakService(
                     eksisterendeEngangsbeløp.innkreving == it.innkreving.name &&
                     eksisterendeEngangsbeløp.beslutning == it.beslutning.name &&
                     eksisterendeEngangsbeløp.omgjørVedtakId == it.omgjørVedtakId &&
-                    eksisterendeEngangsbeløp.referanse == it.referanse &&
                     eksisterendeEngangsbeløp.eksternReferanse == it.eksternReferanse
             }
         }
