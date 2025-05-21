@@ -1092,7 +1092,7 @@ class VedtakService(
     ): Int {
         val matchendeEksisterendeEngangsbeløp = finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListe, listOf(engangsbeløpRequest))
 
-        if (matchendeEksisterendeEngangsbeløp.size != 1) {
+        if (matchendeEksisterendeEngangsbeløp.isEmpty()) {
             SECURE_LOGGER.warn(
                 "Feil ved forsøk på å hente engangsbeløpid under oppdatering av vedtak. Forsøker på nytt med oppdaterte personidenter: ${
                     tilJson(
@@ -1142,7 +1142,7 @@ class VedtakService(
             val matchendeEksisterendeEngangsbeløpMedOppdatertIdent =
                 finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListeMedOppdaterteIdenter, listOf(requestMedOppdaterteIdenter))
 
-            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
+            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.isEmpty()) {
                 SECURE_LOGGER.error("Det er fortsatt mismatch på antall matchende engangsbeløp: ${tilJson(requestMedOppdaterteIdenter)}")
                 throw VedtaksdataMatcherIkkeException(
                     "Det er fortsatt mismatch på antall matchende engangsbeløp: ${
