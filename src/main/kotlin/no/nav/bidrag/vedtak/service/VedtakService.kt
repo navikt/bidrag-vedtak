@@ -824,11 +824,11 @@ class VedtakService(
 
             val antallMatchendeElementerMedOppdaterteIdenter =
                 finnMatchendeEngangsbeløp(
-                    eksisterendeEngangsbeløpListe,
+                    eksisterendeEngangsbeløpListeMedOppdaterteIdenter,
                     requestMedOppdaterteIdenter.engangsbeløpListe,
                 ).size
 
-            if (antallMatchendeElementerMedOppdaterteIdenter == 1) {
+            if (antallMatchendeElementerMedOppdaterteIdenter == eksisterendeEngangsbeløpListeMedOppdaterteIdenter.size) {
                 eksisterendeEngangsbeløpListe.forEach {
                     engangsbeløpsidGrunnlagSkalSlettesListe.add(it.id)
                 }
@@ -1096,7 +1096,7 @@ class VedtakService(
                     "etter oppdatering, skyldner: ${nyesteSkyldner.verdi} kravhaver: ${nyesteKravhaver.verdi}",
             )
 
-            // Kopierer eksisterende stønadsendringer med oppdaterte identer
+            // Kopierer eksisterende engangsbeløp med oppdaterte identer
             val eksisterendeEngangsbeløpListeMedOppdaterteIdenter = eksisterendeEngangsbeløpListe.map { engangsbeløp ->
                 val nyesteSkyldner = identUtils.hentNyesteIdent(Personident(engangsbeløp.skyldner)).verdi
                 val nyesteKravhaver = identUtils.hentNyesteIdent(Personident(engangsbeløp.kravhaver)).verdi
@@ -1105,28 +1105,21 @@ class VedtakService(
                     "Engangsbeløp. Eksisterende skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
                         "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
                 )
-                Engangsbeløp(
-                    id = engangsbeløp.id,
-                    vedtak = engangsbeløp.vedtak,
-                    type = engangsbeløp.type,
-                    sak = engangsbeløp.sak,
+                engangsbeløp.copy(
                     skyldner = nyesteSkyldner,
                     kravhaver = nyesteKravhaver,
-                    mottaker = engangsbeløp.mottaker,
-                    innkreving = engangsbeløp.innkreving,
-                    beslutning = engangsbeløp.beslutning,
-                    omgjørVedtakId = engangsbeløp.omgjørVedtakId,
-                    eksternReferanse = engangsbeløp.eksternReferanse,
                 )
             }
 
             val matchendeEksisterendeEngangsbeløpMedOppdatertIdent =
                 finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListeMedOppdaterteIdenter, listOf(requestMedOppdaterteIdenter))
 
-            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.isEmpty()) {
-                SECURE_LOGGER.error("Det er fortsatt mismatch på antall matchende engangsbeløp: ${tilJson(requestMedOppdaterteIdenter)}")
+            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
+                SECURE_LOGGER.error(
+                    "Det er fortsatt mismatch ved forsøk på å hente engangsbeløpsid. Request: ${tilJson(requestMedOppdaterteIdenter)}",
+                )
                 throw VedtaksdataMatcherIkkeException(
-                    "Det er fortsatt mismatch på antall matchende engangsbeløp: ${
+                    "Finner ikke engangsbeløpsid ved match av engangsbeløp. Eksisterende engangsbeløp: ${
                         tilJson(
                             eksisterendeEngangsbeløpListeMedOppdaterteIdenter,
                         )
