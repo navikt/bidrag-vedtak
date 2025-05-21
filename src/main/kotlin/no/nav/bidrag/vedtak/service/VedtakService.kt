@@ -683,19 +683,9 @@ class VedtakService(
                     "Stønadsendring. Eksisterende skyldner: ${stønadsendring.skyldner} kravhaver: ${stønadsendring.kravhaver} " +
                         "etter oppdatering, skyldner: $nyesteSkyldner kravhaver: $nyesteKravhaver",
                 )
-                Stønadsendring(
-                    id = stønadsendring.id,
-                    vedtak = stønadsendring.vedtak,
-                    type = stønadsendring.type,
-                    sak = stønadsendring.sak,
+                stønadsendring.copy(
                     skyldner = nyesteSkyldner,
                     kravhaver = nyesteKravhaver,
-                    mottaker = stønadsendring.mottaker,
-                    førsteIndeksreguleringsår = stønadsendring.førsteIndeksreguleringsår,
-                    innkreving = stønadsendring.innkreving,
-                    beslutning = stønadsendring.beslutning,
-                    omgjørVedtakId = stønadsendring.omgjørVedtakId,
-                    eksternReferanse = stønadsendring.eksternReferanse,
                 )
             }
 
@@ -826,18 +816,9 @@ class VedtakService(
                     "Engangsbeløp. Eksisterende skyldner: ${engangsbeløp.skyldner} kravhaver: ${engangsbeløp.kravhaver} " +
                         "etter oppdatering, skyldner: $skyldner kravhaver: $kravhaver",
                 )
-                Engangsbeløp(
-                    id = engangsbeløp.id,
-                    vedtak = engangsbeløp.vedtak,
-                    type = engangsbeløp.type,
-                    sak = engangsbeløp.sak,
+                engangsbeløp.copy(
                     skyldner = skyldner,
                     kravhaver = kravhaver,
-                    mottaker = engangsbeløp.mottaker,
-                    innkreving = engangsbeløp.innkreving,
-                    beslutning = engangsbeløp.beslutning,
-                    omgjørVedtakId = engangsbeløp.omgjørVedtakId,
-                    eksternReferanse = engangsbeløp.eksternReferanse,
                 )
             }
 
