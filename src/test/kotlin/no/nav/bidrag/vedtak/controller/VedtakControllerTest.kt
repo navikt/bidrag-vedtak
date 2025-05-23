@@ -3,6 +3,7 @@ package no.nav.bidrag.vedtak.controller
 import io.mockk.every
 import io.mockk.mockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
+import no.nav.bidrag.commons.util.IdentUtils
 import no.nav.bidrag.commons.web.test.HttpHeaderTestRestTemplate
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.OpprettVedtakResponseDto
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -83,6 +83,9 @@ class VedtakControllerTest {
     private lateinit var vedtakRepository: VedtakRepository
 
     @Autowired
+    private lateinit var identutils: IdentUtils
+
+    @Autowired
     private lateinit var vedtakService: VedtakService
 
     @Autowired
@@ -128,9 +131,9 @@ class VedtakControllerTest {
         )
 
         assertAll(
-            Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isNotNull() },
+            { assertThat(response).isNotNull() },
+            { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(response.body).isNotNull() },
         )
     }
 
@@ -149,9 +152,9 @@ class VedtakControllerTest {
         )
 
         assertAll(
-            Executable { assertThat(opprettResponse).isNotNull() },
-            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse.body).isNotNull() },
+            { assertThat(opprettResponse).isNotNull() },
+            { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(opprettResponse.body).isNotNull() },
         )
     }
 
@@ -164,9 +167,9 @@ class VedtakControllerTest {
         val response = securedTestRestTemplate.getForEntity<VedtakDto>("/vedtak/$opprettetVedtakId")
 
         assertAll(
-            Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isNotNull() },
+            { assertThat(response).isNotNull() },
+            { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(response.body).isNotNull() },
         )
     }
 
@@ -185,9 +188,9 @@ class VedtakControllerTest {
         )
 
         assertAll(
-            Executable { assertThat(opprettResponse).isNotNull() },
-            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse.body).isNotNull() },
+            { assertThat(opprettResponse).isNotNull() },
+            { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(opprettResponse.body).isNotNull() },
         )
     }
 
@@ -202,9 +205,9 @@ class VedtakControllerTest {
         val response = securedTestRestTemplate.getForEntity<List<Int>>("/vedtak/hent-vedtak-for-behandlingsreferanse/$kilde/$behandlingsreferanse")
 
         assertAll(
-            Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isNotNull() },
+            { assertThat(response).isNotNull() },
+            { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(response.body).isNotNull() },
         )
     }
 
@@ -216,9 +219,9 @@ class VedtakControllerTest {
         val response = securedTestRestTemplate.getForEntity<List<Int>>("/vedtak/hent-vedtak-for-behandlingsreferanse/$kilde/$behandlingsreferanse")
 
         assertAll(
-            Executable { assertThat(response).isNotNull() },
-            Executable { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(response.body).isEmpty() },
+            { assertThat(response).isNotNull() },
+            { assertThat(response.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(response.body).isEmpty() },
         )
     }
 
@@ -237,9 +240,9 @@ class VedtakControllerTest {
         )
 
         assertAll(
-            Executable { assertThat(opprettResponse).isNotNull() },
-            Executable { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(opprettResponse.body).isNotNull() },
+            { assertThat(opprettResponse).isNotNull() },
+            { assertThat(opprettResponse.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(opprettResponse.body).isNotNull() },
         )
     }
 
@@ -267,9 +270,9 @@ class VedtakControllerTest {
         )
 
         assertAll(
-            Executable { assertThat(oppdatertVedtak).isNotNull() },
-            Executable { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
-            Executable { assertThat(oppdatertVedtak.body).isNotNull() },
+            { assertThat(oppdatertVedtak).isNotNull() },
+            { assertThat(oppdatertVedtak.statusCode).isEqualTo(HttpStatus.OK) },
+            { assertThat(oppdatertVedtak.body).isNotNull() },
         )
     }
 
