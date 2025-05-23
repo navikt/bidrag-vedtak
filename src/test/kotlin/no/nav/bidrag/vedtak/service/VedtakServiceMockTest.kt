@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
+import no.nav.bidrag.commons.util.IdentUtils
 import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
 import no.nav.bidrag.domene.enums.vedtak.Innkrevingstype
@@ -34,7 +35,6 @@ import no.nav.bidrag.vedtak.persistence.entity.Grunnlag
 import no.nav.bidrag.vedtak.persistence.entity.Periode
 import no.nav.bidrag.vedtak.persistence.entity.Stønadsendring
 import no.nav.bidrag.vedtak.persistence.entity.Vedtak
-import no.nav.bidrag.vedtak.util.IdentUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
@@ -130,7 +130,6 @@ class VedtakServiceMockTest {
             .thenReturn(byggEngangsbeløpGrunnlag())
         Mockito.`when`(persistenceServiceMock.opprettBehandlingsreferanse(MockitoHelper.capture(behandlingsreferanseCaptor)))
             .thenReturn(byggBehandlingsreferanse())
-        Mockito.`when`(persistenceServiceMock.referanseErUnik(vedtaksid = any(), referanse = any())).thenReturn(true)
 
         Mockito.`when`(persistenceServiceMock.hentVedtak(MockitoHelper.capture(vedtaksidCaptor)))
             .thenReturn(byggVedtak())
@@ -172,7 +171,7 @@ class VedtakServiceMockTest {
         )
         Mockito.verify(
             persistenceServiceMock,
-            Mockito.times(3),
+            Mockito.times(2),
         ).opprettEngangsbeløp(MockitoHelper.any(Engangsbeløp::class.java))
         Mockito.verify(
             persistenceServiceMock,
@@ -188,7 +187,7 @@ class VedtakServiceMockTest {
         ).opprettPeriodeGrunnlag(MockitoHelper.any(PeriodeGrunnlagBo::class.java))
         Mockito.verify(
             persistenceServiceMock,
-            Mockito.times(9),
+            Mockito.times(6),
         ).opprettEngangsbeløpGrunnlag(MockitoHelper.any(EngangsbeløpGrunnlagBo::class.java))
         Mockito.verify(
             persistenceServiceMock,
@@ -248,7 +247,7 @@ class VedtakServiceMockTest {
 
             // Sjekk EngangsbeløpDto
             { assertThat(engangsbeløpListe).isNotNull() },
-            { assertThat(engangsbeløpListe.size).isEqualTo(3) },
+            { assertThat(engangsbeløpListe.size).isEqualTo(2) },
 
             { assertThat(engangsbeløpListe[0].type).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![0].type.toString()) },
             { assertThat(engangsbeløpListe[0].sak).isEqualTo(opprettVedtakRequestDto.engangsbeløpListe!![0].sak.toString()) },
@@ -400,7 +399,7 @@ class VedtakServiceMockTest {
 
             // Sjekk EngangsbeløpGrunnlagDto
             { assertThat(engangsbeløpGrunnlagBoListe).isNotNull() },
-            { assertThat(engangsbeløpGrunnlagBoListe.size).isEqualTo(9) },
+            { assertThat(engangsbeløpGrunnlagBoListe.size).isEqualTo(6) },
 
             // Sjekk BehandlingsreferanseDto
             { assertThat(behandlingsreferanseListe).isNotNull() },

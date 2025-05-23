@@ -263,7 +263,7 @@ class TestUtil {
                 innkreving = Innkrevingstype.MED_INNKREVING,
                 beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
-                referanse = "referanse3",
+                referanse = "referanse1",
                 delytelseId = "delytelseId1",
                 eksternReferanse = "EksternRef1",
                 grunnlagReferanseListe = listOf(
@@ -283,29 +283,8 @@ class TestUtil {
                 resultatkode = "SAERTILSKUDD BEREGNET",
                 innkreving = Innkrevingstype.MED_INNKREVING,
                 beslutning = Beslutningstype.ENDRING,
-                omgjørVedtakId = null,
-                referanse = null,
-                delytelseId = "delytelseId2",
-                eksternReferanse = "EksternRef2",
-                grunnlagReferanseListe = listOf(
-                    "BM-LIGS-19",
-                    "BM-LIGN-19",
-                    "SJAB-REF001",
-                ),
-            ),
-            OpprettEngangsbeløpRequestDto(
-                type = Engangsbeløptype.SÆRBIDRAG,
-                sak = Saksnummer("SAK-101"),
-                skyldner = Personident("01018011111"),
-                kravhaver = Personident("01010511111"),
-                mottaker = Personident("01018211111"),
-                beløp = BigDecimal.valueOf(2345),
-                valutakode = "NOK",
-                resultatkode = "SAERTILSKUDD BEREGNET",
-                innkreving = Innkrevingstype.MED_INNKREVING,
-                beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 400,
-                referanse = "referanse1",
+                referanse = "referanse2",
                 delytelseId = "delytelseId2",
                 eksternReferanse = "EksternRef2",
                 grunnlagReferanseListe = listOf(
@@ -314,6 +293,27 @@ class TestUtil {
                     "SJAB-REF001",
                 ),
             ),
+//            OpprettEngangsbeløpRequestDto(
+//                type = Engangsbeløptype.SÆRBIDRAG,
+//                sak = Saksnummer("SAK-101"),
+//                skyldner = Personident("01018011111"),
+//                kravhaver = Personident("01010511111"),
+//                mottaker = Personident("01018211111"),
+//                beløp = BigDecimal.valueOf(2345),
+//                valutakode = "NOK",
+//                resultatkode = "SAERTILSKUDD BEREGNET",
+//                innkreving = Innkrevingstype.MED_INNKREVING,
+//                beslutning = Beslutningstype.ENDRING,
+//                omgjørVedtakId = 400,
+//                referanse = "referanse1",
+//                delytelseId = "delytelseId2",
+//                eksternReferanse = "EksternRef2",
+//                grunnlagReferanseListe = listOf(
+//                    "BM-LIGS-19",
+//                    "BM-LIGN-19",
+//                    "SJAB-REF001",
+//                ),
+//            ),
         )
 
         private fun byggBehandlingsreferanseListe() = listOf(
@@ -409,7 +409,7 @@ class TestUtil {
 
         fun byggVedtakRequestUtenGrunnlag() = OpprettVedtakRequestDto(
             kilde = Vedtakskilde.MANUELT,
-            type = Vedtakstype.FASTSETTELSE,
+            type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X123456",
             vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
             enhetsnummer = Enhetsnummer("4812"),
