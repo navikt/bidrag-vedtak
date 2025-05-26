@@ -104,11 +104,9 @@ class VedtakService(
         }
 
         val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
-        if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
-            stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
-                if (!validerAtSisteVedtaksidErOk(stønad)) {
-                    throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
-                }
+        stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
+            if (!validerAtSisteVedtaksidErOk(stønad.skyldner, stønad.kravhaver, stønad.sak, stønad.type, stønad.sisteVedtaksid?.toInt())) {
+                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
             }
         }
 
@@ -555,7 +553,7 @@ class VedtakService(
         return vedtaksid
     }
 
-    fun fattVedtakForVedtaksforslag(vedtaksid: Int): Int {
+    fun fattVedtakForVedtaksforslag(vedtaksid: Int, sisteVedtaksid: Int): Int? {
         // sjekk om det finnes et vedtak for mottatt vedtaksid. Hvis det ikke finnes må det kastes en exception
         try {
             persistenceService.hentVedtak(vedtaksid)
@@ -566,7 +564,7 @@ class VedtakService(
             throw IllegalArgumentException(feilmelding)
         }
 
-        // sjekk at angitt vedtak  er et vedtaksforslag, skal ikke kunne slettes ellers
+        // sjekk at angitt vedtak  er et vedtaksforslag, skal ikke kunne fattes vedtak ellers
         val vedtak = persistenceService.hentVedtak(vedtaksid)
         if (vedtak.vedtakstidspunkt != null) {
             val feilmelding = "Vedtak er allerede fattet. Ignorer forespørsel $vedtaksid"
@@ -574,6 +572,20 @@ class VedtakService(
             SECURE_LOGGER.warn(feilmelding)
             return vedtaksid
         }
+
+        val stønad = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid).first()
+
+        if (!validerAtSisteVedtaksidErOk(
+                Personident(stønad.skyldner),
+                Personident(stønad.kravhaver),
+                Saksnummer(stønad.sak),
+                Stønadstype.valueOf(stønad.type),
+                sisteVedtaksid
+            )
+        ) {
+            throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
+        }
+
 
         vedtak.vedtakstidspunkt = LocalDateTime.now()
         persistenceService.oppdaterVedtak(vedtak)
@@ -1262,20 +1274,26 @@ class VedtakService(
         return referanse
     }
 
-    private fun validerAtSisteVedtaksidErOk(stønad: OpprettStønadsendringRequestDto): Boolean {
-        val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(stønad.skyldner)
-        val kravhaverAllePersonidenter = identUtils.hentAlleIdenter(stønad.kravhaver)
-        val sisteVedtaksid = persistenceService.hentSisteVedtaksidForStønad(
-            stønad.sak.verdi,
-            stønad.type.name,
+    private fun validerAtSisteVedtaksidErOk(
+        skyldner: Personident,
+        kravhaver: Personident,
+        saksnummer: Saksnummer,
+        type: Stønadstype,
+        sisteVedtaksid: Int?,
+    ): Boolean {
+        val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(skyldner)
+        val kravhaverAllePersonidenter = identUtils.hentAlleIdenter(kravhaver)
+        val sisteVedtaksidForStønad = persistenceService.hentSisteVedtaksidForStønad(
+            saksnummer.verdi,
+            type.name,
             skyldnerAllePersonidenter,
             kravhaverAllePersonidenter,
         )
-        if (stønad.sisteVedtaksid?.toInt() != sisteVedtaksid) {
-            LOGGER.error("Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for sak: ${stønad.sak} er ikke lik lagret siste vedtaksid: $sisteVedtaksid")
+        if (sisteVedtaksid != sisteVedtaksidForStønad) {
+            LOGGER.error("Angitt sisteVedtaksid: $sisteVedtaksid for sak: $saksnummer} er ikke lik lagret siste vedtaksid: $sisteVedtaksidForStønad")
             val feilmelding =
-                "Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for stønad ${stønad.sak} ${stønad.type} ${stønad.skyldner} ${stønad.kravhaver}: " +
-                    "er ikke lik lagret siste vedtaksid: $sisteVedtaksid"
+                "Angitt sisteVedtaksid: $sisteVedtaksid for stønad $saksnummer} $type $skyldner $kravhaver: " +
+                    "er ikke lik lagret siste vedtaksid: $sisteVedtaksidForStønad"
             SECURE_LOGGER.error(feilmelding)
             return false
         }
