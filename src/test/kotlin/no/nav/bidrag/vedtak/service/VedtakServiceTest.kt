@@ -12,6 +12,7 @@ import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.vedtak.BidragVedtakTest
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggFattVedtaksforlagRequestDto
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchEngangsbeløp
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchPeriode
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggOppdaterVedtakMedMismatchStønadsendring
@@ -1492,7 +1493,7 @@ class VedtakServiceTest {
         val opprettetVedtaksforslag = vedtakService.hentVedtak(vedtaksforslagVedtaksid)
 
         // Fatt vedtak fra vedtaksforslag
-        val fattetVedtakVedtaksid = vedtakService.fattVedtakForVedtaksforslag(vedtaksforslagVedtaksid)
+        val fattetVedtakVedtaksid = vedtakService.fattVedtakForVedtaksforslag(vedtaksforslagVedtaksid, byggFattVedtaksforlagRequestDto())
 
         // Henter oppdatert vedtaksforslag
         val vedtakFattetFraVedtaksforslag = vedtakService.hentVedtak(fattetVedtakVedtaksid)

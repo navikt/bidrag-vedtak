@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
+import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -300,13 +301,14 @@ class VedtakController(private val vedtakService: VedtakService) {
     fun fattVedtakFraVedtaksforslag(
         @PathVariable @NotNull
         vedtaksid: Int,
-        @PathVariable @NotNull
-        sisteVedtaksid: Int?
+        @Valid @RequestBody
+        request: FattVedtaksforslagRequestDto,
     ): ResponseEntity<Int> {
-        LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid, angitt sisteVedtaksid: $sisteVedtaksid")
-        val vedtakFattet = vedtakService.fattVedtakForVedtaksforslag(vedtaksid, sisteVedtaksid)
+        LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
+        vedtakService.fattVedtakForVedtaksforslag(vedtaksid, request)
+        val vedtakFattet = vedtakService.hentVedtak(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtak ble fattet fra vedtaksforslag: $vedtaksid ${tilJson(vedtakFattet)}")
-        return ResponseEntity(vedtakFattet, HttpStatus.OK)
+        return ResponseEntity(vedtaksid, HttpStatus.OK)
     }
 
     // Endepunkt for å fatte slette vedtaksforslag
@@ -370,7 +372,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
         const val HENT_ALLE_VEDTAKSFORSLAG = "/vedtaksforslag/alle"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
-        const val FATTVEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}/{sistevedtaksid}"
+        const val FATTVEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}/{sisteVedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }
