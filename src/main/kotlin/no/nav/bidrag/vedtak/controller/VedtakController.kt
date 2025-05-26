@@ -282,7 +282,7 @@ class VedtakController(private val vedtakService: VedtakService) {
     }
 
     // Endepunkt for å fatte vedtak fra vedtaksforslag
-    @PostMapping(FATTVEDTAKSFORSLAG)
+    @PostMapping(VEDTAKSFORSLAG)
     @Operation(security = [SecurityRequirement(name = "bearer-key")], summary = "Fatter vedtak fra vedtaksforslag")
     @ApiResponses(
         value = [
@@ -372,7 +372,6 @@ class VedtakController(private val vedtakService: VedtakService) {
         const val OPPRETT_VEDTAKSFORSLAG = "/vedtaksforslag"
         const val HENT_ALLE_VEDTAKSFORSLAG = "/vedtaksforslag/alle"
         const val VEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}"
-        const val FATTVEDTAKSFORSLAG = "/vedtaksforslag/{vedtaksid}/{sisteVedtaksid}"
         private val LOGGER = LoggerFactory.getLogger(VedtakController::class.java)
     }
 }
