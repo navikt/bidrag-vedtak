@@ -13,14 +13,14 @@ import no.nav.bidrag.domene.ident.Personident
 import no.nav.bidrag.domene.organisasjon.Enhetsnummer
 import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
-import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagStønadDto
+import no.nav.bidrag.transport.behandling.vedtak.request.FatteVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettGrunnlagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettPeriodeRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettStønadsendringRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
-import no.nav.bidrag.transport.behandling.vedtak.request.Stønad
 import no.nav.bidrag.transport.behandling.vedtak.response.VedtakDto
 import no.nav.bidrag.vedtak.bo.EngangsbeløpGrunnlagBo
 import no.nav.bidrag.vedtak.bo.PeriodeGrunnlagBo
@@ -1221,9 +1221,9 @@ class TestUtil {
             ),
         )
 
-        fun byggFattVedtaksforlagRequestDto() = FattVedtaksforslagRequestDto(
+        fun byggFattVedtaksforlagRequestDto() = FatteVedtaksforslagRequestDto(
             listOf(
-                Stønad(
+                FattVedtaksforslagStønadDto(
                     type = Stønadstype.BIDRAG,
                     sak = Saksnummer("SAK-001"),
                     skyldner = Personident("01018011111"),
