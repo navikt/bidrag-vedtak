@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
-import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.FatteVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -302,7 +302,7 @@ class VedtakController(private val vedtakService: VedtakService) {
         @PathVariable @NotNull
         vedtaksid: Int,
         @Valid @RequestBody
-        request: FattVedtaksforslagRequestDto,
+        request: FatteVedtaksforslagRequestDto,
     ): ResponseEntity<Int> {
         LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
         vedtakService.fattVedtakForVedtaksforslag(vedtaksid, request)

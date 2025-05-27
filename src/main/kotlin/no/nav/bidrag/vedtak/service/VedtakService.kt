@@ -19,7 +19,7 @@ import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.domene.util.trimToNull
 import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
-import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
+import no.nav.bidrag.transport.behandling.vedtak.request.FatteVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
@@ -553,7 +553,7 @@ class VedtakService(
         return vedtaksid
     }
 
-    fun fattVedtakForVedtaksforslag(vedtaksid: Int, fattVedtaksforslagRequestDto: FattVedtaksforslagRequestDto): Int {
+    fun fattVedtakForVedtaksforslag(vedtaksid: Int, fattVedtaksforslagRequestDto: FatteVedtaksforslagRequestDto): Int {
         // sjekk om det finnes et vedtak for mottatt vedtaksid. Hvis det ikke finnes må det kastes en exception
         try {
             persistenceService.hentVedtak(vedtaksid)
@@ -564,7 +564,7 @@ class VedtakService(
             throw IllegalArgumentException(feilmelding)
         }
 
-        if (fattVedtaksforslagRequestDto.StønadListe.isEmpty()) {
+        if (fattVedtaksforslagRequestDto.stønadListe.isEmpty()) {
             val feilmelding = "Ingen stønader angitt i forsøk på å opprette vedtak fra vedtaksforslag for vedtaksid: $vedtaksid"
             LOGGER.error(feilmelding)
             SECURE_LOGGER.error(feilmelding)
@@ -580,7 +580,7 @@ class VedtakService(
             return vedtaksid
         }
 
-        fattVedtaksforslagRequestDto.StønadListe.forEach { stønad ->
+        fattVedtaksforslagRequestDto.stønadListe.forEach { stønad ->
             if (!validerAtSisteVedtaksidErOk(
                     skyldner = stønad.skyldner,
                     kravhaver = stønad.kravhaver,
@@ -611,7 +611,7 @@ class VedtakService(
             status = VedtaksforslagStatus.FATTET,
             request = null,
             vedtakId = vedtaksid,
-            saksnummer = fattVedtaksforslagRequestDto.StønadListe.first().sak,
+            saksnummer = fattVedtaksforslagRequestDto.stønadListe.first().sak,
         )
 
         return vedtaksid
