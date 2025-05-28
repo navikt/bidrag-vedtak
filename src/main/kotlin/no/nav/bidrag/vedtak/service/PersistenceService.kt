@@ -162,11 +162,15 @@ class PersistenceService(
 
     fun referanseErUnik(vedtaksid: Int, referanse: String): Boolean = engangsbeløpRepository.sjekkReferanse(vedtaksid, referanse).isNullOrBlank()
 
-    fun hentStønadsendringForStønad(request: HentVedtakForStønadRequest): List<Stønadsendring> = stønadsendringRepository.hentVedtakForStønad(
+    fun hentStønadsendringForStønad(
+        request: HentVedtakForStønadRequest,
+        skyldnerListe: List<String>,
+        kravhaverListe: List<String>,
+    ): List<Stønadsendring> = stønadsendringRepository.hentVedtakForStønadMedIdenthistorikk(
         request.sak.toString(),
         request.type.toString(),
-        request.skyldner.verdi,
-        request.kravhaver.verdi,
+        skyldnerListe,
+        kravhaverListe,
     )
 
     fun hentVedtaksidForBehandlingsreferanse(kilde: String, behandlingsreferanse: String): List<Int> {
@@ -200,8 +204,7 @@ class PersistenceService(
 
     fun slettVedtak(vedtaksid: Int): Int = vedtakRepository.slettVedtak(vedtaksid)
 
-    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldner: String, kravhaver: String): Int =
-        stønadsendringRepository.hentVedtakForStønad(saksnr, type, skyldner, kravhaver)
-            .filter { it.vedtak.vedtakstidspunkt != null }
-            .maxByOrNull { it.vedtak.vedtakstidspunkt!! }?.vedtak?.id ?: 0
+    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldnerListe: List<String>, kravhaverListe: List<String>): Int =
+        stønadsendringRepository.hentVedtakForStønadMedIdenthistorikk(saksnr, type, skyldnerListe, kravhaverListe)
+            .maxByOrNull { it.vedtak.id }?.vedtak?.id ?: 0
 }

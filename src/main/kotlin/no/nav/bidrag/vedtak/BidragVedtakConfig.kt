@@ -12,6 +12,7 @@ import no.nav.bidrag.commons.ExceptionLogger
 import no.nav.bidrag.commons.security.api.EnableSecurityConfiguration
 import no.nav.bidrag.commons.service.organisasjon.EnableSaksbehandlernavnProvider
 import no.nav.bidrag.commons.util.IdentConsumer
+import no.nav.bidrag.commons.util.IdentUtils
 import no.nav.bidrag.commons.util.SjekkForNyIdentAspect
 import no.nav.bidrag.commons.web.CorrelationIdFilter
 import no.nav.bidrag.commons.web.DefaultCorsFilter
@@ -53,7 +54,6 @@ const val LOKAL_NAIS_PROFILE = "lokal-nais"
     RestOperationsAzure::class,
     SjekkForNyIdentAspect::class,
     IdentConsumer::class,
-    IdentConsumer::class,
 )
 class BidragVedtakConfig {
     @Bean
@@ -78,4 +78,7 @@ class BidragVedtakConfig {
 
     @Bean
     fun clientRequestObservationConvention() = DefaultClientRequestObservationConvention()
+
+    @Bean
+    fun identUtils(identConsumer: IdentConsumer): IdentUtils = IdentUtils(identConsumer)
 }
