@@ -19,7 +19,6 @@ import no.nav.bidrag.domene.sak.Saksnummer
 import no.nav.bidrag.domene.tid.ÅrMånedsperiode
 import no.nav.bidrag.domene.util.trimToNull
 import no.nav.bidrag.transport.behandling.felles.grunnlag.GrunnlagDto
-import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettBehandlingsreferanseRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettEngangsbeløpRequestDto
@@ -105,7 +104,14 @@ class VedtakService(
 
         val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
         stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
-            if (!validerAtSisteVedtaksidErOk(stønad.skyldner, stønad.kravhaver, stønad.sak, stønad.type, stønad.sisteVedtaksid)) {
+            if (!validerAtSisteVedtaksidErOk(
+                    type = stønad.type,
+                    saksnummer = stønad.sak,
+                    skyldner = stønad.skyldner,
+                    kravhaver = stønad.kravhaver,
+                    sisteVedtaksid = stønad.sisteVedtaksid,
+                )
+            ) {
                 throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
             }
         }
@@ -333,12 +339,12 @@ class VedtakService(
             skyldner = Personident(skyldner),
             kravhaver = Personident(kravhaver),
             mottaker = Personident(mottaker),
-            sisteVedtaksid = null,
             førsteIndeksreguleringsår = førsteIndeksreguleringsår,
             innkreving = Innkrevingstype.valueOf(innkreving),
             beslutning = Beslutningstype.valueOf(beslutning),
             omgjørVedtakId = omgjørVedtakId,
             eksternReferanse = eksternReferanse,
+            sisteVedtaksid = sisteVedtaksid?.toLong(),
             grunnlagReferanseListe = grunnlagReferanseResponseListe,
             periodeListe = hentPerioderTilVedtak(periodeListe),
         )
@@ -553,19 +559,12 @@ class VedtakService(
         return vedtaksid
     }
 
-    fun fattVedtakForVedtaksforslag(vedtaksid: Int, fattVedtaksforslagRequestDto: FattVedtaksforslagRequestDto): Int {
+    fun fattVedtakForVedtaksforslag(vedtaksid: Int): Int {
         // sjekk om det finnes et vedtak for mottatt vedtaksid. Hvis det ikke finnes må det kastes en exception
         try {
             persistenceService.hentVedtak(vedtaksid)
         } catch (e: Exception) {
             val feilmelding = "Fant ikke vedtaksforslag med vedtaksid $vedtaksid"
-            LOGGER.error(feilmelding)
-            SECURE_LOGGER.error(feilmelding)
-            throw IllegalArgumentException(feilmelding)
-        }
-
-        if (fattVedtaksforslagRequestDto.StønadListe.isEmpty()) {
-            val feilmelding = "Ingen stønader angitt i forsøk på å opprette vedtak fra vedtaksforslag for vedtaksid: $vedtaksid"
             LOGGER.error(feilmelding)
             SECURE_LOGGER.error(feilmelding)
             throw IllegalArgumentException(feilmelding)
@@ -580,13 +579,15 @@ class VedtakService(
             return vedtaksid
         }
 
-        fattVedtaksforslagRequestDto.StønadListe.forEach { stønad ->
+        val stønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
+
+        stønadsendringListe.forEach { stønad ->
             if (!validerAtSisteVedtaksidErOk(
-                    skyldner = stønad.skyldner,
-                    kravhaver = stønad.kravhaver,
-                    saksnummer = stønad.sak,
-                    type = stønad.type,
-                    sisteVedtaksid = stønad.sisteVedtaksid,
+                    type = Stønadstype.valueOf(stønad.type),
+                    saksnummer = Saksnummer(stønad.sak),
+                    skyldner = Personident(stønad.skyldner),
+                    kravhaver = Personident(stønad.kravhaver),
+                    sisteVedtaksid = stønad.sisteVedtaksid?.toLong(),
                 )
             ) {
                 throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
@@ -611,7 +612,7 @@ class VedtakService(
             status = VedtaksforslagStatus.FATTET,
             request = null,
             vedtakId = vedtaksid,
-            saksnummer = fattVedtaksforslagRequestDto.StønadListe.first().sak,
+            saksnummer = Saksnummer(stønadsendringListe.first().sak),
         )
 
         return vedtaksid
@@ -1281,10 +1282,10 @@ class VedtakService(
     }
 
     private fun validerAtSisteVedtaksidErOk(
+        type: Stønadstype,
+        saksnummer: Saksnummer,
         skyldner: Personident,
         kravhaver: Personident,
-        saksnummer: Saksnummer,
-        type: Stønadstype,
         sisteVedtaksid: Long?,
     ): Boolean {
         val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(skyldner)

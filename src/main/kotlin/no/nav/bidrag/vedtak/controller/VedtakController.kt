@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
-import no.nav.bidrag.transport.behandling.vedtak.request.FattVedtaksforslagRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.request.HentVedtakForStønadRequest
 import no.nav.bidrag.transport.behandling.vedtak.request.OpprettVedtakRequestDto
 import no.nav.bidrag.transport.behandling.vedtak.response.HentVedtakForStønadResponse
@@ -301,11 +300,9 @@ class VedtakController(private val vedtakService: VedtakService) {
     fun fattVedtakFraVedtaksforslag(
         @PathVariable @NotNull
         vedtaksid: Int,
-        @Valid @RequestBody
-        request: FattVedtaksforslagRequestDto,
     ): ResponseEntity<Int> {
         LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
-        vedtakService.fattVedtakForVedtaksforslag(vedtaksid, request)
+        vedtakService.fattVedtakForVedtaksforslag(vedtaksid)
         val vedtakFattet = vedtakService.hentVedtak(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtak ble fattet fra vedtaksforslag: $vedtaksid ${tilJson(vedtakFattet)}")
         return ResponseEntity(vedtaksid, HttpStatus.OK)
