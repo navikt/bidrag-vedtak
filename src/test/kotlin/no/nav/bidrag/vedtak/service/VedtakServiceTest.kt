@@ -1482,7 +1482,6 @@ class VedtakServiceTest {
 
     @Test
     fun `skal fatte vedtak fra vedtaksforslag`() {
-
         val nyttVedtakRequest = byggVedtakRequest()
         val sisteVedtaksid = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid.toLong()
 
