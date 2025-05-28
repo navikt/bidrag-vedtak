@@ -176,6 +176,7 @@ class TestUtil {
                 beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 123,
                 eksternReferanse = "eksternRef1",
+                sisteVedtaksid = 0,
                 grunnlagReferanseListe = listOf(
                     "VIRKNINGSDATO-1",
                     "NOTAT-1",
@@ -219,6 +220,7 @@ class TestUtil {
                 beslutning = Beslutningstype.ENDRING,
                 omgjørVedtakId = 200,
                 eksternReferanse = "eksternRef3",
+                sisteVedtaksid = 0,
                 grunnlagReferanseListe = listOf(
                     "VIRKNINGSDATO-2",
                     "NOTAT-2",

@@ -581,6 +581,8 @@ class VedtakService(
 
         val stønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
 
+        SECURE_LOGGER.info(tilJson(stønadsendringListe))
+
         stønadsendringListe.forEach { stønad ->
             if (!validerAtSisteVedtaksidErOk(
                     type = Stønadstype.valueOf(stønad.type),

@@ -1349,6 +1349,11 @@ class VedtakServiceTest {
                     oppdaterVedtaksforslagRequest.stønadsendringListe[0].eksternReferanse,
                 )
             },
+            {
+                assertThat(oppdatertVedtaksforslag.stønadsendringListe[0].sisteVedtaksid).isEqualTo(
+                    oppdaterVedtaksforslagRequest.stønadsendringListe[0].sisteVedtaksid,
+                )
+            },
 //            Executable {
 //                assertThat(oppdatertVedtaksforslag.stønadsendringListe[0].grunnlagReferanseListe[0]).isEqualTo(
 //                    oppdaterVedtaksforslagRequest.stønadsendringListe[0].grunnlagReferanseListe[0],
