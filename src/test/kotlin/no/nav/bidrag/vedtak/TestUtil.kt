@@ -1058,7 +1058,7 @@ class TestUtil {
             behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
-        fun byggVedtaksforslagMedOppdatertInnholdRequest() = OpprettVedtakRequestDto(
+        fun byggVedtaksforslagMedOppdatertInnholdRequest(sisteVedtaksid: Long?) = OpprettVedtakRequestDto(
             kilde = Vedtakskilde.AUTOMATISK,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X654321",
@@ -1098,7 +1098,7 @@ class TestUtil {
                     beslutning = Beslutningstype.ENDRING,
                     omgjørVedtakId = 123,
                     eksternReferanse = "eksternRef2",
-                    sisteVedtaksid = 0,
+                    sisteVedtaksid = sisteVedtaksid ?: 0,
                     grunnlagReferanseListe = emptyList(),
                     periodeListe = listOf(
                         OpprettPeriodeRequestDto(

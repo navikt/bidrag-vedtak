@@ -1264,7 +1264,7 @@ class VedtakServiceTest {
         val førsteVedtaksforslag = vedtakService.hentVedtak(nyttVedtaksforslagOpprettetVedtaksid)
 
         // Oppdaterer vedtaksforslag
-        val oppdaterVedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest()
+        val oppdaterVedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(nyttVedtaksforslagOpprettetVedtaksid.toLong())
 
         val oppdatertVedtaksforslagVedtaksid = vedtakService.oppdaterVedtaksforslag(
             vedtaksid = nyttVedtaksforslagOpprettetVedtaksid,
@@ -1482,8 +1482,12 @@ class VedtakServiceTest {
 
     @Test
     fun `skal fatte vedtak fra vedtaksforslag`() {
+
+        val nyttVedtakRequest = byggVedtakRequest()
+        val sisteVedtaksid = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid.toLong()
+
         // Oppdaterer vedtaksforslag
-        val vedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest()
+        val vedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(sisteVedtaksid)
 
         val vedtaksforslagVedtaksid = vedtakService.opprettVedtak(
             vedtakRequest = vedtaksforslagRequest,
@@ -1699,7 +1703,7 @@ class VedtakServiceTest {
     @Test
     fun `skal slette vedtaksforslag`() {
         // Oppdaterer vedtaksforslag
-        val vedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest()
+        val vedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(null)
 
         val vedtaksforslagVedtaksid = vedtakService.opprettVedtak(
             vedtakRequest = vedtaksforslagRequest,

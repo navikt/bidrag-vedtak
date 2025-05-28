@@ -71,7 +71,7 @@ fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak:
                 Stønadsendring::mottaker.name -> mottaker.verdi
                 Stønadsendring::innkreving.name -> innkreving.toString()
                 Stønadsendring::beslutning.name -> beslutning.toString()
-                Stønadsendring::sisteVedtaksid.name -> sisteVedtaksid?.toInt()
+                Stønadsendring::sisteVedtaksid.name -> sisteVedtaksid.toString()
                 else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
             }
         },
