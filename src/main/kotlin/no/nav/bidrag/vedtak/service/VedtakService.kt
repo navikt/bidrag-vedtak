@@ -1024,6 +1024,7 @@ class VedtakService(
                     beslutning = stønadsendring.beslutning,
                     omgjørVedtakId = stønadsendring.omgjørVedtakId,
                     eksternReferanse = stønadsendring.eksternReferanse,
+                    sisteVedtaksid = stønadsendring.sisteVedtaksid,
                 )
             }
 
@@ -1324,6 +1325,7 @@ class VedtakService(
                     eksisterendeStønadsendring.innkreving == it.innkreving.name &&
                     eksisterendeStønadsendring.beslutning == it.beslutning.name &&
                     eksisterendeStønadsendring.omgjørVedtakId == it.omgjørVedtakId &&
+                    eksisterendeStønadsendring.sisteVedtaksid?.toLong() == it.sisteVedtaksid &&
                     eksisterendeStønadsendring.eksternReferanse == it.eksternReferanse
             }
         }

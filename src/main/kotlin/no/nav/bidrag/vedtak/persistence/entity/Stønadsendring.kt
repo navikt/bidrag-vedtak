@@ -53,7 +53,7 @@ data class Stønadsendring(
     val eksternReferanse: String? = "",
 
     @Column(nullable = true, name = "siste_vedtaksid")
-    val sisteVedtaksid: Int? = 0,
+    val sisteVedtaksid: Int? = null,
 
 )
 
