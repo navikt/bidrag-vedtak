@@ -302,9 +302,10 @@ class VedtakController(private val vedtakService: VedtakService) {
         vedtaksid: Int,
     ): ResponseEntity<Int> {
         LOGGER.info("Request for å fatte vedtak for vedtaksforslag følgende id ble mottatt: $vedtaksid")
-        val vedtakFattet = vedtakService.fattVedtakForVedtaksforslag(vedtaksid)
+        vedtakService.fattVedtakForVedtaksforslag(vedtaksid)
+        val vedtakFattet = vedtakService.hentVedtak(vedtaksid)
         SECURE_LOGGER.info("Følgende vedtak ble fattet fra vedtaksforslag: $vedtaksid ${tilJson(vedtakFattet)}")
-        return ResponseEntity(vedtakFattet, HttpStatus.OK)
+        return ResponseEntity(vedtaksid, HttpStatus.OK)
     }
 
     // Endepunkt for å fatte slette vedtaksforslag

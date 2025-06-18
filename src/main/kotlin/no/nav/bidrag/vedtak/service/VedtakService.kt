@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.bidrag.commons.security.utils.TokenUtils
 import no.nav.bidrag.commons.service.organisasjon.SaksbehandlernavnProvider
+import no.nav.bidrag.commons.util.IdentUtils
 import no.nav.bidrag.domene.enums.vedtak.BehandlingsrefKilde
 import no.nav.bidrag.domene.enums.vedtak.Beslutningstype
 import no.nav.bidrag.domene.enums.vedtak.Engangsbeløptype
@@ -55,7 +56,6 @@ import no.nav.bidrag.vedtak.persistence.entity.toGrunnlagEntity
 import no.nav.bidrag.vedtak.persistence.entity.toPeriodeEntity
 import no.nav.bidrag.vedtak.persistence.entity.toStønadsendringEntity
 import no.nav.bidrag.vedtak.persistence.entity.toVedtakEntity
-import no.nav.bidrag.vedtak.util.IdentUtils
 import no.nav.bidrag.vedtak.util.VedtakUtil.Companion.tilJson
 import org.hibernate.exception.ConstraintViolationException
 import org.slf4j.LoggerFactory
@@ -103,11 +103,16 @@ class VedtakService(
         }
 
         val stønadsendringerMedAngittSisteVedtaksidListe = vedtakRequest.stønadsendringListe.filter { it.sisteVedtaksid != null }
-        if (stønadsendringerMedAngittSisteVedtaksidListe.isNotEmpty()) {
-            stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
-                if (!validerAtSisteVedtaksidErOk(stønad)) {
-                    throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
-                }
+        stønadsendringerMedAngittSisteVedtaksidListe.forEach { stønad ->
+            if (!validerAtSisteVedtaksidErOk(
+                    type = stønad.type,
+                    saksnummer = stønad.sak,
+                    skyldner = stønad.skyldner,
+                    kravhaver = stønad.kravhaver,
+                    sisteVedtaksid = stønad.sisteVedtaksid,
+                )
+            ) {
+                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
             }
         }
 
@@ -334,12 +339,12 @@ class VedtakService(
             skyldner = Personident(skyldner),
             kravhaver = Personident(kravhaver),
             mottaker = Personident(mottaker),
-            sisteVedtaksid = null,
             førsteIndeksreguleringsår = førsteIndeksreguleringsår,
             innkreving = Innkrevingstype.valueOf(innkreving),
             beslutning = Beslutningstype.valueOf(beslutning),
             omgjørVedtakId = omgjørVedtakId,
             eksternReferanse = eksternReferanse,
+            sisteVedtaksid = sisteVedtaksid?.toLong(),
             grunnlagReferanseListe = grunnlagReferanseResponseListe,
             periodeListe = hentPerioderTilVedtak(periodeListe),
         )
@@ -425,7 +430,9 @@ class VedtakService(
 
     // Hent alle vedtak for stønad
     fun hentVedtakForStønad(request: HentVedtakForStønadRequest): HentVedtakForStønadResponse {
-        val stønadsendringer = persistenceService.hentStønadsendringForStønad(request)
+        val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(request.skyldner)
+        val kravhaverAllePersonidenter = identUtils.hentAlleIdenter(request.kravhaver)
+        val stønadsendringer = persistenceService.hentStønadsendringForStønad(request, skyldnerAllePersonidenter, kravhaverAllePersonidenter)
         return HentVedtakForStønadResponse(
             stønadsendringer
                 .map { stønadsendring ->
@@ -563,7 +570,7 @@ class VedtakService(
             throw IllegalArgumentException(feilmelding)
         }
 
-        // sjekk at angitt vedtak  er et vedtaksforslag, skal ikke kunne slettes ellers
+        // sjekk at angitt vedtak  er et vedtaksforslag, skal ikke kunne fattes vedtak ellers
         val vedtak = persistenceService.hentVedtak(vedtaksid)
         if (vedtak.vedtakstidspunkt != null) {
             val feilmelding = "Vedtak er allerede fattet. Ignorer forespørsel $vedtaksid"
@@ -572,9 +579,28 @@ class VedtakService(
             return vedtaksid
         }
 
+        val stønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
+
+        SECURE_LOGGER.info(tilJson(stønadsendringListe))
+
+        stønadsendringListe.forEach { stønad ->
+            if (!validerAtSisteVedtaksidErOk(
+                    type = Stønadstype.valueOf(stønad.type),
+                    saksnummer = Saksnummer(stønad.sak),
+                    skyldner = Personident(stønad.skyldner),
+                    kravhaver = Personident(stønad.kravhaver),
+                    sisteVedtaksid = stønad.sisteVedtaksid?.toLong(),
+                )
+            ) {
+                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
+            }
+        }
+
+        // Alle kontroller er ok og vedtaket fattes
         vedtak.vedtakstidspunkt = LocalDateTime.now()
         persistenceService.oppdaterVedtak(vedtak)
 
+        // Henter det opprettede vedtaket for å vurdere om det skal legges ut hendelse
         val vedtakDto = hentVedtak(vedtaksid)
 
         if ((vedtakDto.stønadsendringListe.isNotEmpty() || vedtakDto.engangsbeløpListe.isNotEmpty())) {
@@ -584,13 +610,11 @@ class VedtakService(
             )
         }
 
-        val saksnummer = persistenceService.hentAlleStønadsendringerForVedtak(vedtak.id).firstOrNull()?.sak
-
         hendelserService.opprettHendelseVedtaksforslag(
             status = VedtaksforslagStatus.FATTET,
             request = null,
             vedtakId = vedtaksid,
-            saksnummer = saksnummer?.let { Saksnummer(it) },
+            saksnummer = Saksnummer(stønadsendringListe.first().sak),
         )
 
         return vedtaksid
@@ -920,13 +944,16 @@ class VedtakService(
             grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
         }
 
-        // oppdaterer PeriodeGrunnlag
+        // oppdaterer StønadsendringGrunnlag og PeriodeGrunnlag
         val eksisterendeStønadsendringListe = persistenceService.hentAlleStønadsendringerForVedtak(vedtaksid)
 
         vedtakRequest.stønadsendringListe.forEach { stønadsendringRequest ->
             // matcher mot eksisterende stønadsendringer for å finne stønadsendringsid for igjen å finne perioder som skal brukes
-            // til å oppdatere PeriodeGrunnlag
+            // til å oppdatere PeriodeGrunnlag. Oppdaterer først StønadsendringGrunnlag.
             val stønadsendringsid = finnEksisterendeStønadsendringsid(stønadsendringRequest, eksisterendeStønadsendringListe)
+
+            oppdaterStønadsendringGrunnlag(stønadsendringRequest, stønadsendringsid, grunnlagIdRefMap)
+
             val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringsid)
 
             stønadsendringRequest.periodeListe.forEach { periode ->
@@ -997,6 +1024,7 @@ class VedtakService(
                     beslutning = stønadsendring.beslutning,
                     omgjørVedtakId = stønadsendring.omgjørVedtakId,
                     eksternReferanse = stønadsendring.eksternReferanse,
+                    sisteVedtaksid = stønadsendring.sisteVedtaksid,
                 )
             }
 
@@ -1025,6 +1053,28 @@ class VedtakService(
             return matchendeElementerOppdaterteIdenter.first().id
         }
         return matchendeEksisterendeStønadsendring.first().id
+    }
+
+    // Opprett StønadsendringGrunnlag
+    private fun oppdaterStønadsendringGrunnlag(
+        stønadsendringRequest: OpprettStønadsendringRequestDto,
+        stønadsendringsid: Int,
+        grunnlagIdRefMap: Map<String, Int>,
+    ) {
+        stønadsendringRequest.grunnlagReferanseListe.forEach {
+            val grunnlagId = grunnlagIdRefMap.getOrDefault(it, 0)
+            if (grunnlagId == 0) {
+                val feilmelding = "grunnlagReferanse $it ikke funnet i intern mappingtabell"
+                LOGGER.error(feilmelding)
+                throw IllegalArgumentException(feilmelding)
+            } else {
+                val stønadsendringGrunnlagBo = StønadsendringGrunnlagBo(
+                    stønadsendringsid = stønadsendringsid,
+                    grunnlagsid = grunnlagId,
+                )
+                persistenceService.opprettStønadsendringGrunnlag(stønadsendringGrunnlagBo)
+            }
+        }
     }
 
     private fun finnEksisterendePeriodeid(periodeRequest: OpprettPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
@@ -1234,18 +1284,26 @@ class VedtakService(
         return referanse
     }
 
-    private fun validerAtSisteVedtaksidErOk(stønad: OpprettStønadsendringRequestDto): Boolean {
-        val sisteVedtaksid = persistenceService.hentSisteVedtaksidForStønad(
-            stønad.sak.verdi,
-            stønad.type.name,
-            stønad.skyldner.verdi,
-            stønad.kravhaver.verdi,
-        )
-        if (stønad.sisteVedtaksid?.toInt() != sisteVedtaksid) {
-            LOGGER.error("Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for sak: ${stønad.sak} er ikke lik lagret siste vedtaksid: $sisteVedtaksid")
+    private fun validerAtSisteVedtaksidErOk(
+        type: Stønadstype,
+        saksnummer: Saksnummer,
+        skyldner: Personident,
+        kravhaver: Personident,
+        sisteVedtaksid: Long?,
+    ): Boolean {
+        val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(skyldner)
+        val kravhaverAllePersonidenter = identUtils.hentAlleIdenter(kravhaver)
+        val sisteVedtaksidForStønad = persistenceService.hentSisteVedtaksidForStønad(
+            saksnummer.verdi,
+            type.name,
+            skyldnerAllePersonidenter,
+            kravhaverAllePersonidenter,
+        ).toLong()
+        if (sisteVedtaksid != sisteVedtaksidForStønad) {
+            LOGGER.error("Angitt sisteVedtaksid: $sisteVedtaksid for sak: $saksnummer er ikke lik lagret siste vedtaksid: $sisteVedtaksidForStønad")
             val feilmelding =
-                "Angitt sisteVedtaksid: ${stønad.sisteVedtaksid} for stønad ${stønad.sak} ${stønad.type} ${stønad.skyldner} ${stønad.kravhaver}: " +
-                    "er ikke lik lagret siste vedtaksid: $sisteVedtaksid"
+                "Angitt sisteVedtaksid: $sisteVedtaksid for stønad $saksnummer $type $skyldner $kravhaver: " +
+                    "er ikke lik lagret siste vedtaksid: $sisteVedtaksidForStønad"
             SECURE_LOGGER.error(feilmelding)
             return false
         }
@@ -1267,6 +1325,7 @@ class VedtakService(
                     eksisterendeStønadsendring.innkreving == it.innkreving.name &&
                     eksisterendeStønadsendring.beslutning == it.beslutning.name &&
                     eksisterendeStønadsendring.omgjørVedtakId == it.omgjørVedtakId &&
+                    eksisterendeStønadsendring.sisteVedtaksid?.toLong() == it.sisteVedtaksid &&
                     eksisterendeStønadsendring.eksternReferanse == it.eksternReferanse
             }
         }

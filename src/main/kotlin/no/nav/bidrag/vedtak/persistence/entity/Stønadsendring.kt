@@ -52,6 +52,9 @@ data class Stønadsendring(
     @Column(nullable = true, name = "ekstern_referanse")
     val eksternReferanse: String? = "",
 
+    @Column(nullable = true, name = "siste_vedtaksid")
+    val sisteVedtaksid: Int? = null,
+
 )
 
 fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak: Vedtak) = with(::Stønadsendring) {
@@ -68,6 +71,7 @@ fun OpprettStønadsendringRequestDto.toStønadsendringEntity(eksisterendeVedtak:
                 Stønadsendring::mottaker.name -> mottaker.verdi
                 Stønadsendring::innkreving.name -> innkreving.toString()
                 Stønadsendring::beslutning.name -> beslutning.toString()
+                Stønadsendring::sisteVedtaksid.name -> sisteVedtaksid?.toInt()
                 else -> propertiesByName[parameter.name]?.get(this@toStønadsendringEntity)
             }
         },

@@ -222,6 +222,22 @@
       "grunnlagsreferanseListe": [],
       "gjelderReferanse": null,
       "gjelderBarnReferanse": null
+    },
+    {
+      "referanse": "søknad",
+      "type": "SØKNAD",
+      "innhold": {
+        "mottattDato":"2025-05-05",
+        "søktFraDato":"2025-05-01",
+        "søktAv":"NAV_BIDRAG",
+        "klageMottattDato":null,
+        "opprinneligVedtakstype":null,
+        "begrensetRevurdering":false,
+        "egetTiltak":false
+      },
+      "grunnlagsreferanseListe": [],
+      "gjelderReferanse": null,
+      "gjelderBarnReferanse": null
     }
   ],
   "stønadsendringListe": [
@@ -236,7 +252,7 @@
       "beslutning": "ENDRING",
       "omgjørVedtakId": null,
       "eksternReferanse": null,
-      "grunnlagReferanseListe": [],
+      "grunnlagReferanseListe": ["søknad"],
       "periodeListe": [
         {
           "periode": {
