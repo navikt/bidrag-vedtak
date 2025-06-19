@@ -204,7 +204,10 @@ class PersistenceService(
 
     fun slettVedtak(vedtaksid: Int): Int = vedtakRepository.slettVedtak(vedtaksid)
 
-    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldnerListe: List<String>, kravhaverListe: List<String>): Int =
-        stønadsendringRepository.hentVedtakForStønadMedIdenthistorikk(saksnr, type, skyldnerListe, kravhaverListe)
-            .maxByOrNull { it.vedtak.id }?.vedtak?.id ?: 0
+    fun hentSisteVedtaksidForStønad(saksnr: String, type: String, skyldnerListe: List<String>, kravhaverListe: List<String>): Int {
+        val stønadsendringListe =
+            stønadsendringRepository.hentVedtakForStønadMedIdenthistorikk(saksnr, type, skyldnerListe, kravhaverListe)
+                .filter { it.vedtak.vedtakstidspunkt != null }
+        return stønadsendringListe.maxByOrNull { it.vedtak.vedtakstidspunkt!! }?.vedtak?.id ?: 0
+    }
 }
