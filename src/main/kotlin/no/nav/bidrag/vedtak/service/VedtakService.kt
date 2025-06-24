@@ -452,6 +452,7 @@ class VedtakService(
                             BehandlingsreferanseDto(BehandlingsrefKilde.valueOf(it.kilde), it.referanse)
                         },
                         kilde = Vedtakskilde.valueOf(vedtak.kilde),
+                        kildeapplikasjon = vedtak.kildeapplikasjon,
                     )
                 },
         )
