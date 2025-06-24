@@ -414,7 +414,9 @@ class VedtakService(
             throw GrunnlagsdataManglerException(feilmelding)
         }
 
-        if (vedtaksid != 4643789 && vedtaksid != 4783062) {
+        if (vedtaksid == 4643789 || vedtaksid == 4783062) {
+            oppdaterGrunnlag(vedtaksid, vedtakRequest)
+        } else {
             if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest)) {
                 slettEventueltEksisterendeGrunnlag(vedtaksid)
                 oppdaterGrunnlag(vedtaksid, vedtakRequest)
@@ -425,6 +427,7 @@ class VedtakService(
                 throw VedtaksdataMatcherIkkeException(feilmelding)
             }
         }
+
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
 
         return vedtaksid
