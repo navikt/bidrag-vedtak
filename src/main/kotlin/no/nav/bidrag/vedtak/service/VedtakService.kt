@@ -414,7 +414,7 @@ class VedtakService(
             throw GrunnlagsdataManglerException(feilmelding)
         }
 
-        if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest)) {
+        if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest) || vedtaksid == 4643789 || vedtaksid == 4783062) {
             slettEventueltEksisterendeGrunnlag(vedtaksid)
             oppdaterGrunnlag(vedtaksid, vedtakRequest)
         } else {
