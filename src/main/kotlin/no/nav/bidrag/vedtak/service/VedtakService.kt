@@ -414,14 +414,16 @@ class VedtakService(
             throw GrunnlagsdataManglerException(feilmelding)
         }
 
-        if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest) || vedtaksid == 4643789 || vedtaksid == 4783062) {
-            slettEventueltEksisterendeGrunnlag(vedtaksid)
-            oppdaterGrunnlag(vedtaksid, vedtakRequest)
-        } else {
-            val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
-            LOGGER.error(feilmelding)
-            SECURE_LOGGER.error("$feilmelding: Request: $vedtakRequest \n\n Vedtak som oppdateres: ${hentVedtak(vedtaksid)} ")
-            throw VedtaksdataMatcherIkkeException(feilmelding)
+        if (vedtaksid != 4643789 && vedtaksid != 4783062) {
+            if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest)) {
+                slettEventueltEksisterendeGrunnlag(vedtaksid)
+                oppdaterGrunnlag(vedtaksid, vedtakRequest)
+            } else {
+                val feilmelding = "Innsendte data for oppdatering av vedtak matcher ikke med eksisterende vedtaksdata"
+                LOGGER.error(feilmelding)
+                SECURE_LOGGER.error("$feilmelding: Request: $vedtakRequest \n\n Vedtak som oppdateres: ${hentVedtak(vedtaksid)} ")
+                throw VedtaksdataMatcherIkkeException(feilmelding)
+            }
         }
         measureVedtak(oppdaterVedtakCounterName, vedtakRequest)
 
