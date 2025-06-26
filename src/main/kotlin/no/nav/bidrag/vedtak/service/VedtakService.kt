@@ -406,7 +406,7 @@ class VedtakService(
         return engangsbeløpResponseListe
     }
 
-    fun oppdaterVedtak(vedtaksid: Int, vedtakRequest: OpprettVedtakRequestDto): Int {
+    fun oppdaterVedtak(vedtaksid: Int, vedtakRequest: OpprettVedtakRequestDto, overstyrTest: Boolean? = false): Int {
         if (vedtakRequest.grunnlagListe.isEmpty()) {
             val feilmelding = "Grunnlagsdata mangler fra OppdaterVedtakRequest"
             LOGGER.error(feilmelding)
@@ -414,29 +414,12 @@ class VedtakService(
             throw GrunnlagsdataManglerException(feilmelding)
         }
 
-        if (vedtaksid == 4643789 || vedtaksid == 4783062) {
+        val overstyr = vedtaksid == 4643789 || vedtaksid == 4783062 || overstyrTest == true
+
+        if (overstyr) {
             slettEventueltEksisterendeGrunnlag(vedtaksid)
-            slettStønadsendringerBehandlingsreferanserPerioderOgEngangsbeløpForVedtak(vedtaksid)
 
-            val opprettetVedtak = persistenceService.hentVedtak(vedtaksid)
-            val grunnlagIdRefMap = mutableMapOf<String, Int>()
-
-            // Grunnlag
-            vedtakRequest.grunnlagListe.forEach {
-                val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtak)
-                grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
-            }
-
-            // Stønadsendring
-            vedtakRequest.stønadsendringListe.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
-
-            // Engangsbeløp
-            vedtakRequest.engangsbeløpListe.forEach { opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap) }
-
-            // Behandlingsreferanse
-            vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
-
-//            oppdaterGrunnlag(vedtaksid, vedtakRequest)
+            oppdaterGrunnlag(vedtaksid, vedtakRequest, overstyr)
         } else {
             if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest)) {
                 slettEventueltEksisterendeGrunnlag(vedtaksid)
@@ -960,7 +943,7 @@ class VedtakService(
         }
     }
 
-    private fun oppdaterGrunnlag(vedtaksid: Int, vedtakRequest: OpprettVedtakRequestDto) {
+    private fun oppdaterGrunnlag(vedtaksid: Int, vedtakRequest: OpprettVedtakRequestDto, overstyr: Boolean = false) {
         val vedtak = persistenceService.hentVedtak(vedtaksid)
 
         val grunnlagIdRefMap = mutableMapOf<String, Int>()
@@ -977,16 +960,22 @@ class VedtakService(
         vedtakRequest.stønadsendringListe.forEach { stønadsendringRequest ->
             // matcher mot eksisterende stønadsendringer for å finne stønadsendringsid for igjen å finne perioder som skal brukes
             // til å oppdatere PeriodeGrunnlag. Oppdaterer først StønadsendringGrunnlag.
-            val stønadsendringsid = finnEksisterendeStønadsendringsid(stønadsendringRequest, eksisterendeStønadsendringListe)
+            val stønadsendringsid = finnEksisterendeStønadsendringsid(stønadsendringRequest, eksisterendeStønadsendringListe, overstyr)
 
-            oppdaterStønadsendringGrunnlag(stønadsendringRequest, stønadsendringsid, grunnlagIdRefMap)
+            if (stønadsendringsid != 0) {
+                oppdaterStønadsendringGrunnlag(stønadsendringRequest, stønadsendringsid, grunnlagIdRefMap)
 
-            val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringsid)
+                val eksisterendePeriodeListe = persistenceService.hentAllePerioderForStønadsendring(stønadsendringsid)
 
-            stønadsendringRequest.periodeListe.forEach { periode ->
-                // matcher mot eksisterende perioder for å finne periodeId for å oppdatere PeriodeGrunnlag
-                val periodeId = finnEksisterendePeriodeid(periode, eksisterendePeriodeListe)
-                oppdaterPeriodeGrunnlag(periode, periodeId, grunnlagIdRefMap)
+                stønadsendringRequest.periodeListe.forEach { periode ->
+                    // matcher mot eksisterende perioder for å finne periodeId for å oppdatere PeriodeGrunnlag
+                    val periodeId = finnEksisterendePeriodeid(periode, eksisterendePeriodeListe, overstyr)
+
+                    if (periodeId != 0) {
+                        // oppdaterer PeriodeGrunnlag
+                        oppdaterPeriodeGrunnlag(periode, periodeId, grunnlagIdRefMap)
+                    }
+                }
             }
         }
 
@@ -994,14 +983,17 @@ class VedtakService(
         val eksisterendeEngangsbeløpListe = persistenceService.hentAlleEngangsbeløpForVedtak(vedtaksid)
         vedtakRequest.engangsbeløpListe.forEach { engangsbeløp ->
             // matcher mot eksisterende engangsbeløp for å finne engangsbeløpId for igjen å oppdatere EngangsbeløpGrunnlag
-            val engangsbeløpId = finnTilhørendeEngangsbeløpId(engangsbeløp, eksisterendeEngangsbeløpListe)
-            oppdaterEngangsbeløpGrunnlag(engangsbeløp, engangsbeløpId, grunnlagIdRefMap)
+            val engangsbeløpId = finnTilhørendeEngangsbeløpId(engangsbeløp, eksisterendeEngangsbeløpListe, overstyr)
+            if (engangsbeløpId != 0) {
+                oppdaterEngangsbeløpGrunnlag(engangsbeløp, engangsbeløpId, grunnlagIdRefMap)
+            }
         }
     }
 
     private fun finnEksisterendeStønadsendringsid(
         stønadsendringRequest: OpprettStønadsendringRequestDto,
         eksisterendeStønadsendringListe: List<Stønadsendring>,
+        overstyr: Boolean = false,
     ): Int {
         val matchendeEksisterendeStønadsendring = finnMatchendeStønadsendringer(eksisterendeStønadsendringListe, listOf(stønadsendringRequest))
 
@@ -1061,6 +1053,10 @@ class VedtakService(
                     listOf(requestMedOppdaterteIdenter),
                 )
 
+            if (matchendeElementerOppdaterteIdenter.size != 1 && overstyr) {
+                return 0
+            }
+
             if (matchendeElementerOppdaterteIdenter.size != 1) {
                 SECURE_LOGGER.error(
                     "Andre forsøk på å hente stønadsendringsid under oppdatering av vedtak feiler. " +
@@ -1105,7 +1101,11 @@ class VedtakService(
         }
     }
 
-    private fun finnEksisterendePeriodeid(periodeRequest: OpprettPeriodeRequestDto, eksisterendePeriodeListe: List<Periode>): Int {
+    private fun finnEksisterendePeriodeid(
+        periodeRequest: OpprettPeriodeRequestDto,
+        eksisterendePeriodeListe: List<Periode>,
+        overstyr: Boolean?,
+    ): Int {
         val matchendeEksisterendePeriode = eksisterendePeriodeListe
             .filter { eksisterendePeriode ->
                 eksisterendePeriodeListe.any {
@@ -1117,6 +1117,10 @@ class VedtakService(
                         eksisterendePeriode.delytelseId == periodeRequest.delytelseId
                 }
             }
+
+        if (matchendeEksisterendePeriode.size != 1 && overstyr ?: false) {
+            return 0
+        }
 
         if (matchendeEksisterendePeriode.size != 1) {
             SECURE_LOGGER.error("Det er mismatch på antall matchende perioder for stønadsendring: ${tilJson(periodeRequest)}")
@@ -1148,6 +1152,7 @@ class VedtakService(
     private fun finnTilhørendeEngangsbeløpId(
         engangsbeløpRequest: OpprettEngangsbeløpRequestDto,
         eksisterendeEngangsbeløpListe: List<Engangsbeløp>,
+        overstyr: Boolean = false,
     ): Int {
         val matchendeEksisterendeEngangsbeløp = finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListe, listOf(engangsbeløpRequest))
 
@@ -1191,6 +1196,10 @@ class VedtakService(
 
             val matchendeEksisterendeEngangsbeløpMedOppdatertIdent =
                 finnMatchendeEngangsbeløp(eksisterendeEngangsbeløpListeMedOppdaterteIdenter, listOf(requestMedOppdaterteIdenter))
+
+            if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1 && overstyr) {
+                return 0
+            }
 
             if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
                 SECURE_LOGGER.error(
