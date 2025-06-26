@@ -20,6 +20,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakEngangsbeløpUtenRefera
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakMedDuplikateReferanserRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedInputparametre
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedMismatch
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagMedOppdatertInnholdRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagRequest
@@ -843,7 +844,6 @@ class VedtakServiceTest {
         )
     }
 
-    @Disabled
     @Test
     @Suppress("NonAsciiCharacters")
     fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
@@ -1718,5 +1718,61 @@ class VedtakServiceTest {
         assertThatExceptionOfType(IllegalArgumentException::class.java).isThrownBy {
             vedtakService.hentVedtak(slettetVedtaksforslagVedtaksid)
         }
+    }
+
+    @Test
+    @Disabled
+    @Suppress("NonAsciiCharacters")
+    fun `sjekk at kontroller ikke gjøres for vedtak med unntak`() {
+        // Oppretter nytt vedtak
+        val vedtakRequest = byggVedtakRequest()
+        val vedtakId = vedtakService.opprettVedtak(vedtakRequest, false).vedtaksid
+
+        val oppdaterVedtakMedGrunnlagMedMismatchRequest = byggVedtakRequestMedMismatch()
+
+        vedtakService.oppdaterVedtak(vedtakId, oppdaterVedtakMedGrunnlagMedMismatchRequest)
+
+        val vedtak = vedtakService.hentVedtak(vedtakId)
+
+        // Henter oppdatert vedtak
+        val oppdatertVedtakMedGrunnlag = vedtakService.hentVedtak(vedtakId)
+
+        assertAll(
+
+            // Grunnlag
+            { assertThat(vedtak.grunnlagListe.size).isEqualTo(8) },
+            { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe.size).isEqualTo(8) },
+
+            // Periode
+            { assertThat(vedtak.stønadsendringListe.size).isEqualTo(1) },
+            { assertThat(vedtak.stønadsendringListe[0].periodeListe.size).isEqualTo(1) },
+            { assertThat(vedtak.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            { assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+
+            // GrunnlagReferanse
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagMedMismatchRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0],
+                )
+            },
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagMedMismatchRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1],
+                )
+            },
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
+                    oppdaterVedtakMedGrunnlagMedMismatchRequest.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2],
+                )
+            },
+
+            // Engangsbeløp
+            { assertThat(oppdatertVedtakMedGrunnlag.engangsbeløpListe.size).isEqualTo(1) },
+
+            { assertThat(vedtak.engangsbeløpListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+
+            { assertThat(oppdatertVedtakMedGrunnlag.engangsbeløpListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+
+        )
     }
 }

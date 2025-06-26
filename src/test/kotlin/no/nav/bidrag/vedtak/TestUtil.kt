@@ -1219,5 +1219,78 @@ class TestUtil {
                 ),
             ),
         )
+
+        fun byggVedtakRequestMedMismatch() = OpprettVedtakRequestDto(
+            kilde = Vedtakskilde.MANUELT,
+            type = Vedtakstype.ENDRING,
+            opprettetAv = "X123456",
+            vedtakstidspunkt = LocalDateTime.parse("2020-01-01T23:34:55.869121094"),
+            unikReferanse = "unikReferanse",
+            enhetsnummer = Enhetsnummer("4812"),
+            innkrevingUtsattTilDato = LocalDate.now(),
+            fastsattILand = "NO",
+            grunnlagListe = byggGrunnlagListe(),
+            stønadsendringListe = byggStønadsendringListeMedMismatch(),
+            engangsbeløpListe = byggEngangsbeløpListeMedMismatch(),
+            behandlingsreferanseListe = emptyList(),
+        )
+
+        private fun byggStønadsendringListeMedMismatch() = listOf(
+            OpprettStønadsendringRequestDto(
+                type = Stønadstype.BIDRAG,
+                sak = Saksnummer("SAK-002"),
+                skyldner = Personident("01018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                førsteIndeksreguleringsår = 2024,
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 123,
+                eksternReferanse = "eksternRef1",
+                grunnlagReferanseListe = listOf(
+                    "VIRKNINGSDATO-1",
+                    "NOTAT-1",
+                ),
+                periodeListe = listOf(
+                    OpprettPeriodeRequestDto(
+                        periode = ÅrMånedsperiode(LocalDate.parse("2003-01-01"), LocalDate.parse("2012-07-01")),
+                        beløp = BigDecimal.valueOf(90),
+                        valutakode = "NOK",
+                        resultatkode = "KOSTNADSBEREGNET_BIDRAG",
+                        delytelseId = "delytelseId1",
+                        grunnlagReferanseListe = listOf(
+                            "BM-LIGS-19",
+                            "BM-LIGN-19",
+                            "SJAB-REF001",
+                        ),
+                    ),
+                ),
+            ),
+        )
+
+        private fun byggEngangsbeløpListeMedMismatch() = listOf(
+            OpprettEngangsbeløpRequestDto(
+                type = Engangsbeløptype.GEBYR_MOTTAKER,
+                sak = Saksnummer("SAK-102"),
+                skyldner = Personident("21018011111"),
+                kravhaver = Personident("01010511111"),
+                mottaker = Personident("01018211111"),
+                beløp = BigDecimal.valueOf(3490),
+                valutakode = "NOK",
+                resultatkode = "SAERTILSKUDD BEREGNET",
+                innkreving = Innkrevingstype.MED_INNKREVING,
+                beslutning = Beslutningstype.ENDRING,
+                omgjørVedtakId = 400,
+                referanse = "referanse1",
+                delytelseId = "delytelseId1",
+                eksternReferanse = "EksternRef1",
+                grunnlagReferanseListe = listOf(
+                    "BM-LIGS-19",
+                    "BM-LIGN-19",
+                    "SJAB-REF001",
+                ),
+            ),
+
+        )
     }
 }

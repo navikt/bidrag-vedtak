@@ -416,7 +416,27 @@ class VedtakService(
 
         if (vedtaksid == 4643789 || vedtaksid == 4783062) {
             slettEventueltEksisterendeGrunnlag(vedtaksid)
-            oppdaterGrunnlag(vedtaksid, vedtakRequest)
+            slettStønadsendringerBehandlingsreferanserPerioderOgEngangsbeløpForVedtak(vedtaksid)
+
+            val opprettetVedtak = persistenceService.hentVedtak(vedtaksid)
+            val grunnlagIdRefMap = mutableMapOf<String, Int>()
+
+            // Grunnlag
+            vedtakRequest.grunnlagListe.forEach {
+                val opprettetGrunnlagId = opprettGrunnlag(it, opprettetVedtak)
+                grunnlagIdRefMap[it.referanse] = opprettetGrunnlagId.id
+            }
+
+            // Stønadsendring
+            vedtakRequest.stønadsendringListe.forEach { opprettStønadsendring(it, opprettetVedtak, grunnlagIdRefMap) }
+
+            // Engangsbeløp
+            vedtakRequest.engangsbeløpListe.forEach { opprettEngangsbeløp(it, opprettetVedtak, grunnlagIdRefMap) }
+
+            // Behandlingsreferanse
+            vedtakRequest.behandlingsreferanseListe.forEach { opprettBehandlingsreferanse(it, opprettetVedtak) }
+
+//            oppdaterGrunnlag(vedtaksid, vedtakRequest)
         } else {
             if (alleVedtaksdataMatcher(vedtaksid, vedtakRequest)) {
                 slettEventueltEksisterendeGrunnlag(vedtaksid)
