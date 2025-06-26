@@ -112,7 +112,7 @@ class VedtakService(
                     sisteVedtaksid = stønad.sisteVedtaksid,
                 )
             ) {
-                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
+                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid. Angitt: ${stønad.sisteVedtaksid}")
             }
         }
 
@@ -599,7 +599,7 @@ class VedtakService(
                     sisteVedtaksid = stønad.sisteVedtaksid?.toLong(),
                 )
             ) {
-                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid")
+                throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid. Angitt: ${stønad.sisteVedtaksid}")
             }
         }
 
@@ -1043,18 +1043,19 @@ class VedtakService(
 
             if (matchendeElementerOppdaterteIdenter.size != 1) {
                 SECURE_LOGGER.error(
-                    "Andre forsøk på å hente stønadsendringsid under oppdatering av vedtak feiler. Request: ${
-                        tilJson(
-                            requestMedOppdaterteIdenter,
-                        )
-                    }",
+                    "Andre forsøk på å hente stønadsendringsid under oppdatering av vedtak feiler. " +
+                        "Eksisterende stønadsendringer: ${
+                            tilJson(
+                                eksisterendeStønadsendringListeMedOppdaterteIdenter,
+                            )
+                        } Request: ${
+                            tilJson(
+                                requestMedOppdaterteIdenter,
+                            )
+                        }",
                 )
                 throw VedtaksdataMatcherIkkeException(
-                    "Stønadsendringsid ikke funnet ved oppdatering av vedtak. Eksisterende stønadsendringer med oppdaterte identer: ${
-                        tilJson(
-                            eksisterendeStønadsendringListeMedOppdaterteIdenter,
-                        )
-                    }",
+                    "Stønadsendringsid ikke funnet ved oppdatering av vedtak",
                 )
             }
             return matchendeElementerOppdaterteIdenter.first().id
@@ -1099,7 +1100,7 @@ class VedtakService(
 
         if (matchendeEksisterendePeriode.size != 1) {
             SECURE_LOGGER.error("Det er mismatch på antall matchende perioder for stønadsendring: ${tilJson(periodeRequest)}")
-            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende stønadsendringer: ${tilJson(periodeRequest)}")
+            throw VedtaksdataMatcherIkkeException("Det er mismatch på antall matchende perioder for stønadsendring")
         }
         return matchendeEksisterendePeriode.first().id
     }
@@ -1173,14 +1174,14 @@ class VedtakService(
 
             if (matchendeEksisterendeEngangsbeløpMedOppdatertIdent.size != 1) {
                 SECURE_LOGGER.error(
-                    "Det er fortsatt mismatch ved forsøk på å hente engangsbeløpsid. Request: ${tilJson(requestMedOppdaterteIdenter)}",
-                )
-                throw VedtaksdataMatcherIkkeException(
-                    "Finner ikke engangsbeløpsid ved match av engangsbeløp. Eksisterende engangsbeløp: ${
+                    "Det er fortsatt mismatch ved forsøk på å hente engangsbeløpsid. Eksisterende engangsbeløp: ${
                         tilJson(
                             eksisterendeEngangsbeløpListeMedOppdaterteIdenter,
                         )
-                    }",
+                    } Request: ${tilJson(requestMedOppdaterteIdenter)}",
+                )
+                throw VedtaksdataMatcherIkkeException(
+                    "Finner ikke engangsbeløpsid ved match av engangsbeløp. ",
                 )
             }
             return matchendeEksisterendeEngangsbeløpMedOppdatertIdent.first().id
