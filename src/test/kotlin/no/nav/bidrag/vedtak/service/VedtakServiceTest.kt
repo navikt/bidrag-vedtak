@@ -20,6 +20,7 @@ import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakEngangsbeløpUtenRefera
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakMedDuplikateReferanserRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedInputparametre
+import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestMedMismatch
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtakRequestUtenGrunnlag
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagMedOppdatertInnholdRequest
 import no.nav.bidrag.vedtak.TestUtil.Companion.byggVedtaksforslagRequest
@@ -39,7 +40,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
@@ -843,7 +843,6 @@ class VedtakServiceTest {
         )
     }
 
-    @Disabled
     @Test
     @Suppress("NonAsciiCharacters")
     fun `sjekk på at eventuelt eksisterende grunnlag på vedtak slettes før oppdatering av vedtak`() {
@@ -1718,5 +1717,65 @@ class VedtakServiceTest {
         assertThatExceptionOfType(IllegalArgumentException::class.java).isThrownBy {
             vedtakService.hentVedtak(slettetVedtaksforslagVedtaksid)
         }
+    }
+
+    @Test
+    @Suppress("NonAsciiCharacters")
+    fun `sjekk at oppdateringskontroller ikke gjøres for vedtak med unntak`() {
+        // Oppretter nytt vedtak uten grunnlag
+        val vedtakRequest = byggVedtakRequestUtenGrunnlag()
+        val vedtakId = vedtakService.opprettVedtak(vedtakRequest, false).vedtaksid
+
+        val vedtak = vedtakService.hentVedtak(vedtakId)
+
+        val requestMedMismatch = byggVedtakRequestMedMismatch()
+
+        vedtakService.oppdaterVedtak(vedtakId, requestMedMismatch, true)
+
+        // Henter oppdatert vedtak
+        val oppdatertVedtakMedGrunnlag = vedtakService.hentVedtak(vedtakId)
+
+        assertAll(
+
+            // Grunnlag
+            { assertThat(vedtak.grunnlagListe.size).isEqualTo(0) },
+            { assertThat(oppdatertVedtakMedGrunnlag.grunnlagListe.size).isEqualTo(8) },
+
+            // Periode
+            { assertThat(vedtak.stønadsendringListe.size).isEqualTo(2) },
+            { assertThat(vedtak.stønadsendringListe[0].periodeListe.size).isEqualTo(2) },
+            { assertThat(vedtak.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(0) },
+
+            { assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe.size).isEqualTo(2) },
+            { assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe.size).isEqualTo(2) },
+            { assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+            { assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+
+            // GrunnlagReferanse
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0]).isEqualTo(
+                    requestMedMismatch.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[0],
+                )
+            },
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1]).isEqualTo(
+                    requestMedMismatch.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[1],
+                )
+            },
+            {
+                assertThat(oppdatertVedtakMedGrunnlag.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2]).isEqualTo(
+                    requestMedMismatch.stønadsendringListe[0].periodeListe[0].grunnlagReferanseListe[2],
+                )
+            },
+
+            // Engangsbeløp
+            { assertThat(vedtak.engangsbeløpListe.size).isEqualTo(2) },
+            { assertThat(oppdatertVedtakMedGrunnlag.engangsbeløpListe.size).isEqualTo(2) },
+
+            { assertThat(vedtak.engangsbeløpListe[0].grunnlagReferanseListe.size).isEqualTo(0) },
+
+            { assertThat(oppdatertVedtakMedGrunnlag.engangsbeløpListe[0].grunnlagReferanseListe.size).isEqualTo(3) },
+
+        )
     }
 }
