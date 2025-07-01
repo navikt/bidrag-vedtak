@@ -1118,7 +1118,7 @@ class VedtakService(
                 }
             }
 
-        if (matchendeEksisterendePeriode.size != 1 && overstyr ?: false) {
+        if (matchendeEksisterendePeriode.size != 1 && overstyr == true) {
             return 0
         }
 
