@@ -306,7 +306,7 @@ class VedtakService(
         }
 
         return VedtakDto(
-            vedtaksid = vedtak.id.toLong(),
+            vedtaksid = vedtak.id,
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
@@ -344,7 +344,7 @@ class VedtakService(
             beslutning = Beslutningstype.valueOf(beslutning),
             omgjørVedtakId = omgjørVedtakId,
             eksternReferanse = eksternReferanse,
-            sisteVedtaksid = sisteVedtaksid?.toLong(),
+            sisteVedtaksid = sisteVedtaksid,
             grunnlagReferanseListe = grunnlagReferanseResponseListe,
             periodeListe = hentPerioderTilVedtak(periodeListe),
         )
@@ -447,7 +447,7 @@ class VedtakService(
                 .map { stønadsendring ->
                     val vedtak = stønadsendring.vedtak
                     VedtakForStønad(
-                        vedtaksid = vedtak.id.toLong(),
+                        vedtaksid = vedtak.id,
                         vedtakstidspunkt = vedtak.vedtakstidspunkt!!,
                         type = Vedtakstype.valueOf(vedtak.type),
                         stønadsendring = stønadsendring.tilDto(),
@@ -599,7 +599,7 @@ class VedtakService(
                     saksnummer = Saksnummer(stønad.sak),
                     skyldner = Personident(stønad.skyldner),
                     kravhaver = Personident(stønad.kravhaver),
-                    sisteVedtaksid = stønad.sisteVedtaksid?.toLong(),
+                    sisteVedtaksid = stønad.sisteVedtaksid,
                 )
             ) {
                 throw PreconditionFailedException("Angitt sisteVedtaksid er ikke lik lagret siste vedtaksid. Angitt: ${stønad.sisteVedtaksid}")
@@ -1260,7 +1260,7 @@ class VedtakService(
         }
 
         return VedtakDto(
-            vedtaksid = vedtak.id.toLong(),
+            vedtaksid = vedtak.id,
             kilde = Vedtakskilde.valueOf(vedtak.kilde),
             type = Vedtakstype.valueOf(vedtak.type),
             opprettetAv = vedtak.opprettetAv,
@@ -1326,7 +1326,7 @@ class VedtakService(
         saksnummer: Saksnummer,
         skyldner: Personident,
         kravhaver: Personident,
-        sisteVedtaksid: Long?,
+        sisteVedtaksid: Int?,
     ): Boolean {
         val skyldnerAllePersonidenter = identUtils.hentAlleIdenter(skyldner)
         val kravhaverAllePersonidenter = identUtils.hentAlleIdenter(kravhaver)
@@ -1335,7 +1335,7 @@ class VedtakService(
             type.name,
             skyldnerAllePersonidenter,
             kravhaverAllePersonidenter,
-        ).toLong()
+        )
         if (sisteVedtaksid != sisteVedtaksidForStønad) {
             LOGGER.error("Angitt sisteVedtaksid: $sisteVedtaksid for sak: $saksnummer er ikke lik lagret siste vedtaksid: $sisteVedtaksidForStønad")
             val feilmelding =
@@ -1362,7 +1362,7 @@ class VedtakService(
                     eksisterendeStønadsendring.innkreving == it.innkreving.name &&
                     eksisterendeStønadsendring.beslutning == it.beslutning.name &&
                     eksisterendeStønadsendring.omgjørVedtakId == it.omgjørVedtakId &&
-                    eksisterendeStønadsendring.sisteVedtaksid?.toLong() == it.sisteVedtaksid &&
+                    eksisterendeStønadsendring.sisteVedtaksid == it.sisteVedtaksid &&
                     eksisterendeStønadsendring.eksternReferanse == it.eksternReferanse
             }
         }
