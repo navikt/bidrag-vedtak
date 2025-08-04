@@ -1056,7 +1056,7 @@ class TestUtil {
             behandlingsreferanseListe = byggBehandlingsreferanseListe(),
         )
 
-        fun byggVedtaksforslagMedOppdatertInnholdRequest(sisteVedtaksid: Long?) = OpprettVedtakRequestDto(
+        fun byggVedtaksforslagMedOppdatertInnholdRequest(sisteVedtaksid: Int?) = OpprettVedtakRequestDto(
             kilde = Vedtakskilde.AUTOMATISK,
             type = Vedtakstype.ALDERSJUSTERING,
             opprettetAv = "X654321",
