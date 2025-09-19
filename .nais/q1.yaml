@@ -59,4 +59,4 @@ spec:
       diskAutoresize: false
       diskSize: 25
       pointInTimeRecovery: false
-      auditlog: "off"
+      auditlog: "on"
