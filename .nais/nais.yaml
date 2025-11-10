@@ -86,7 +86,7 @@ spec:
           - name: "cloudsql.enable_pgaudit"
             value: "{{ spec.gcp.sqlInstances.auditlog }}"
           - name: "pgaudit.log"
-            value: "write"
+            value: "write,role,ddl"
           - name: "pgaudit.log_parameter"
             value: "on"
   env:
