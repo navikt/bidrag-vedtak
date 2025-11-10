@@ -30,7 +30,7 @@
     <springframework-cloud.version>4.2.0</springframework-cloud.version>
     <springdoc-openapi-ui.version>2.8.9</springdoc-openapi-ui.version>
     <ktlint-cli.version>1.7.1</ktlint-cli.version>
-    <mockk.version>1.14.2</mockk.version>
+    <mockk.version>1.14.6</mockk.version>
   </properties>
 
   <repositories>
