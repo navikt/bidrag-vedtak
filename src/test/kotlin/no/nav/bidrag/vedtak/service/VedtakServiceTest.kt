@@ -1263,7 +1263,7 @@ class VedtakServiceTest {
         val førsteVedtaksforslag = vedtakService.hentVedtak(nyttVedtaksforslagOpprettetVedtaksid)
 
         // Oppdaterer vedtaksforslag
-        val oppdaterVedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(nyttVedtaksforslagOpprettetVedtaksid.toLong())
+        val oppdaterVedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(nyttVedtaksforslagOpprettetVedtaksid)
 
         val oppdatertVedtaksforslagVedtaksid = vedtakService.oppdaterVedtaksforslag(
             vedtaksid = nyttVedtaksforslagOpprettetVedtaksid,
@@ -1482,7 +1482,7 @@ class VedtakServiceTest {
     @Test
     fun `skal fatte vedtak fra vedtaksforslag`() {
         val nyttVedtakRequest = byggVedtakRequest()
-        val sisteVedtaksid = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid.toLong()
+        val sisteVedtaksid = vedtakService.opprettVedtak(nyttVedtakRequest, false).vedtaksid
 
         // Oppdaterer vedtaksforslag
         val vedtaksforslagRequest = byggVedtaksforslagMedOppdatertInnholdRequest(sisteVedtaksid)
